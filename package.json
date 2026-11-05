@@ -1,0 +1,73 @@
+{
+  "name": "multi-agent-workbench",
+  "version": "0.1.0",
+  "description": "本地多 Agent 智能研发工作台",
+  "private": true,
+  "main": "desktop/main.cjs",
+  "author": "Lihe",
+  "license": "MIT",
+  "scripts": {
+    "setup": "node tools/manage.mjs setup",
+    "build": "node tools/manage.mjs build",
+    "test": "node tools/manage.mjs test",
+    "start": "node tools/manage.mjs start",
+    "dev": "node tools/manage.mjs dev",
+    "core": "node tools/manage.mjs core",
+    "smoke": "node tools/smoke-test.mjs",
+    "test:integration": "node tools/ci-smoke.mjs",
+    "test:desktop": "node tools/desktop-smoke.cjs",
+    "package": "node tools/manage.mjs package"
+  },
+  "devDependencies": {
+    "electron": "39.2.7",
+    "electron-builder": "26.0.12",
+    "playwright": "1.56.1"
+  },
+  "build": {
+    "appId": "dev.lihe.agentworkbench",
+    "productName": "Agent Workbench",
+    "electronDist": "node_modules/electron/dist",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "desktop/**",
+      "web/dist/**",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "core/target/agent-workbench-core-0.1.0.jar",
+        "to": "core/core.jar"
+      },
+      {
+        "from": ".runtime/jre",
+        "to": "jre"
+      }
+    ],
+    "win": {
+      "target": [
+        "dir",
+        "nsis"
+      ],
+      "icon": "desktop/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.developer-tools"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Development"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "allowScripts": {
+    "electron@39.2.7": true,
+    "electron-winstaller@5.4.0": true
+  }
+}

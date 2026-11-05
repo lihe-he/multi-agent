@@ -1,0 +1,640 @@
+{
+  "createdAt": "2026-11-05T15:20:03.408Z",
+  "platform": "win32",
+  "status": "passed",
+  "baseUrl": "http://127.0.0.1:60014",
+  "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-2w1I8u",
+  "projectPath": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-2w1I8u\\中文 sample project",
+  "checks": [
+    {
+      "name": "API rejects missing access token",
+      "status": "passed",
+      "durationMs": 12
+    },
+    {
+      "name": "Core returns persisted state",
+      "status": "passed",
+      "durationMs": 16
+    },
+    {
+      "name": "Import real Git repository with Chinese and spaced path",
+      "status": "passed",
+      "durationMs": 1213
+    },
+    {
+      "name": "Search reports source locations and coverage",
+      "status": "passed",
+      "durationMs": 142
+    },
+    {
+      "name": "Save project knowledge with an explicit source",
+      "status": "passed",
+      "durationMs": 4
+    },
+    {
+      "name": "Reject unsupported permission in an imported role template",
+      "status": "passed",
+      "durationMs": 20
+    },
+    {
+      "name": "Reject cyclic execution plan before dispatch",
+      "status": "passed",
+      "durationMs": 12
+    },
+    {
+      "name": "Configure local protocol test route",
+      "status": "passed",
+      "durationMs": 5
+    },
+    {
+      "name": "Create task with fixed contract and route locks",
+      "status": "passed",
+      "durationMs": 24
+    },
+    {
+      "name": "Reject route that does not match the hard model lock",
+      "status": "passed",
+      "durationMs": 11
+    },
+    {
+      "name": "Reject acceptance before required execution and evidence",
+      "status": "passed",
+      "durationMs": 17
+    },
+    {
+      "name": "Execute actual Java API tool loop, verification and independent review",
+      "status": "passed",
+      "durationMs": 6620
+    },
+    {
+      "name": "Preserve source Git worktree and staged state",
+      "status": "passed",
+      "durationMs": 177
+    },
+    {
+      "name": "Diff and evidence are bound to the delivered version",
+      "status": "passed",
+      "durationMs": 310
+    },
+    {
+      "name": "Persistent events can be replayed with a cursor",
+      "status": "passed",
+      "durationMs": 27
+    },
+    {
+      "name": "Reject acceptance and export when content changes after review",
+      "status": "passed",
+      "durationMs": 348
+    },
+    {
+      "name": "Manual acceptance records completion without writing source",
+      "status": "passed",
+      "durationMs": 170
+    },
+    {
+      "name": "Export portable delivery archive",
+      "status": "passed",
+      "durationMs": 504
+    },
+    {
+      "name": "Disable knowledge while preserving its revision",
+      "status": "passed",
+      "durationMs": 5
+    },
+    {
+      "name": "Complete LEAD stages under the same root budget",
+      "status": "passed",
+      "durationMs": 7247
+    },
+    {
+      "name": "Complete ROUNDTABLE stages under the same root budget",
+      "status": "passed",
+      "durationMs": 10373
+    },
+    {
+      "name": "Cancel an in-flight task and keep source intact",
+      "status": "passed",
+      "durationMs": 5382
+    }
+  ],
+  "calls": [
+    {
+      "number": 1,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "DESIGN",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 2,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "DESIGN",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 3,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 4,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 5,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 2,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 6,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 3,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 7,
+      "path": "/v1/chat/completions",
+      "kind": "review",
+      "stage": "REVIEW",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 8,
+      "path": "/v1/chat/completions",
+      "kind": "review",
+      "stage": "REVIEW",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 9,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "INVESTIGATE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 10,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "INVESTIGATE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 11,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 12,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 13,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 2,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 14,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 3,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 15,
+      "path": "/v1/chat/completions",
+      "kind": "review",
+      "stage": "REVIEW",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 16,
+      "path": "/v1/chat/completions",
+      "kind": "review",
+      "stage": "REVIEW",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 17,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "PROPOSAL",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 18,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "PROPOSAL",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 19,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "PROPOSAL",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 20,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "PROPOSAL",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 21,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "PROPOSAL",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 22,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "PROPOSAL",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 23,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "CRITIQUE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 24,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "CRITIQUE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 25,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "CRITIQUE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 26,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "CRITIQUE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 27,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "CRITIQUE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 28,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "CRITIQUE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 29,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "SYNTHESIS",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 30,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "SYNTHESIS",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 31,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 32,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 33,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 2,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 34,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "run_command"
+      ],
+      "completedTools": 3,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 35,
+      "path": "/v1/chat/completions",
+      "kind": "review",
+      "stage": "REVIEW",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 36,
+      "path": "/v1/chat/completions",
+      "kind": "review",
+      "stage": "REVIEW",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 37,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "DESIGN",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    }
+  ],
+  "scope": "Local deterministic model protocol fixture only; not external provider, CLI or cross-platform certification."
+}

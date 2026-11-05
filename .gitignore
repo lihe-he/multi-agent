@@ -1,0 +1,15 @@
+node_modules/
+web/dist/
+desktop/dist/
+release/
+core/target/
+.runtime/
+.workbench/
+data/
+*.log
+.npm-cache/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.DS_Store

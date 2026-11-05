@@ -1,0 +1,24 @@
+{
+  "version": "0.1.0",
+  "platform": "win32",
+  "architecture": "x64",
+  "installer": "Agent Workbench Setup 0.1.0.exe",
+  "bytes": 149178292,
+  "sha256": "7a8ff2bc6dd42e50212dd78b5c9d641c2e33378e845265c757b8d5885eb1f978",
+  "signatureStatus": "NotSigned",
+  "installExitCode": 0,
+  "pathContainsChineseAndSpaces": true,
+  "desktop": {
+    "desktop": "PASS",
+    "api": 200,
+    "version": "0.1.0",
+    "application": {
+      "packaged": true,
+      "version": "0.1.0"
+    },
+    "externalJavaDisabled": true,
+    "pageErrors": []
+  },
+  "uninstallExitCode": 0,
+  "testProgramRemoved": true
+}
