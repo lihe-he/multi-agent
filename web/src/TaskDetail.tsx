@@ -7,6 +7,7 @@ import { Badge, Checklist, Empty, Field, formatTime, kindLabel, Modal, modeLabel
 export function TaskDetail({ task: initial, project, routes, onBack, onAction, onNotice }: { task: Task; project?: Project; routes: Route[]; onBack: () => void; onAction: (id: string, action: string) => Promise<void>; onNotice: (message: string, error?: boolean) => void }) {
   const [task, setTask] = useState(initial); const [tab, setTab] = useState('overview');
   const [events, setEvents] = useState<RunEvent[]>([]); const cursor = useRef(0);
+  const [mcpOperations, setMcpOperations] = useState<{ actionKey?: string; state: string; error?: string }[]>([]);
   const [diff, setDiff] = useState<{ diff: string; version?: string; workspace?: string } | null>(null);
   const [diffError, setDiffError] = useState(''); const [busy, setBusy] = useState('');
   const [eventFilter, setEventFilter] = useState('');
@@ -18,12 +19,14 @@ export function TaskDetail({ task: initial, project, routes, onBack, onAction, o
     cursor.current = 0; setEvents([]); setDiff(null);
     async function poll() {
       try {
-        const [detail, batch] = await Promise.all([
+        const [detail, batch, mcpOps] = await Promise.all([
           api<Task>(`/tasks/${initial.id}`),
           api<{ events: RunEvent[]; cursor: number; hasMore?: boolean }>(`/tasks/${initial.id}/events?after=${cursor.current}&limit=200`),
+          api<{ actionKey?: string; state: string; error?: string }[]>(`/tasks/${initial.id}/mcp-operations`),
         ]);
         if (!active) return;
         setTask(detail);
+        setMcpOperations(mcpOps);
         if (batch.events?.length) {
           cursor.current = batch.cursor || batch.events[batch.events.length - 1].id;
           setEvents(old => [...old, ...batch.events.filter(e => !old.some(o => o.id === e.id))].slice(-500));
@@ -70,6 +73,7 @@ export function TaskDetail({ task: initial, project, routes, onBack, onAction, o
     {tab === 'overview' && <div className="detail-grid"><div className="detail-main">
       <section className="card"><SectionHeading title="协作流程" subtitle={task.modeReason || '各阶段按依赖推进，验证与审查结果单独保存。'} /><div className="pipeline">{stages.length ? stages.map((stage, i) => <div className={`pipeline-step ${stage.state?.toLowerCase() || 'pending'}`} key={stage.id}><div className="stage-rail"><span>{['COMPLETED', 'SUCCEEDED'].includes(stage.state || '') ? <Check size={15} /> : String(i + 1).padStart(2, '0')}</span>{i < stages.length - 1 && <i />}</div><div className="stage-content"><div><h3>{stage.title || stage.id}</h3><Badge state={stage.state || 'PENDING'} /></div><p>{stage.role || 'Agent'}{stage.dependencies?.length ? <><span className="dot-sep">·</span>依赖 {stage.dependencies.join('、')}</> : <><span className="dot-sep">·</span>可独立开始</>}</p></div></div>) : <Empty icon={<GitBranch size={25} />} title="计划准备中" description="核心生成的执行阶段将在这里显示。" />}</div></section>
       <section className="card"><SectionHeading title="完成约定" subtitle="验证和独立审查始终以这份约定为准。" /><div className="contract-content"><h4><Flag size={15} />验收条件</h4><Checklist items={task.contract?.acceptance || []} /><h4><Terminal size={15} />必要验证</h4><div className="command-stack">{task.contract?.commands?.map((command, i) => <code key={i}><span>$</span> {command}</code>)}</div><h4><FolderOpen size={15} />修改范围</h4><div className="chips">{task.contract?.scope?.map(scope => <span className="chip mono" key={scope}>{scope}</span>)}</div></div></section>
+      {!!task.mcpAuthorization?.bindings?.length && <section className="card"><SectionHeading title="MCP 固定动作" subtitle="仅开发阶段开放；每项参数均由创建任务时确认。" /><div className="contract-content"><dl className="metadata"><dt>授权版本</dt><dd>{task.mcpAuthorization.version || 1}</dd><dt>工具预算</dt><dd>{mcpOperations.length ? `${task.mcpBudget?.usedCalls || 0} / ${task.mcpBudget?.maxCalls || 0} 次 · ${task.mcpBudget?.committedDurationMs || 0} / ${task.mcpBudget?.maxDurationMs || 0} 毫秒` : `最多 ${task.mcpBudget?.maxCalls || 0} 次 · ${task.mcpBudget?.maxDurationMs || 0} 毫秒`}</dd></dl>{task.mcpAuthorization.bindings.map(binding => { const operation = mcpOperations.find(item => item.actionKey === binding.actionKey); return <article className="evidence-card" key={binding.actionKey}><div className="evidence-toggle"><div><h3>{binding.serverName || binding.serverId} / {binding.name}</h3><p>{operation?.error || `状态：${operation?.state || '等待模型选择'} · 超时 ${binding.timeoutMs} 毫秒`}</p></div><Badge state={operation?.state || 'PENDING'} /></div><pre className="evidence-output">{JSON.stringify(binding.fixedArguments, null, 2)}</pre></article>; })}</div></section>}
     </div><aside className="detail-aside"><section className="card compact"><h3>根任务预算</h3><div className="budget-number">{used}<span>/ {max} 次</span></div><div className="budget-track"><div className="budget-used" style={{ width: `${Math.min(100, max ? used / max * 100 : 0)}%` }} /><div className="budget-reserve" style={{ width: `${Math.min(100, max ? reserve / max * 100 : 0)}%` }} /></div><div className="legend"><span><i className="emerald" />已调用 {used}</span><span><i className="hatch" />验证预留 {reserve}</span></div><p className="muted-text">调用计入根预算。CLI 会话的内部请求和实际费用以工具可观测能力为准。</p></section>
       {['PAUSED', 'WAITING_INPUT', 'FAILED'].includes(task.state) && <section className="card compact"><h3>恢复与继续</h3><p className="muted-text">先处理当前阻塞。调整预算或重新验证不会抹去此前的执行记录。</p><div className="recovery-actions"><button className="button secondary small" onClick={() => setEditBudget(true)}>调整任务预算</button><button className="button secondary small" disabled={!!busy} onClick={() => action('revalidate')}>重新验证当前成果</button></div></section>}
       <section className="card compact"><h3>执行边界</h3><dl className="metadata"><dt>首选运行器</dt><dd>{route?.name || '尚未配置'}</dd><dt>模型</dt><dd className="mono">{route?.model || '运行器默认'}</dd><dt>硬锁定</dt><dd>{Object.entries(task.locks || {}).length ? Object.entries(task.locks || {}).map(([k, v]) => <div key={k} className="lock-line"><LockKeyhole size={12} />{k}: {v}</div>) : '未设置'}</dd><dt>独立工作目录</dt><dd className="path-text">{task.workspace || '确认计划后创建'}</dd></dl>{task.workspace && window.workbench?.openPath && <button className="text-button" onClick={async () => { try { await window.workbench?.openPath?.(task.workspace!); } catch (e) { onNotice((e as Error).message, true); } }}>打开工作目录<ArrowRight size={14} /></button>}</section>

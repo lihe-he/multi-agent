@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CancellationException;
+import java.time.Duration;
+import java.util.function.BooleanSupplier;
 import static dev.agentworkbench.Json.*;
 
 /**
@@ -139,6 +142,72 @@ public class McpManager {
                 throw new ApiException(502, "MCP 连接或能力核验失败，工具尚未派发：" + message);
             }
         }
+    }
+
+    public Map<String, Object> invokeFixedTool(String taskId, String stageKind, String alias, BooleanSupplier cancelled) {
+        Map<String, Object> task = store.get("task", taskId);
+        Map<String, Object> authorization = map(task, "mcpAuthorization");
+        Map<String, Object> binding = objects(authorization.get("bindings")).stream()
+            .filter(item -> alias.equals(str(item, "alias"))).findFirst().orElseThrow(() -> new ApiException(403, "MCP 固定动作未获此任务授权"));
+        if (!strings(binding.get("allowedStageKinds")).contains(stageKind) || !Set.of("IMPLEMENT", "REPAIR").contains(stageKind)) { throw new ApiException(403, "当前阶段不能调用 MCP 固定动作"); }
+        McpTaskPolicy.assertCurrent(store, task);
+        if (cancelled.getAsBoolean()) return obj("state", "CANCELLED", "error", "任务已请求停止，MCP 动作未派发");
+        String serverId = str(binding, "serverId"), actionKey = str(binding, "actionKey");
+        String operationId = hash(obj("taskId", taskId, "actionKey", actionKey));
+        Map<String, Object> existing = store.find("mcpOperation", operationId);
+        if (existing != null) {
+            if ("ACKNOWLEDGED".equals(str(existing, "state"))) return obj("state", "ACKNOWLEDGED", "deduplicated", true, "result", existing.get("result"));
+            if ("RECONCILED".equals(str(existing, "state")) && "NOT_SENT".equals(str(existing, "dispatchState"))) return obj("state", "REJECTED", "error", existing.get("error"), "operationId", operationId);
+            return obj("state", "UNKNOWN", "error", "此固定动作已有记录，不能自动重放；请先核对记录");
+        }
+        requireServerResolved(serverId);
+        synchronized (locks.computeIfAbsent(serverId, ignored -> new Object())) {
+            task = store.get("task", taskId);
+            McpTaskPolicy.assertCurrent(store, task);
+            Map<String, Object> server = store.get("mcpServer", serverId);
+            int timeout = num(binding, "timeoutMs", 30000), authVersion = num(authorization, "version", 1);
+            Map<String, Object> operation = obj("id", operationId, "requestId", operationId, "taskId", taskId, "projectId", task.get("projectId"),
+                "stage", stageKind, "serverId", serverId, "serverName", binding.get("serverName"), "identity", server.get("identity"),
+                "tool", binding.get("name"), "actionKey", actionKey, "authorizationVersion", authVersion, "definitionVersion", binding.get("definitionVersion"),
+                "argumentKeys", new ArrayList<>(map(binding, "fixedArguments").keySet()), "argumentHash", hash(binding.get("fixedArguments")),
+                "inputSummary", "固定参数键：" + String.join(", ", map(binding, "fixedArguments").keySet()),
+                "state", "PREPARED", "dispatchState", "NOT_SENT", "stopState", "CONFIRMED", "canReconcile", false, "createdAt", now());
+            store.beginMcpOperation(taskId, operation, authVersion, timeout);
+            boolean sent = false;
+            try (var lease = resources.acquire(resourceRequest(server), cancelled);
+                 McpTransport transport = McpTransport.open(server, tokens.getOrDefault(serverId, ""), mapper, cancelled, Duration.ofMillis(timeout))) {
+                Map<String, Object> discovery = discover(server, transport);
+                if (!str(binding, "definitionVersion").equals(str(discovery, "definitionVersion"))) throw new ApiException(409, "MCP 工具定义已变化，派发已阻止");
+                Map<String, Object> latestTask = store.get("task", taskId);
+                McpTaskPolicy.assertCurrent(store, latestTask);
+                if (cancelled.getAsBoolean()) throw new CancellationException("MCP 动作派发前收到停止请求");
+                Map<String, Object> live = store.get("mcpServer", serverId);
+                if (!str(binding, "identity").equals(str(live, "identity")) || num(binding, "configVersion", -1) != num(live, "version", -2)) throw new ApiException(409, "MCP 服务配置变化，派发已阻止");
+                operation.put("state", "DISPATCHED"); operation.put("dispatchState", "SENT"); store.put("mcpOperation", operation); sent = true;
+                Map<String, Object> result = transport.request("tools/call", obj("name", binding.get("name"), "arguments", binding.get("fixedArguments")));
+                Map<String, Object> safeResult = mapper.readValue(redact(mapper.writeValueAsString(result)), new com.fasterxml.jackson.core.type.TypeReference<>() { });
+                operation.put("state", "ACKNOWLEDGED"); operation.put("dispatchState", "ACKNOWLEDGED"); operation.put("result", safeResult); operation.put("completedAt", now()); store.put("mcpOperation", operation);
+                store.event(taskId, "MCP_RESULT", serverId + "/" + binding.get("name") + " 已收到固定动作回执");
+                return obj("state", "ACKNOWLEDGED", "result", safeResult, "operationId", operationId);
+            } catch (CancellationException exception) {
+                if (sent) return unknownMcp(taskId, operation, exception.getMessage());
+                operation.put("state", "RECONCILED"); operation.put("dispatchState", "NOT_SENT"); operation.put("error", "停止请求在派发前到达"); store.put("mcpOperation", operation);
+                return obj("state", "CANCELLED", "error", "MCP 动作在派发前停止");
+            } catch (Exception exception) {
+                String message = redact(exception.getMessage() == null ? exception.getClass().getSimpleName() : exception.getMessage());
+                if (sent) return unknownMcp(taskId, operation, message);
+                operation.put("state", "RECONCILED"); operation.put("dispatchState", "NOT_SENT"); operation.put("error", message); store.put("mcpOperation", operation);
+                return obj("state", "REJECTED", "error", message, "operationId", operationId);
+            }
+        }
+    }
+
+    private Map<String, Object> unknownMcp(String taskId, Map<String, Object> operation, String reason) {
+        operation.put("state", "UNKNOWN"); operation.put("dispatchState", "UNKNOWN"); operation.put("stopState", "UNCONFIRMED");
+        operation.put("canReconcile", true);
+        operation.put("error", redact(reason == null ? "结果未知" : reason)); operation.put("updatedAt", now()); store.put("mcpOperation", operation);
+        store.event(taskId, "MCP_UNKNOWN", str(operation, "serverId") + "/" + str(operation, "tool") + " 未确认；禁止重放");
+        return obj("state", "UNKNOWN", "error", operation.get("error"), "operationId", operation.get("id"));
     }
 
     public List<Map<String, Object>> operations(String serverId) { store.get("mcpServer", serverId); return store.list("mcpOperation").stream().filter(operation -> serverId.equals(str(operation, "serverId"))).toList(); }

@@ -118,6 +118,38 @@ class McpIntegrationTest {
     }
 
     @Test
+    void fixedTaskActionAtomicallyConsumesBudgetAndDeduplicates() {
+        var saved = manager.save(httpConfiguration()); String serverId = str(saved, "id");
+        var discovery = manager.probe(serverId);
+        Map<String, Object> selection = obj("serverId", serverId, "name", "echo", "configVersion", saved.get("version"),
+            "definitionVersion", discovery.get("definitionVersion"), "fixedArguments", obj("text", "confirmed"), "timeoutMs", 5000);
+        Map<String, Object> authorization = McpTaskPolicy.snapshot(store, "p", obj("engine", "API"), List.of(selection), 1);
+        Map<String, Object> task = obj("id", "task-fixed", "projectId", "p", "state", "RUNNING", "mcpAuthorization", authorization,
+            "mcpBudget", McpTaskPolicy.budget(obj("maxCalls", 2, "maxDurationMs", 10000), Map.of()));
+        store.createTask(task);
+        var first = manager.invokeFixedTool("task-fixed", "IMPLEMENT", str(objects(authorization.get("bindings")).getFirst(), "alias"), () -> false);
+        var second = manager.invokeFixedTool("task-fixed", "IMPLEMENT", str(objects(authorization.get("bindings")).getFirst(), "alias"), () -> false);
+        assertEquals("ACKNOWLEDGED", str(first, "state")); assertTrue(bool(second, "deduplicated", false)); assertEquals(1, calls.get());
+        assertEquals(1, num(map(store.get("task", "task-fixed"), "mcpBudget"), "usedCalls", 0));
+    }
+
+    @Test
+    void unknownFixedTaskActionIsPersistedAndNeverReplayed() {
+        var saved = manager.save(httpConfiguration()); String serverId = str(saved, "id"); var discovery = manager.probe(serverId);
+        Map<String, Object> selection = obj("serverId", serverId, "name", "echo", "configVersion", saved.get("version"),
+            "definitionVersion", discovery.get("definitionVersion"), "fixedArguments", obj("text", "confirmed"), "timeoutMs", 5000);
+        Map<String, Object> authorization = McpTaskPolicy.snapshot(store, "p", obj("engine", "API"), List.of(selection), 1);
+        store.createTask(obj("id", "task-unknown", "projectId", "p", "state", "RUNNING", "mcpAuthorization", authorization,
+            "mcpBudget", McpTaskPolicy.budget(obj("maxCalls", 2, "maxDurationMs", 10000), Map.of())));
+        disconnect.set(true);
+        String alias = str(objects(authorization.get("bindings")).getFirst(), "alias");
+        assertEquals("UNKNOWN", str(manager.invokeFixedTool("task-unknown", "IMPLEMENT", alias, () -> false), "state"));
+        assertEquals("UNKNOWN", str(manager.invokeFixedTool("task-unknown", "IMPLEMENT", alias, () -> false), "state"));
+        assertEquals(1, calls.get()); assertEquals("UNKNOWN", str(store.find("mcpOperation", store.list("mcpOperation").getFirst().get("id").toString()), "state"));
+        assertEquals(1, num(map(store.get("task", "task-unknown"), "mcpBudget"), "usedCalls", 0));
+    }
+
+    @Test
     void stdioStartsRealProcessAndExchangesJsonRpc() throws Exception {
         Path script = directory.resolve("MCP 中文 fixture.mjs");
         Files.writeString(script, """

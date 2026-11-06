@@ -26,6 +26,10 @@ import java.util.regex.Pattern;
  */
 @Component
 public class WorkspaceRuntime {
+    @FunctionalInterface
+    public interface FixedToolInvoker {
+        Map<String, Object> invoke(String alias);
+    }
     private static final int MAX_OUTPUT = 512_000;
     private static final int MAX_FILE = 256_000;
     private static final boolean WINDOWS = System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("win");
@@ -239,9 +243,17 @@ public class WorkspaceRuntime {
     public Map<String, Object> run(Map<String, Object> route, String apiKey, String workspace, String prompt,
                                    boolean readOnly, List<String> scope, BooleanSupplier cancelled,
                                    Consumer<String> log, BooleanSupplier acquireCall) {
+        return runWithMcp(route, apiKey, workspace, prompt, readOnly, scope, cancelled, log, acquireCall, List.of(), alias -> Map.of("error", "未授权的 MCP 工具"));
+    }
+
+    public Map<String, Object> runWithMcp(Map<String, Object> route, String apiKey, String workspace, String prompt,
+                                          boolean readOnly, List<String> scope, BooleanSupplier cancelled,
+                                          Consumer<String> log, BooleanSupplier acquireCall,
+                                          List<Map<String, Object>> mcpBindings, FixedToolInvoker mcpInvoker) {
         if (cancelled.getAsBoolean()) return result(-1, "执行已取消", "CANCELLED");
         String engine = str(route, "engine", "API");
-        if (engine.equals("API")) return apiRun(route, apiKey, Path.of(workspace), prompt, readOnly, scope, cancelled, log, acquireCall);
+        if (engine.equals("API")) return apiRun(route, apiKey, Path.of(workspace), prompt, readOnly, scope, cancelled, log, acquireCall, mcpBindings, mcpInvoker);
+        if (!mcpBindings.isEmpty()) throw new IllegalArgumentException("MCP 固定动作仅支持 API 运行器");
         if (!engine.equals("CODEX") && !engine.equals("CLAUDE")) throw new IllegalArgumentException("未知运行器：" + engine);
         if (!readOnly && scope != null && !scope.isEmpty() && !scope.equals(List.of("**")) && !scope.equals(List.of("."))) {
             throw new IllegalArgumentException("原生运行器无法强制细粒度文件范围；请选择 API 运行器或明确授权整个隔离项目。");
@@ -279,7 +291,8 @@ public class WorkspaceRuntime {
 
     @SuppressWarnings("unchecked")
     private Map<String, Object> apiRun(Map<String, Object> route, String key, Path root, String prompt, boolean readOnly,
-                                       List<String> scope, BooleanSupplier cancelled, Consumer<String> log, BooleanSupplier acquireCall) {
+                                       List<String> scope, BooleanSupplier cancelled, Consumer<String> log, BooleanSupplier acquireCall,
+                                       List<Map<String, Object>> mcpBindings, FixedToolInvoker mcpInvoker) {
         URI url = endpoint(str(route, "baseUrl", ""));
         if ((key == null || key.isBlank()) && !isLoopback(url)) throw new IllegalArgumentException("API 密钥未配置；请在资源设置中添加本次会话凭据。");
         String model = str(route, "model", "");
@@ -293,7 +306,9 @@ public class WorkspaceRuntime {
         messages.add(object("role", "user", "content", prompt));
         long inputTokens = 0, outputTokens = 0;
         int calls = 0;
-        List<Map<String, Object>> definitions = toolDefinitions(readOnly);
+        List<Map<String, Object>> definitions = toolDefinitions(readOnly, mcpBindings);
+        Map<String, Map<String, Object>> mcpByAlias = new HashMap<>();
+        for (Map<String, Object> binding : mcpBindings) mcpByAlias.put(str(binding, "alias", ""), binding);
         try {
             for (int round = 0; round < 32; round++) {
                 if (cancelled.getAsBoolean()) return result(-1, "执行已取消；在途远程请求费用可能仍发生。", "CANCELLED");
@@ -334,6 +349,18 @@ public class WorkspaceRuntime {
                     Map<String, Object> function = (Map<String, Object>) call.get("function");
                     String name = Objects.toString(function.get("name"), "");
                     String toolResult;
+                    if (mcpByAlias.containsKey(name)) {
+                        Map<String, Object> args = json.readValue(Objects.toString(function.get("arguments"), "{}"), new TypeReference<>() {});
+                        if (!args.isEmpty()) return result(-1, "固定 MCP 工具不接受模型提供的参数", "FAILED");
+                        Map<String, Object> observation = mcpInvoker.invoke(name);
+                        toolResult = json.writeValueAsString(observation);
+                        String state = Objects.toString(observation.get("state"), "");
+                        if (Set.of("UNKNOWN", "CANCELLED").contains(state)) {
+                            return result(-1, "固定 MCP 动作返回 " + state + "；停止后续模型请求，保留操作记录供核对。", state);
+                        }
+                        messages.add(object("role", "tool", "tool_call_id", call.get("id"), "content", cap(toolResult)));
+                        continue;
+                    }
                     Path operation = null;
                     Map<String, Object> entry = null;
                     try {
@@ -469,7 +496,7 @@ public class WorkspaceRuntime {
         return result;
     }
 
-    private List<Map<String, Object>> toolDefinitions(boolean readOnly) {
+    private List<Map<String, Object>> toolDefinitions(boolean readOnly, List<Map<String, Object>> mcpBindings) {
         List<Map<String, Object>> tools = new ArrayList<>();
         tools.add(tool("list_files", "列出项目内非敏感文件，最多2000项", object("path", object("type", "string")), List.of()));
         tools.add(tool("read_file", "读取项目中的UTF-8文本文件", object("path", object("type", "string")), List.of("path")));
@@ -478,6 +505,11 @@ public class WorkspaceRuntime {
             tools.add(tool("write_file", "在任务范围内创建或替换文本文件", object("path", object("type", "string"), "content", object("type", "string")), List.of("path", "content")));
             tools.add(tool("delete_file", "删除任务范围内的单个文件", object("path", object("type", "string")), List.of("path")));
             tools.add(tool("run_command", "执行完成约定中已批准的验证命令", object("command", object("type", "string")), List.of("command")));
+        }
+        if (!readOnly) {
+            for (Map<String, Object> binding : mcpBindings) {
+                tools.add(tool(str(binding, "alias", ""), "用户确认的固定 MCP 动作：" + str(binding, "serverName", "") + "/" + str(binding, "name", "") + "。不传参数。" + str(binding, "description", ""), object(), List.of()));
+            }
         }
         return tools;
     }

@@ -1,6 +1,7 @@
 package dev.agentworkbench;
 
 import dev.agentworkbench.runtime.WorkspaceRuntime;
+import dev.agentworkbench.mcp.McpTaskPolicy;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import java.net.URI;
@@ -224,6 +225,8 @@ public class WorkbenchCatalog {
             "locks", locks, "routeId", route.get("id"), "routeSnapshot", route, "profileSnapshot", store.list("profile"), "policyVersion", "1.1/0.2.0-alpha.1",
             "includeChanges", bool(body, "includeChanges", false), "plan", plan, "context", context, "evidence", new ArrayList<>(), "issues", new ArrayList<>(),
             "review", obj("status", "NOT_RUN"), "planValidation", result, "workspace", "", "baseline", "", "version", "", "repairRounds", 0);
+        task.put("mcpAuthorization", McpTaskPolicy.snapshot(store, str(project, "id"), route, body.get("mcpBindings"), 1));
+        task.put("mcpBudget", McpTaskPolicy.budget(map(body, "mcpBudget"), Map.of()));
         return store.createTask(task);
     }
 

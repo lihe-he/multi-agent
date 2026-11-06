@@ -83,6 +83,17 @@ class WorkbenchEngineTest {
     private static Map<String, Object> success(String output) { return obj("status", "SUCCEEDED", "exitCode", 0, "output", output, "usage", obj("cost", "UNKNOWN")); }
 
     @Test
+    void mcpReauthorizationUsesExpectedVersionAndPreservesBudget() {
+        Map<String, Object> created = task(16, 5); String taskId = str(created, "id");
+        Map<String, Object> updated = engine.action(taskId, "mcp-authorization", obj("expectedVersion", 1));
+        assertEquals("DRAFT", str(updated, "state"));
+        assertEquals(2, num(map(updated, "mcpAuthorization"), "version", 0));
+        assertEquals(1, objects(updated.get("mcpAuthorizationHistory")).size());
+        assertEquals(8, num(map(updated, "mcpBudget"), "maxCalls", 0));
+        assertEquals(409, assertThrows(ApiException.class, () -> engine.action(taskId, "mcp-authorization", obj("expectedVersion", 1))).status());
+    }
+
+    @Test
     void realStageContractRequiresVerificationReviewAndHumanAcceptance() throws Exception {
         String id = str(task(16, 5), "id"); engine.action(id, "approve", obj());
         Map<String, Object> completed = await(id, Set.of("AWAITING_ACCEPTANCE", "FAILED", "UNKNOWN", "WAITING_INPUT"));

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -340,6 +341,62 @@ class RuntimeIntegrationTest {
         } finally {
             server.stop(0);
         }
+    }
+
+    @Test
+    void fixedMcpAliasIsExposedWithoutArgumentsAndReturnsThroughModelLoop() throws Exception {
+        Path root = Files.createDirectories(temporary.resolve("fixed-mcp-loop"));
+        AtomicInteger requests = new AtomicInteger();
+        AtomicReference<Map<String, Object>> exposed = new AtomicReference<>();
+        Map<String, Object> fixedCall = tool("mcp_fixed-action", Map.of());
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/", exchange -> {
+            try {
+                Map<String, Object> incoming = json.readValue(exchange.getRequestBody(), new TypeReference<>() {});
+                List<Map<String, Object>> tools = (List<Map<String, Object>>) incoming.get("tools");
+                tools.stream().filter(item -> "mcp_fixed-action".equals(String.valueOf(((Map<String, Object>) item.get("function")).get("name"))))
+                    .findFirst().ifPresent(exposed::set);
+                Map<String, Object> message = requests.getAndIncrement() == 0
+                    ? Map.of("role", "assistant", "tool_calls", List.of(fixedCall))
+                    : Map.of("role", "assistant", "content", "Completed");
+                byte[] response = json.writeValueAsBytes(Map.of("choices", List.of(Map.of("message", message))));
+                exchange.getResponseHeaders().add("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, response.length); exchange.getResponseBody().write(response);
+            } finally { exchange.close(); }
+        });
+        server.start();
+        AtomicInteger dispatches = new AtomicInteger();
+        try {
+            List<Map<String, Object>> bindings = List.of(Map.of("alias", "mcp_fixed-action", "serverName", "fixture", "name", "write_note", "description", "fixed"));
+            Map<String, Object> result = runtime().runWithMcp(route(server), "fixture", root.toString(), "Use the confirmed action", false, List.of("**"),
+                () -> false, ignored -> {}, () -> true, bindings, alias -> { dispatches.incrementAndGet(); return Map.of("state", "ACKNOWLEDGED", "result", Map.of("content", "ok")); });
+            assertEquals("SUCCEEDED", result.get("status"));
+            assertEquals(1, dispatches.get());
+            assertEquals(2, requests.get());
+            assertEquals(List.of(), ((Map<String, Object>) ((Map<String, Object>) exposed.get().get("function")).get("parameters")).get("required"));
+        } finally { server.stop(0); }
+    }
+
+    @Test
+    void unknownFixedMcpResultStopsFurtherModelRequests() throws Exception {
+        Path root = Files.createDirectories(temporary.resolve("unknown-fixed-mcp-loop"));
+        AtomicInteger requests = new AtomicInteger();
+        Map<String, Object> fixedCall = tool("mcp_fixed-action", Map.of());
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/", exchange -> {
+            try {
+                exchange.getRequestBody().readAllBytes(); requests.incrementAndGet();
+                byte[] response = json.writeValueAsBytes(Map.of("choices", List.of(Map.of("message", Map.of("role", "assistant", "tool_calls", List.of(fixedCall))))));
+                exchange.getResponseHeaders().add("Content-Type", "application/json"); exchange.sendResponseHeaders(200, response.length); exchange.getResponseBody().write(response);
+            } finally { exchange.close(); }
+        });
+        server.start();
+        try {
+            Map<String, Object> result = runtime().runWithMcp(route(server), "fixture", root.toString(), "Use the confirmed action", false, List.of("**"),
+                () -> false, ignored -> {}, () -> true, List.of(Map.of("alias", "mcp_fixed-action", "serverName", "fixture", "name", "write_note")),
+                alias -> Map.of("state", "UNKNOWN", "error", "response lost"));
+            assertEquals("UNKNOWN", result.get("status")); assertEquals(1, requests.get());
+        } finally { server.stop(0); }
     }
 
     private WorkspaceRuntime runtime() {

@@ -44,6 +44,8 @@ async function fixture(page: Page, taskState = '') {
     const url = new URL(route.request().url());
     const path = url.pathname.replace('/api', '');
     if (path === '/state') return route.fulfill({ json: { projects: [project], tasks: taskState ? [task] : [], routes: [runner], memories: [], profiles: [], system: { modelCapacity: 2, activeModels: 0, version: 'ui-test', storageHealthy: true } } });
+    if (path === '/mcp/task-tools') return route.fulfill({ json: { tools: [{ serverId: 'mcp-fixture', serverName: '测试服务', name: 'write_note', description: '写入笔记', configVersion: 3, definitionVersion: 'fixture-def', inputSchema: { type: 'object' }, available: true }] } });
+    if (path.endsWith('/mcp-operations')) return route.fulfill({ json: [] });
     if (path === '/tasks/task-fixture' && route.request().method() === 'GET') return route.fulfill({ json: details });
     if (path.endsWith('/events')) return route.fulfill({ json: { events: [], cursor: 0, hasMore: false } });
     if (route.request().method() === 'POST') {
@@ -65,6 +67,8 @@ test('完成约定、锁定和预留随任务提交，创建不会自动批准',
   await page.getByLabel('验收条件', { exact: true }).fill('空参数返回明确提示\n已有测试通过');
   await page.getByLabel('必要验证命令', { exact: true }).fill('npm test\nnpm run build');
   await page.getByLabel('锁定此路由', { exact: true }).check();
+  await page.getByRole('checkbox', { name: /测试服务 \/ write_note/ }).check();
+  await page.getByLabel('固定 JSON 参数', { exact: true }).fill('{"query":"confirmed value"}');
   await page.getByRole('button', { name: '生成任务计划', exact: true }).click();
   await expect.poll(() => actions.length).toBe(1);
   expect(actions[0].action).toBe('/tasks');
@@ -72,6 +76,8 @@ test('完成约定、锁定和预留随任务提交，创建不会自动批准',
   expect(actions[0].body.contract.commands).toEqual(['npm test', 'npm run build']);
   expect(actions[0].body.locks.routeId).toBe('route-fixture');
   expect(actions[0].body.budget).toEqual({ maxCalls: 24, reserveCalls: 4 });
+  expect(actions[0].body.mcpBindings).toEqual([{ serverId: 'mcp-fixture', name: 'write_note', configVersion: 3, definitionVersion: 'fixture-def', fixedArguments: { query: 'confirmed value' }, timeoutMs: 30000 }]);
+  expect(actions[0].body.mcpBudget).toEqual({ maxCalls: 8, maxDurationMs: 240000 });
 });
 
 test('摘要刷新后仍显示详情证据，页面没有运行时异常', async ({ page }) => {

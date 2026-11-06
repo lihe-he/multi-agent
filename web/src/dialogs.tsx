@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Bot, Check, FolderOpen, GitBranch, Layers3, LockKeyhole, Network, ShieldCheck, Sparkles, TriangleAlert } from 'lucide-react';
 import { api, currentConnection, post, setConnection } from './api';
@@ -34,14 +34,32 @@ export function TaskDialog({ projects, routes, selectedProject, onClose, onCreat
   const [lockRoute, setLockRoute] = useState(false); const [lockModel, setLockModel] = useState(false);
   const [lockEngine, setLockEngine] = useState(false); const [lockProvider, setLockProvider] = useState(false);
   const [includeChanges, setIncludeChanges] = useState(false);
+  const [mcpTools, setMcpTools] = useState<{ serverId: string; serverName: string; name: string; description?: string; configVersion: number; definitionVersion: string; inputSchema: Record<string, unknown>; available: boolean; disabledReason?: string }[]>([]);
+  const [mcpSelections, setMcpSelections] = useState<Record<string, { argumentsText: string; timeoutMs: number }>>({});
+  const [mcpMaxCalls, setMcpMaxCalls] = useState(8); const [mcpMaxDurationMs, setMcpMaxDurationMs] = useState(240000);
   const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
   const route = routes.find(r => r.id === routeId);
   const project = projects.find(p => p.id === projectId);
+  useEffect(() => {
+    if (!projectId) { setMcpTools([]); return; }
+    let active = true;
+    api<{ tools: typeof mcpTools }>(`/mcp/task-tools?projectId=${encodeURIComponent(projectId)}`).then(result => { if (active) setMcpTools(result.tools || []); }).catch(() => { if (active) setMcpTools([]); });
+    return () => { active = false; };
+  }, [projectId]);
   async function submit(e: FormEvent) {
     e.preventDefault(); setBusy(true); setError('');
     try {
       if (reserveCalls >= maxCalls) throw new Error('验证预留需要小于总调用预算，给开发阶段留出可用额度。');
-      const task = await post<Task>('/tasks', { projectId, title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges });
+      const mcpBindings = Object.entries(mcpSelections).map(([key, selected]) => {
+        const tool = mcpTools.find(item => `${item.serverId}:${item.name}` === key);
+        if (!tool) throw new Error('已选 MCP 工具列表已变化，请重新选择。');
+        let fixedArguments: unknown;
+        try { fixedArguments = JSON.parse(selected.argumentsText); } catch { throw new Error(`${tool.serverName}/${tool.name} 的固定参数不是有效 JSON。`); }
+        if (!fixedArguments || typeof fixedArguments !== 'object' || Array.isArray(fixedArguments)) throw new Error(`${tool.serverName}/${tool.name} 的固定参数必须是 JSON 对象。`);
+        return { serverId: tool.serverId, name: tool.name, configVersion: tool.configVersion, definitionVersion: tool.definitionVersion, fixedArguments, timeoutMs: selected.timeoutMs };
+      });
+      if (mcpBindings.length && route?.engine !== 'API') throw new Error('MCP 固定动作目前只支持 API 运行路由。');
+      const task = await post<Task>('/tasks', { projectId, title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, mcpBindings, mcpBudget: { maxCalls: mcpMaxCalls, maxDurationMs: mcpMaxDurationMs }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges });
       onCreated(task); onClose();
     } catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   }
@@ -55,6 +73,18 @@ export function TaskDialog({ projects, routes, selectedProject, onClose, onCreat
     <div className="form-divider"><ShieldCheck size={16} /><span>完成约定</span><small>在执行前固定，作为验证与审查依据</small></div>
     <div className="form-grid"><Field label="验收条件" hint="每行一项，描述可以验证的结果。"><textarea required rows={4} value={acceptance} onChange={e => setAcceptance(e.target.value)} placeholder={'目标功能在正常输入下可用\n边界与错误场景有明确处理\n通过现有回归检查'} /></Field><Field label="必要验证命令" hint="每行一条，在任务工作目录内执行。"><textarea required rows={4} value={commands} onChange={e => setCommands(e.target.value)} placeholder={'npm test\nnpm run build'} className="mono" /></Field></div>
     <Field label="允许修改的范围" hint="项目内相对路径，每行一项；“.” 表示整个项目。具体运行器的执行边界以能力探测为准。"><textarea required rows={2} className="mono" value={scope} onChange={e => setScope(e.target.value)} /></Field>
+    <div className="form-divider"><Network size={16} /><span>MCP 固定动作</span><small>只在实现与修复阶段调用，动作可能产生外部副作用</small></div>
+    {mcpTools.length === 0 ? <div className="info-box"><TriangleAlert size={18} /><div><b>当前项目没有可用的已探测工具</b><p>在 MCP 设置中授权服务与工具并完成探测后，可返回此处选择。</p></div></div> : <div className="form-stack">
+      {mcpTools.map(tool => {
+        const key = `${tool.serverId}:${tool.name}`; const selected = mcpSelections[key];
+        return <div className="checkbox-card" key={key} style={{ display: 'block' }}>
+          <label><input type="checkbox" disabled={!tool.available || route?.engine !== 'API'} checked={Boolean(selected)} onChange={event => setMcpSelections(current => { const next = { ...current }; if (event.target.checked) next[key] = { argumentsText: '{}', timeoutMs: 30000 }; else delete next[key]; return next; })} />
+            <span><b>{tool.serverName} / {tool.name}</b><small>{tool.available ? tool.description || '无工具描述' : tool.disabledReason || '不可用'}{route?.engine !== 'API' ? ' · 当前路由不支持' : ''}</small></span></label>
+          {selected && <div className="form-grid" style={{ marginTop: 12 }}><Field label="工具参数定义"><pre className="evidence-output">{JSON.stringify(tool.inputSchema, null, 2)}</pre></Field><Field label="固定 JSON 参数"><textarea className="mono" rows={3} value={selected.argumentsText} onChange={event => setMcpSelections(current => ({ ...current, [key]: { ...current[key], argumentsText: event.target.value } }))} /></Field><Field label="单次超时（毫秒）"><input type="number" min={1000} max={60000} step={1000} value={selected.timeoutMs} onChange={event => setMcpSelections(current => ({ ...current, [key]: { ...current[key], timeoutMs: Number(event.target.value) } }))} /></Field></div>}
+        </div>;
+      })}
+      <div className="form-grid"><Field label="MCP 最大调用数"><input type="number" min={1} max={64} value={mcpMaxCalls} onChange={event => setMcpMaxCalls(Number(event.target.value))} /></Field><Field label="MCP 总超时承诺（毫秒）"><input type="number" min={1000} max={3600000} step={1000} value={mcpMaxDurationMs} onChange={event => setMcpMaxDurationMs(Number(event.target.value))} /></Field></div>
+    </div>}
     <div className="form-divider"><LockKeyhole size={16} /><span>执行资源与预算</span></div>
     <div className="form-grid three"><Field label="首选运行路由"><select required value={routeId} onChange={e => setRouteId(e.target.value)}><option value="">请选择运行器</option>{routes.filter(r => r.enabled !== false).map(r => <option key={r.id} value={r.id}>{r.name} · {r.engine}</option>)}</select></Field><Field label="总调用预算"><input type="number" min={2} max={1000} value={maxCalls} onChange={e => setMaxCalls(Number(e.target.value))} /></Field><Field label="验证与审查预留"><input type="number" min={1} max={999} value={reserveCalls} onChange={e => setReserveCalls(Number(e.target.value))} /></Field></div>
     <div className="checkbox-row"><label><input type="checkbox" checked={lockRoute} onChange={e => setLockRoute(e.target.checked)} />锁定此路由</label><label><input type="checkbox" checked={lockModel} disabled={!route?.model} onChange={e => setLockModel(e.target.checked)} />锁定此模型</label><label><input type="checkbox" checked={lockEngine} disabled={!route} onChange={e => setLockEngine(e.target.checked)} />锁定此引擎</label><label><input type="checkbox" checked={lockProvider} disabled={!route?.provider} onChange={e => setLockProvider(e.target.checked)} />锁定此供应商</label></div>

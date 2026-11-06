@@ -84,8 +84,17 @@ public class WorkbenchController {
     @GetMapping("/tasks/{id}")
     public Map<String, Object> task(@PathVariable String id) { return store.get("task", id); }
 
+    @GetMapping("/tasks/{id}/mcp-operations")
+    public List<Map<String, Object>> mcpOperations(@PathVariable String id) {
+        store.get("task", id);
+        return store.list("mcpOperation").stream().filter(operation -> id.equals(str(operation, "taskId"))).toList();
+    }
+
     @PostMapping("/tasks/{id}/{action}")
     public Map<String, Object> action(@PathVariable String id, @PathVariable String action, @RequestBody(required = false) Map<String, Object> body) { return engine.action(id, action, body == null ? obj() : body); }
+
+    @PostMapping("/tasks/{id}/mcp-authorization")
+    public Map<String, Object> mcpAuthorization(@PathVariable String id, @RequestBody Map<String, Object> body) { return engine.action(id, "mcp-authorization", body); }
 
     @GetMapping("/tasks/{id}/diff")
     public Map<String, Object> diff(@PathVariable String id) {

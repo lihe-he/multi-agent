@@ -40,6 +40,9 @@ public class McpController {
     @GetMapping("/servers")
     public List<Map<String, Object>> servers() { return manager.list(); }
 
+    @GetMapping("/task-tools")
+    public Map<String, Object> taskTools(@RequestParam String projectId) { return McpTaskPolicy.candidates(store, projectId); }
+
     @PostMapping("/servers")
     public Map<String, Object> save(@RequestBody Map<String, Object> body) { return manager.save(body); }
 

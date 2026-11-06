@@ -2,6 +2,7 @@ package dev.agentworkbench;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.agentworkbench.runtime.WorkspaceRuntime;
+import dev.agentworkbench.mcp.McpManager;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
@@ -30,12 +31,18 @@ public class WorkbenchEngine {
     private final WorkspaceRuntime runtime;
     private final ResourceManager resources;
     private final ObjectMapper mapper;
+    private final McpManager mcp;
     private final ExecutorService workers = Executors.newVirtualThreadPerTaskExecutor();
     private final Map<String, Control> controls = new ConcurrentHashMap<>();
     private volatile boolean shuttingDown;
 
     public WorkbenchEngine(ExecutionStore store, WorkbenchCatalog catalog, WorkspaceRuntime runtime, ResourceManager resources, ObjectMapper mapper) {
-        this.store = store; this.catalog = catalog; this.runtime = runtime; this.resources = resources; this.mapper = mapper;
+        this(store, catalog, runtime, resources, mapper, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public WorkbenchEngine(ExecutionStore store, WorkbenchCatalog catalog, WorkspaceRuntime runtime, ResourceManager resources, ObjectMapper mapper, McpManager mcp) {
+        this.store = store; this.catalog = catalog; this.runtime = runtime; this.resources = resources; this.mapper = mapper; this.mcp = mcp;
     }
 
     @PostConstruct
@@ -93,6 +100,7 @@ public class WorkbenchEngine {
                     map(value, "budget").put("maxCalls", maximum); map(value, "budget").put("reserveCalls", reserve);
                 }, "BUDGET_CHANGED", "用户显式调整了根预算；历史消耗与根计数保持不变");
             }
+            case "mcp-authorization" -> reauthorizeMcp(taskId, task, body);
             case "revalidate" -> {
                 requireState(state, Set.of("PAUSED", "WAITING_INPUT", "FAILED", "AWAITING_ACCEPTANCE"));
                 if (hasUnknownOperation(taskId)) { throw new ApiException(409, "未知操作必须先核对"); }
@@ -118,11 +126,37 @@ public class WorkbenchEngine {
                 store.markOperation(str(operation, "id"), "RECONCILED", obj("reconciledBy", "USER", "note", str(body, "note")));
             }
         }
+        for (Map<String, Object> operation : store.list("mcpOperation")) {
+            if (taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state"))) {
+                operation.put("state", "RECONCILED"); operation.put("stopState", "CONFIRMED");
+                operation.put("canReconcile", false);
+                operation.put("reconciliation", obj("reconciledBy", "USER", "note", str(body, "note"), "createdAt", now()));
+                store.put("mcpOperation", operation);
+            }
+        }
         store.editTask(taskId, value -> {
             value.put("state", "PAUSED"); value.put("reconciliation", obj("processesStopped", true, "sideEffectsChecked", true, "note", str(body, "note"), "createdAt", now()));
             value.remove("activeOperation"); value.remove("error");
             resetRunningStages(value);
         }, "RECONCILED", "用户记录了人工核对结果；继续执行仍需手动恢复");
+    }
+
+    private void reauthorizeMcp(String taskId, Map<String, Object> task, Map<String, Object> body) {
+        requireState(str(task, "state"), Set.of("DRAFT", "PAUSED", "WAITING_INPUT", "FAILED", "AWAITING_ACCEPTANCE"));
+        if (num(body, "expectedVersion", -1) != num(map(task, "mcpAuthorization"), "version", 1)) { throw new ApiException(409, "MCP 授权版本已变化，请刷新任务后重新确认"); }
+        if (store.list("mcpOperation").stream().anyMatch(operation -> taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")))) {
+            throw new ApiException(409, "存在未核对 MCP 动作，核对前不能重新授权");
+        }
+        Map<String, Object> authorization = dev.agentworkbench.mcp.McpTaskPolicy.snapshot(store, str(task, "projectId"), map(task, "routeSnapshot"), body.get("mcpBindings"), num(map(task, "mcpAuthorization"), "version", 1) + 1);
+        Map<String, Object> budget = dev.agentworkbench.mcp.McpTaskPolicy.budget(map(body, "mcpBudget"), map(task, "mcpBudget"));
+        store.editTask(taskId, value -> {
+            List<Map<String, Object>> history = new ArrayList<>(objects(value.get("mcpAuthorizationHistory")));
+            history.add(new LinkedHashMap<>(map(value, "mcpAuthorization"))); value.put("mcpAuthorizationHistory", history);
+            value.put("mcpAuthorization", authorization); value.put("mcpBudget", budget);
+            if (!"DRAFT".equals(str(value, "state"))) value.put("state", "PAUSED");
+            value.put("verification", obj("status", "NOT_RUN")); value.put("review", obj("status", "NOT_RUN")); value.remove("error");
+            for (Map<String, Object> stage : objects(value.get("plan"))) if (Set.of("verify", "review", "delivery").contains(str(stage, "id"))) stage.put("state", "PENDING");
+        }, "MCP_AUTHORIZATION_CHANGED", "用户确认了新的 MCP 固定动作与保守工具预算；后续验证和审查需重新执行");
     }
 
     private void launch(String taskId) {
@@ -237,9 +271,22 @@ public class WorkbenchEngine {
             Map<String, Object> operation = store.beginOperation(taskId, stageId, "MODEL", workspace);
             store.markOperation(str(operation, "id"), "DISPATCHED", obj("routeId", task.get("routeId"), "routeVersion", route.get("version")));
             AtomicBoolean denied = new AtomicBoolean();
-            Map<String, Object> result = runtime.run(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), workspace, prompt, readOnly,
-                strings(map(task, "contract").get("scope")), () -> cancelled(control), message -> log(taskId, stageId, message),
-                () -> acquireCall(taskId, stageId, reserved, control, denied));
+            List<Map<String, Object>> bindings = "IMPLEMENT".equals(str(stage, "kind")) || "REPAIR".equals(str(stage, "kind"))
+                ? objects(map(task, "mcpAuthorization").get("bindings")) : List.of();
+            Map<String, Object> result;
+            if (!bindings.isEmpty() && mcp != null) {
+                result = runtime.runWithMcp(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), workspace, prompt, readOnly,
+                    strings(map(task, "contract").get("scope")), () -> cancelled(control), message -> log(taskId, stageId, message),
+                    () -> acquireCall(taskId, stageId, reserved, control, denied), bindings,
+                    alias -> {
+                        try { return mcp.invokeFixedTool(taskId, str(stage, "kind"), alias, () -> cancelled(control)); }
+                        catch (ApiException exception) { return obj("state", "REJECTED", "error", exception.getMessage()); }
+                    });
+            } else {
+                result = runtime.run(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), workspace, prompt, readOnly,
+                    strings(map(task, "contract").get("scope")), () -> cancelled(control), message -> log(taskId, stageId, message),
+                    () -> acquireCall(taskId, stageId, reserved, control, denied));
+            }
             String version = runtime.fingerprint(workspace);
             Map<String, Object> evidence = evidence(stageId, "AGENT", version, "", result);
             evidence.put("role", stage.get("role")); evidence.put("inputVersion", before); evidence.put("independent", "PROPOSAL".equals(str(stage, "kind")));
@@ -454,7 +501,8 @@ public class WorkbenchEngine {
     }
 
     private boolean hasUnknownOperation(String taskId) {
-        return store.list("operation").stream().anyMatch(operation -> taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")));
+        return store.list("operation").stream().anyMatch(operation -> taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")))
+            || store.list("mcpOperation").stream().anyMatch(operation -> taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")));
     }
 
     private void refreshContext(String taskId) {
