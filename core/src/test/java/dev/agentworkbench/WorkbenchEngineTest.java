@@ -1,13 +1,18 @@
 package dev.agentworkbench;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.net.httpserver.HttpServer;
+import dev.agentworkbench.mcp.McpManager;
 import dev.agentworkbench.runtime.WorkspaceRuntime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -93,6 +98,99 @@ class WorkbenchEngineTest {
         assertEquals(409, assertThrows(ApiException.class, () -> engine.action(taskId, "mcp-authorization", obj("expectedVersion", 1))).status());
     }
 
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void confirmedMcpActionFlowsFromTaskThroughEngineAndPersistsOnce(boolean loseResponse) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        AtomicInteger externalCalls = new AtomicInteger();
+        ResourceManager resources = new ResourceManager();
+        AtomicReference<Map<String, Integer>> externalResources = new AtomicReference<>();
+        HttpServer mcpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        mcpServer.createContext("/mcp", exchange -> {
+            try {
+                Map<String, Object> request = mapper.readValue(exchange.getRequestBody(), new com.fasterxml.jackson.core.type.TypeReference<>() { });
+                String method = str(request, "method");
+                if (method.startsWith("notifications/")) { exchange.sendResponseHeaders(202, -1); return; }
+                if ("tools/call".equals(method) && loseResponse) {
+                    externalCalls.incrementAndGet(); externalResources.set(resources.snapshot()); exchange.close(); return;
+                }
+                Map<String, Object> result = switch (method) {
+                    case "initialize" -> obj("protocolVersion", "2025-06-18", "capabilities", obj("tools", obj()), "serverInfo", obj("name", "engine-fixture", "version", "1"));
+                    case "tools/list" -> obj("tools", List.of(obj("name", "write_note", "inputSchema", obj("type", "object", "properties", obj("text", obj("type", "string")), "required", List.of("text"), "additionalProperties", false))));
+                    case "tools/call" -> {
+                        externalCalls.incrementAndGet(); externalResources.set(resources.snapshot());
+                        yield obj("content", List.of(obj("type", "text", "text", "written")), "isError", false);
+                    }
+                    default -> obj();
+                };
+                byte[] payload = mapper.writeValueAsBytes(obj("jsonrpc", "2.0", "id", request.get("id"), "result", result));
+                exchange.getResponseHeaders().set("Content-Type", "application/json"); exchange.sendResponseHeaders(200, payload.length); exchange.getResponseBody().write(payload);
+            } finally { exchange.close(); }
+        });
+        mcpServer.start();
+        try {
+            engine.shutdown();
+            McpManager manager = new McpManager(store, mapper, catalog, resources);
+            Map<String, Object> saved = manager.save(obj("name", "engine fixture", "transport", "HTTP", "url", "http://127.0.0.1:" + mcpServer.getAddress().getPort() + "/mcp",
+                "enabled", true, "projectIds", List.of(str(project, "id")), "allowedTools", List.of("write_note")));
+            Map<String, Object> discovery = manager.probe(str(saved, "id"));
+            Map<String, Object> binding = obj("serverId", saved.get("id"), "name", "write_note", "configVersion", saved.get("version"),
+                "definitionVersion", discovery.get("definitionVersion"), "fixedArguments", obj("text", "confirmed"), "timeoutMs", 5000);
+            engine = new WorkbenchEngine(store, catalog, runtime, resources, mapper, manager);
+            when(runtime.runWithMcp(anyMap(), anyString(), anyString(), anyString(), anyBoolean(), anyList(), any(), any(), any(), anyList(), any())).thenAnswer(invocation -> {
+                BooleanSupplier acquire = invocation.getArgument(8);
+                if (!acquire.getAsBoolean()) return obj("status", "FAILED", "exitCode", 1, "output", "budget stopped");
+                WorkspaceRuntime.FixedToolInvoker invoker = invocation.getArgument(10);
+                List<Map<String, Object>> bindings = invocation.getArgument(9);
+                Map<String, Object> dispatched = invoker.invoke(str(bindings.getFirst(), "alias"));
+                if (loseResponse) {
+                    assertEquals("UNKNOWN", str(dispatched, "state"));
+                    return obj("status", "UNKNOWN", "exitCode", -1, "output", "MCP response was not confirmed");
+                }
+                assertEquals("ACKNOWLEDGED", str(dispatched, "state"));
+                assertEquals(0, resources.activeModels());
+                assertTrue(acquire.getAsBoolean());
+                assertEquals(1, resources.activeModels(), "The next model request must reacquire capacity");
+                var duplicate = invoker.invoke(str(bindings.getFirst(), "alias"));
+                assertTrue(bool(duplicate, "deduplicated", false));
+                assertTrue(acquire.getAsBoolean());
+                assertEquals(1, resources.activeModels());
+                version.set("version-" + changes.incrementAndGet());
+                return success("implementation stage completed");
+            });
+            Map<String, Object> created = catalog.createTask(obj("projectId", project.get("id"), "title", "MCP engine path", "goal", "run one confirmed external action",
+                "mode", "LEAD", "routeId", route.get("id"), "mcpBindings", List.of(binding), "mcpBudget", obj("maxCalls", 2, "maxDurationMs", 10000),
+                "contract", obj("scope", List.of("**"), "acceptance", List.of("action is acknowledged"), "commands", List.of("node check.js")),
+                "budget", obj("maxCalls", 16, "reserveCalls", 5)));
+            String taskId = str(created, "id"); engine.action(taskId, "approve", obj());
+            Map<String, Object> completed = await(taskId, Set.of("AWAITING_ACCEPTANCE", "FAILED", "UNKNOWN", "WAITING_INPUT"));
+            assertEquals(loseResponse ? "UNKNOWN" : "AWAITING_ACCEPTANCE", str(completed, "state"), completed::toString);
+            assertEquals(1, externalCalls.get());
+            assertEquals(0, externalResources.get().getOrDefault("model", 0));
+            assertEquals(0, externalResources.get().getOrDefault("route:" + route.get("id"), 0));
+            assertEquals(0, externalResources.get().getOrDefault("process", 0));
+            assertEquals(1, externalResources.get().getOrDefault("tool", 0));
+            assertTrue(resources.snapshot().values().stream().allMatch(count -> count == 0));
+            assertEquals(1, num(map(completed, "mcpBudget"), "usedCalls", 0));
+            assertEquals(5000, num(map(completed, "mcpBudget"), "committedDurationMs", 0));
+            assertEquals(loseResponse ? "UNKNOWN" : "ACKNOWLEDGED", str(store.list("mcpOperation").getFirst(), "state"));
+            if (loseResponse) {
+                assertThrows(ApiException.class, () -> engine.action(taskId, "resume", obj()));
+                assertThrows(ApiException.class, () -> engine.action(taskId, "accept", obj()));
+                engine.shutdown();
+                engine = new WorkbenchEngine(store, catalog, runtime, resources, mapper, manager);
+                var reconciled = engine.action(taskId, "reconcile", obj("processesStopped", true, "sideEffectsChecked", true, "note", "Fixture action observed once; transport stopped"));
+                assertEquals("PAUSED", str(reconciled, "state"));
+                assertEquals("RECONCILED", str(store.list("mcpOperation").getFirst(), "state"));
+                engine.action(taskId, "resume", obj());
+                assertEquals("UNKNOWN", str(await(taskId, Set.of("UNKNOWN", "FAILED", "AWAITING_ACCEPTANCE")), "state"));
+                assertEquals(1, externalCalls.get(), "Reconciliation and resume must not replay the external action");
+                assertEquals(1, num(map(store.get("task", taskId), "mcpBudget"), "usedCalls", -1));
+                assertEquals("RECONCILED", str(store.list("mcpOperation").getFirst(), "state"));
+            }
+        } finally { mcpServer.stop(0); }
+    }
+
     @Test
     void realStageContractRequiresVerificationReviewAndHumanAcceptance() throws Exception {
         String id = str(task(16, 5), "id"); engine.action(id, "approve", obj());
@@ -103,6 +201,25 @@ class WorkbenchEngineTest {
         verify(runtime).reviewCopy(anyString(), eq(id), eq("version-2"));
         assertEquals("UNDETERMINED", str(completed, "outcome"));
         var accepted = engine.action(id, "accept", obj()); assertEquals("COMPLETED", str(accepted, "state")); assertEquals("SUCCESS", str(accepted, "outcome"));
+    }
+
+    @Test
+    void rejectedActionWaitsForInputWithoutRunningLaterStages() throws Exception {
+        AtomicInteger modelCalls = new AtomicInteger();
+        doAnswer(invocation -> {
+            BooleanSupplier acquire = invocation.getArgument(8); assertTrue(acquire.getAsBoolean()); modelCalls.incrementAndGet();
+            return invocation.<String>getArgument(3).contains("kind=IMPLEMENT")
+                ? obj("status", "WAITING_INPUT", "exitCode", -1, "output", "MCP definition changed; confirm authorization")
+                : success("analysis completed");
+        }).when(runtime).run(anyMap(), anyString(), anyString(), anyString(), anyBoolean(), anyList(), any(), any(), any());
+        String taskId = str(task(16, 5), "id"); engine.action(taskId, "approve", obj());
+        var blocked = await(taskId, Set.of("WAITING_INPUT", "FAILED", "UNKNOWN", "AWAITING_ACCEPTANCE"));
+        assertEquals("WAITING_INPUT", str(blocked, "state"));
+        assertTrue(str(blocked, "error").contains("confirm authorization"));
+        assertEquals(2, modelCalls.get());
+        assertEquals(2, num(map(blocked, "budget"), "usedCalls", -1));
+        assertTrue(objects(blocked.get("evidence")).stream().noneMatch(item -> Set.of("REVIEW", "VERIFICATION").contains(str(item, "kind"))));
+        assertTrue(store.list("operation").stream().allMatch(item -> "ACKNOWLEDGED".equals(str(item, "state"))));
     }
 
     @Test

@@ -16,6 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static dev.agentworkbench.Json.*;
@@ -33,6 +36,8 @@ class McpIntegrationTest {
     private final AtomicInteger definition = new AtomicInteger(1);
     private final AtomicBoolean disconnect = new AtomicBoolean();
     private final AtomicBoolean stream = new AtomicBoolean();
+    private volatile CountDownLatch callEntered;
+    private volatile CountDownLatch releaseCall;
 
     @BeforeEach
     void setup() throws Exception {
@@ -52,6 +57,12 @@ class McpIntegrationTest {
                 case "tools/list" -> result = obj("tools", List.of(obj("name", "echo", "description", "fixture definition " + definition.get(), "inputSchema", obj("type", "object"), "annotations", obj("readOnlyHint", true))));
                 case "tools/call" -> {
                     calls.incrementAndGet();
+                    if (callEntered != null) {
+                        callEntered.countDown();
+                        try {
+                            if (!releaseCall.await(10, TimeUnit.SECONDS)) { exchange.close(); return; }
+                        } catch (InterruptedException exception) { Thread.currentThread().interrupt(); exchange.close(); return; }
+                    }
                     if (disconnect.get()) { exchange.close(); return; }
                     result = obj("content", List.of(obj("type", "text", "text", mapper.writeValueAsString(map(map(request, "params"), "arguments")))), "isError", false);
                 }
@@ -147,6 +158,88 @@ class McpIntegrationTest {
         assertEquals("UNKNOWN", str(manager.invokeFixedTool("task-unknown", "IMPLEMENT", alias, () -> false), "state"));
         assertEquals(1, calls.get()); assertEquals("UNKNOWN", str(store.find("mcpOperation", store.list("mcpOperation").getFirst().get("id").toString()), "state"));
         assertEquals(1, num(map(store.get("task", "task-unknown"), "mcpBudget"), "usedCalls", 0));
+    }
+
+    private String fixedTask(String taskId, Map<String, Object> saved, Map<String, Object> discovery) {
+        var selection = obj("serverId", saved.get("id"), "name", "echo", "configVersion", saved.get("version"),
+            "definitionVersion", discovery.get("definitionVersion"), "fixedArguments", obj("text", "confirmed"), "timeoutMs", 5000);
+        var authorization = McpTaskPolicy.snapshot(store, "p", obj("engine", "API"), List.of(selection), 1);
+        store.createTask(obj("id", taskId, "projectId", "p", "state", "RUNNING", "mcpAuthorization", authorization,
+            "mcpBudget", McpTaskPolicy.budget(obj("maxCalls", 2, "maxDurationMs", 10000), Map.of())));
+        return str(objects(authorization.get("bindings")).getFirst(), "alias");
+    }
+
+    @Test
+    void fixedActionWaitingForServiceCanCancelWithoutBudgetOrDispatch() throws Exception {
+        var saved = manager.save(httpConfiguration()); String serverId = str(saved, "id"); var discovery = manager.probe(serverId);
+        String alias = fixedTask("waiting-task", saved, discovery);
+        callEntered = new CountDownLatch(1); releaseCall = new CountDownLatch(1);
+        AtomicBoolean cancelled = new AtomicBoolean(); CountDownLatch waiting = new CountDownLatch(2);
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            try {
+                var holder = executor.submit(() -> manager.call(serverId, callBody(discovery, "holding-service")));
+                assertTrue(callEntered.await(3, TimeUnit.SECONDS));
+                var waiter = executor.submit(() -> manager.invokeFixedTool("waiting-task", "IMPLEMENT", alias, () -> {
+                    waiting.countDown(); return cancelled.get();
+                }));
+                assertTrue(waiting.await(2, TimeUnit.SECONDS), "Waiting must check cancellation while the service remains busy");
+                cancelled.set(true);
+                assertEquals("CANCELLED", str(waiter.get(2, TimeUnit.SECONDS), "state"));
+                assertFalse(holder.isDone(), "Cancellation must not wait for the unrelated call");
+                assertEquals(1, calls.get());
+                assertEquals(0, num(map(store.get("task", "waiting-task"), "mcpBudget"), "usedCalls", -1));
+                assertTrue(store.list("mcpOperation").stream().noneMatch(item -> "waiting-task".equals(str(item, "taskId"))));
+                releaseCall.countDown(); assertEquals("ACKNOWLEDGED", str(holder.get(3, TimeUnit.SECONDS), "state"));
+            } finally { releaseCall.countDown(); }
+        }
+    }
+
+    @Test
+    void concurrentFixedActionReturnsOneReceiptAndConsumesBudgetOnce() throws Exception {
+        var saved = manager.save(httpConfiguration()); String serverId = str(saved, "id"); var discovery = manager.probe(serverId);
+        String alias = fixedTask("concurrent-task", saved, discovery);
+        callEntered = new CountDownLatch(1); releaseCall = new CountDownLatch(1);
+        CountDownLatch waiting = new CountDownLatch(2);
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            try {
+                var first = executor.submit(() -> manager.invokeFixedTool("concurrent-task", "IMPLEMENT", alias, () -> false));
+                assertTrue(callEntered.await(3, TimeUnit.SECONDS));
+                var second = executor.submit(() -> manager.invokeFixedTool("concurrent-task", "IMPLEMENT", alias, () -> {
+                    waiting.countDown(); return false;
+                }));
+                assertTrue(waiting.await(2, TimeUnit.SECONDS));
+                releaseCall.countDown();
+                assertEquals("ACKNOWLEDGED", str(first.get(3, TimeUnit.SECONDS), "state"));
+                var receipt = second.get(3, TimeUnit.SECONDS);
+                assertEquals("ACKNOWLEDGED", str(receipt, "state")); assertTrue(bool(receipt, "deduplicated", false));
+                assertEquals(1, calls.get()); assertEquals(1, store.list("mcpOperation").size());
+                var budget = map(store.get("task", "concurrent-task"), "mcpBudget");
+                assertEquals(1, num(budget, "usedCalls", -1)); assertEquals(5000, num(budget, "committedDurationMs", -1));
+            } finally { releaseCall.countDown(); }
+        }
+    }
+
+    @Test
+    void queuedActionCannotDispatchAfterPreviousCallBecomesUnknown() throws Exception {
+        var saved = manager.save(httpConfiguration()); String serverId = str(saved, "id"); var discovery = manager.probe(serverId);
+        String alias = fixedTask("queued-task", saved, discovery);
+        callEntered = new CountDownLatch(1); releaseCall = new CountDownLatch(1); disconnect.set(true);
+        CountDownLatch waiting = new CountDownLatch(2);
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            try {
+                var holder = executor.submit(() -> manager.call(serverId, callBody(discovery, "lost-holder")));
+                assertTrue(callEntered.await(3, TimeUnit.SECONDS));
+                var waiter = executor.submit(() -> manager.invokeFixedTool("queued-task", "IMPLEMENT", alias, () -> {
+                    waiting.countDown(); return false;
+                }));
+                assertTrue(waiting.await(2, TimeUnit.SECONDS)); releaseCall.countDown();
+                assertEquals("UNKNOWN", str(holder.get(3, TimeUnit.SECONDS), "state"));
+                var error = assertThrows(java.util.concurrent.ExecutionException.class, () -> waiter.get(3, TimeUnit.SECONDS));
+                assertInstanceOf(ApiException.class, error.getCause()); assertEquals(409, ((ApiException) error.getCause()).status());
+                assertEquals(1, calls.get());
+                assertEquals(0, num(map(store.get("task", "queued-task"), "mcpBudget"), "usedCalls", -1));
+            } finally { releaseCall.countDown(); }
+        }
     }
 
     @Test

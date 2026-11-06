@@ -6,6 +6,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
+import { javaHome } from './java-runtime.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const { chromium, _electron } = createRequire(join(root, 'web/package.json'))('@playwright/test');
@@ -14,7 +15,7 @@ const dir = mkdtempSync(join(root, '.runtime', 'standalone-'));
 const version = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version;
 const token = randomBytes(32).toString('hex');
 const windows = process.platform === 'win32';
-const home = process.env.WORKBENCH_JAVA_HOME || process.env.JAVA_HOME;
+const home = javaHome(root);
 const java = home ? join(home, 'bin', windows ? 'java.exe' : 'java') : 'java';
 const jar = join(root, `core/target/agent-workbench-core-${version}.jar`);
 if (!existsSync(jar) || !existsSync(join(root, 'web/dist/workbench-config.json'))) throw new Error('请先构建核心和 Web。');
@@ -59,7 +60,7 @@ const web = createServer(async (request, response) => {
 try {
   for (let attempt = 0; attempt < 150; attempt++) {
     if (processError) throw processError;
-    if (core.exitCode !== null) throw new Error(`核心提前退出（${core.exitCode}）`);
+    if (core.exitCode !== null) throw new Error(`核心提前退出（${core.exitCode}）：${logs}`);
     const port = logs.match(/Tomcat started on port (\d+)/)?.[1];
     if (port) { baseUrl = `http://127.0.0.1:${port}`; break; }
     await new Promise(resolveWait => setTimeout(resolveWait, 200));

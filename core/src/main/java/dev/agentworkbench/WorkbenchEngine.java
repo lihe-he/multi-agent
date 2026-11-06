@@ -244,6 +244,8 @@ public class WorkbenchEngine {
             catch (Exception ignored) { try { waitInput(taskId, exception.getMessage()); } catch (RuntimeException ignoredAgain) { } }
         } catch (UnknownResult exception) {
             try { store.editTask(taskId, task -> { task.put("state", "UNKNOWN"); task.put("error", exception.getMessage()); }, "RESULT_UNKNOWN", exception.getMessage()); } catch (RuntimeException ignored) { }
+        } catch (NeedsInput exception) {
+            waitInput(taskId, exception.getMessage());
         } catch (Exception exception) {
             try {
                 if (hasUnknownOperation(taskId)) {
@@ -264,8 +266,8 @@ public class WorkbenchEngine {
         boolean readOnly = bool(stage, "readOnly", true);
         String before = runtime.fingerprint(workspace);
         String prompt = prompt(task, stage, extra);
-        store.editTask(taskId, value -> value.put("state", "WAITING_RESOURCE"), "RESOURCE_WAIT", str(stage, "title") + " 等待模型与路由容量");
-        try (var ignored = resources.acquire(Map.of("model", 1, "process", 1, "route:" + str(task, "routeId"), 1), () -> cancelled(control))) {
+        try (var capacity = new ModelCapacity(taskId, str(task, "routeId"), control)) {
+            capacity.acquire();
             checkStopped(control);
             store.editTask(taskId, value -> value.put("state", "RUNNING"), "ROUTE_SELECTED", "使用已固定路由 " + str(route, "name") + "；遵守锁定、根预算与阶段权限");
             Map<String, Object> operation = store.beginOperation(taskId, stageId, "MODEL", workspace);
@@ -277,8 +279,9 @@ public class WorkbenchEngine {
             if (!bindings.isEmpty() && mcp != null) {
                 result = runtime.runWithMcp(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), workspace, prompt, readOnly,
                     strings(map(task, "contract").get("scope")), () -> cancelled(control), message -> log(taskId, stageId, message),
-                    () -> acquireCall(taskId, stageId, reserved, control, denied), bindings,
+                    () -> { capacity.acquire(); return acquireCall(taskId, stageId, reserved, control, denied); }, bindings,
                     alias -> {
+                        capacity.release();
                         try { return mcp.invokeFixedTool(taskId, str(stage, "kind"), alias, () -> cancelled(control)); }
                         catch (ApiException exception) { return obj("state", "REJECTED", "error", exception.getMessage()); }
                     });
@@ -446,6 +449,7 @@ public class WorkbenchEngine {
         String status = str(result, "status");
         if ("UNKNOWN".equals(status)) { throw new UnknownResult("运行器返回结果未知，必须核对后才能继续"); }
         checkStopped(control);
+        if ("WAITING_INPUT".equals(status)) { throw new NeedsInput(cap(str(result, "output"), 1800)); }
         if (denied) { throw new BudgetExhausted("开发额度或根调用预算不足，已有成果与必要检查记录已保存；请调整任务范围或预算后继续"); }
         if ("CANCELLED".equals(status)) { throw new CancellationException(); }
         if (num(result, "exitCode", -1) != 0 || !"SUCCEEDED".equals(status)) { throw new ApiException(409, "运行器执行失败：" + cap(str(result, "output"), 1800)); }
@@ -599,6 +603,36 @@ public class WorkbenchEngine {
         catch (InterruptedException exception) { Thread.currentThread().interrupt(); }
     }
 
+    /**
+     * 外部 MCP 等待前释放模型容量，下一次模型请求前重新申请；根预算不退款。
+     */
+    private final class ModelCapacity implements AutoCloseable {
+        private final String taskId;
+        private final String routeId;
+        private final Control control;
+        private ResourceManager.Lease lease;
+
+        private ModelCapacity(String taskId, String routeId, Control control) {
+            this.taskId = taskId; this.routeId = routeId; this.control = control;
+        }
+
+        private void acquire() {
+            if (lease != null) { return; }
+            checkStopped(control);
+            store.editTask(taskId, task -> task.put("state", "WAITING_RESOURCE"), "RESOURCE_WAIT", "等待模型与路由容量");
+            lease = resources.acquire(Map.of("model", 1, "process", 1, "route:" + routeId, 1), () -> cancelled(control));
+            checkStopped(control);
+            store.editTask(taskId, task -> task.put("state", "RUNNING"), "RESOURCE_ACQUIRED", "已取得模型与路由容量");
+        }
+
+        private void release() {
+            if (lease != null) { lease.close(); lease = null; }
+        }
+
+        @Override
+        public void close() { release(); }
+    }
+
     private static final class Control {
         private final String taskId;
         private volatile String request = "NONE";
@@ -607,5 +641,6 @@ public class WorkbenchEngine {
     }
 
     private static class UnknownResult extends RuntimeException { UnknownResult(String message) { super(message); } }
+    private static class NeedsInput extends RuntimeException { NeedsInput(String message) { super(message); } }
     private static class BudgetExhausted extends RuntimeException { BudgetExhausted(String message) { super(message); } }
 }

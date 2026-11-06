@@ -1,6 +1,6 @@
 # MCP 任务固定动作接口
 
-当前 `0.2.0-alpha.1` 状态：固定动作现已接入任务创建、Web 确认表单、API 模型工具回路、任务操作查询、未知结果核对及版本化重新授权。服务端自动回归覆盖模型工具循环、无参数别名、原子预算登记和重复动作去重；真实外部 MCP 服务的副作用及长期运行仍需单独验收。
+当前 `0.2.0-alpha.2` 状态：固定动作现已接入任务创建、Web 确认表单、API 模型工具回路、任务操作查询、未知结果核对及版本化重新授权。服务端自动回归覆盖模型工具循环、无参数别名、原子预算登记和重复动作去重；真实外部 MCP 服务的副作用及长期运行仍需单独验收。
 
 本轮仅支持 API 运行器在 IMPLEMENT / REPAIR 阶段选择用户预先确认的**固定参数动作**。模型看到无参数工具别名，不能修改参数或服务目标。分析、圆桌、验证和独立审查阶段不开放外部 MCP；服务的 readOnlyHint 不产生权限。不支持通用动态参数、自动重试、原生 CLI MCP 注入或将原仓库 RPC 当作审查副本事实。旧任务和未选择动作的任务默认无 MCP 权限。
 
@@ -44,6 +44,8 @@ Task 增加 `mcpAuthorization:{version,mode:'FIXED_ARGUMENTS',projectId,bindings
 - ACKNOWLEDGED 的 `result.isError=true` 仍是业务失败，不能显示“工具成功”。
 - UNKNOWN 保留完整记录；任务进入 UNKNOWN，禁止继续模型或新工具。更换模型调用编号、恢复任务、重启核心都不能绕过。
 - 配置/定义/授权变化、预算不足等派发前阻塞进入 WAITING_INPUT，`task.error` 给出原因，不自动扩大授权。
+
+服务串行等待每 100 ms 检查根取消，取得服务锁后重新读取操作账本与授权。排队取消不登记动作、不扣工具预算；前一调用 UNKNOWN 则阻止后续新派发。同一动作的并发请求在前一调用确认后返回保存回执。API 在进入 MCP 等待前释放模型/路由/平台进程容量，下一次模型请求前重新申请；UNKNOWN、CANCELLED 或 REJECTED 不发出下一次模型请求，REJECTED 转为 WAITING_INPUT。
 
 已有 `/api/tasks/{id}/reconcile` 保留请求体 `{processesStopped:true,sideEffectsChecked:true,note:'具体核对说明'}`，现在同时核对该任务 MCP 未确认操作，保留历史 UNKNOWN 与用户说明。只有确认本地进程已停止才能处理；HTTP 停止等待不表示远端效果已撤销。核对后任务 PAUSED，仍需手动恢复，不自动重放旧动作。
 

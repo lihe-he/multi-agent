@@ -2,6 +2,25 @@
 
 产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-06。
 
+## 0.2.0-alpha.2 开发迭代
+
+全部开发集中在 `main`。按计划书 7.4、8、9.3、9.5 节补齐 MCP 等待取消、模型容量释放、并发回执去重和派发拒绝后等待人工处理；本轮仍不代表完整 M0–M3 验收。开源参照、失败复现、自审与剩余范围见[调度审查](./research/mcp-scheduling-review-2026-11-06.md)。
+
+新增回归使用真实本机 HTTP MCP 端点和受控锁存器，先在旧代码上复现服务等待不可取消和并发动作无法取回确认回执，再验证修复。引擎回归从创建任务、确认执行进入真实 MCP，分别覆盖确认回执和响应丢失；后者使根任务 UNKNOWN，拒绝直接恢复/验收，人工核对后重建引擎并手动恢复仍不重放外部动作。该引擎用例的模型运行器为 mock；实际模型 HTTP 工具循环的终止分支另由 RuntimeIntegrationTest 覆盖，不能据此宣称完整外部端点组合验收。
+
+本轮构建和生命周期脚本原本选择不同 Java：构建选项目内 Java 21，验收误选系统 Java 17并启动失败。已抽出公共运行时选择入口，重跑本地协议与独立生命周期通过；失败记录不计作通过。
+
+| 检查 | 当前证据 |
+| --- | --- |
+| `npm run build` | Java 核心 76 项中 75 通过、0 失败、0 错误、1 因 Windows 不支持 POSIX 权限而跳过；核心 Jar 与 Web TypeScript/生产构建成功 |
+| `npm run test:ui --prefix web` | 9 / 9 通过，无界面代码变化 |
+| `node --test tools/connection.test.cjs` | 1 / 1 通过 |
+| `npm run test:integration` | 最终 alpha.2 Jar 重跑 22 / 22 通过；[Windows 协议报告](./qa/smoke-win32.json) |
+| `npm run test:standalone` | 最终 alpha.2 Jar、生产 Web、附加模式桌面检查通过；客户端退出前后在途模型请求数均为 1，页面无异常；[Windows 生命周期报告](./qa/standalone-win32.json) |
+| `npm run package:prepared`、`npm run test:packaged` | Windows NSIS 安装包生成成功；打包程序 alpha.2 在外部 Java 路径无效时使用内置运行时启动，核心 API 200、页面无异常；[Windows 打包报告](./qa/desktop-packaged-win32.json) |
+
+本轮未重跑安装/卸载，macOS/Linux 本轮打包及运行结果以本次提交的远端 CI 为准，不使用 alpha.1 历史报告替代。动态委派、原生 CLI MCP 注入、完整备份恢复、外部服务副作用以及长期负载继续实施。
+
 ## 0.2.0-alpha.1 开发迭代
 
 本轮从未完成的 0.2 现场恢复，修复构建脚本语法和 Java 缺失导入。新增独立核心/Web 构建入口、无凭据运行时连接配置、Electron 连接已有核心模式，以及 CLI 配置隔离参数与旧版本拒绝检查。后续迭代已将固定 MCP 动作接入任务创建、Web 确认流程、API 模型工具回路、独立工具预算、操作查询、未知结果核对及版本化重新授权；真实外部服务副作用仍需环境验收。

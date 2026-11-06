@@ -355,6 +355,9 @@ public class WorkspaceRuntime {
                         Map<String, Object> observation = mcpInvoker.invoke(name);
                         toolResult = json.writeValueAsString(observation);
                         String state = Objects.toString(observation.get("state"), "");
+                        if ("REJECTED".equals(state)) {
+                            return result(-1, "固定 MCP 动作被阻止，需要确认授权或预算：" + Objects.toString(observation.get("error"), "原因未提供"), "WAITING_INPUT");
+                        }
                         if (Set.of("UNKNOWN", "CANCELLED").contains(state)) {
                             return result(-1, "固定 MCP 动作返回 " + state + "；停止后续模型请求，保留操作记录供核对。", state);
                         }

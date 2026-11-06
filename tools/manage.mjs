@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
+import { javaHome } from './java-runtime.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const windows = process.platform === 'win32';
@@ -13,20 +14,8 @@ const metadata = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'ut
 const jar = path.join(root, 'core', 'target', `agent-workbench-core-${metadata.version}.jar`);
 fs.mkdirSync(runtime, { recursive: true });
 
-function javaHome() {
-  const candidates = [process.env.WORKBENCH_JAVA_HOME, ...fs.readdirSync(runtime).filter(x => x.startsWith('jdk-')).map(x => path.join(runtime, x)), process.env.JAVA_HOME].filter(Boolean);
-  for (const home of candidates) {
-    const java = path.join(home, 'bin', windows ? 'java.exe' : 'java');
-    if (!fs.existsSync(java)) continue;
-    const result = spawnSync(java, ['-version'], { encoding: 'utf8', windowsHide: true });
-    const match = `${result.stderr}${result.stdout}`.match(/version "(\d+)/);
-    if (match && Number(match[1]) >= 21) return home;
-  }
-  throw new Error('需要 Java 21 或更高版本。设置 WORKBENCH_JAVA_HOME，或将 JDK 解压到项目 .runtime/jdk-* 目录。');
-}
-
 function environment() {
-  const home = javaHome();
+  const home = javaHome(root);
   return { ...process.env, JAVA_HOME: home, PATH: `${path.join(home, 'bin')}${path.delimiter}${process.env.PATH}`, JAVA_TOOL_OPTIONS: '-Dfile.encoding=UTF-8' };
 }
 
@@ -51,7 +40,7 @@ async function build() {
 
 async function main() {
   if (command === 'setup') {
-    javaHome();
+    javaHome(root);
     await run(npm, ['install']);
     await run(process.execPath, [path.join(root, 'node_modules/electron/install.js')]);
     await run(npm, ['install'], path.join(root, 'web'));

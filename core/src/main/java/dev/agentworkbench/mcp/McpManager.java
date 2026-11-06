@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.time.Duration;
 import java.util.function.BooleanSupplier;
 import static dev.agentworkbench.Json.*;
@@ -33,7 +35,7 @@ public class McpManager {
     private final WorkbenchCatalog catalog;
     private final ResourceManager resources;
     private final Map<String, String> tokens = new ConcurrentHashMap<>();
-    private final Map<String, Object> locks = new ConcurrentHashMap<>();
+    private final Map<String, ReentrantLock> locks = new ConcurrentHashMap<>();
 
     public McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog) { this(store, mapper, catalog, new ResourceManager()); }
 
@@ -73,8 +75,8 @@ public class McpManager {
     public List<Map<String, Object>> list() { return store.list("mcpServer").stream().map(this::visible).toList(); }
 
     public Map<String, Object> probe(String serverId) {
-        requireServerResolved(serverId);
-        synchronized (locks.computeIfAbsent(serverId, ignored -> new Object())) {
+        try (var serviceLease = acquireServer(serverId, () -> false)) {
+            requireServerResolved(serverId);
             Map<String, Object> server = store.get("mcpServer", serverId);
             if (!bool(server, "enabled", false)) { throw new ApiException(409, "MCP 服务已停用"); }
             try (var lease = resources.acquire(resourceRequest(server), () -> false); McpTransport transport = McpTransport.open(server, tokens.getOrDefault(serverId, ""), mapper)) {
@@ -96,8 +98,8 @@ public class McpManager {
      * 交互工具调用先核验最新定义；请求编号在同一服务内去重。
      */
     public Map<String, Object> call(String serverId, Map<String, Object> input) {
-        requireServerResolved(serverId);
-        synchronized (locks.computeIfAbsent(serverId, ignored -> new Object())) {
+        try (var serviceLease = acquireServer(serverId, () -> false)) {
+            requireServerResolved(serverId);
             Map<String, Object> server = store.get("mcpServer", serverId);
             String projectId = required(input, "projectId", 100), tool = required(input, "name", 200), requestId = required(input, "requestId", 100);
             if (!bool(server, "enabled", false) || !strings(server.get("projectIds")).contains(projectId) || !strings(server.get("allowedTools")).contains(tool)) { throw new ApiException(403, "MCP 服务、项目或工具未获得显式授权"); }
@@ -154,16 +156,16 @@ public class McpManager {
         if (cancelled.getAsBoolean()) return obj("state", "CANCELLED", "error", "任务已请求停止，MCP 动作未派发");
         String serverId = str(binding, "serverId"), actionKey = str(binding, "actionKey");
         String operationId = hash(obj("taskId", taskId, "actionKey", actionKey));
-        Map<String, Object> existing = store.find("mcpOperation", operationId);
-        if (existing != null) {
-            if ("ACKNOWLEDGED".equals(str(existing, "state"))) return obj("state", "ACKNOWLEDGED", "deduplicated", true, "result", existing.get("result"));
-            if ("RECONCILED".equals(str(existing, "state")) && "NOT_SENT".equals(str(existing, "dispatchState"))) return obj("state", "REJECTED", "error", existing.get("error"), "operationId", operationId);
-            return obj("state", "UNKNOWN", "error", "此固定动作已有记录，不能自动重放；请先核对记录");
-        }
-        requireServerResolved(serverId);
-        synchronized (locks.computeIfAbsent(serverId, ignored -> new Object())) {
+        try (var serviceLease = acquireServer(serverId, cancelled)) {
             task = store.get("task", taskId);
             McpTaskPolicy.assertCurrent(store, task);
+            Map<String, Object> existing = store.find("mcpOperation", operationId);
+            if (existing != null) {
+                if ("ACKNOWLEDGED".equals(str(existing, "state"))) return obj("state", "ACKNOWLEDGED", "deduplicated", true, "result", existing.get("result"));
+                if ("RECONCILED".equals(str(existing, "state")) && "NOT_SENT".equals(str(existing, "dispatchState"))) return obj("state", "REJECTED", "error", existing.get("error"), "operationId", operationId);
+                return obj("state", "UNKNOWN", "error", "此固定动作已有记录，不能自动重放；请先核对记录");
+            }
+            requireServerResolved(serverId);
             Map<String, Object> server = store.get("mcpServer", serverId);
             int timeout = num(binding, "timeoutMs", 30000), authVersion = num(authorization, "version", 1);
             Map<String, Object> operation = obj("id", operationId, "requestId", operationId, "taskId", taskId, "projectId", task.get("projectId"),
@@ -199,7 +201,32 @@ public class McpManager {
                 operation.put("state", "RECONCILED"); operation.put("dispatchState", "NOT_SENT"); operation.put("error", message); store.put("mcpOperation", operation);
                 return obj("state", "REJECTED", "error", message, "operationId", operationId);
             }
+        } catch (CancellationException exception) {
+            return obj("state", "CANCELLED", "error", "等待 MCP 服务期间停止，动作未登记或派发");
         }
+    }
+
+    /**
+     * 服务串行等待响应根取消；拿到锁后复验账本，避免沿用等待前的状态。
+     */
+    private ServiceLease acquireServer(String serverId, BooleanSupplier cancelled) {
+        ReentrantLock lock = locks.computeIfAbsent(serverId, ignored -> new ReentrantLock(true));
+        try {
+            while (true) {
+                if (cancelled.getAsBoolean()) { throw new CancellationException("MCP 服务等待已停止"); }
+                if (lock.tryLock(100, TimeUnit.MILLISECONDS)) {
+                    if (cancelled.getAsBoolean()) { lock.unlock(); throw new CancellationException("MCP 服务等待已停止"); }
+                    return new ServiceLease(lock);
+                }
+            }
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt(); throw new CancellationException("MCP 服务等待被中断");
+        }
+    }
+
+    private record ServiceLease(ReentrantLock lock) implements AutoCloseable {
+        @Override
+        public void close() { lock.unlock(); }
     }
 
     private Map<String, Object> unknownMcp(String taskId, Map<String, Object> operation, String reason) {
@@ -219,7 +246,7 @@ public class McpManager {
     }
 
     Map<String, Object> discover(Map<String, Object> server, McpTransport transport) throws Exception {
-        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.1")));
+        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.2")));
         String protocol = str(initialized, "protocolVersion");
         if (!Set.of("2025-06-18", "2025-03-26").contains(protocol)) { throw new ApiException(409, "此客户端尚未验证服务协商的 MCP 版本：" + protocol); }
         transport.notify("notifications/initialized", obj());

@@ -7,6 +7,8 @@ import dev.agentworkbench.runtime.WorkspaceRuntime;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -377,8 +379,9 @@ class RuntimeIntegrationTest {
         } finally { server.stop(0); }
     }
 
-    @Test
-    void unknownFixedMcpResultStopsFurtherModelRequests() throws Exception {
+    @ParameterizedTest
+    @CsvSource({"UNKNOWN,UNKNOWN", "CANCELLED,CANCELLED", "REJECTED,WAITING_INPUT"})
+    void terminalFixedMcpResultStopsFurtherModelRequests(String operationState, String expectedStatus) throws Exception {
         Path root = Files.createDirectories(temporary.resolve("unknown-fixed-mcp-loop"));
         AtomicInteger requests = new AtomicInteger();
         Map<String, Object> fixedCall = tool("mcp_fixed-action", Map.of());
@@ -394,8 +397,8 @@ class RuntimeIntegrationTest {
         try {
             Map<String, Object> result = runtime().runWithMcp(route(server), "fixture", root.toString(), "Use the confirmed action", false, List.of("**"),
                 () -> false, ignored -> {}, () -> true, List.of(Map.of("alias", "mcp_fixed-action", "serverName", "fixture", "name", "write_note")),
-                alias -> Map.of("state", "UNKNOWN", "error", "response lost"));
-            assertEquals("UNKNOWN", result.get("status")); assertEquals(1, requests.get());
+                alias -> Map.of("state", operationState, "error", "action requires attention"));
+            assertEquals(expectedStatus, result.get("status")); assertEquals(1, requests.get());
         } finally { server.stop(0); }
     }
 
