@@ -4,6 +4,7 @@ const { randomBytes } = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const net = require('node:net');
+const { attachedConnection } = require('./connection.cjs');
 
 if (process.env.WORKBENCH_USER_DATA) app.setPath('userData', path.resolve(process.env.WORKBENCH_USER_DATA));
 
@@ -34,15 +35,24 @@ function javaPath() {
 }
 
 async function startCore() {
+  const attached = attachedConnection();
+  if (attached) {
+    const response = await fetch(`${attached.baseUrl}/api/health`, { headers: { Authorization: `Bearer ${attached.token}` }, signal: AbortSignal.timeout(5000) });
+    if (!response.ok) throw new Error(`已有核心连接失败（${response.status}），请核对地址和令牌。`);
+    const health = await response.json();
+    if (health.status !== 'UP' || health.schemaVersion !== 1) throw new Error('已有核心状态异常或协议版本不兼容。');
+    connection = attached; coreReady = true;
+    return;
+  }
   const port = await unusedPort();
   connection = { baseUrl: `http://127.0.0.1:${port}`, token: randomBytes(32).toString('hex') };
-  const jar = app.isPackaged ? path.join(process.resourcesPath, 'core', 'core.jar') : path.join(root, 'core/target/agent-workbench-core-0.1.0.jar');
+  const jar = app.isPackaged ? path.join(process.resourcesPath, 'core', 'core.jar') : path.join(root, 'core', 'target', `agent-workbench-core-${app.getVersion()}.jar`);
   const dataDir = path.join(app.getPath('userData'), 'core');
   fs.mkdirSync(dataDir, { recursive: true });
   const log = fs.openSync(path.join(dataDir, 'core.log'), 'a');
   core = spawn(javaPath(), ['-Dfile.encoding=UTF-8', '-jar', jar], {
     cwd: dataDir, windowsHide: true,
-    env: { ...process.env, WORKBENCH_PORT: String(port), WORKBENCH_TOKEN: connection.token, WORKBENCH_DATA_DIR: dataDir },
+    env: { ...process.env, WORKBENCH_CORE_URL: '', WORKBENCH_CORE_TOKEN: '', WORKBENCH_PORT: String(port), WORKBENCH_TOKEN: connection.token, WORKBENCH_DATA_DIR: dataDir },
     stdio: ['ignore', log, log],
   });
   core.on('error', error => { if (!quitting) dialog.showErrorBox('核心无法启动', error.message); });
@@ -81,7 +91,7 @@ function createTray() {
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: '打开工作台', click: () => window?.show() },
     { type: 'separator' },
-    { label: '停止任务并退出', click: () => app.quit() },
+    { label: core ? '停止任务并退出' : '断开客户端并退出', click: () => app.quit() },
   ]));
   tray.on('double-click', () => window?.show());
 }

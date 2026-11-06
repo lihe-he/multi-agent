@@ -1,6 +1,35 @@
 import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
+test('运行时配置切换同源 API 前缀，凭据不进入公开配置', async ({ page }) => {
+  let authenticated = '';
+  await page.addInitScript(() => sessionStorage.setItem('workbench-token', 'runtime-session-fixture'));
+  await page.route('**/workbench-config.json', route => route.fulfill({ json: { apiBaseUrl: '/service' } }));
+  await page.route('**/service/api/state', route => {
+    authenticated = route.request().headers().authorization;
+    return route.fulfill({ json: { projects: [], tasks: [], routes: [], profiles: [], memories: [], system: {} } });
+  });
+  await page.goto('/');
+  await expect(page.getByText('还没有研发任务')).toBeVisible();
+  await expect.poll(() => authenticated).toBe('Bearer runtime-session-fixture');
+  await page.getByRole('button', { name: '资源与设置', exact: true }).click();
+  await page.getByRole('button', { name: '核心连接', exact: true }).click();
+  await expect(page.getByLabel('本机核心地址', { exact: true })).toHaveValue('/service');
+});
+
+test('运行时配置含凭据或外部地址时停止连接', async ({ page }) => {
+  let apiRequests = 0;
+  await page.route('**/api/**', route => { apiRequests++; return route.abort(); });
+  await page.route('**/workbench-config.json', route => route.fulfill({ json: { apiBaseUrl: '', token: 'must-not-be-public' } }));
+  await page.goto('/');
+  await expect(page.getByText('运行时配置仅允许 apiBaseUrl，不能包含令牌或凭据。')).toBeVisible();
+  expect(apiRequests).toBe(0);
+  await page.route('**/workbench-config.json', route => route.fulfill({ json: { apiBaseUrl: 'https://other.example' } }));
+  await page.reload();
+  await expect(page.getByText('核心地址必须是本机回环地址或同源代理路径。')).toBeVisible();
+  expect(apiRequests).toBe(0);
+});
+
 const project = { id: 'project-fixture', name: '交互验证项目', path: 'D:\\fixtures\\trusted-project', branch: 'main', head: '1234567890abcdef', fileCount: 12, files: [], modules: ['src', 'tests'], indexedAt: '2026-11-05T14:00:00Z' };
 const runner = { id: 'route-fixture', name: '测试路由', engine: 'API', model: 'test-model', provider: 'fixture', baseUrl: 'http://127.0.0.1:9999/v1', enabled: true };
 

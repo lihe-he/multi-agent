@@ -34,6 +34,55 @@ class RuntimeIntegrationTest {
     private final ObjectMapper json = new ObjectMapper();
 
     @Test
+    void nativeRunnersUseIsolationFlagsAndKeepReadOnlyToolPolicy() throws Exception {
+        Path project = Files.createDirectories(temporary.resolve("native project"));
+        for (String engine : List.of("CODEX", "CLAUDE")) {
+            Path captured = temporary.resolve(engine + "-args.json");
+            Path cli = nativeFixture(engine, captured, true);
+            AtomicInteger calls = new AtomicInteger();
+            Map<String, Object> outcome = runtime().run(Map.of("engine", engine, "executable", cli.toString()), "", project.toString(), "fixture prompt", true,
+                    List.of("**"), () -> false, ignored -> {}, () -> { calls.incrementAndGet(); return true; });
+            assertEquals("SUCCEEDED", outcome.get("status"), outcome.toString());
+            String args = Files.readString(captured);
+            if (engine.equals("CODEX")) {
+                assertTrue(args.contains("--ignore-user-config")); assertTrue(args.contains("--ignore-rules")); assertTrue(args.contains("read-only"));
+            } else {
+                assertTrue(args.contains("--safe-mode")); assertTrue(args.contains("Read,Glob,Grep")); assertFalse(args.contains("Edit,Write"));
+            }
+            assertEquals(1, calls.get(), "配置能力探测不能消耗模型预算");
+        }
+    }
+
+    @Test
+    void oldNativeCliIsRejectedBeforePromptDispatchAndBudgetCharge() throws Exception {
+        Path project = Files.createDirectories(temporary.resolve("legacy project"));
+        for (String engine : List.of("CODEX", "CLAUDE")) {
+            Path captured = temporary.resolve(engine + "-legacy-args.json");
+            Path cli = nativeFixture(engine + "-legacy", captured, false);
+            AtomicInteger calls = new AtomicInteger();
+            assertThrows(IllegalArgumentException.class, () -> runtime().run(Map.of("engine", engine, "executable", cli.toString()), "", project.toString(), "must not be sent", false,
+                    List.of("**"), () -> false, ignored -> {}, () -> { calls.incrementAndGet(); return true; }));
+            assertEquals(0, calls.get()); assertFalse(Files.exists(captured));
+        }
+    }
+
+    private Path nativeFixture(String name, Path captured, boolean isolated) throws Exception {
+        boolean windows = System.getProperty("os.name").toLowerCase().contains("win");
+        Path script = temporary.resolve(name + (windows ? ".ps1" : ".sh"));
+        String help = isolated ? "--ignore-user-config --ignore-rules --safe-mode" : "legacy options";
+        if (windows) {
+            Files.writeString(script, "if ($args -contains '--help') { Write-Output '" + help + "'; exit 0 }\n"
+                    + "[System.IO.File]::WriteAllText('" + captured.toString().replace("'", "''") + "', ($args | ConvertTo-Json -Compress))\n"
+                    + "$null = [Console]::In.ReadToEnd()\nWrite-Output '{\"result\":\"fixture done\"}'\n");
+        } else {
+            Files.writeString(script, "#!/bin/sh\nfor arg in \"$@\"; do if [ \"$arg\" = '--help' ]; then printf '%s\\n' '" + help + "'; exit 0; fi; done\n"
+                    + "printf '%s\\n' \"$@\" > '" + captured.toString().replace("'", "'\\''") + "'\ncat >/dev/null\nprintf '%s\\n' '{\"result\":\"fixture done\"}'\n");
+            Files.setPosixFilePermissions(script, PosixFilePermissions.fromString("rwx------"));
+        }
+        return script;
+    }
+
+    @Test
     void prepareKeepsOriginalStagedAndUnstagedChanges() throws Exception {
         Path source = repository();
         Files.writeString(source.resolve("src/greeting.txt"), "staged\n");

@@ -1,6 +1,25 @@
 # 实施与验收记录
 
-产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-05。
+产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-06。
+
+## 0.2.0-alpha.1 开发迭代
+
+本轮从未完成的 0.2 现场恢复，修复构建脚本语法和 Java 缺失导入。新增独立核心/Web 构建入口、无凭据运行时连接配置、Electron 连接已有核心模式，以及 CLI 配置隔离参数与旧版本拒绝检查。原有未完成的 MCP 策略/传输改动仍属开发代码；固定动作尚未接入任务和模型回路，不宣称 MCP 任务契约已验收。
+
+2026-11-06 Windows 实测：
+
+| 检查 | 结果与证据 |
+| --- | --- |
+| `npm run build` | Java 21 构建与 Web 构建成功；核心 63 项中 62 通过、0 失败、0 错误、1 因不支持 POSIX 跳过 |
+| `npm run test:ui --prefix web` | 9 / 9 通过；增加运行时代理前缀切换及拒绝公开凭据/外部地址 |
+| `node --test tools/connection.test.cjs` | 1 / 1 通过；校验已有核心的地址与独立令牌要求 |
+| `npm run test:integration` | 22 / 22 通过；[Windows 报告](./qa/smoke-win32.json)，使用本机协议测试端点 |
+| `npm run test:standalone` | [Windows 报告](./qa/standalone-win32.json)：Java 从无源码/npm/Web 的独立目录启动；生产 Web 无桌面桥接可连接、设置与刷新；真实测试任务已进入在途模型请求，关闭浏览器、连接并退出附加模式 Electron 后仍 RUNNING，请求数始终为 1；桌面 Java 路径故意设为无效 |
+| `npm run package:prepared`、`npm run test:packaged` | Windows NSIS 安装包构建成功；[打包启动报告](./qa/desktop-packaged-win32.json) 确认 packaged=true、核心版本 0.2.0-alpha.1、外部 Java 路径无效时 API 200、页面无异常并正常退出；本轮未重新执行安装/卸载 |
+
+三端 CI 已增加界面交互、独立生命周期、带 Java 的桌面打包及打包启动检查；配置存在不等于三端验收已经通过，本轮远端实际结果需另外核对。上述证据不能证明外部供应商、完整 CLI 自定义隔离、远程身份/Worker、全部截图业务或长期运行能力。
+
+部署与边界见[独立部署说明](./standalone-deployment.md)，来源和后续依赖见[迭代记录](./research/iteration-foundation-2026-11-06.md)。下面原有验收矩阵和 0.1.0 运行记录继续保留，完整计划尚未完成。
 
 ## 状态口径
 

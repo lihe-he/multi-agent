@@ -6,8 +6,12 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   verify:
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -24,7 +28,9 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            web/package-lock.json
       - name: Core tests and package
         run: mvn -B -ntp -f core/pom.xml verify
       - name: Web dependency install
@@ -33,6 +39,43 @@ jobs:
         run: npm run build --prefix web
       - name: Full local protocol lifecycle
         run: node tools/ci-smoke.mjs
+      - name: Install UI test browser
+        working-directory: web
+        run: npx playwright install --with-deps chromium
+      - name: UI interaction tests
+        run: npm run test:ui --prefix web
+        env:
+          PLAYWRIGHT_CHANNEL: chromium
+      - name: Desktop dependencies
+        run: npm ci --cache .runtime/npm-cache
+      - name: Desktop connection policy
+        run: node --test tools/connection.test.cjs
+      - name: Standalone browser and attached desktop lifecycle
+        if: runner.os != 'Linux'
+        run: npm run test:standalone
+        env:
+          PLAYWRIGHT_CHANNEL: chromium
+      - name: Standalone lifecycle with virtual display
+        if: runner.os == 'Linux'
+        run: xvfb-run -a npm run test:standalone
+        env:
+          PLAYWRIGHT_CHANNEL: chromium
+      - name: Build desktop distribution with bundled Java
+        run: npm run package:prepared
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Packaged application lifecycle
+        run: npm run test:packaged
+      - name: Preserve desktop distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-${{ matrix.os }}
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.AppImage
+          if-no-files-found: error
+          retention-days: 14
       - name: Preserve test reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -41,3 +84,8 @@ jobs:
           path: |
             core/target/surefire-reports/
             docs/qa/smoke-*.json
+            docs/qa/desktop-*.json
+            docs/qa/standalone-*.json
+            docs/qa/desktop-home.png
+            web/test-results/
+            web/qa/

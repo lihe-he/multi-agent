@@ -1,6 +1,6 @@
 {
   "name": "multi-agent-workbench",
-  "version": "0.1.0",
+  "version": "0.2.0-alpha.1",
   "description": "本地多 Agent 智能研发工作台",
   "private": true,
   "main": "desktop/main.cjs",
@@ -9,6 +9,9 @@
   "scripts": {
     "setup": "node tools/manage.mjs setup",
     "build": "node tools/manage.mjs build",
+    "build:core": "node tools/manage.mjs build:core",
+    "build:web": "node tools/manage.mjs build:web",
+    "web": "npm run dev --prefix web",
     "test": "node tools/manage.mjs test",
     "start": "node tools/manage.mjs start",
     "dev": "node tools/manage.mjs dev",
@@ -16,7 +19,10 @@
     "smoke": "node tools/smoke-test.mjs",
     "test:integration": "node tools/ci-smoke.mjs",
     "test:desktop": "node tools/desktop-smoke.cjs",
-    "package": "node tools/manage.mjs package"
+    "test:packaged": "node tools/ci-desktop.mjs",
+    "test:standalone": "node tools/standalone-smoke.mjs",
+    "package": "node tools/manage.mjs package",
+    "package:prepared": "node tools/manage.mjs package:prepared"
   },
   "devDependencies": {
     "electron": "39.2.7",
@@ -37,7 +43,7 @@
     ],
     "extraResources": [
       {
-        "from": "core/target/agent-workbench-core-0.1.0.jar",
+        "from": "core/target/agent-workbench-core-${version}.jar",
         "to": "core/core.jar"
       },
       {

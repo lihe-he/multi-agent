@@ -121,12 +121,11 @@ export function ConnectionDialog({ onClose, onSaved }: DialogProps) {
   async function submit(e: FormEvent) {
     e.preventDefault(); setBusy(true); setError('');
     try {
-      if (baseUrl && !/^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])(?::\d+)?\/?$/.test(baseUrl)) throw new Error('核心地址必须是本机回环地址。');
       setConnection({ baseUrl, token }); await api('/state'); onSaved(); onClose();
     } catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   }
-  return <Modal title="连接本地核心" description="桌面应用自动建立连接，浏览器开发模式可手动填写。" onClose={onClose}><form onSubmit={submit}><div className="form-body">
-    <Field label="本机核心地址" hint="开发代理模式可留空。"><input value={baseUrl} onChange={e => setBaseUrl(e.target.value)} placeholder="http://127.0.0.1:18765" className="mono" /></Field>
+  return <Modal title="连接本地核心" description="桌面应用自动建立连接，独立浏览器可连接本机核心或同源代理。" onClose={onClose}><form onSubmit={submit}><div className="form-body">
+    <Field label="本机核心地址" hint="同源 /api 代理可留空，也可填写代理前缀（例如 /workbench）。"><input value={baseUrl} onChange={e => setBaseUrl(e.target.value)} placeholder="http://127.0.0.1:18765" className="mono" /></Field>
     <Field label="访问令牌" hint="使用核心启动时生成的令牌；仅存于当前浏览器会话。"><input type="password" value={token} onChange={e => setToken(e.target.value)} autoComplete="off" /></Field><ErrorMessage error={error} />
   </div><footer><button type="button" className="button secondary" onClick={onClose}>取消</button><SaveButton busy={busy}>连接并验证</SaveButton></footer></form></Modal>;
 }

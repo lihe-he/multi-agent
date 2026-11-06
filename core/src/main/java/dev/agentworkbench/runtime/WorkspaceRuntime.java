@@ -225,6 +225,7 @@ public class WorkspaceRuntime {
         String executable = executable(route, engine);
         try {
             Map<String, Object> result = execute(nativeCommand(executable, List.of("--version")), dataDirectory(), "", () -> false, x -> {}, Duration.ofSeconds(15), false);
+            requireNativeIsolation(engine, executable, () -> false);
             capabilities.addAll(List.of("process.stop", "process-tree.observe", "session.soft-budget", "workspace.isolation"));
             if (engine.equals("CODEX")) capabilities.add("sandbox.read-only/workspace-write");
             else capabilities.add("tool.allowlist");
@@ -245,22 +246,35 @@ public class WorkspaceRuntime {
         if (!readOnly && scope != null && !scope.isEmpty() && !scope.equals(List.of("**")) && !scope.equals(List.of("."))) {
             throw new IllegalArgumentException("原生运行器无法强制细粒度文件范围；请选择 API 运行器或明确授权整个隔离项目。");
         }
+        String executable = executable(route, engine);
+        requireNativeIsolation(engine, executable, cancelled);
         if (!acquireCall.getAsBoolean()) return result(-1, "根任务可用模型额度不足", "FAILED");
         List<String> args = new ArrayList<>();
         String model = str(route, "model", "");
         if (engine.equals("CODEX")) {
-            args.addAll(List.of("exec", "--json", "--sandbox", readOnly ? "read-only" : "workspace-write", "--ephemeral"));
+            args.addAll(List.of("exec", "--json", "--sandbox", readOnly ? "read-only" : "workspace-write", "--ephemeral", "--ignore-user-config", "--ignore-rules"));
             if (!model.isBlank()) args.addAll(List.of("--model", model));
             args.add("-");
         } else {
-            args.addAll(List.of("-p", "--output-format", "json", "--permission-mode", "acceptEdits", "--tools", readOnly ? "Read,Glob,Grep" : "Read,Glob,Grep,Edit,Write", "--disallowedTools", "Bash"));
+            args.addAll(List.of("-p", "--output-format", "json", "--permission-mode", "acceptEdits", "--safe-mode", "--tools", readOnly ? "Read,Glob,Grep" : "Read,Glob,Grep,Edit,Write", "--disallowedTools", "Bash"));
             if (!model.isBlank()) args.addAll(List.of("--model", model));
         }
-        String executable = executable(route, engine);
         Map<String, Object> run = execute(nativeCommand(executable, args), Path.of(workspace), prompt, cancelled, log, Duration.ofMinutes(15), true);
         run.put("output", finalNativeOutput(engine, run.get("output").toString()));
         run.put("usage", object("softBudget", true, "unit", "CLI_SESSION", "modelRequests", "UNKNOWN", "cost", "UNKNOWN"));
         return run;
+    }
+
+    /**
+     * 旧 CLI 缺少配置隔离选项时在读取任务提示和消耗调用额度之前拒绝执行。
+     */
+    private void requireNativeIsolation(String engine, String executable, BooleanSupplier cancelled) {
+        if (!Set.of("CODEX", "CLAUDE").contains(engine)) throw new IllegalArgumentException("未知运行器：" + engine);
+        Map<String, Object> help = execute(nativeCommand(executable, engine.equals("CODEX") ? List.of("exec", "--help") : List.of("--help")), dataDirectory(), "", cancelled, ignored -> {}, Duration.ofSeconds(15), false);
+        List<String> flags = engine.equals("CODEX") ? List.of("--ignore-user-config", "--ignore-rules") : List.of("--safe-mode");
+        if (!"SUCCEEDED".equals(help.get("status")) || flags.stream().anyMatch(flag -> !help.get("output").toString().contains(flag))) {
+            throw new IllegalArgumentException("运行器缺少必要配置隔离能力，请升级 CLI 或使用 API 运行器：" + String.join(", ", flags));
+        }
     }
 
     @SuppressWarnings("unchecked")

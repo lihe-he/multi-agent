@@ -1,6 +1,5 @@
 import { spawn } from 'node:child_process';
-import { mkdtempSync, mkdirSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { mkdtempSync, mkdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { randomBytes } from 'node:crypto';
 import net from 'node:net';
@@ -11,7 +10,8 @@ const port = await new Promise(resolvePort => { const server = net.createServer(
 const token = randomBytes(32).toString('hex');
 const env = { ...process.env, WORKBENCH_PORT: String(port), WORKBENCH_URL: `http://127.0.0.1:${port}`, WORKBENCH_TOKEN: token, WORKBENCH_DATA_DIR: dir, WORKBENCH_REPORT_PATH: resolve(`docs/qa/smoke-${process.platform}.json`) };
 const java = process.env.JAVA_HOME ? join(process.env.JAVA_HOME, 'bin', process.platform === 'win32' ? 'java.exe' : 'java') : 'java';
-const child = spawn(java, ['-Dfile.encoding=UTF-8', `-Djdk.net.unixdomain.tmpdir=${dir}`, '-jar', resolve('core/target/agent-workbench-core-0.1.0.jar')], { env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+const version = JSON.parse(readFileSync(resolve('package.json'), 'utf8')).version;
+const child = spawn(java, ['-Dfile.encoding=UTF-8', `-Djdk.net.unixdomain.tmpdir=${dir}`, '-jar', resolve(`core/target/agent-workbench-core-${version}.jar`)], { env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
 let logs = ''; child.stdout.on('data', b => { logs = (logs + b).slice(-10000); }); child.stderr.on('data', b => { logs = (logs + b).slice(-10000); });
 try {
   let ready = false;

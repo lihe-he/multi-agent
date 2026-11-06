@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.agentworkbench.ApiException;
 import dev.agentworkbench.ExecutionStore;
 import dev.agentworkbench.WorkbenchCatalog;
+import dev.agentworkbench.ResourceManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import java.net.URI;
@@ -26,10 +28,14 @@ public class McpManager {
     private final ExecutionStore store;
     private final ObjectMapper mapper;
     private final WorkbenchCatalog catalog;
+    private final ResourceManager resources;
     private final Map<String, String> tokens = new ConcurrentHashMap<>();
     private final Map<String, Object> locks = new ConcurrentHashMap<>();
 
-    public McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog) { this.store = store; this.mapper = mapper; this.catalog = catalog; }
+    public McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog) { this(store, mapper, catalog, new ResourceManager()); }
+
+    @Autowired
+    public McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog, ResourceManager resources) { this.store = store; this.mapper = mapper; this.catalog = catalog; this.resources = resources; }
 
     @PostConstruct
     void recover() {
@@ -64,10 +70,11 @@ public class McpManager {
     public List<Map<String, Object>> list() { return store.list("mcpServer").stream().map(this::visible).toList(); }
 
     public Map<String, Object> probe(String serverId) {
+        requireServerResolved(serverId);
         synchronized (locks.computeIfAbsent(serverId, ignored -> new Object())) {
             Map<String, Object> server = store.get("mcpServer", serverId);
             if (!bool(server, "enabled", false)) { throw new ApiException(409, "MCP 服务已停用"); }
-            try (McpTransport transport = McpTransport.open(server, tokens.getOrDefault(serverId, ""), mapper)) {
+            try (var lease = resources.acquire(resourceRequest(server), () -> false); McpTransport transport = McpTransport.open(server, tokens.getOrDefault(serverId, ""), mapper)) {
                 Map<String, Object> discovery = discover(server, transport);
                 persistDiscovery(server, discovery);
                 return discovery;
@@ -86,6 +93,7 @@ public class McpManager {
      * 交互工具调用先核验最新定义；请求编号在同一服务内去重。
      */
     public Map<String, Object> call(String serverId, Map<String, Object> input) {
+        requireServerResolved(serverId);
         synchronized (locks.computeIfAbsent(serverId, ignored -> new Object())) {
             Map<String, Object> server = store.get("mcpServer", serverId);
             String projectId = required(input, "projectId", 100), tool = required(input, "name", 200), requestId = required(input, "requestId", 100);
@@ -93,6 +101,7 @@ public class McpManager {
             store.get("project", projectId);
             String taskId = str(input, "taskId");
             if (!taskId.isBlank() && !projectId.equals(str(store.get("task", taskId), "projectId"))) { throw new ApiException(403, "任务不属于授权项目"); }
+            if (!taskId.isBlank()) { throw new ApiException(403, "任务内 MCP 只能通过固定授权动作入口派发"); }
             String expectedVersion = required(input, "definitionVersion", 128);
             Map<String, Object> arguments = map(input, "arguments");
             String operationId = hash(obj("server", serverId, "request", requestId));
@@ -105,7 +114,7 @@ public class McpManager {
             Map<String, Object> operation = obj("id", operationId, "requestId", requestId, "serverId", serverId, "identity", server.get("identity"), "projectId", projectId, "taskId", taskId,
                 "tool", tool, "definitionVersion", expectedVersion, "argumentKeys", new ArrayList<>(arguments.keySet()), "argumentHash", hash(arguments), "state", "PREPARED", "createdAt", now());
             boolean sent = false;
-            try (McpTransport transport = McpTransport.open(server, tokens.getOrDefault(serverId, ""), mapper)) {
+            try (var lease = resources.acquire(resourceRequest(server), () -> false); McpTransport transport = McpTransport.open(server, tokens.getOrDefault(serverId, ""), mapper)) {
                 Map<String, Object> discovery = discover(server, transport);
                 persistDiscovery(server, discovery);
                 if (!expectedVersion.equals(str(discovery, "definitionVersion"))) { throw new ApiException(409, "MCP 工具定义已变化，请重新检查工具与授权后使用新版本"); }
@@ -134,14 +143,14 @@ public class McpManager {
 
     public List<Map<String, Object>> operations(String serverId) { store.get("mcpServer", serverId); return store.list("mcpOperation").stream().filter(operation -> serverId.equals(str(operation, "serverId"))).toList(); }
 
-    private synchronized void persistDiscovery(Map<String, Object> observed, Map<String, Object> discovery) {
+    synchronized void persistDiscovery(Map<String, Object> observed, Map<String, Object> discovery) {
         Map<String, Object> current = store.get("mcpServer", str(observed, "id"));
         if (!bool(current, "enabled", false) || num(current, "version", -1) != num(observed, "version", -2)) { throw new ApiException(409, "MCP 配置在能力发现期间变化，请重新探测"); }
         current.put("discovery", discovery); current.put("health", "AVAILABLE"); current.put("probedAt", now()); current.remove("error"); store.put("mcpServer", current);
     }
 
-    private Map<String, Object> discover(Map<String, Object> server, McpTransport transport) throws Exception {
-        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.1.0")));
+    Map<String, Object> discover(Map<String, Object> server, McpTransport transport) throws Exception {
+        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.1")));
         String protocol = str(initialized, "protocolVersion");
         if (!Set.of("2025-06-18", "2025-03-26").contains(protocol)) { throw new ApiException(409, "此客户端尚未验证服务协商的 MCP 版本：" + protocol); }
         transport.notify("notifications/initialized", obj());
@@ -174,6 +183,11 @@ public class McpManager {
         } catch (Exception exception) { throw new ApiException(400, "MCP 远程地址须使用 HTTPS，本机端点可使用 HTTP；不能在 URL 中携带凭据"); }
     }
 
-    private String redact(String value) { String text = catalog.redact(value); for (String token : tokens.values()) { if (!token.isBlank()) { text = text.replace(token, "[REDACTED]"); } } return text; }
-    private String hash(Object value) { try { return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(mapper.writeValueAsBytes(value))); } catch (Exception exception) { throw new IllegalStateException(exception); } }
+    String redact(String value) { String text = catalog.redact(value); for (String token : tokens.values()) { if (!token.isBlank()) { text = text.replace(token, "[REDACTED]"); } } return text; }
+    String token(String serverId) { return tokens.getOrDefault(serverId, ""); }
+    static Map<String, Integer> resourceRequest(Map<String, Object> server) { Map<String, Integer> result = new LinkedHashMap<>(Map.of("tool", 1, "mcp:" + str(server, "id"), 1)); if ("STDIO".equals(str(server, "transport"))) { result.put("process", 1); } return result; }
+    void requireServerResolved(String serverId) {
+        if (store.list("mcpOperation").stream().anyMatch(operation -> serverId.equals(str(operation, "serverId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")))) { throw new ApiException(409, "该 MCP 服务存在未核对动作，暂不开放新派发"); }
+    }
+    private String hash(Object value) { return McpTaskPolicy.hash(value); }
 }

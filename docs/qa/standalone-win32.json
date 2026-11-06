@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-06T13:37:42.223Z",
+  "version": "0.2.0-alpha.1",
+  "platform": "win32",
+  "coreIndependentOfWebAndNpm": true,
+  "runtimeProxyConfiguration": true,
+  "browserWorkflowWithoutBridge": true,
+  "browserClosePreservesCore": true,
+  "desktopUsesExistingCoreWithoutJava": true,
+  "desktopExitPreservesCore": true,
+  "clientExitPreservesRunningTask": true,
+  "modelRequestsBeforeAndAfterReconnect": 1,
+  "pageErrors": []
+}

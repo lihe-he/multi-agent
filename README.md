@@ -4,7 +4,9 @@
 
 平台使用 Java 21、Spring Boot、SQLite、React、TypeScript 和 Electron。任务在独立工作目录中执行，验证和审查记录绑定代码版本，最终由用户验收。验收操作记录用户决定，不会自动提交、推送或改写原项目。
 
-当前版本为 **0.1.0 开发预览**。已实现基础闭环、三模式固定阶段及独立 MCP 客户端与只读服务端；动态副 Agent、MCP 接入 Agent 工具回路、完整备份恢复、自动采纳及三端发布验收仍在后续实施范围。
+当前开发版本为 **0.2.0-alpha.1**，稳定预览基线仍为 `v0.1.0`。本轮补齐独立核心/Web 运行入口、运行时连接配置、桌面连接已有核心及 CLI 配置隔离选项检查。已实现基础闭环、三模式固定阶段及独立 MCP 客户端与只读服务端；动态副 Agent、MCP 接入 Agent 工具回路、完整备份恢复、自动采纳及三端发布验收仍在后续实施范围。
+
+前后端分离的本机启动、独立构建、配置与客户端退出语义见[独立部署说明](./docs/standalone-deployment.md)。新增需求 F01—F21 及后续节点架构见[架构审查](./docs/research/current-architecture-audit-2026-11-06.md)，本轮来源和范围见[迭代记录](./docs/research/iteration-foundation-2026-11-06.md)。独立入口不代表远程多用户或移动端能力已交付。
 
 ## 目录
 
@@ -46,7 +48,7 @@ npm run start
 
 这些命令的实际验证环境与结果记录在实施记录中；尚未验证的平台不据此视为支持完成。
 
-构建 Windows 安装包使用 `npm run package`，输出为 `release/Agent Workbench Setup 0.1.0.exe`。安装包为未签名开发预览。桌面启动和内置运行时检查使用 `npm run test:desktop`；指定 `WORKBENCH_ELECTRON_PATH` 与 `WORKBENCH_EXPECT_PACKAGED=1` 可检查打包或安装后的程序。
+构建 Windows 安装包使用 `npm run package`，输出为 `release/Agent Workbench Setup <当前版本>.exe`。安装包为未签名开发预览。桌面启动和内置运行时检查使用 `npm run test:desktop`；指定 `WORKBENCH_ELECTRON_PATH` 与 `WORKBENCH_EXPECT_PACKAGED=1` 可检查打包或安装后的程序。
 
 ![Windows 工作台](./docs/qa/desktop-home.png)
 

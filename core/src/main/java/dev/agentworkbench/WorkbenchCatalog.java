@@ -221,7 +221,7 @@ public class WorkbenchCatalog {
         Map<String, Object> task = obj("id", id(), "schemaVersion", 1, "projectId", project.get("id"), "title", title, "goal", goal,
             "mode", mode, "modeReason", reason, "state", "DRAFT", "outcome", "UNDETERMINED", "createdAt", now(), "updatedAt", now(),
             "contract", contract, "budget", obj("maxCalls", max, "reserveCalls", reserve, "usedCalls", 0, "usedDevelopmentCalls", 0, "usedReservedCalls", 0, "developmentAvailable", max - reserve, "type", route.get("budgetType")),
-            "locks", locks, "routeId", route.get("id"), "routeSnapshot", route, "profileSnapshot", store.list("profile"), "policyVersion", "1.1/0.1.0",
+            "locks", locks, "routeId", route.get("id"), "routeSnapshot", route, "profileSnapshot", store.list("profile"), "policyVersion", "1.1/0.2.0-alpha.1",
             "includeChanges", bool(body, "includeChanges", false), "plan", plan, "context", context, "evidence", new ArrayList<>(), "issues", new ArrayList<>(),
             "review", obj("status", "NOT_RUN"), "planValidation", result, "workspace", "", "baseline", "", "version", "", "repairRounds", 0);
         return store.createTask(task);

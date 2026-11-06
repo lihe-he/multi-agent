@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static dev.agentworkbench.Json.*;
@@ -128,6 +129,21 @@ public class ExecutionStore {
     public synchronized Map<String, Object> createTask(Map<String, Object> task) {
         transaction(() -> { write("task", task); appendEvent(str(task, "id"), "TASK_CREATED", "需求、完成约定和策略快照已保存，等待确认计划"); });
         return task;
+    }
+
+    /**
+     * MCP 动作意图和保守预算承诺同时保存，恢复时不能遗漏未确认动作。
+     */
+    public synchronized void beginMcpOperation(String taskId, Map<String, Object> operation, int authorizationVersion, int timeoutMs) {
+        Map<String, Object> task = get("task", taskId);
+        if (num(map(task, "mcpAuthorization"), "version", 0) != authorizationVersion || !"RUNNING".equals(str(task, "state"))) { throw new ApiException(409, "任务授权或执行状态已变化"); }
+        if (list("mcpOperation").stream().anyMatch(value -> taskId.equals(str(value, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(value, "state")))) { throw new ApiException(409, "存在未核对 MCP 动作"); }
+        if (find("mcpOperation", str(operation, "id")) != null) { throw new ApiException(409, "固定 MCP 动作已登记，不能重新派发"); }
+        Map<String, Object> budget = map(task, "mcpBudget");
+        int calls = num(budget, "usedCalls", 0), duration = num(budget, "committedDurationMs", 0);
+        if (calls >= num(budget, "maxCalls", 8) || duration + timeoutMs > num(budget, "maxDurationMs", 240000)) { throw new ApiException(409, "根任务 MCP 次数或超时承诺预算不足"); }
+        budget.put("usedCalls", calls + 1); budget.put("committedDurationMs", duration + timeoutMs); task.put("mcpBudget", budget);
+        transaction(() -> { write("task", task); write("mcpOperation", operation); appendEvent(taskId, "MCP_PREPARED", "已保存固定动作意图与根工具预算承诺"); });
     }
 
     /**

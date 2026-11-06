@@ -2,17 +2,35 @@ import type { Connection } from './types';
 
 let connection: Connection = {
   baseUrl: import.meta.env.VITE_API_BASE || '',
-  token: import.meta.env.VITE_API_TOKEN || sessionStorage.getItem('workbench-token') || '',
+  token: sessionStorage.getItem('workbench-token') || '',
 };
 
 export async function initializeConnection() {
   if (window.workbench) connection = await window.workbench.getConnection();
+  else {
+    const response = await fetch('./workbench-config.json', { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+    if (!response.ok) throw new Error('无法读取工作台运行时配置，请检查 workbench-config.json。');
+    const config: unknown = await response.json();
+    if (!config || typeof config !== 'object' || Array.isArray(config) || Object.keys(config).some(key => key !== 'apiBaseUrl')) throw new Error('运行时配置仅允许 apiBaseUrl，不能包含令牌或凭据。');
+    const baseUrl = (config as { apiBaseUrl?: unknown }).apiBaseUrl;
+    if (baseUrl !== undefined && typeof baseUrl !== 'string') throw new Error('apiBaseUrl 必须为字符串。');
+    connection = { ...connection, baseUrl: validateApiBase(baseUrl as string | undefined ?? connection.baseUrl) };
+  }
   return connection;
+}
+
+export function validateApiBase(value: string) {
+  const base = value.trim().replace(/\/+$/, '');
+  if (!base) return '';
+  if (base.startsWith('/') && !base.startsWith('//') && !/[?#\\]/.test(base)) return base;
+  const url = new URL(base);
+  if (!['http:', 'https:'].includes(url.protocol) || !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname) || url.username || url.password || url.search || url.hash || url.pathname !== '/') throw new Error('核心地址必须是本机回环地址或同源代理路径。');
+  return url.origin;
 }
 
 export function currentConnection() { return connection; }
 export function setConnection(next: Connection) {
-  connection = { baseUrl: next.baseUrl.replace(/\/$/, ''), token: next.token };
+  connection = { baseUrl: validateApiBase(next.baseUrl), token: next.token };
   sessionStorage.setItem('workbench-token', next.token);
 }
 
