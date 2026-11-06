@@ -13,7 +13,7 @@ const { execFileSync } = require('node:child_process');
   }
   delete env.ELECTRON_RUN_AS_NODE;
   const errors = [];
-  const electron = await _electron.launch({ args: [root], executablePath: process.env.WORKBENCH_ELECTRON_PATH, env, timeout: 60000 });
+  const electron = await _electron.launch({ args: [root, ...(process.platform === 'linux' ? ['--no-sandbox'] : [])], executablePath: process.env.WORKBENCH_ELECTRON_PATH, env, timeout: 60000, dumpio: true });
   try {
     const page = await electron.firstWindow({ timeout: 60000 });
     page.on('pageerror', error => errors.push(error.message));

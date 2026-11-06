@@ -21,6 +21,8 @@
 
 首次新增 CI（提交 `1aba678`，run `42227764674`）在 macOS 已通过核心、UI 与独立生命周期，DMG 也已生成，但 electron-builder 自动进入发布检查并因缺少 GH_TOKEN 使步骤失败。打包入口已补上 `--publish never`，保持只生成本地产物；不以该次失败运行宣称打包检查全部通过。
 
+后续 run `42228328055` 中 macOS 全部通过；Linux 在 AppImage 已生成后，Xvfb 中 packaged Electron 的 Playwright 启动失败。打包启动检查已补上 Linux 必要的 `--no-sandbox` 参数并启用完整 Electron 输出诊断；以提交后的 Linux CI 为准。
+
 部署与边界见[独立部署说明](./standalone-deployment.md)，来源和后续依赖见[迭代记录](./research/iteration-foundation-2026-11-06.md)。下面原有验收矩阵和 0.1.0 运行记录继续保留，完整计划尚未完成。
 
 ## 状态口径

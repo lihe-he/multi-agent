@@ -106,7 +106,7 @@ try {
   assert.equal((await api(`/tasks/${task.id}`)).state, 'RUNNING', '关闭浏览器后在途任务仍运行');
   const env = { ...process.env, JAVA_HOME: join(dir, 'missing-java'), WORKBENCH_JAVA_HOME: join(dir, 'missing-java'), WORKBENCH_USER_DATA: join(dir, 'desktop'), WORKBENCH_CORE_URL: baseUrl, WORKBENCH_CORE_TOKEN: token };
   delete env.ELECTRON_RUN_AS_NODE;
-  desktop = await _electron.launch({ args: [root], executablePath: createRequire(import.meta.url)('electron'), env, timeout: 30000 });
+  desktop = await _electron.launch({ args: [root, ...(!windows && process.platform === 'linux' ? ['--no-sandbox'] : [])], executablePath: createRequire(import.meta.url)('electron'), env, timeout: 30000, dumpio: true });
   const window = await desktop.firstWindow();
   window.on('pageerror', error => errors.push(error.message));
   await window.getByRole('button', { name: '项目总览', exact: true }).waitFor();
