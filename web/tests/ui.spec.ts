@@ -2,19 +2,22 @@ import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
 test('运行时配置切换同源 API 前缀，凭据不进入公开配置', async ({ page }) => {
-  let authenticated = '';
+  const requests: { url: string; authorization?: string }[] = [];
   await page.addInitScript(() => sessionStorage.setItem('workbench-token', 'runtime-session-fixture'));
   await page.route('**/workbench-config.json', route => route.fulfill({ json: { apiBaseUrl: '/service' } }));
-  await page.route('**/service/api/state', route => {
-    authenticated = route.request().headers().authorization;
+  await page.route('**/api/state', route => {
+    requests.push({ url: new URL(route.request().url()).pathname, authorization: route.request().headers().authorization });
     return route.fulfill({ json: { projects: [], tasks: [], routes: [], profiles: [], memories: [], system: {} } });
   });
   await page.goto('/');
   await expect(page.getByText('还没有研发任务')).toBeVisible();
-  await expect.poll(() => authenticated).toBe('Bearer runtime-session-fixture');
   await page.getByRole('button', { name: '资源与设置', exact: true }).click();
   await page.getByRole('button', { name: '核心连接', exact: true }).click();
   await expect(page.getByLabel('本机核心地址', { exact: true })).toHaveValue('/service');
+  await page.getByLabel('访问令牌', { exact: true }).fill('runtime-session-fixture');
+  await page.getByRole('button', { name: '连接并验证', exact: true }).click();
+  await expect(page.getByRole('dialog')).toBeHidden();
+  await expect.poll(() => requests.at(-1)).toEqual({ url: '/service/api/state', authorization: 'Bearer runtime-session-fixture' });
 });
 
 test('运行时配置含凭据或外部地址时停止连接', async ({ page }) => {

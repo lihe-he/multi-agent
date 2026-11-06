@@ -23,6 +23,8 @@
 
 后续 run `42228328055` 中 macOS 全部通过；Linux 在 AppImage 已生成后，Xvfb 中 packaged Electron 的 Playwright 启动失败。打包启动检查已补上 Linux 必要的 `--no-sandbox` 参数并启用完整 Electron 输出诊断；以提交后的 Linux CI 为准。
 
+run `42229839029` 验证 Linux 的 `--no-sandbox` 修复成功；随后 macOS UI 用例发现首个同源 API 代理请求时序不稳定。用例现改为从连接对话框确认运行时前缀，再以真实认证请求断言 URL 路径和 bearer 值，并完整等待连接完成。
+
 部署与边界见[独立部署说明](./standalone-deployment.md)，来源和后续依赖见[迭代记录](./research/iteration-foundation-2026-11-06.md)。下面原有验收矩阵和 0.1.0 运行记录继续保留，完整计划尚未完成。
 
 ## 状态口径
