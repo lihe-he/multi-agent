@@ -22,7 +22,7 @@ export interface Evidence {
   exitCode?: number; output?: string; createdAt?: string; status?: string;
 }
 export interface Task {
-  id: string; projectId: string; title: string; goal: string; mode: string; modeReason?: string;
+  id: string; projectId: string; sessionId?: string; title: string; goal: string; mode: string; modeReason?: string;
   state: string; outcome?: string; createdAt?: string; updatedAt?: string; routeId?: string;
   routeSnapshot?: Route;
   contract?: { scope?: string[]; acceptance?: string[]; commands?: string[] };
@@ -42,6 +42,8 @@ export interface WorkbenchState {
 }
 export interface RunEvent { id: number; taskId?: string; type: string; message: string; createdAt?: string }
 export interface Connection { baseUrl: string; token: string }
+export interface Session { id: string; projectId: string; title: string; version: number; isOpen: boolean; createdAt: string; updatedAt: string }
+export interface SessionMessage { id: string; sessionId: string; projectId: string; sequence: number; role: string; kind: 'NOTE' | 'TASK_GOAL'; content: string; taskId?: string; createdAt: string }
 declare global {
   interface Window {
     workbench?: {

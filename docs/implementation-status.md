@@ -2,6 +2,25 @@
 
 产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-07。
 
+## 0.2.0-alpha.4 开发迭代
+
+按 F01/F12 及架构迁移第二步建立项目会话基础：持久标签、重命名、历史分页、幂等笔记、同会话多任务及原始活动来源。创建任务和目标记录原子保存；旧任务迁移保留执行账本。来源与自审见[会话基础审查](./research/session-foundation-2026-11-07.md)，协议见[会话接口](./session-contract.md)。
+
+| 检查 | 本轮证据 |
+| --- | --- |
+| `npm run build` | 88 项 Java 检查中 87 通过、1 项 Windows POSIX 权限跳过，0 失败/错误；alpha.4 Jar、TypeScript、生产 Web 构建成功 |
+| `mvn -B -ntp -f core/pom.xml -Dtest=SessionStoreTest test` | 8 / 8；后补实际 schema=1 且无会话表的迁移回归亦通过；事务故障注入、消息分页、关闭标签不改任务、未来 schema 拒绝及重新打开均覆盖 |
+| `npm run test:ui --prefix web`、后补 `sessions.spec.ts` | 全量 13 / 13 后，新增冲突场景；会话套件 5 / 5，原界面 9 项保持通过。桌面/430px 截图已复查，成功流程无错误提示 |
+| `node --test tools/connection.test.cjs` | 3 / 3；API 版本与数据库版本分离，拒绝未知协议或退化核心 |
+| `npm run test:integration` | 最终 alpha.4 Jar 的本机协议 24 / 24；新增真实会话 HTTP、消息服务端身份、幂等、版本冲突、任务目标来源和活动聚合；[Windows 报告](./qa/smoke-win32.json) |
+| `npm run test:standalone` | 真实独立 Java + 生产 Web 经同源代理保存会话/笔记、页面重载、关闭标签后在途任务仍运行；附加桌面退出后仍只有 1 个在途模型请求，无页面异常；[Windows 报告](./qa/standalone-win32.json) |
+| `npm run package:prepared` | Windows NSIS alpha.4 已生成；本轮不重复安装/卸载验收 |
+| `npm run test:packaged` | alpha.4 打包程序在外部 Java 被禁用时使用内置 Java 启动，API 200、无页面异常；[Windows 打包运行报告](./qa/desktop-packaged-win32.json) |
+
+真实独立生命周期首次发现附加桌面把 schema 当成接口版本，导致连接被拒绝；修复为 `apiVersion=1`、`schemaVersion=2` 后重新构建并验证通过。测试代理原先仅转发 GET，现保存方法、请求体和查询参数，真实写入流程得到覆盖。协议回归中的同目标任务被既有去重门禁拒绝，夹具改为两个不同的真实任务目标，保留产品准入规则。
+
+远端本轮提交和三端 CI 需以推送后当前 SHA 的实际记录为准。F01 的终端/PTY/侧栏拖动、F12 的 Agent 层级，以及 AgentRun/Team/Worker、动态委派、完整备份恢复和其他 F01–F21 要求仍未完成。会话笔记不是自动执行对话，不能以本轮通过替代完整计划验收。
+
 ## 0.2.0-alpha.3 开发迭代
 
 本轮补齐 MCP 本地停止确认、容量保留及人工核对门禁；未知外部效果继续保留，已收到的结果不因清理失败丢失。真实 stdio 父子进程取消先复现旧账本错误，再验证修复；受控停止故障和恢复窗口另有回归。开源来源、自审和未覆盖边界见[本地停止审查](./research/mcp-stop-accounting-2026-11-07.md)。全部提交继续使用 `main`。
@@ -18,6 +37,8 @@
 附加的本地 Chromium 检查未通过启动：起初缺少浏览器，下载直连超时后改用现有本机代理完成安装；Node 单独启动 Chrome 也返回 spawn UNKNOWN，UI 断言尚未执行。此项不计作通过，未修改产品代码来隐藏环境问题。三端 Chromium、打包与运行结果以本次提交的远端 GitHub Actions 实际记录为准。本轮未重跑安装/卸载。
 
 上一版本产品代码加 main 约定的 `4ba1c06` 在 run `42347134703` 中三端全部通过；这条历史结果不替代 alpha.3 验收。完整动态副 Agent、Session/Team/Worker、F01–F21、完整备份恢复及正式发布继续实施，不能以本轮回归替代完整计划验收。
+
+后续核验：alpha.3 提交 `c6281ebe4356eaf9615cf11720f35edc34be0abd` 的 GitHub Actions run `42348756640` 已在 Windows、macOS、Ubuntu 全部成功，包含各端 Chromium、协议、独立生命周期、打包与运行步骤。该证据只对应 alpha.3 提交。
 
 ## 0.2.0-alpha.2 开发迭代
 

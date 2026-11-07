@@ -8,4 +8,8 @@ function attachedConnection(env = process.env) {
   return { baseUrl: url.origin, token };
 }
 
-module.exports = { attachedConnection };
+function compatibleCoreHealth(health) {
+  return health?.status === 'UP' && (health.apiVersion === 1 || (health.apiVersion === undefined && health.schemaVersion === 1));
+}
+
+module.exports = { attachedConnection, compatibleCoreHealth };

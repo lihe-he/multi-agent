@@ -4,7 +4,7 @@ const { randomBytes } = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const net = require('node:net');
-const { attachedConnection } = require('./connection.cjs');
+const { attachedConnection, compatibleCoreHealth } = require('./connection.cjs');
 
 if (process.env.WORKBENCH_USER_DATA) app.setPath('userData', path.resolve(process.env.WORKBENCH_USER_DATA));
 
@@ -40,7 +40,7 @@ async function startCore() {
     const response = await fetch(`${attached.baseUrl}/api/health`, { headers: { Authorization: `Bearer ${attached.token}` }, signal: AbortSignal.timeout(5000) });
     if (!response.ok) throw new Error(`已有核心连接失败（${response.status}），请核对地址和令牌。`);
     const health = await response.json();
-    if (health.status !== 'UP' || health.schemaVersion !== 1) throw new Error('已有核心状态异常或协议版本不兼容。');
+    if (!compatibleCoreHealth(health)) throw new Error('已有核心状态异常或协议版本不兼容。');
     connection = attached; coreReady = true;
     return;
   }

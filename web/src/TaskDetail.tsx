@@ -4,7 +4,7 @@ import { api, downloadTask } from './api';
 import type { Evidence, Project, Route, RunEvent, Stage, Task } from './types';
 import { Badge, Checklist, Empty, Field, formatTime, kindLabel, Modal, modeLabel, SaveButton, SectionHeading, shortHash } from './ui';
 
-export function TaskDetail({ task: initial, project, routes, onBack, onAction, onNotice }: { task: Task; project?: Project; routes: Route[]; onBack: () => void; onAction: (id: string, action: string) => Promise<void>; onNotice: (message: string, error?: boolean) => void }) {
+export function TaskDetail({ task: initial, project, routes, onBack, onAction, onNotice, backLabel = '全部任务' }: { task: Task; project?: Project; routes: Route[]; onBack: () => void; onAction: (id: string, action: string) => Promise<void>; onNotice: (message: string, error?: boolean) => void; backLabel?: string }) {
   const [task, setTask] = useState(initial); const [tab, setTab] = useState('overview');
   const [events, setEvents] = useState<RunEvent[]>([]); const cursor = useRef(0);
   const [mcpOperations, setMcpOperations] = useState<{ actionKey?: string; state: string; error?: string }[]>([]);
@@ -55,7 +55,7 @@ export function TaskDetail({ task: initial, project, routes, onBack, onAction, o
   }
   const finished = ['COMPLETED', 'CANCELLED', 'FAILED'].includes(task.state);
   return <div className="task-detail">
-    <button className="back-link" onClick={onBack}><ArrowLeft size={15} />全部任务<span>/</span>{project?.name || '项目'}</button>
+    <button className="back-link" aria-label={backLabel} onClick={onBack}><ArrowLeft size={15} />{backLabel}<span>/</span>{project?.name || '项目'}</button>
     <div className="task-title"><div><div className="inline-meta"><span className="mono">TASK {task.id.slice(0, 8).toUpperCase()}</span><Badge state={task.state} /></div><h1>{task.title}</h1><p>{task.goal}</p></div><div className="title-actions">
       <button className="button secondary" onClick={async () => { try { await downloadTask(task.id); onNotice('交付包已导出'); } catch (e) { onNotice((e as Error).message, true); } }}><Download size={16} />导出</button>
       {task.state === 'DRAFT' && <button className="button primary" disabled={!!busy} onClick={() => action('approve')}><Play size={16} />确认并执行</button>}

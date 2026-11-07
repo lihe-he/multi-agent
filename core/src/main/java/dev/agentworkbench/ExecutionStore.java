@@ -54,13 +54,19 @@ public class ExecutionStore {
             if (lock == null) { throw new IllegalStateException("核心数据目录已被另一个实例占用，请关闭旧核心后重试"); }
             opened = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite"));
             try (var statement = opened.createStatement()) {
+                try (var version = statement.executeQuery("PRAGMA user_version")) {
+                    if (version.next() && version.getInt(1) > 2) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
+                }
                 statement.execute("PRAGMA journal_mode=WAL");
                 statement.execute("PRAGMA synchronous=FULL");
                 statement.execute("PRAGMA busy_timeout=5000");
                 statement.execute("CREATE TABLE IF NOT EXISTS entities(kind TEXT NOT NULL,id TEXT NOT NULL,body TEXT NOT NULL,PRIMARY KEY(kind,id))");
                 statement.execute("CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY AUTOINCREMENT,task_id TEXT NOT NULL,type TEXT NOT NULL,message TEXT NOT NULL,created_at TEXT NOT NULL)");
                 statement.execute("CREATE INDEX IF NOT EXISTS events_task_id ON events(task_id,id)");
-                statement.execute("PRAGMA user_version=1");
+                statement.execute("CREATE TABLE IF NOT EXISTS session_messages(sequence INTEGER PRIMARY KEY AUTOINCREMENT,id TEXT NOT NULL UNIQUE,session_id TEXT NOT NULL,request_id TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(session_id,request_id))");
+                statement.execute("CREATE INDEX IF NOT EXISTS session_messages_cursor ON session_messages(session_id,sequence)");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_session_project ON entities(kind,json_extract(body,'$.projectId'))");
+                statement.execute("PRAGMA user_version=2");
             }
             connection = opened; ownershipChannel = channel; ownershipLock = lock;
         } catch (Exception exception) {
@@ -127,8 +133,151 @@ public class ExecutionStore {
     }
 
     public synchronized Map<String, Object> createTask(Map<String, Object> task) {
-        transaction(() -> { write("task", task); appendEvent(str(task, "id"), "TASK_CREATED", "需求、完成约定和策略快照已保存，等待确认计划"); });
+        Map<String, Object> session = null;
+        if (!str(task, "sessionId").isBlank()) {
+            session = get("session", str(task, "sessionId"));
+            if (!str(task, "projectId").equals(str(session, "projectId"))) throw new ApiException(403, "会话不属于任务项目");
+        } else if (!str(task, "projectId").isBlank() && task.containsKey("title") && task.containsKey("goal")) {
+            session = obj("id", id(), "projectId", task.get("projectId"), "title", task.get("title"), "version", 1,
+                "isOpen", true, "createdAt", now(), "updatedAt", now());
+            task.put("sessionId", session.get("id"));
+        }
+        Map<String, Object> linkedSession = session;
+        transaction(() -> {
+            write("task", task); appendEvent(str(task, "id"), "TASK_CREATED", "需求、完成约定和策略快照已保存，等待确认计划");
+            if (linkedSession != null) {
+                write("session", linkedSession);
+                writeSessionMessage(linkedSession, "task:" + str(task, "id"), "TASK_GOAL", str(task, "goal"), str(task, "id"));
+            }
+        });
         return task;
+    }
+
+    public synchronized Map<String, Object> createSession(String projectId, String title) {
+        get("project", projectId);
+        Map<String, Object> session = obj("id", id(), "projectId", projectId, "title", title, "version", 1,
+            "isOpen", true, "createdAt", now(), "updatedAt", now());
+        transaction(() -> write("session", session));
+        return session;
+    }
+
+    public synchronized Map<String, Object> editSession(String projectId, String sessionId, Map<String, Object> input) {
+        Map<String, Object> session = session(projectId, sessionId);
+        if (num(input, "expectedVersion", -1) != num(session, "version", 1)) throw new ApiException(409, "会话已变化，请刷新后重试");
+        if (input.containsKey("title")) session.put("title", required(input, "title", 180));
+        if (input.containsKey("isOpen")) {
+            if (!(input.get("isOpen") instanceof Boolean)) throw new ApiException(400, "isOpen 必须为布尔值");
+            session.put("isOpen", input.get("isOpen"));
+        }
+        session.put("version", num(session, "version", 1) + 1); session.put("updatedAt", now());
+        transaction(() -> write("session", session));
+        return session;
+    }
+
+    public synchronized Map<String, Object> session(String projectId, String sessionId) {
+        get("project", projectId);
+        Map<String, Object> session = get("session", sessionId);
+        if (!projectId.equals(str(session, "projectId"))) throw new ApiException(404, "当前项目没有此会话");
+        return session;
+    }
+
+    /**
+     * 会话历史按稳定行游标分页，新会话插入不会造成旧页重复或遗漏。
+     */
+    public synchronized Map<String, Object> sessions(String projectId, long before, int requestedLimit, boolean openOnly) {
+        get("project", projectId);
+        int limit = Math.max(1, Math.min(100, requestedLimit));
+        String sql = "SELECT rowid,body FROM entities WHERE kind='session' AND json_extract(body,'$.projectId')=? AND (?=0 OR rowid<?)"
+            + (openOnly ? " AND json_extract(body,'$.isOpen')=1" : "") + " ORDER BY rowid DESC LIMIT ?";
+        try (var query = connection.prepareStatement(sql)) {
+            query.setString(1, projectId); query.setLong(2, Math.max(0, before)); query.setLong(3, Math.max(0, before)); query.setInt(4, limit + 1);
+            List<Map<String, Object>> result = new ArrayList<>(); List<Long> cursors = new ArrayList<>();
+            try (var rows = query.executeQuery()) { while (rows.next()) { cursors.add(rows.getLong(1)); result.add(decode(rows.getString(2))); } }
+            boolean hasMore = result.size() > limit;
+            if (hasMore) { result.removeLast(); cursors.removeLast(); }
+            return obj("sessions", result, "cursor", cursors.isEmpty() ? before : cursors.getLast(), "hasMore", hasMore);
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    public synchronized Map<String, Object> appendSessionNote(String projectId, String sessionId, String requestId, String content) {
+        Map<String, Object> session = session(projectId, sessionId);
+        try (var query = connection.prepareStatement("SELECT body FROM session_messages WHERE session_id=? AND request_id=?")) {
+            query.setString(1, sessionId); query.setString(2, requestId);
+            try (var rows = query.executeQuery()) {
+                if (rows.next()) {
+                    Map<String, Object> existing = decode(rows.getString(1));
+                    if (!"NOTE".equals(str(existing, "kind")) || !content.equals(str(existing, "content"))) throw new ApiException(409, "记录编号已用于其他内容");
+                    return existing;
+                }
+            }
+        } catch (ApiException exception) { throw exception; }
+        catch (Exception exception) { throw failure(exception); }
+        Map<String, Object> message = obj("id", id(), "sessionId", sessionId, "projectId", projectId, "requestId", requestId,
+            "role", "USER", "kind", "NOTE", "content", content, "createdAt", now());
+        transaction(() -> insertSessionMessage(session, message));
+        return message;
+    }
+
+    private void writeSessionMessage(Map<String, Object> session, String requestId, String kind, String content, String taskId) throws Exception {
+        insertSessionMessage(session, obj("id", id(), "sessionId", session.get("id"), "projectId", session.get("projectId"), "requestId", requestId,
+            "role", "USER", "kind", kind, "content", content, "taskId", taskId, "createdAt", now()));
+    }
+
+    private void insertSessionMessage(Map<String, Object> session, Map<String, Object> message) throws Exception {
+        try (var statement = connection.prepareStatement("INSERT INTO session_messages(id,session_id,request_id,body) VALUES(?,?,?,?)")) {
+            statement.setString(1, str(message, "id")); statement.setString(2, str(session, "id")); statement.setString(3, str(message, "requestId"));
+            statement.setString(4, mapper.writeValueAsString(message)); statement.executeUpdate();
+        }
+        session.put("updatedAt", now()); write("session", session);
+    }
+
+    public synchronized Map<String, Object> sessionMessages(String projectId, String sessionId, long before, long after, int requestedLimit) {
+        session(projectId, sessionId);
+        if (before < 0 || after < 0 || (before > 0 && after > 0)) throw new ApiException(400, "消息游标不能同时指定 before 与 after，且不得为负");
+        int limit = Math.max(1, Math.min(100, requestedLimit)); boolean ascending = after > 0;
+        String sql = "SELECT sequence,body FROM session_messages WHERE session_id=? AND " + (ascending ? "sequence>? ORDER BY sequence" : "(?=0 OR sequence<?) ORDER BY sequence DESC") + " LIMIT ?";
+        try (var query = connection.prepareStatement(sql)) {
+            query.setString(1, sessionId); query.setLong(2, ascending ? after : before);
+            if (!ascending) query.setLong(3, before);
+            query.setInt(ascending ? 3 : 4, limit + 1);
+            List<Map<String, Object>> result = new ArrayList<>();
+            try (var rows = query.executeQuery()) {
+                while (rows.next()) { Map<String, Object> message = decode(rows.getString(2)); message.put("sequence", rows.getLong(1)); result.add(message); }
+            }
+            boolean hasMore = result.size() > limit; if (hasMore) result.removeLast();
+            if (!ascending) java.util.Collections.reverse(result);
+            long oldest = result.isEmpty() ? before : ((Number) result.getFirst().get("sequence")).longValue();
+            long latest = result.isEmpty() ? after : ((Number) result.getLast().get("sequence")).longValue();
+            return obj("messages", result, "cursor", ascending ? latest : oldest, "latestCursor", latest, "hasMore", hasMore);
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    public synchronized Map<String, Object> sessionEvents(String projectId, String sessionId, long after, int requestedLimit) {
+        session(projectId, sessionId);
+        int limit = Math.max(1, Math.min(200, requestedLimit));
+        String sql = "SELECT e.id,e.task_id,e.type,e.message,e.created_at FROM events e JOIN entities t ON t.kind='task' AND t.id=e.task_id"
+            + " WHERE json_extract(t.body,'$.sessionId')=? AND json_extract(t.body,'$.projectId')=? AND e.id>? ORDER BY e.id LIMIT ?";
+        try (var query = connection.prepareStatement(sql)) {
+            query.setString(1, sessionId); query.setString(2, projectId); query.setLong(3, Math.max(0, after)); query.setInt(4, limit + 1);
+            List<Map<String, Object>> result = new ArrayList<>();
+            try (var rows = query.executeQuery()) { while (rows.next()) result.add(obj("id", rows.getLong(1), "taskId", rows.getString(2), "type", rows.getString(3), "message", rows.getString(4), "createdAt", rows.getString(5))); }
+            boolean hasMore = result.size() > limit; if (hasMore) result.removeLast();
+            return obj("events", result, "cursor", result.isEmpty() ? after : result.getLast().get("id"), "hasMore", hasMore);
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    /**
+     * 旧任务按稳定编号迁入独立会话，重启不重复生成目标记录或改动执行门禁。
+     */
+    public synchronized void migrateTaskSessions() {
+        for (Map<String, Object> task : list("task")) {
+            if (!str(task, "sessionId").isBlank()) continue;
+            String sessionId = "legacy-" + str(task, "id");
+            Map<String, Object> session = obj("id", sessionId, "projectId", task.get("projectId"), "title", task.getOrDefault("title", "历史任务"), "version", 1,
+                "isOpen", false, "createdAt", task.getOrDefault("createdAt", now()), "updatedAt", task.getOrDefault("updatedAt", now()));
+            task.put("sessionId", sessionId);
+            transaction(() -> { write("session", session); write("task", task); writeSessionMessage(session, "task:" + str(task, "id"), "TASK_GOAL", str(task, "goal"), str(task, "id")); });
+        }
     }
 
     /**

@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { attachedConnection } = require('../desktop/connection.cjs');
+const { attachedConnection, compatibleCoreHealth } = require('../desktop/connection.cjs');
 
 test('attached connection accepts only an explicit local endpoint and separate token', () => {
   assert.equal(attachedConnection({}), null);
@@ -11,4 +11,18 @@ test('attached connection accepts only an explicit local endpoint and separate t
   }
   assert.throws(() => attachedConnection({ WORKBENCH_CORE_URL: 'http://localhost:18765' }));
   assert.throws(() => attachedConnection({ WORKBENCH_CORE_URL: 'http://localhost:18765', WORKBENCH_CORE_TOKEN: token + '\n' }));
+});
+
+test('API compatibility is independent of database schema migration', () => {
+  assert.equal(compatibleCoreHealth({ status: 'UP', apiVersion: 1, schemaVersion: 2 }), true);
+  assert.equal(compatibleCoreHealth({ status: 'UP', apiVersion: 1, schemaVersion: 99 }), true);
+  assert.equal(compatibleCoreHealth({ status: 'UP', apiVersion: 2, schemaVersion: 1 }), false);
+  assert.equal(compatibleCoreHealth({ status: 'DEGRADED', apiVersion: 1, schemaVersion: 2 }), false);
+  assert.equal(compatibleCoreHealth({ status: 'UP', apiVersion: '1', schemaVersion: 1 }), false);
+});
+
+test('legacy health without API version is restricted to the known schema', () => {
+  assert.equal(compatibleCoreHealth({ status: 'UP', schemaVersion: 1 }), true);
+  assert.equal(compatibleCoreHealth({ status: 'UP', schemaVersion: 2 }), false);
+  assert.equal(compatibleCoreHealth(null), false);
 });

@@ -40,7 +40,13 @@ const web = createServer(async (request, response) => {
   try {
     const route = new URL(request.url, 'http://localhost').pathname;
     if (route.startsWith('/service/api/')) {
-      const upstream = await fetch(`${baseUrl}${route.slice('/service'.length)}`, { headers: { Authorization: request.headers.authorization || '' }, signal: AbortSignal.timeout(5000) });
+      const chunks = []; for await (const chunk of request) chunks.push(chunk);
+      const upstream = await fetch(`${baseUrl}${request.url.slice('/service'.length)}`, {
+        method: request.method,
+        headers: { Authorization: request.headers.authorization || '', 'Content-Type': request.headers['content-type'] || 'application/json' },
+        ...(!['GET', 'HEAD'].includes(request.method) ? { body: Buffer.concat(chunks) } : {}),
+        signal: AbortSignal.timeout(5000),
+      });
       response.writeHead(upstream.status, { 'Content-Type': upstream.headers.get('content-type') || 'application/json' });
       response.end(Buffer.from(await upstream.arrayBuffer()));
       return;
@@ -97,11 +103,27 @@ try {
   for (const args of [['init'], ['config', 'user.name', 'Lifecycle fixture'], ['config', 'user.email', 'fixture@example.invalid'], ['add', '.'], ['commit', '-m', 'Create lifecycle fixture']]) execFileSync('git', ['-C', projectDir, ...args], { stdio: 'ignore', windowsHide: true });
   await new Promise(resolveListen => model.listen(0, '127.0.0.1', resolveListen));
   const project = await api('/projects', { path: projectDir });
+  await page.reload();
+  await page.getByRole('button', { name: '协作会话', exact: true }).click();
+  await page.getByLabel('新会话名称', { exact: true }).fill('独立浏览器持久会话');
+  await page.getByRole('button', { name: '创建会话', exact: true }).click();
+  await page.getByRole('tab', { name: '独立浏览器持久会话', exact: true }).waitFor();
+  await page.getByLabel('协作笔记', { exact: true }).fill('通过真实同源代理写入并重载验证');
+  await page.getByRole('button', { name: '保存笔记', exact: true }).click();
+  await page.getByText('通过真实同源代理写入并重载验证', { exact: true }).waitFor();
+  await page.reload(); await page.getByRole('button', { name: '协作会话', exact: true }).click();
+  await page.getByText('通过真实同源代理写入并重载验证', { exact: true }).waitFor();
+  const session = (await api(`/projects/${project.id}/sessions`)).sessions.find(item => item.title === '独立浏览器持久会话');
+  assert.ok(session?.id);
   const route = await api('/routes', { name: 'Local lifecycle fixture', engine: 'API', model: 'fixture', baseUrl: `http://127.0.0.1:${model.address().port}/v1` });
-  const task = await api('/tasks', { projectId: project.id, routeId: route.id, title: '客户端退出不中断', goal: 'Verify client lifecycle while a real local model request is pending', mode: 'PIPELINE', contract: { scope: ['README.md'], acceptance: ['核心继续处理在途请求'], commands: ['git status --porcelain'] }, budget: { maxCalls: 12, reserveCalls: 4 } });
+  const task = await api('/tasks', { projectId: project.id, sessionId: session.id, routeId: route.id, title: '客户端退出不中断', goal: 'Verify client lifecycle while a real local model request is pending', mode: 'PIPELINE', contract: { scope: ['README.md'], acceptance: ['核心继续处理在途请求'], commands: ['git status --porcelain'] }, budget: { maxCalls: 12, reserveCalls: 4 } });
   await api(`/tasks/${task.id}/approve`, {});
   for (let attempt = 0; attempt < 100 && !pendingModelResponses.length; attempt++) await new Promise(resolveWait => setTimeout(resolveWait, 100));
   assert.equal(pendingModelResponses.length, 1, '任务必须实际进入模型请求，不能只验证空闲核心');
+  await page.getByRole('button', { name: '关闭会话 独立浏览器持久会话', exact: true }).click();
+  await page.getByRole('tab', { name: '独立浏览器持久会话', exact: true }).waitFor({ state: 'hidden' });
+  assert.equal((await api(`/tasks/${task.id}`)).state, 'RUNNING', '关闭会话标签不能停止运行中的任务');
+  assert.equal((await api(`/projects/${project.id}/sessions/${session.id}`)).isOpen, false);
   await browser.close(); browser = undefined;
   assert.equal((await health()).status, 200, '关闭浏览器后 API 继续运行');
   assert.equal((await api(`/tasks/${task.id}`)).state, 'RUNNING', '关闭浏览器后在途任务仍运行');
@@ -123,7 +145,7 @@ try {
   assert.equal(existsSync(join(dir, 'desktop/core')), false, '附加模式不创建嵌入核心');
   assert.deepEqual(errors, []);
   await api(`/tasks/${task.id}/cancel`, {});
-  const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, pageErrors: errors };
+  const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, sessionWorkflowThroughProxy: true, savedNotesSurviveReload: true, sessionClosePreservesRunningTask: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, pageErrors: errors };
   mkdirSync(join(root, 'docs/qa'), { recursive: true });
   writeFileSync(join(root, `docs/qa/standalone-${process.platform}.json`), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report, null, 2));

@@ -150,6 +150,25 @@ try {
     assert.ok(value.results.some(result => result.path === 'src/greeting.txt' && result.line === 1));
     assert.ok(value.coverage && value.version);
   });
+  await check('Session routes require authentication and preserve server-owned message identity', async () => {
+    const health = (await request('/health')).data;
+    assert.equal(health.schemaVersion, 2); assert.equal(health.apiVersion, 1);
+    const base = `/projects/${project.id}/sessions`;
+    await request(base, undefined, { expected: 401, authorized: false });
+    const session = (await request(base, { title: 'Persistent session fixture' })).data;
+    const note = { requestId: 'note_smoke_1', content: '协作背景与验证依据', role: 'ASSISTANT', kind: 'TASK_GOAL', taskId: 'forged' };
+    const first = (await request(`${base}/${session.id}/messages`, note)).data;
+    const repeated = (await request(`${base}/${session.id}/messages`, note)).data;
+    assert.equal(first.id, repeated.id); assert.equal(first.kind, 'NOTE'); assert.equal(first.role, 'USER'); assert.equal(first.taskId, undefined);
+    await request(`${base}/${session.id}/messages`, { ...note, content: 'conflict' }, { expected: 409 });
+    await request(`${base}/${session.id}/messages`, { ...note, requestId: 'task:reserved' }, { expected: 400 });
+    const page = (await request(`${base}/${session.id}/messages?limit=1`)).data;
+    assert.equal(page.messages.length, 1); assert.ok(page.messages[0].sequence > 0);
+    await request(`${base}/${session.id}`, { expectedVersion: session.version, isOpen: false });
+    await request(`${base}/${session.id}`, { expectedVersion: session.version, title: 'stale' }, { expected: 409 });
+    assert.equal((await request(`${base}/${session.id}`)).data.isOpen, false);
+    assert.ok((await request(base)).data.sessions.some(item => item.id === session.id));
+  });
   const memory = await check('Save project knowledge with an explicit source', async () => {
     const value = (await request('/memories', { projectId: project.id, kind: 'FACT', content: '样例问候文件位于 src/greeting.txt。', source: `src/greeting.txt @ ${originalHead}` }, { expected: [200, 201] })).data;
     assert.equal(value.projectId, project.id);
@@ -184,7 +203,24 @@ try {
     assert.ok(value.id);
     assert.equal(value.state, 'DRAFT');
     assert.ok(value.context.some(item => item.id === memory.id));
+    assert.ok(value.sessionId);
+    const session = (await request(`/projects/${project.id}/sessions/${value.sessionId}`)).data;
+    assert.equal(session.projectId, project.id);
     return value;
+  });
+  await check('One session carries multiple tasks with source goals and scoped activity', async () => {
+    const base = `/projects/${project.id}/sessions/${task.sessionId}`;
+    const sibling = (await request('/tasks', { ...definition, title: 'Sibling session task', goal: 'SMOKE sibling: review the project background without executing the primary task', sessionId: task.sessionId })).data;
+    assert.equal(sibling.sessionId, task.sessionId); assert.equal(sibling.state, 'DRAFT');
+    const goals = (await request(`${base}/messages`)).data.messages;
+    assert.deepEqual(goals.map(message => message.taskId), [task.id, sibling.id]);
+    assert.ok(goals.every(message => message.kind === 'TASK_GOAL'));
+    assert.deepEqual(goals.map(message => message.content), [definition.goal, sibling.goal]);
+    const activity = (await request(`${base}/events`)).data.events;
+    assert.ok(activity.some(event => event.taskId === task.id)); assert.ok(activity.some(event => event.taskId === sibling.id));
+    assert.ok(activity.every(event => [task.id, sibling.id].includes(event.taskId)));
+    await request(base, { expectedVersion: 1, isOpen: false });
+    assert.equal((await request(`/tasks/${task.id}`)).data.state, 'DRAFT');
   });
   await check('Reject route that does not match the hard model lock', async () => {
     const before = calls.length;

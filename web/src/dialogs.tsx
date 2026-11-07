@@ -25,7 +25,7 @@ export function ProjectDialog({ onClose, onSaved }: DialogProps) {
   </form></Modal>;
 }
 
-export function TaskDialog({ projects, routes, selectedProject, onClose, onCreated }: { projects: Project[]; routes: Route[]; selectedProject: string; onClose: () => void; onCreated: (task: Task) => void }) {
+export function TaskDialog({ projects, routes, selectedProject, sessionId, onClose, onCreated }: { projects: Project[]; routes: Route[]; selectedProject: string; sessionId?: string; onClose: () => void; onCreated: (task: Task) => void }) {
   const [projectId, setProjectId] = useState(selectedProject || projects[0]?.id || '');
   const [title, setTitle] = useState(''); const [goal, setGoal] = useState('');
   const [mode, setMode] = useState('AUTO'); const [routeId, setRouteId] = useState(routes.find(r => r.enabled !== false)?.id || '');
@@ -59,12 +59,12 @@ export function TaskDialog({ projects, routes, selectedProject, onClose, onCreat
         return { serverId: tool.serverId, name: tool.name, configVersion: tool.configVersion, definitionVersion: tool.definitionVersion, fixedArguments, timeoutMs: selected.timeoutMs };
       });
       if (mcpBindings.length && route?.engine !== 'API') throw new Error('MCP 固定动作目前只支持 API 运行路由。');
-      const task = await post<Task>('/tasks', { projectId, title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, mcpBindings, mcpBudget: { maxCalls: mcpMaxCalls, maxDurationMs: mcpMaxDurationMs }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges });
+      const task = await post<Task>('/tasks', { projectId, ...(sessionId ? { sessionId } : {}), title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, mcpBindings, mcpBudget: { maxCalls: mcpMaxCalls, maxDurationMs: mcpMaxDurationMs }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges });
       onCreated(task); onClose();
     } catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   }
   return <Modal wide title="创建研发任务" description="先明确目标和完成约定，再确认平台生成的协作计划。" onClose={onClose}><form onSubmit={submit}><div className="form-body">
-    <div className="form-grid"><Field label="所属项目"><select value={projectId} onChange={e => setProjectId(e.target.value)} required>{projects.map(p => <option value={p.id} key={p.id}>{p.name}</option>)}</select></Field><Field label="任务名称"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="给这次工作一个清晰的名称" maxLength={180} /></Field></div>
+    <div className="form-grid"><Field label="所属项目"><select disabled={!!sessionId} value={projectId} onChange={e => setProjectId(e.target.value)} required>{projects.map(p => <option value={p.id} key={p.id}>{p.name}</option>)}</select></Field><Field label="任务名称"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="给这次工作一个清晰的名称" maxLength={180} /></Field></div>
     <Field label="你希望完成什么？"><textarea className="goal-input" required rows={3} value={goal} onChange={e => setGoal(e.target.value)} placeholder="描述用户行为、现有问题、预期结果，以及需要遵守的约束…" /></Field>
     <Field label="协作方式"><div className="mode-picker">{[
       { id: 'AUTO', title: '自动选择', sub: '根据任务推荐', icon: Sparkles }, { id: 'LEAD', title: '主副协作', sub: '调查、拆分与实现', icon: Network },

@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Activity, ArrowDownToLine, ArrowRight, ArrowUpRight, Bell, BookOpen, Bot, Boxes, Check, CheckCheck, ChevronDown, ChevronRight, CircleHelp, Clock3, Code2, Command, Database, FileCode2, FolderGit2, FolderOpen, GitBranch, Layers3, LayoutDashboard, Link2, ListTodo, LoaderCircle, Network, PanelLeftClose, PanelLeftOpen, Pencil, Play, Plus, Power, RefreshCw, Search, Settings2, ShieldCheck, SlidersHorizontal, Sparkles, Terminal, Trash2, TriangleAlert, Upload, UsersRound, X } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { api, initializeConnection, post } from './api';
+import { api, currentConnection, initializeConnection, post } from './api';
 import type { Memory, Profile, Project, Route, Task, WorkbenchState } from './types';
 import { Badge, Empty, formatTime, kindLabel, LinkButton, modeLabel, PageTitle, SectionHeading, shortHash } from './ui';
 import { ConnectionDialog, MemoryDialog, ProfileDialog, ProjectDialog, RouteDialog, TaskDialog } from './dialogs';
 import { TaskDetail } from './TaskDetail';
 import { McpPanel } from './McpPanel';
 import { ProfileImport } from './ProfileImport';
+import { SessionWorkspace } from './SessionWorkspace';
 
-type Page = 'home' | 'tasks' | 'inbox' | 'knowledge' | 'settings';
-type Dialog = { type: 'project' | 'task' | 'connection' } | { type: 'memory'; memory?: Memory } | { type: 'route'; route?: Route } | { type: 'profile'; profile?: Profile } | null;
+type Page = 'home' | 'sessions' | 'tasks' | 'inbox' | 'knowledge' | 'settings';
+type Dialog = { type: 'project' | 'connection' } | { type: 'task'; sessionId?: string } | { type: 'memory'; memory?: Memory } | { type: 'route'; route?: Route } | { type: 'profile'; profile?: Profile } | null;
 type Notice = { message: string; error?: boolean; id: number };
 const initialState: WorkbenchState = { projects: [], tasks: [], routes: [], memories: [], profiles: [], system: {} };
 const attentionStates = ['DRAFT', 'WAITING_INPUT', 'UNKNOWN', 'AWAITING_ACCEPTANCE', 'FAILED'];
@@ -56,7 +57,7 @@ export default function App() {
   const onClose = useCallback(() => setDialog(null), []);
   const saved = useCallback(() => { void refresh(); notify('已保存'); }, [refresh, notify]);
   const navigation: { id: Page; title: string; icon: LucideIcon; count?: number }[] = [
-    { id: 'home', title: '项目总览', icon: LayoutDashboard }, { id: 'tasks', title: '研发任务', icon: Layers3 },
+    { id: 'home', title: '项目总览', icon: LayoutDashboard }, { id: 'sessions', title: '协作会话', icon: Network }, { id: 'tasks', title: '研发任务', icon: Layers3 },
     { id: 'inbox', title: '需要我处理', icon: ListTodo, count: inbox.length }, { id: 'knowledge', title: '上下文与记忆', icon: BookOpen },
   ];
   return <div className={`app-shell ${collapsed ? 'sidebar-collapsed' : ''}`}>
@@ -70,6 +71,7 @@ export default function App() {
     <main className="main-content">
       {!connected && <div className="connection-banner"><div><span className="connection-dot" /><b>{connecting ? '正在连接本地执行核心' : '连接本地核心后，开始你的研发任务'}</b><p>{connecting ? '正在读取项目、任务与运行器状态…' : connectionError || '请启动 Java 核心，或在连接设置中输入访问令牌。'}</p></div><button className="button secondary small" onClick={() => setDialog({ type: 'connection' })}><Link2 size={14} />连接设置</button></div>}
       {page === 'home' && <Home state={state} project={selectedProject} tasks={projectTasks} connected={connected} onImport={() => setDialog({ type: 'project' })} onCreate={() => setDialog({ type: 'task' })} onTask={openTask} onTasks={() => navigate('tasks')} onSettings={() => navigate('settings')} onScan={async () => { if (!selectedProject) return; try { await post(`/projects/${selectedProject.id}/scan`); await refresh(); notify('项目索引已更新'); } catch (e) { notify((e as Error).message, true); } }} />}
+      {page === 'sessions' && (selectedProject ? <><div hidden={!!selectedTask}><SessionWorkspace key={`${currentConnection().baseUrl}:${selectedProject.id}`} projectId={selectedProject.id} tasks={projectTasks} connected={connected} onTask={task => setTaskId(task.id)} onCreate={sessionId => setDialog({ type: 'task', sessionId })} /></div>{selectedTask && <TaskDetail key={selectedTask.id} task={selectedTask} project={selectedProject} routes={state.routes} backLabel="返回会话" onBack={() => setTaskId('')} onAction={act} onNotice={notify} />}</> : <section className="card"><Empty icon={<Network size={28} />} title="请先选择一个项目" description="会话、任务与活动按项目分别保存。" /></section>)}
       {page === 'tasks' && (selectedTask ? <TaskDetail key={selectedTask.id} task={selectedTask} project={state.projects.find(p => p.id === selectedTask.projectId)} routes={state.routes} onBack={() => setTaskId('')} onAction={act} onNotice={notify} /> : <><PageTitle eyebrow="DEVELOPMENT TASKS" title="研发任务" description="从目标到交付，让每一次协作都有清晰的进展。"><button className="button primary" disabled={!connected || !selectedProject} onClick={() => setDialog({ type: 'task' })}><Plus size={17} />新建任务</button></PageTitle><div className="tasks-toolbar"><div className="segmented">{[{ id: 'all', label: '全部任务' }, { id: 'active', label: '执行中' }, { id: 'attention', label: '待处理' }, { id: 'completed', label: '已完成' }].map(f => <button key={f.id} className={taskFilter === f.id ? 'active' : ''} onClick={() => setTaskFilter(f.id)}>{f.label}</button>)}</div><div className="search-input"><Search size={16} /><input aria-label="搜索任务" value={taskSearch} onChange={e => setTaskSearch(e.target.value)} placeholder="搜索任务…" /></div></div><TaskTable tasks={projectTasks.filter(t => (taskFilter === 'all' || taskFilter === 'active' && activeStates.includes(t.state) || taskFilter === 'attention' && attentionStates.includes(t.state) || taskFilter === 'completed' && t.state === 'COMPLETED') && `${t.title} ${t.goal}`.toLowerCase().includes(taskSearch.toLowerCase()))} projects={state.projects} onTask={openTask} /></>)}
       {page === 'inbox' && <><PageTitle eyebrow="YOUR ATTENTION" title="需要我处理" description="关键决定集中在这里，普通进度留在任务时间线。" /><div className="inbox-summary"><div className="inbox-summary-icon"><ListTodo size={23} /></div><div><b>{inbox.length} 个事项需要你的关注</b><p>确认计划、处理阻塞，以及验收已完成的成果。</p></div></div>{inbox.length ? <div className="inbox-list">{inbox.map(task => <button className="inbox-card" key={task.id} onClick={() => openTask(task)}><div className={`inbox-icon ${task.state === 'AWAITING_ACCEPTANCE' ? 'green' : ''}`}>{task.state === 'AWAITING_ACCEPTANCE' ? <CheckCheck size={22} /> : task.state === 'DRAFT' ? <GitBranch size={22} /> : <TriangleAlert size={22} />}</div><div><div className="inline-meta"><Badge state={task.state} /><span>{state.projects.find(p => p.id === task.projectId)?.name}</span></div><h3>{task.title}</h3><p>{task.error || (task.state === 'DRAFT' ? '协作计划已准备，请检查完成约定与预算后确认执行。' : task.state === 'AWAITING_ACCEPTANCE' ? '查看最终差异、验证证据和独立审查，确认是否接受交付。' : '查看执行记录与恢复条件，再决定后续处理。')}</p></div><ArrowUpRight size={20} /></button>)}</div> : <section className="card"><Empty icon={<CheckCheck size={30} />} title="当前没有待处理事项" description="任务需要你做决定时，会出现在这里。" /></section>}</>}
       {page === 'knowledge' && <Knowledge project={selectedProject} memories={state.memories.filter(m => m.projectId === projectId)} onAdd={() => setDialog({ type: 'memory' })} onEdit={memory => setDialog({ type: 'memory', memory })} onRefresh={refresh} onNotice={notify} connected={connected} />}
@@ -78,7 +80,7 @@ export default function App() {
     </main></div>
     {notice && <div className={`toast ${notice.error ? 'error' : ''}`} role={notice.error ? 'alert' : 'status'}>{notice.error ? <TriangleAlert size={18} /> : <Check size={18} />}<span>{notice.message}</span><button className="icon-button" aria-label="关闭提示" onClick={() => setNotice(null)}><X size={15} /></button></div>}
     {dialog?.type === 'project' && <ProjectDialog onClose={onClose} onSaved={saved} />}
-    {dialog?.type === 'task' && <TaskDialog projects={state.projects} routes={state.routes} selectedProject={projectId} onClose={onClose} onCreated={task => { setState(old => ({ ...old, tasks: [task, ...old.tasks] })); openTask(task); void refresh(); notify('任务计划已生成，请检查并确认执行'); }} />}
+    {dialog?.type === 'task' && <TaskDialog projects={state.projects} routes={state.routes} selectedProject={projectId} sessionId={dialog.sessionId} onClose={onClose} onCreated={task => { setState(old => ({ ...old, tasks: [task, ...old.tasks] })); if (dialog.sessionId) { setPage('sessions'); setTaskId(task.id); } else openTask(task); void refresh(); notify('任务计划已生成，请检查并确认执行'); }} />}
     {dialog?.type === 'route' && <RouteDialog route={dialog.route} onClose={onClose} onSaved={saved} />}
     {dialog?.type === 'memory' && <MemoryDialog memory={dialog.memory} projectId={projectId} onClose={onClose} onSaved={saved} />}
     {dialog?.type === 'profile' && <ProfileDialog profile={dialog.profile} onClose={onClose} onSaved={saved} />}

@@ -1,0 +1,36 @@
+.session-create { display: flex; align-items: end; gap: 16px; padding: 18px 22px; margin-bottom: 18px; }
+.session-create .field { flex: 1; margin: 0; min-width: 0; }
+.session-create > button { flex-shrink: 0; }
+.session-tabs { display: flex; gap: 6px; overflow-x: auto; margin: 18px 0; padding-bottom: 4px; }
+.session-tabs > div { display: flex; align-items: center; flex-shrink: 0; border: 1px solid var(--border); border-radius: 10px; background: var(--surface, #fff); padding: 4px; }
+.session-tabs > div.active { border-color: #b6d5c9; background: #eff6f2; }
+.session-tabs [role=tab] { display: flex; align-items: center; gap: 8px; border: 0; background: transparent; padding: 8px 10px; color: inherit; }
+.session-tabs [role=tab] span { max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.session-title { display: flex; align-items: end; gap: 12px; margin-bottom: 18px; }
+.session-title .field { flex: 1; margin: 0; min-width: 0; }
+.session-title > button { flex-shrink: 0; margin-bottom: 2px; }
+.session-columns { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 20px; }
+.session-columns > .card, .session-history { padding: 22px; min-width: 0; }
+.session-columns h2, .session-history h2 { font-size: 14px; margin: 0 0 16px; }
+.session-records article, .session-event { padding: 16px 0; border-bottom: 1px solid var(--border); }
+.session-records article header { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; font-size: 12px; }
+.session-records time, .session-event small, .session-history small { color: var(--muted); font-size: 11px; }
+.session-records article p, .session-event p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.7; font-size: 13px; }
+.session-records form { display: grid; margin-top: 20px; }
+.session-records form > button { justify-self: end; }
+.session-tasks > header { display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.session-tasks > header h2 { margin: 0; }
+.session-task { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px; text-align: left; border: 1px solid var(--border); border-radius: 8px; background: transparent; padding: 12px; margin-bottom: 10px; }
+.session-task span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.session-tasks > h2 { margin-top: 24px; }
+.session-history > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); }
+.session-history > div > span { min-width: 0; overflow-wrap: anywhere; }
+.session-history small { display: block; margin-top: 5px; }
+.session-history button { flex-shrink: 0; }
+@media (max-width: 1100px) { .session-columns { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 700px) {
+  .session-create { display: grid; padding: 16px; }
+  .session-create > button { justify-self: end; }
+  .session-columns > .card, .session-history { padding: 16px; }
+  .session-tabs [role=tab] span { max-width: 160px; }
+}

@@ -8,6 +8,7 @@
 - `POST /api/projects` `{name,path}` → Project
 - `POST /api/projects/{id}/scan` → Project
 - `GET /api/projects/{id}/search?q=` → `{results:[{path,line,text}],coverage,version}`
+- 项目会话、幂等笔记、消息历史和任务活动：见[会话接口约定](./session-contract.md)。`POST /api/tasks` 新增可选 `sessionId`，不提供时自动创建会话。
 - `POST /api/tasks` `{projectId,title,goal,mode:'AUTO'|'LEAD'|'ROUNDTABLE'|'PIPELINE',routeId,contract:{scope:string[],acceptance:string[],commands:string[]},budget:{maxCalls,reserveCalls},locks:{engine?,model?,provider?,routeId?},includeChanges:false}` → Task
 - `GET /api/tasks/{id}` → Task（含详情）
 - `POST /api/tasks/{id}/{action}`，action 为 `approve`/`pause`/`resume`/`cancel`/`accept`（空对象）；`accept` 只记录人工验收，不写原项目。
