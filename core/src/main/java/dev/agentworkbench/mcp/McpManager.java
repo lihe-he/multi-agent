@@ -34,22 +34,35 @@ public class McpManager {
     private final ObjectMapper mapper;
     private final WorkbenchCatalog catalog;
     private final ResourceManager resources;
+    private final TransportFactory transportFactory;
+    private final Map<String, ManagedTransport> transports = new ConcurrentHashMap<>();
+    private volatile boolean observing = true;
     private final Map<String, String> tokens = new ConcurrentHashMap<>();
     private final Map<String, ReentrantLock> locks = new ConcurrentHashMap<>();
 
     public McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog) { this(store, mapper, catalog, new ResourceManager()); }
 
     @Autowired
-    public McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog, ResourceManager resources) { this.store = store; this.mapper = mapper; this.catalog = catalog; this.resources = resources; }
+    public McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog, ResourceManager resources) { this(store, mapper, catalog, resources, McpTransport::open); }
+
+    McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog, ResourceManager resources, TransportFactory transportFactory) {
+        this.store = store; this.mapper = mapper; this.catalog = catalog; this.resources = resources; this.transportFactory = transportFactory;
+    }
 
     @PostConstruct
     void recover() {
         for (Map<String, Object> operation : store.list("mcpOperation")) {
-            if (Set.of("PREPARED", "DISPATCHED").contains(str(operation, "state"))) {
-                operation.put("state", "UNKNOWN"); operation.put("error", "核心退出前未收到确认结果，禁止自动重放"); store.put("mcpOperation", operation);
+            if (Set.of("PREPARED", "DISPATCHED").contains(str(operation, "state"))
+                    || ("ACKNOWLEDGED".equals(str(operation, "state")) && "UNCONFIRMED".equals(str(operation, "stopState")))) {
+                if ("SENT".equals(str(operation, "dispatchState"))) operation.put("dispatchState", "UNKNOWN");
+                operation.put("state", "UNKNOWN"); operation.put("stopState", "UNCONFIRMED"); operation.put("canReconcile", true);
+                operation.put("error", "核心退出前未完成操作或停止确认，禁止自动重放"); store.put("mcpOperation", operation);
             }
         }
     }
+
+    @jakarta.annotation.PreDestroy
+    void stopObservers() { observing = false; }
 
     public synchronized Map<String, Object> save(Map<String, Object> input) {
         String serverId = str(input, "id").isBlank() ? id() : str(input, "id");
@@ -79,7 +92,7 @@ public class McpManager {
             requireServerResolved(serverId);
             Map<String, Object> server = store.get("mcpServer", serverId);
             if (!bool(server, "enabled", false)) { throw new ApiException(409, "MCP 服务已停用"); }
-            try (var lease = resources.acquire(resourceRequest(server), () -> false); McpTransport transport = McpTransport.open(server, tokens.getOrDefault(serverId, ""), mapper)) {
+            try (var transport = openTransport(server, () -> false, Duration.ofSeconds(30), null)) {
                 Map<String, Object> discovery = discover(server, transport);
                 persistDiscovery(server, discovery);
                 return discovery;
@@ -117,9 +130,10 @@ public class McpManager {
                 return obj("operationId", operationId, "state", "ACKNOWLEDGED", "deduplicated", true, "result", existing.get("result"));
             }
             Map<String, Object> operation = obj("id", operationId, "requestId", requestId, "serverId", serverId, "identity", server.get("identity"), "projectId", projectId, "taskId", taskId,
-                "tool", tool, "definitionVersion", expectedVersion, "argumentKeys", new ArrayList<>(arguments.keySet()), "argumentHash", hash(arguments), "state", "PREPARED", "createdAt", now());
+                "tool", tool, "definitionVersion", expectedVersion, "argumentKeys", new ArrayList<>(arguments.keySet()), "argumentHash", hash(arguments),
+                "state", "PREPARED", "dispatchState", "NOT_SENT", "stopState", "UNCONFIRMED", "createdAt", now());
             boolean sent = false;
-            try (var lease = resources.acquire(resourceRequest(server), () -> false); McpTransport transport = McpTransport.open(server, tokens.getOrDefault(serverId, ""), mapper)) {
+            try (var transport = openTransport(server, () -> false, Duration.ofSeconds(30), operation)) {
                 Map<String, Object> discovery = discover(server, transport);
                 persistDiscovery(server, discovery);
                 if (!expectedVersion.equals(str(discovery, "definitionVersion"))) { throw new ApiException(409, "MCP 工具定义已变化，请重新检查工具与授权后使用新版本"); }
@@ -127,20 +141,19 @@ public class McpManager {
                 Map<String, Object> live = store.get("mcpServer", serverId);
                 if (!bool(live, "enabled", false) || num(live, "version", -1) != num(server, "version", -2) || !str(server, "identity").equals(str(live, "identity")) || !strings(live.get("projectIds")).contains(projectId) || !strings(live.get("allowedTools")).contains(tool)) { throw new ApiException(403, "MCP 授权或服务身份在派发前变化，已停止调用"); }
                 store.put("mcpOperation", operation);
-                operation.put("state", "DISPATCHED"); store.put("mcpOperation", operation); sent = true;
+                operation.put("state", "DISPATCHED"); operation.put("dispatchState", "SENT"); store.put("mcpOperation", operation); sent = true;
                 Map<String, Object> result = transport.request("tools/call", obj("name", tool, "arguments", arguments));
                 Map<String, Object> safeResult = mapper.readValue(redact(mapper.writeValueAsString(result)), new com.fasterxml.jackson.core.type.TypeReference<>() { });
-                operation.put("state", "ACKNOWLEDGED"); operation.put("result", safeResult); operation.put("completedAt", now()); store.put("mcpOperation", operation);
+                operation.put("state", "ACKNOWLEDGED"); operation.put("dispatchState", "ACKNOWLEDGED"); operation.put("result", safeResult); operation.put("completedAt", now()); store.put("mcpOperation", operation);
                 store.event(taskId, "MCP_RESULT", serverId + "/" + tool + " 已收到服务回执；不把声明只读当作强隔离保证");
                 return obj("operationId", operationId, "state", "ACKNOWLEDGED", "result", safeResult, "definitionVersion", expectedVersion);
-            } catch (ApiException exception) { throw exception; }
+            } catch (ApiException exception) {
+                if (!localStopConfirmed(serverId)) return unknownMcp(taskId, operation, exception.getMessage());
+                throw exception;
+            }
             catch (Exception exception) {
                 String message = redact(exception.getMessage() == null ? exception.getClass().getSimpleName() : exception.getMessage());
-                if (sent) {
-                    operation.put("state", "UNKNOWN"); operation.put("error", message); operation.put("updatedAt", now()); store.put("mcpOperation", operation);
-                    store.event(taskId, "MCP_UNKNOWN", serverId + "/" + tool + " 未确认；禁止重放");
-                    return obj("operationId", operationId, "state", "UNKNOWN", "error", message);
-                }
+                if (sent || !localStopConfirmed(serverId)) return unknownMcp(taskId, operation, message);
                 throw new ApiException(502, "MCP 连接或能力核验失败，工具尚未派发：" + message);
             }
         }
@@ -173,11 +186,10 @@ public class McpManager {
                 "tool", binding.get("name"), "actionKey", actionKey, "authorizationVersion", authVersion, "definitionVersion", binding.get("definitionVersion"),
                 "argumentKeys", new ArrayList<>(map(binding, "fixedArguments").keySet()), "argumentHash", hash(binding.get("fixedArguments")),
                 "inputSummary", "固定参数键：" + String.join(", ", map(binding, "fixedArguments").keySet()),
-                "state", "PREPARED", "dispatchState", "NOT_SENT", "stopState", "CONFIRMED", "canReconcile", false, "createdAt", now());
+                "state", "PREPARED", "dispatchState", "NOT_SENT", "stopState", "UNCONFIRMED", "canReconcile", false, "createdAt", now());
             store.beginMcpOperation(taskId, operation, authVersion, timeout);
             boolean sent = false;
-            try (var lease = resources.acquire(resourceRequest(server), cancelled);
-                 McpTransport transport = McpTransport.open(server, tokens.getOrDefault(serverId, ""), mapper, cancelled, Duration.ofMillis(timeout))) {
+            try (var transport = openTransport(server, cancelled, Duration.ofMillis(timeout), operation)) {
                 Map<String, Object> discovery = discover(server, transport);
                 if (!str(binding, "definitionVersion").equals(str(discovery, "definitionVersion"))) throw new ApiException(409, "MCP 工具定义已变化，派发已阻止");
                 Map<String, Object> latestTask = store.get("task", taskId);
@@ -192,12 +204,14 @@ public class McpManager {
                 store.event(taskId, "MCP_RESULT", serverId + "/" + binding.get("name") + " 已收到固定动作回执");
                 return obj("state", "ACKNOWLEDGED", "result", safeResult, "operationId", operationId);
             } catch (CancellationException exception) {
-                if (sent) return unknownMcp(taskId, operation, exception.getMessage());
+                if (sent || !localStopConfirmed(serverId)) return unknownMcp(taskId, operation, exception.getMessage());
+                operation.put("stopState", "CONFIRMED");
                 operation.put("state", "RECONCILED"); operation.put("dispatchState", "NOT_SENT"); operation.put("error", "停止请求在派发前到达"); store.put("mcpOperation", operation);
                 return obj("state", "CANCELLED", "error", "MCP 动作在派发前停止");
             } catch (Exception exception) {
                 String message = redact(exception.getMessage() == null ? exception.getClass().getSimpleName() : exception.getMessage());
-                if (sent) return unknownMcp(taskId, operation, message);
+                if (sent || !localStopConfirmed(serverId)) return unknownMcp(taskId, operation, message);
+                operation.put("stopState", "CONFIRMED");
                 operation.put("state", "RECONCILED"); operation.put("dispatchState", "NOT_SENT"); operation.put("error", message); store.put("mcpOperation", operation);
                 return obj("state", "REJECTED", "error", message, "operationId", operationId);
             }
@@ -230,11 +244,100 @@ public class McpManager {
     }
 
     private Map<String, Object> unknownMcp(String taskId, Map<String, Object> operation, String reason) {
-        operation.put("state", "UNKNOWN"); operation.put("dispatchState", "UNKNOWN"); operation.put("stopState", "UNCONFIRMED");
-        operation.put("canReconcile", true);
-        operation.put("error", redact(reason == null ? "结果未知" : reason)); operation.put("updatedAt", now()); store.put("mcpOperation", operation);
+        boolean stopped = localStopConfirmed(str(operation, "serverId"));
+        Map<String, Object> current;
+        synchronized (store) {
+            current = store.find("mcpOperation", str(operation, "id"));
+            if (current == null) current = new LinkedHashMap<>(operation);
+            stopped = stopped || current.containsKey("localStoppedAt");
+            current.put("state", "UNKNOWN");
+            if ("SENT".equals(str(current, "dispatchState"))) current.put("dispatchState", "UNKNOWN");
+            current.put("stopState", stopped ? "CONFIRMED" : "UNCONFIRMED"); current.put("canReconcile", stopped);
+            current.put("error", redact(reason == null ? "结果未知" : reason)); current.put("updatedAt", now()); store.put("mcpOperation", current);
+        }
         store.event(taskId, "MCP_UNKNOWN", str(operation, "serverId") + "/" + str(operation, "tool") + " 未确认；禁止重放");
-        return obj("state", "UNKNOWN", "error", operation.get("error"), "operationId", operation.get("id"));
+        return obj("state", "UNKNOWN", "error", current.get("error"), "operationId", current.get("id"));
+    }
+
+    @FunctionalInterface
+    interface TransportFactory {
+        McpTransport open(Map<String, Object> server, String token, ObjectMapper mapper, BooleanSupplier cancelled, Duration timeout) throws Exception;
+    }
+
+    private ManagedTransport openTransport(Map<String, Object> server, BooleanSupplier cancelled, Duration timeout, Map<String, Object> operation) throws Exception {
+        var lease = resources.acquire(resourceRequest(server), cancelled);
+        try {
+            var managed = new ManagedTransport(str(server, "id"), transportFactory.open(server, tokens.getOrDefault(str(server, "id"), ""), mapper, cancelled, timeout), lease, operation);
+            transports.put(str(server, "id"), managed);
+            return managed;
+        } catch (Exception exception) { lease.close(); throw exception; }
+    }
+
+    /**
+     * 停止确认前保留工具和进程容量；已收到回执也不能绕过残留进程检查。
+     */
+    private final class ManagedTransport implements McpTransport {
+        private final String serverId;
+        private final McpTransport delegate;
+        private final ResourceManager.Lease lease;
+        private final String operationId;
+        private boolean closed;
+        private boolean released;
+
+        private ManagedTransport(String serverId, McpTransport delegate, ResourceManager.Lease lease, Map<String, Object> operation) {
+            this.serverId = serverId; this.delegate = delegate; this.lease = lease; this.operationId = operation == null ? "" : str(operation, "id");
+        }
+
+        @Override public Map<String, Object> request(String method, Map<String, Object> params) throws Exception { return delegate.request(method, params); }
+        @Override public void notify(String method, Map<String, Object> params) throws Exception { delegate.notify(method, params); }
+        @Override public boolean definitionsChanged() { return delegate.definitionsChanged(); }
+        @Override public synchronized boolean stopConfirmed() { return closed && delegate.stopConfirmed(); }
+
+        private synchronized boolean releaseIfStopped() {
+            if (released) return true;
+            if (!closed || !delegate.stopConfirmed()) return false;
+            synchronized (store) {
+                Map<String, Object> current = operationId.isBlank() ? null : store.find("mcpOperation", operationId);
+                if (current != null) {
+                    current.put("stopState", "CONFIRMED"); current.put("localStoppedAt", now());
+                    if ("UNKNOWN".equals(str(current, "state"))) current.put("canReconcile", true);
+                    store.put("mcpOperation", current);
+                }
+            }
+            lease.close(); transports.remove(serverId, this);
+            released = true;
+            return true;
+        }
+
+        @Override
+        public synchronized void close() {
+            try { delegate.close(); }
+            finally {
+                closed = true;
+                if (!releaseIfStopped()) {
+                    Thread.startVirtualThread(() -> {
+                        while (observing && transports.get(serverId) == this) {
+                            try { Thread.sleep(100); if (releaseIfStopped()) return; }
+                            catch (InterruptedException exception) { Thread.currentThread().interrupt(); return; }
+                        }
+                    });
+                    throw new McpTransport.McpFailure("MCP 本地进程或传输未确认停止，容量继续保留；请核对实际进程", true);
+                }
+            }
+        }
+    }
+
+    private boolean localStopConfirmed(String serverId) {
+        ManagedTransport transport = transports.get(serverId);
+        return transport == null || transport.releaseIfStopped();
+    }
+
+    public void requireTaskStopped(String taskId) {
+        for (Map<String, Object> operation : store.list("mcpOperation")) {
+            if (taskId.equals(str(operation, "taskId")) && !localStopConfirmed(str(operation, "serverId"))) {
+                throw new ApiException(409, "MCP 本地进程或传输仍未停止，不能记录人工核对");
+            }
+        }
     }
 
     public List<Map<String, Object>> operations(String serverId) { store.get("mcpServer", serverId); return store.list("mcpOperation").stream().filter(operation -> serverId.equals(str(operation, "serverId"))).toList(); }
@@ -246,7 +349,7 @@ public class McpManager {
     }
 
     Map<String, Object> discover(Map<String, Object> server, McpTransport transport) throws Exception {
-        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.2")));
+        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.3")));
         String protocol = str(initialized, "protocolVersion");
         if (!Set.of("2025-06-18", "2025-03-26").contains(protocol)) { throw new ApiException(409, "此客户端尚未验证服务协商的 MCP 版本：" + protocol); }
         transport.notify("notifications/initialized", obj());
@@ -283,6 +386,7 @@ public class McpManager {
     String token(String serverId) { return tokens.getOrDefault(serverId, ""); }
     static Map<String, Integer> resourceRequest(Map<String, Object> server) { Map<String, Integer> result = new LinkedHashMap<>(Map.of("tool", 1, "mcp:" + str(server, "id"), 1)); if ("STDIO".equals(str(server, "transport"))) { result.put("process", 1); } return result; }
     void requireServerResolved(String serverId) {
+        if (!localStopConfirmed(serverId)) throw new ApiException(409, "MCP 本地进程或传输仍未停止，暂不开放新派发");
         if (store.list("mcpOperation").stream().anyMatch(operation -> serverId.equals(str(operation, "serverId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")))) { throw new ApiException(409, "该 MCP 服务存在未核对动作，暂不开放新派发"); }
     }
     private String hash(Object value) { return McpTaskPolicy.hash(value); }

@@ -157,11 +157,17 @@ interface McpTransport extends AutoCloseable {
         private void write(Map<String, Object> value) throws Exception { input.write(mapper.writeValueAsString(value)); input.newLine(); input.flush(); }
 
         @Override
-        public void close() {
+        public synchronized void close() {
             if (closed) { return; } closed = true;
             process.descendants().forEach(child -> descendants.put(child.pid(), child));
-            descendants.values().forEach(child -> { if (child.isAlive()) { child.destroyForcibly(); } });
             long stopDeadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(1000);
+            descendants.values().stream().filter(child -> child.pid() != process.pid()).forEach(child -> { if (child.isAlive()) child.destroyForcibly(); });
+            long childDeadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(200);
+            while (descendants.values().stream().anyMatch(child -> child.pid() != process.pid() && child.isAlive()) && System.nanoTime() < childDeadline) {
+                try { Thread.sleep(20); } catch (InterruptedException error) { Thread.currentThread().interrupt(); break; }
+            }
+            process.descendants().forEach(child -> descendants.put(child.pid(), child));
+            descendants.values().forEach(child -> { if (child.isAlive()) child.destroyForcibly(); });
             while (descendants.values().stream().anyMatch(ProcessHandle::isAlive) && System.nanoTime() < stopDeadline) {
                 try { Thread.sleep(20); } catch (InterruptedException error) { Thread.currentThread().interrupt(); break; }
             }
@@ -170,7 +176,10 @@ interface McpTransport extends AutoCloseable {
             try { process.getInputStream().close(); } catch (Exception ignored) { }
             reader.shutdownNow();
         }
-        @Override public boolean stopConfirmed() { return stopped; }
+        @Override public boolean stopConfirmed() {
+            if (closed && !stopped) stopped = descendants.values().stream().noneMatch(ProcessHandle::isAlive);
+            return stopped;
+        }
     }
 
     final class Http extends Base {

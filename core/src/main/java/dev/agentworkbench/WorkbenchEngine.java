@@ -121,6 +121,8 @@ public class WorkbenchEngine {
         if (!bool(body, "processesStopped", false) || !bool(body, "sideEffectsChecked", false) || str(body, "note").isBlank()) {
             throw new ApiException(400, "人工核对需确认旧进程已停止、外部效果已检查，并填写核对说明");
         }
+        if (controls.containsKey(taskId)) throw new ApiException(409, "任务执行仍在停止或收尾中，请等待停止确认");
+        if (mcp != null) mcp.requireTaskStopped(taskId);
         for (Map<String, Object> operation : store.list("operation")) {
             if (taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state"))) {
                 store.markOperation(str(operation, "id"), "RECONCILED", obj("reconciledBy", "USER", "note", str(body, "note")));

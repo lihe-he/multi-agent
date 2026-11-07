@@ -1,6 +1,23 @@
 # 实施与验收记录
 
-产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-06。
+产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-07。
+
+## 0.2.0-alpha.3 开发迭代
+
+本轮补齐 MCP 本地停止确认、容量保留及人工核对门禁；未知外部效果继续保留，已收到的结果不因清理失败丢失。真实 stdio 父子进程取消先复现旧账本错误，再验证修复；受控停止故障和恢复窗口另有回归。开源来源、自审和未覆盖边界见[本地停止审查](./research/mcp-stop-accounting-2026-11-07.md)。全部提交继续使用 `main`。
+
+| 检查 | 当前证据 |
+| --- | --- |
+| `npm run build` | Java 核心 80 项中 79 通过，0 失败，0 错误，1 因 Windows 不支持 POSIX 权限跳过；alpha.3 Jar、Web TypeScript 与生产构建成功 |
+| `PLAYWRIGHT_CHANNEL=msedge npm run test:ui --prefix web` | 9 / 9 通过；包含核对 POST 响应、请求体与恢复按钮 |
+| `node --test tools/connection.test.cjs` | 1 / 1 通过 |
+| `npm run test:integration` | 最终 alpha.3 Jar 的本机协议流程 22 / 22 通过；[Windows 协议报告](./qa/smoke-win32.json) |
+| `npm run test:standalone` | alpha.3 独立 Java、生产 Web、附加桌面生命周期通过；关闭客户端后在途模型请求仍为 1，页面无异常；[Windows 报告](./qa/standalone-win32.json) |
+| `npm run package:prepared`、`npm run test:packaged` | Windows NSIS 生成成功；打包程序 alpha.3 在外部 Java 无效时使用内置 Java 启动，API 200，页面无异常；[打包报告](./qa/desktop-packaged-win32.json) |
+
+附加的本地 Chromium 检查未通过启动：起初缺少浏览器，下载直连超时后改用现有本机代理完成安装；Node 单独启动 Chrome 也返回 spawn UNKNOWN，UI 断言尚未执行。此项不计作通过，未修改产品代码来隐藏环境问题。三端 Chromium、打包与运行结果以本次提交的远端 GitHub Actions 实际记录为准。本轮未重跑安装/卸载。
+
+上一版本产品代码加 main 约定的 `4ba1c06` 在 run `42347134703` 中三端全部通过；这条历史结果不替代 alpha.3 验收。完整动态副 Agent、Session/Team/Worker、F01–F21、完整备份恢复及正式发布继续实施，不能以本轮回归替代完整计划验收。
 
 ## 0.2.0-alpha.2 开发迭代
 

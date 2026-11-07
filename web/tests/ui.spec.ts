@@ -103,8 +103,10 @@ test('结果未知只能经明确现场核对恢复，不能自动重放', async
   await page.getByLabel('我已确认相关执行与子进程停止').check();
   await page.getByLabel('我已核对未确认操作的实际副作用').check();
   await page.getByLabel('核对依据', { exact: true }).fill('检查了本机进程树与工作目录，已确认没有残留写入。');
+  const saved = page.waitForResponse(response => new URL(response.url()).pathname === '/api/tasks/task-fixture/reconcile' && response.request().method() === 'POST');
   await page.getByRole('button', { name: '记录人工核对', exact: true }).click();
-  await expect.poll(() => actions.length).toBe(1);
+  expect((await saved).ok()).toBe(true);
+  expect(actions).toHaveLength(1);
   expect(actions[0]).toEqual({ action: '/tasks/task-fixture/reconcile', body: { processesStopped: true, sideEffectsChecked: true, note: '检查了本机进程树与工作目录，已确认没有残留写入。' } });
   await expect(page.getByRole('button', { name: '核验并继续', exact: true })).toBeVisible();
 });

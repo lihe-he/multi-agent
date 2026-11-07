@@ -1,120 +1,120 @@
 {
-  "createdAt": "2026-11-06T15:51:54.979Z",
+  "createdAt": "2026-11-07T06:45:01.366Z",
   "platform": "win32",
   "status": "passed",
-  "baseUrl": "http://127.0.0.1:51932",
-  "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-BnQ8EJ",
-  "projectPath": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-BnQ8EJ\\中文 sample project",
+  "baseUrl": "http://127.0.0.1:62735",
+  "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-Aipv0w",
+  "projectPath": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-Aipv0w\\中文 sample project",
   "checks": [
     {
       "name": "API rejects missing access token",
       "status": "passed",
-      "durationMs": 35
+      "durationMs": 32
     },
     {
       "name": "Core returns persisted state",
       "status": "passed",
-      "durationMs": 43
+      "durationMs": 70
     },
     {
       "name": "Import real Git repository with Chinese and spaced path",
       "status": "passed",
-      "durationMs": 1849
+      "durationMs": 2278
     },
     {
       "name": "Search reports source locations and coverage",
       "status": "passed",
-      "durationMs": 220
+      "durationMs": 423
     },
     {
       "name": "Save project knowledge with an explicit source",
       "status": "passed",
-      "durationMs": 17
+      "durationMs": 13
     },
     {
       "name": "Reject unsupported permission in an imported role template",
       "status": "passed",
-      "durationMs": 20
+      "durationMs": 40
     },
     {
       "name": "Reject cyclic execution plan before dispatch",
       "status": "passed",
-      "durationMs": 11
+      "durationMs": 16
     },
     {
       "name": "Configure local protocol test route",
       "status": "passed",
-      "durationMs": 6
+      "durationMs": 13
     },
     {
       "name": "Create task with fixed contract and route locks",
       "status": "passed",
-      "durationMs": 21
+      "durationMs": 47
     },
     {
       "name": "Reject route that does not match the hard model lock",
       "status": "passed",
-      "durationMs": 10
+      "durationMs": 18
     },
     {
       "name": "Reject acceptance before required execution and evidence",
       "status": "passed",
-      "durationMs": 16
+      "durationMs": 19
     },
     {
       "name": "Execute actual Java API tool loop, verification and independent review",
       "status": "passed",
-      "durationMs": 8518
+      "durationMs": 14092
     },
     {
       "name": "Preserve source Git worktree and staged state",
       "status": "passed",
-      "durationMs": 226
+      "durationMs": 244
     },
     {
       "name": "Diff and evidence are bound to the delivered version",
       "status": "passed",
-      "durationMs": 414
+      "durationMs": 714
     },
     {
       "name": "Persistent events can be replayed with a cursor",
       "status": "passed",
-      "durationMs": 31
+      "durationMs": 35
     },
     {
       "name": "Reject acceptance and export when content changes after review",
       "status": "passed",
-      "durationMs": 501
+      "durationMs": 785
     },
     {
       "name": "Manual acceptance records completion without writing source",
       "status": "passed",
-      "durationMs": 240
+      "durationMs": 329
     },
     {
       "name": "Export portable delivery archive",
       "status": "passed",
-      "durationMs": 686
+      "durationMs": 856
     },
     {
       "name": "Disable knowledge while preserving its revision",
       "status": "passed",
-      "durationMs": 7
+      "durationMs": 16
     },
     {
       "name": "Complete LEAD stages under the same root budget",
       "status": "passed",
-      "durationMs": 8157
+      "durationMs": 12626
     },
     {
       "name": "Complete ROUNDTABLE stages under the same root budget",
       "status": "passed",
-      "durationMs": 7684
+      "durationMs": 17341
     },
     {
       "name": "Cancel an in-flight task and keep source intact",
       "status": "passed",
-      "durationMs": 4594
+      "durationMs": 7946
     }
   ],
   "calls": [

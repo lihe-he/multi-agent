@@ -6,6 +6,9 @@ import com.sun.net.httpserver.HttpServer;
 import dev.agentworkbench.ApiException;
 import dev.agentworkbench.ExecutionStore;
 import dev.agentworkbench.WorkbenchCatalog;
+import dev.agentworkbench.ResourceManager;
+import dev.agentworkbench.WorkbenchEngine;
+import dev.agentworkbench.runtime.WorkspaceRuntime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,7 +80,7 @@ class McpIntegrationTest {
     }
 
     @AfterEach
-    void close() throws Exception { if (http != null) { http.stop(0); } if (store != null) { store.close(); } }
+    void close() throws Exception { if (manager != null) manager.stopObservers(); if (http != null) { http.stop(0); } if (store != null) { store.close(); } }
 
     private Map<String, Object> httpConfiguration() {
         return obj("name", "HTTP fixture", "transport", "HTTP", "url", "http://127.0.0.1:" + http.getAddress().getPort() + "/mcp", "enabled", true, "projectIds", List.of("p"), "allowedTools", List.of("echo"));
@@ -142,6 +145,7 @@ class McpIntegrationTest {
         var second = manager.invokeFixedTool("task-fixed", "IMPLEMENT", str(objects(authorization.get("bindings")).getFirst(), "alias"), () -> false);
         assertEquals("ACKNOWLEDGED", str(first, "state")); assertTrue(bool(second, "deduplicated", false)); assertEquals(1, calls.get());
         assertEquals(1, num(map(store.get("task", "task-fixed"), "mcpBudget"), "usedCalls", 0));
+        assertEquals("CONFIRMED", str(manager.operations(serverId).getFirst(), "stopState"));
     }
 
     @Test
@@ -167,6 +171,122 @@ class McpIntegrationTest {
         store.createTask(obj("id", taskId, "projectId", "p", "state", "RUNNING", "mcpAuthorization", authorization,
             "mcpBudget", McpTaskPolicy.budget(obj("maxCalls", 2, "maxDurationMs", 10000), Map.of())));
         return str(objects(authorization.get("bindings")).getFirst(), "alias");
+    }
+
+    @Test
+    void cancellingRealStdioTreeConfirmsLocalStopButKeepsEffectUnknown() throws Exception {
+        Path marker = directory.resolve("stdio-pids.json"), script = directory.resolve("hanging-tree.mjs");
+        Files.writeString(script, """
+            import readline from 'node:readline';
+            import {spawn} from 'node:child_process';
+            import {writeFileSync} from 'node:fs';
+            const io=readline.createInterface({input:process.stdin});
+            io.on('line',line=>{
+              const req=JSON.parse(line); if(req.id===undefined)return;
+              let result;
+              if(req.method==='initialize')result={protocolVersion:'2025-06-18',capabilities:{tools:{}},serverInfo:{name:'tree',version:'1'}};
+              else if(req.method==='tools/list')result={tools:[{name:'echo',inputSchema:{type:'object'}}]};
+              else if(req.method==='tools/call'){
+                const child=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'ignore'});
+                setTimeout(()=>writeFileSync(process.argv[2],JSON.stringify([process.pid,child.pid])),300);
+                return;
+              }
+              process.stdout.write(JSON.stringify({jsonrpc:'2.0',id:req.id,result})+'\\n');
+            });
+            """);
+        var saved = manager.save(obj("name", "Tree fixture", "transport", "STDIO", "command", "node", "args", List.of(script.toString(), marker.toString()),
+            "enabled", true, "projectIds", List.of("p"), "allowedTools", List.of("echo")));
+        String serverId = str(saved, "id"), alias = fixedTask("stdio-cancel", saved, manager.probe(serverId));
+        AtomicBoolean cancelled = new AtomicBoolean();
+        List<Long> pids = new java.util.ArrayList<>();
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            var invocation = executor.submit(() -> manager.invokeFixedTool("stdio-cancel", "IMPLEMENT", alias, cancelled::get));
+            try {
+                long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(4);
+                while (!Files.exists(marker) && System.nanoTime() < deadline) Thread.sleep(20);
+                assertTrue(Files.exists(marker), "The real tool and its child must start before cancellation");
+                pids.addAll(mapper.readValue(Files.readString(marker), new TypeReference<List<Long>>() { }));
+                assertEquals(2, pids.size());
+                cancelled.set(true);
+                assertEquals("UNKNOWN", str(invocation.get(3, TimeUnit.SECONDS), "state"));
+                assertTrue(pids.stream().noneMatch(pid -> ProcessHandle.of(pid).map(ProcessHandle::isAlive).orElse(false)), "Parent and observed child must stop");
+                var operation = manager.operations(serverId).getFirst();
+                assertEquals("CONFIRMED", str(operation, "stopState"));
+                assertEquals("UNKNOWN", str(operation, "dispatchState"));
+                assertEquals("UNKNOWN", str(manager.invokeFixedTool("stdio-cancel", "IMPLEMENT", alias, () -> false), "state"));
+                assertEquals(1, num(map(store.get("task", "stdio-cancel"), "mcpBudget"), "usedCalls", -1));
+            } finally {
+                cancelled.set(true);
+                for (long pid : pids) ProcessHandle.of(pid).filter(ProcessHandle::isAlive).ifPresent(ProcessHandle::destroyForcibly);
+            }
+        }
+    }
+
+    @Test
+    void unconfirmedStopRetainsCapacityAndBlocksReconciliationDespiteAcknowledgedResult() throws Exception {
+        assertUnconfirmedStop(false);
+    }
+
+    @Test
+    void unconfirmedStopBeforeDispatchAlsoBlocksReconciliationAndKeepsNotSentReceipt() throws Exception {
+        assertUnconfirmedStop(true);
+    }
+
+    @Test
+    void recoveryPreservesReceivedResultWhileRequiringMissingStopConfirmation() {
+        store.put("mcpOperation", obj("id", "crash-after-receipt", "state", "ACKNOWLEDGED", "dispatchState", "ACKNOWLEDGED",
+            "stopState", "UNCONFIRMED", "result", obj("content", List.of(obj("type", "text", "text", "Saved receipt")))));
+        manager.recover();
+        var recovered = store.get("mcpOperation", "crash-after-receipt");
+        assertEquals("UNKNOWN", str(recovered, "state")); assertEquals("UNCONFIRMED", str(recovered, "stopState"));
+        assertEquals("ACKNOWLEDGED", str(recovered, "dispatchState"));
+        assertTrue(recovered.containsKey("result")); assertTrue(bool(recovered, "canReconcile", false));
+    }
+
+    private void assertUnconfirmedStop(boolean definitionChanged) throws Exception {
+        ResourceManager resources = new ResourceManager(); AtomicBoolean stopped = new AtomicBoolean(true);
+        manager = new McpManager(store, mapper, catalog, resources, (server, token, json, cancelled, timeout) -> {
+            McpTransport delegate = McpTransport.open(httpConfiguration(), token, json, cancelled, timeout);
+            return new McpTransport() {
+                @Override public Map<String, Object> request(String method, Map<String, Object> params) throws Exception { return delegate.request(method, params); }
+                @Override public void notify(String method, Map<String, Object> params) throws Exception { delegate.notify(method, params); }
+                @Override public boolean stopConfirmed() { return stopped.get(); }
+                @Override public void close() { delegate.close(); }
+            };
+        });
+        var saved = manager.save(obj("name", "Controlled stop fixture", "transport", "STDIO", "command", "fixture", "args", List.of(),
+            "enabled", true, "projectIds", List.of("p"), "allowedTools", List.of("echo")));
+        String serverId = str(saved, "id"), alias = fixedTask("retained", saved, manager.probe(serverId));
+        if (definitionChanged) definition.incrementAndGet();
+        stopped.set(false);
+        try {
+            var outcome = manager.invokeFixedTool("retained", "IMPLEMENT", alias, () -> false);
+            assertEquals("UNKNOWN", str(outcome, "state"));
+            var operation = manager.operations(serverId).getFirst();
+            assertEquals("UNCONFIRMED", str(operation, "stopState"));
+            assertFalse(bool(operation, "canReconcile", true));
+            assertEquals(definitionChanged ? "NOT_SENT" : "ACKNOWLEDGED", str(operation, "dispatchState"));
+            assertEquals(definitionChanged ? 0 : 1, calls.get());
+            if (!definitionChanged) assertTrue(operation.containsKey("result"), "A received result must remain available during cleanup uncertainty");
+            assertEquals(1, resources.snapshot().get("process")); assertEquals(1, resources.snapshot().get("tool"));
+            assertEquals(409, assertThrows(ApiException.class, () -> manager.probe(serverId)).status());
+            store.editTask("retained", task -> task.put("state", "UNKNOWN"), "TEST", "Unknown stop");
+            WorkbenchEngine engine = new WorkbenchEngine(store, catalog, mock(WorkspaceRuntime.class), resources, mapper, manager);
+            var reconciliation = obj("processesStopped", true, "sideEffectsChecked", true, "note", "User assertion cannot override a live local transport");
+            assertEquals(409, assertThrows(ApiException.class, () -> engine.action("retained", "reconcile", reconciliation)).status());
+            assertEquals("UNKNOWN", str(store.get("task", "retained"), "state"));
+            assertEquals("UNKNOWN", str(manager.operations(serverId).getFirst(), "state"));
+            stopped.set(true);
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);
+            while (resources.snapshot().get("process") != 0 && System.nanoTime() < deadline) Thread.sleep(20);
+            assertEquals(0, resources.snapshot().get("process"), "Capacity must be released after observed exit without a new dispatch");
+            manager.requireTaskStopped("retained");
+            assertEquals(0, resources.snapshot().get("process")); assertEquals(0, resources.snapshot().get("tool"));
+            assertEquals("CONFIRMED", str(manager.operations(serverId).getFirst(), "stopState"));
+            assertEquals("PAUSED", str(engine.action("retained", "reconcile", reconciliation), "state"));
+            assertEquals(definitionChanged ? "REJECTED" : "UNKNOWN", str(manager.invokeFixedTool("retained", "IMPLEMENT", alias, () -> false), "state"));
+            assertEquals(definitionChanged ? 0 : 1, calls.get(), "Reconciliation must not replay the old action");
+        } finally { stopped.set(true); manager.requireTaskStopped("retained"); }
     }
 
     @Test
