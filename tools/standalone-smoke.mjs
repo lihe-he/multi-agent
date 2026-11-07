@@ -115,6 +115,17 @@ try {
   await page.getByText('通过真实同源代理写入并重载验证', { exact: true }).waitFor();
   const session = (await api(`/projects/${project.id}/sessions`)).sessions.find(item => item.title === '独立浏览器持久会话');
   assert.ok(session?.id);
+  await page.getByRole('button', { name: '关闭会话 独立浏览器持久会话', exact: true }).click();
+  await page.getByRole('tab', { name: '独立浏览器持久会话', exact: true }).waitFor({ state: 'hidden' });
+  await page.getByRole('button', { name: '全局搜索会话', exact: true }).click();
+  await page.getByLabel('搜索会话记录', { exact: true }).fill('同源代理');
+  await page.getByRole('button', { name: '搜索', exact: true }).click();
+  await page.locator('.session-search-result').click();
+  const located = page.locator('.session-records .search-target');
+  await located.waitFor({ state: 'visible' });
+  assert.ok((await located.innerText()).includes('通过真实同源代理写入并重载验证'));
+  assert.equal((await api(`/projects/${project.id}/sessions/${session.id}`)).isOpen, true);
+  await page.getByRole('button', { name: '返回最新记录', exact: true }).click();
   const route = await api('/routes', { name: 'Local lifecycle fixture', engine: 'API', model: 'fixture', baseUrl: `http://127.0.0.1:${model.address().port}/v1` });
   const task = await api('/tasks', { projectId: project.id, sessionId: session.id, routeId: route.id, title: '客户端退出不中断', goal: 'Verify client lifecycle while a real local model request is pending', mode: 'PIPELINE', contract: { scope: ['README.md'], acceptance: ['核心继续处理在途请求'], commands: ['git status --porcelain'] }, budget: { maxCalls: 12, reserveCalls: 4 } });
   await api(`/tasks/${task.id}/approve`, {});
@@ -145,7 +156,7 @@ try {
   assert.equal(existsSync(join(dir, 'desktop/core')), false, '附加模式不创建嵌入核心');
   assert.deepEqual(errors, []);
   await api(`/tasks/${task.id}/cancel`, {});
-  const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, sessionWorkflowThroughProxy: true, savedNotesSurviveReload: true, sessionClosePreservesRunningTask: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, pageErrors: errors };
+  const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, sessionWorkflowThroughProxy: true, sessionSearchAndReopenThroughProxy: true, savedNotesSurviveReload: true, sessionClosePreservesRunningTask: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, pageErrors: errors };
   mkdirSync(join(root, 'docs/qa'), { recursive: true });
   writeFileSync(join(root, `docs/qa/standalone-${process.platform}.json`), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report, null, 2));

@@ -2,6 +2,24 @@
 
 产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-07。
 
+## 0.2.0-alpha.5 开发迭代
+
+按 F02 的会话记录检索方向新增项目内跨会话消息搜索。SQLite FTS5 trigram 索引支持连续子串；少于三个 Unicode 码点的查询使用项目消息字面回退。返回结果带会话标题、消息定位和纯文本片段，前端以文本节点高亮。schema 升至 3，旧消息回填派生索引，消息与索引写入处于同一事务。开源来源、自审与范围见[会话检索审查](./research/session-search-2026-11-07.md)。
+
+| 检查 | 本轮证据 |
+| --- | --- |
+| `npm run build` | 最终 alpha.5 核心 93 项中 92 通过、1 项因 Windows POSIX 权限跳过；Jar、Web TypeScript 与生产构建通过；顶栏快捷键接入后另行 `npm run build:web` 通过 |
+| `npm run test:ui --prefix web` | 17 / 17；包含跨会话搜索、关闭会话重新打开、历史阅读不被轮询跳走、消息定位/高亮、全局按钮及 Ctrl/Cmd K；桌面/430px 无横向溢出，截图已复查 |
+| `npm run test:integration` | 最终 alpha.5 Jar 的本机协议 24 / 24；真实 HTTP 搜索路由、认证/空查询、大小写、中文短词及 schema=3 均覆盖；[Windows 协议报告](./qa/smoke-win32.json) |
+| `npm run test:standalone` | 生产 Web 和真实 Java 经同源代理搜索、重新打开已关闭会话并定位原记录；客户端退出后在途模型请求仍为 1、无页面异常；[Windows 独立运行报告](./qa/standalone-win32.json) |
+| `node --test tools/connection.test.cjs` | 3 / 3；附加模式兼容判断仍独立于数据库版本 |
+| `npm run package:prepared`、`npm run test:packaged` | Windows NSIS alpha.5 生成成功；打包程序 packaged=true、version=alpha.5，外部 Java 禁用时使用内置 Java 启动，API 200、无页面异常；[Windows 打包报告](./qa/desktop-packaged-win32.json)。本轮不替代完整安装/卸载验收 |
+| 多端 CI | 推送后按本轮提交 SHA 核对；不以 alpha.3/alpha.4 历史结果替代 |
+
+F02 在会话消息范围的全文检索已实现；项目文件符号索引、语义检索、跨仓库检索及完整 F01–F21 仍继续实施。本版本不是完整计划验收。
+
+开发中直调 Maven 选择了系统旧 Java，未进入编译；改用项目 Java 选择脚本后完成最终构建。首次中文短语用例漏写了正文中的“话”，预期与字面查询不符，修正为实际连续短语后通过；首次 UI 用例点击到关闭标签按钮，已使用结果区域定位器。自审另修复已关闭会话结果无法打开、定位历史被轮询跳走、Unicode 高亮区间及迁移原子性，并新增故障/浏览器回归。失败尝试不计作通过证据。
+
 ## 0.2.0-alpha.4 开发迭代
 
 按 F01/F12 及架构迁移第二步建立项目会话基础：持久标签、重命名、历史分页、幂等笔记、同会话多任务及原始活动来源。创建任务和目标记录原子保存；旧任务迁移保留执行账本。来源与自审见[会话基础审查](./research/session-foundation-2026-11-07.md)，协议见[会话接口](./session-contract.md)。

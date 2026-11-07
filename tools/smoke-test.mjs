@@ -152,11 +152,13 @@ try {
   });
   await check('Session routes require authentication and preserve server-owned message identity', async () => {
     const health = (await request('/health')).data;
-    assert.equal(health.schemaVersion, 2); assert.equal(health.apiVersion, 1);
+    assert.equal(health.schemaVersion, 3); assert.equal(health.apiVersion, 1);
     const base = `/projects/${project.id}/sessions`;
     await request(base, undefined, { expected: 401, authorized: false });
+    await request(`${base}/search?q=background`, undefined, { expected: 401, authorized: false });
+    await request(`${base}/search?q=`, undefined, { expected: 400 });
     const session = (await request(base, { title: 'Persistent session fixture' })).data;
-    const note = { requestId: 'note_smoke_1', content: '协作背景与验证依据', role: 'ASSISTANT', kind: 'TASK_GOAL', taskId: 'forged' };
+    const note = { requestId: 'note_smoke_1', content: '协作背景与验证依据 fulltextmarker', role: 'ASSISTANT', kind: 'TASK_GOAL', taskId: 'forged' };
     const first = (await request(`${base}/${session.id}/messages`, note)).data;
     const repeated = (await request(`${base}/${session.id}/messages`, note)).data;
     assert.equal(first.id, repeated.id); assert.equal(first.kind, 'NOTE'); assert.equal(first.role, 'USER'); assert.equal(first.taskId, undefined);
@@ -164,6 +166,10 @@ try {
     await request(`${base}/${session.id}/messages`, { ...note, requestId: 'task:reserved' }, { expected: 400 });
     const page = (await request(`${base}/${session.id}/messages?limit=1`)).data;
     assert.equal(page.messages.length, 1); assert.ok(page.messages[0].sequence > 0);
+    const search = (await request(`${base}/search?q=${encodeURIComponent('验证依据')}`)).data;
+    assert.equal(search.results.length, 1); assert.equal(search.results[0].messageId, first.id); assert.ok(search.results[0].matchEnd > search.results[0].matchStart);
+    assert.equal((await request(`${base}/search?q=FULLTEXTMARKER`)).data.results[0].messageId, first.id);
+    assert.equal((await request(`${base}/search?q=${encodeURIComponent('协作')}`)).data.results[0].messageId, first.id);
     await request(`${base}/${session.id}`, { expectedVersion: session.version, isOpen: false });
     await request(`${base}/${session.id}`, { expectedVersion: session.version, title: 'stale' }, { expected: 409 });
     assert.equal((await request(`${base}/${session.id}`)).data.isOpen, false);

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.sqlite.Function;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -53,23 +54,42 @@ public class ExecutionStore {
             catch (OverlappingFileLockException exception) { throw new IllegalStateException("核心数据目录已被另一个实例占用，请关闭旧核心后重试", exception); }
             if (lock == null) { throw new IllegalStateException("核心数据目录已被另一个实例占用，请关闭旧核心后重试"); }
             opened = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite"));
+            Function.create(opened, "session_search_fold", new Function() {
+                @Override
+                protected void xFunc() throws SQLException { result(foldSearch(value_text(0))); }
+            }, 1, Function.FLAG_DETERMINISTIC);
             try (var statement = opened.createStatement()) {
+                int schemaVersion;
                 try (var version = statement.executeQuery("PRAGMA user_version")) {
-                    if (version.next() && version.getInt(1) > 2) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
+                    schemaVersion = version.next() ? version.getInt(1) : 0;
+                    if (schemaVersion > 3) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
                 }
                 statement.execute("PRAGMA journal_mode=WAL");
                 statement.execute("PRAGMA synchronous=FULL");
                 statement.execute("PRAGMA busy_timeout=5000");
+                opened.setAutoCommit(false);
                 statement.execute("CREATE TABLE IF NOT EXISTS entities(kind TEXT NOT NULL,id TEXT NOT NULL,body TEXT NOT NULL,PRIMARY KEY(kind,id))");
                 statement.execute("CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY AUTOINCREMENT,task_id TEXT NOT NULL,type TEXT NOT NULL,message TEXT NOT NULL,created_at TEXT NOT NULL)");
                 statement.execute("CREATE INDEX IF NOT EXISTS events_task_id ON events(task_id,id)");
                 statement.execute("CREATE TABLE IF NOT EXISTS session_messages(sequence INTEGER PRIMARY KEY AUTOINCREMENT,id TEXT NOT NULL UNIQUE,session_id TEXT NOT NULL,request_id TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(session_id,request_id))");
                 statement.execute("CREATE INDEX IF NOT EXISTS session_messages_cursor ON session_messages(session_id,sequence)");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_session_project ON entities(kind,json_extract(body,'$.projectId'))");
-                statement.execute("PRAGMA user_version=2");
+                boolean rebuildSearch;
+                try (var tables = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_search'")) { rebuildSearch = schemaVersion < 3 || !tables.next(); }
+                statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS session_search USING fts5(project_id UNINDEXED,session_id UNINDEXED,message_id UNINDEXED,sequence UNINDEXED,content,tokenize='trigram case_sensitive 1')");
+                statement.execute("CREATE TRIGGER IF NOT EXISTS session_search_insert AFTER INSERT ON session_messages BEGIN INSERT INTO session_search(rowid,project_id,session_id,message_id,sequence,content) VALUES(new.sequence,json_extract(new.body,'$.projectId'),new.session_id,new.id,new.sequence,session_search_fold(json_extract(new.body,'$.content'))); END");
+                statement.execute("CREATE TRIGGER IF NOT EXISTS session_search_delete AFTER DELETE ON session_messages BEGIN DELETE FROM session_search WHERE rowid=old.sequence; END");
+                statement.execute("CREATE TRIGGER IF NOT EXISTS session_search_update AFTER UPDATE ON session_messages BEGIN DELETE FROM session_search WHERE rowid=old.sequence; INSERT INTO session_search(rowid,project_id,session_id,message_id,sequence,content) VALUES(new.sequence,json_extract(new.body,'$.projectId'),new.session_id,new.id,new.sequence,session_search_fold(json_extract(new.body,'$.content'))); END");
+                if (rebuildSearch) {
+                    statement.execute("DELETE FROM session_search");
+                    statement.execute("INSERT INTO session_search(rowid,project_id,session_id,message_id,sequence,content) SELECT sequence,json_extract(body,'$.projectId'),session_id,id,sequence,session_search_fold(json_extract(body,'$.content')) FROM session_messages");
+                }
+                statement.execute("PRAGMA user_version=3");
+                opened.commit(); opened.setAutoCommit(true);
             }
             connection = opened; ownershipChannel = channel; ownershipLock = lock;
         } catch (Exception exception) {
+            if (opened != null) { try { if (!opened.getAutoCommit()) opened.rollback(); } catch (SQLException ignored) { } }
             if (opened != null) { try { opened.close(); } catch (SQLException ignored) { } }
             if (lock != null) { try { lock.release(); } catch (java.io.IOException ignored) { } }
             if (channel != null) { try { channel.close(); } catch (java.io.IOException ignored) { } }
@@ -229,6 +249,52 @@ public class ExecutionStore {
             statement.setString(4, mapper.writeValueAsString(message)); statement.executeUpdate();
         }
         session.put("updatedAt", now()); write("session", session);
+    }
+
+    /**
+     * 会话正文按字面子串检索；索引和短词回退共用 Unicode 单码点小写规则。
+     */
+    public synchronized Map<String, Object> searchSessionMessages(String projectId, String requestedQuery, int requestedLimit) {
+        get("project", projectId);
+        String queryText = requestedQuery == null ? "" : requestedQuery.trim();
+        if (queryText.isEmpty() || queryText.length() > 120 || queryText.indexOf('\0') >= 0) throw new ApiException(400, "搜索词长度须为 1 到 120 个字符，且不得包含空字符");
+        String foldedQuery = foldSearch(queryText);
+        int limit = Math.max(1, Math.min(100, requestedLimit));
+        boolean shortQuery = foldedQuery.codePointCount(0, foldedQuery.length()) < 3;
+        String sql = "SELECT f.session_id,f.message_id,f.sequence,m.body,s.body FROM session_search f JOIN session_messages m ON m.sequence=f.rowid "
+            + "JOIN entities s ON s.kind='session' AND s.id=m.session_id WHERE f.project_id=? AND "
+            + (shortQuery ? "instr(f.content,?)>0" : "session_search MATCH ?")
+            + " AND json_extract(s.body,'$.projectId')=? AND json_extract(m.body,'$.projectId')=? ORDER BY f.sequence DESC LIMIT ?";
+        try (var statement = connection.prepareStatement(sql)) {
+            statement.setString(1, projectId);
+            statement.setString(2, shortQuery ? foldedQuery : "\"" + foldedQuery.replace("\"", "\"\"") + "\"");
+            statement.setString(3, projectId); statement.setString(4, projectId); statement.setInt(5, limit + 1);
+            List<Map<String, Object>> results = new ArrayList<>();
+            try (var rows = statement.executeQuery()) {
+                while (rows.next()) {
+                    Map<String, Object> message = decode(rows.getString(4)); String content = str(message, "content");
+                    String foldedContent = foldSearch(content); int foldedMatch = foldedContent.indexOf(foldedQuery);
+                    if (foldedMatch < 0) continue;
+                    int matchPoint = foldedContent.codePointCount(0, foldedMatch);
+                    int endPoint = matchPoint + foldedQuery.codePointCount(0, foldedQuery.length());
+                    int match = content.offsetByCodePoints(0, matchPoint); int matchEnd = content.offsetByCodePoints(0, endPoint);
+                    int start = content.offsetByCodePoints(0, Math.max(0, matchPoint - 80));
+                    int end = content.offsetByCodePoints(0, Math.min(content.codePointCount(0, content.length()), endPoint + 120));
+                    results.add(obj("sessionId", rows.getString(1), "sessionTitle", str(decode(rows.getString(5)), "title"), "messageId", rows.getString(2),
+                        "sequence", rows.getLong(3), "taskId", str(message, "taskId"), "content", content.substring(start, end),
+                        "matchStart", match - start, "matchEnd", matchEnd - start, "createdAt", str(message, "createdAt")));
+                }
+            }
+            boolean hasMore = results.size() > limit; if (hasMore) results.removeLast();
+            return obj("results", results, "hasMore", hasMore);
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    private static String foldSearch(String value) {
+        if (value == null) return "";
+        StringBuilder folded = new StringBuilder(value.length());
+        value.codePoints().forEach(point -> folded.appendCodePoint(Character.toLowerCase(point)));
+        return folded.toString();
     }
 
     public synchronized Map<String, Object> sessionMessages(String projectId, String sessionId, long before, long after, int requestedLimit) {

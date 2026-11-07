@@ -34,6 +34,11 @@ async function sessionsFixture(page: Page, loseFirstNoteResponse = false) {
       return route.fulfill({ json: { sessions: sessions.filter(s => s.projectId === projectId && (url.searchParams.get('openOnly') !== 'true' || s.isOpen)), cursor: 0, hasMore: false } });
     }
     const session = sessions.find(s => s.id === sessionId && s.projectId === projectId);
+    if (sessionId === 'search' && request.method() === 'GET') {
+      const query = url.searchParams.get('q') || '';
+      const found = messages.filter(message => sessions.some(s => s.id === message.sessionId && s.projectId === projectId) && message.content.includes(query)).sort((a, b) => b.sequence - a.sequence);
+      return route.fulfill({ json: { results: found.slice(0, 30).map(message => ({ sessionId: message.sessionId, sessionTitle: sessions.find(s => s.id === message.sessionId)?.title, messageId: message.id, sequence: message.sequence, content: message.content, matchStart: message.content.indexOf(query), matchEnd: message.content.indexOf(query) + query.length, createdAt: message.createdAt })), hasMore: found.length > 30 } });
+    }
     if (!session) return route.fulfill({ status: 404, json: { message: '当前项目没有此会话' } });
     if (resource === 'events') return route.fulfill({ json: { events: sessionId === 's1' ? [{ id: 1, taskId: 't1', type: 'TASK_CREATED', message: '可追溯活动', createdAt: session.createdAt }] : [], cursor: sessionId === 's1' ? 1 : 0, hasMore: false } });
     if (resource === 'messages') {
@@ -44,8 +49,10 @@ async function sessionsFixture(page: Page, loseFirstNoteResponse = false) {
         if (loseFirstNoteResponse && !lost) { lost = true; return route.abort('failed'); }
         return route.fulfill({ json: message });
       }
-      const found = messages.filter(m => m.sessionId === sessionId && m.sequence > Number(url.searchParams.get('after') || 0));
-      return route.fulfill({ json: { messages: found, cursor: found[0]?.sequence || 0, latestCursor: found.at(-1)?.sequence || Number(url.searchParams.get('after') || 0), hasMore: false } });
+      const after = Number(url.searchParams.get('after') || 0); const before = Number(url.searchParams.get('before') || 0);
+      const found = messages.filter(m => m.sessionId === sessionId && m.sequence > after && (!before || m.sequence < before)).sort((a, b) => a.sequence - b.sequence);
+      const limit = Number(url.searchParams.get('limit') || 50); const visible = after ? found.slice(0, limit) : found.slice(-limit);
+      return route.fulfill({ json: { messages: visible, cursor: (after ? visible.at(-1)?.sequence : visible[0]?.sequence) || 0, latestCursor: visible.at(-1)?.sequence || after, hasMore: found.length > limit } });
     }
     if (request.method() === 'POST') {
       const body = request.postDataJSON();
@@ -138,5 +145,59 @@ test('过期重命名显示冲突并刷新，保留服务端的新名称', async
   await expect(page.getByRole('alert')).toHaveText('会话已变化，请刷新后重试');
   await expect(page.getByRole('tab', { name: '另一个窗口更新' })).toBeVisible();
   expect(fixture.sessions[0].title).toBe('另一个窗口更新'); expect(fixture.sessions[0].version).toBe(2);
+  expect(fixture.errors).toEqual([]);
+});
+
+test('搜索跨会话消息并定位到原记录', async ({ page }) => {
+  const fixture = await sessionsFixture(page);
+  fixture.messages.push({ id: 'm-search', sessionId: 's1', requestId: 'search', sequence: 9, role: 'USER', kind: 'NOTE', content: '跨会话搜索定位目标', createdAt: fixture.sessions[0].createdAt });
+  await page.getByLabel('搜索会话记录', { exact: true }).fill('搜索定位');
+  await page.getByRole('button', { name: '搜索', exact: true }).click();
+  await expect(page.getByRole('region', { name: '会话搜索结果' }).locator('mark')).toHaveText('搜索定位');
+  await page.screenshot({ path: 'qa/session-search-desktop.png', fullPage: true });
+  await page.setViewportSize({ width: 430, height: 932 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({ path: 'qa/session-search-narrow.png', fullPage: true });
+  await page.getByRole('region', { name: '会话搜索结果' }).locator('.session-search-result').click();
+  await expect(page.locator('#session-message-m-search')).toBeVisible();
+  await expect(page.locator('#session-message-m-search')).toHaveClass(/search-target/);
+  expect(fixture.errors).toEqual([]);
+});
+
+test('关闭会话搜索可重新打开，历史定位保持连续且可返回最新', async ({ page }) => {
+  const fixture = await sessionsFixture(page);
+  await page.clock.install();
+  for (let sequence = 1; sequence <= 140; sequence++) fixture.messages.push({ id: `history-${sequence}`, sessionId: 's1', sequence, role: 'USER', kind: 'NOTE', content: sequence === 20 ? '历史定位关键词 <img src=x onerror="alert(1)">' : `连续记录 ${sequence}`, createdAt: fixture.sessions[0].createdAt });
+  await page.getByRole('button', { name: '关闭会话 甲会话', exact: true }).click();
+  await expect(page.getByRole('tab', { name: '甲会话' })).toHaveCount(0);
+  await page.getByLabel('搜索会话记录', { exact: true }).fill('历史定位关键词');
+  await page.getByRole('button', { name: '搜索', exact: true }).click();
+  const results = page.getByRole('region', { name: '会话搜索结果' });
+  await expect(results.locator('mark')).toHaveText('历史定位关键词');
+  await expect(results.locator('img')).toHaveCount(0);
+  await results.locator('.session-search-result').click();
+  await expect(page.getByRole('tab', { name: '甲会话' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('#session-message-history-20')).toBeFocused();
+  await page.clock.runFor(6000);
+  await expect(page.locator('#session-message-history-140')).toHaveCount(0);
+  await expect(page.getByRole('region', { name: '会话记录', exact: true }).locator('article')).toHaveCount(20);
+  await page.getByRole('button', { name: '返回最新记录', exact: true }).click();
+  await expect(page.locator('#session-message-history-140')).toBeVisible();
+  await expect(page.getByRole('region', { name: '会话记录', exact: true }).locator('article')).toHaveCount(50);
+  expect(fixture.sessions[0].isOpen).toBe(true); expect(fixture.tasks[0].state).toBe('RUNNING');
+  expect(fixture.errors).toEqual([]);
+});
+
+test('全局搜索按钮和 Ctrl/Cmd K 从其他页面聚焦当前项目检索', async ({ page }) => {
+  const fixture = await sessionsFixture(page);
+  await page.getByRole('button', { name: '项目总览', exact: true }).click();
+  await page.getByRole('button', { name: '全局搜索会话', exact: true }).click();
+  await expect(page.getByLabel('搜索会话记录', { exact: true })).toBeFocused();
+  await page.getByRole('button', { name: '研发任务', exact: true }).click();
+  await page.keyboard.press('Control+k');
+  await expect(page.getByLabel('搜索会话记录', { exact: true })).toBeFocused();
+  await page.getByRole('button', { name: '研发任务', exact: true }).click();
+  await page.keyboard.press('Meta+k');
+  await expect(page.getByLabel('搜索会话记录', { exact: true })).toBeFocused();
   expect(fixture.errors).toEqual([]);
 });

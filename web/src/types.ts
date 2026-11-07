@@ -44,6 +44,7 @@ export interface RunEvent { id: number; taskId?: string; type: string; message: 
 export interface Connection { baseUrl: string; token: string }
 export interface Session { id: string; projectId: string; title: string; version: number; isOpen: boolean; createdAt: string; updatedAt: string }
 export interface SessionMessage { id: string; sessionId: string; projectId: string; sequence: number; role: string; kind: 'NOTE' | 'TASK_GOAL'; content: string; taskId?: string; createdAt: string }
+export interface SessionSearchResult { sessionId: string; sessionTitle: string; messageId: string; sequence: number; taskId?: string; content: string; matchStart: number; matchEnd: number; createdAt: string }
 declare global {
   interface Window {
     workbench?: {

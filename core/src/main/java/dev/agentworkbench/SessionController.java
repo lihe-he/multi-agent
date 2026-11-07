@@ -25,6 +25,11 @@ public class SessionController {
         return store.sessions(projectId, before, limit, openOnly);
     }
 
+    @GetMapping("/search")
+    public Map<String, Object> search(@PathVariable String projectId, @RequestParam String q, @RequestParam(defaultValue = "30") int limit) {
+        return store.searchSessionMessages(projectId, catalog.redact(q), limit);
+    }
+
     @PostMapping
     public Map<String, Object> create(@PathVariable String projectId, @RequestBody Map<String, Object> body) {
         return store.createSession(projectId, catalog.redact(required(body, "title", 180)));

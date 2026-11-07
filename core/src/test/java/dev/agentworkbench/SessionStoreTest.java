@@ -124,6 +124,90 @@ class SessionStoreTest {
     }
 
     @Test
+    void searchIndexesChinesePhrasesShortTermsAndOnlyTheRequestedProject() {
+        String first = str(store.createSession("a", "研发方案"), "id");
+        String second = str(store.createSession("a", "调试记录"), "id");
+        String foreign = str(store.createSession("b", "隔离项目"), "id");
+        store.appendSessionNote("a", first, "one", "实现跨会话全文搜索和消息定位");
+        store.appendSessionNote("a", second, "two", "中文短词也应能查找");
+        store.appendSessionNote("b", foreign, "three", "跨会话全文搜索");
+
+        var phrase = store.searchSessionMessages("a", "会话全文搜", 30);
+        assertEquals(1, objects(phrase.get("results")).size());
+        var result = objects(phrase.get("results")).getFirst();
+        assertEquals(first, str(result, "sessionId")); assertEquals("研发方案", str(result, "sessionTitle"));
+        assertTrue(str(result, "content").contains("实现跨会话全文搜索"));
+        assertEquals(1, objects(store.searchSessionMessages("a", "中文", 30).get("results")).size());
+        assertEquals(0, objects(store.searchSessionMessages("a", "不存在", 30).get("results")).size());
+        assertEquals(400, assertThrows(ApiException.class, () -> store.searchSessionMessages("a", " ", 30)).status());
+        assertEquals(404, assertThrows(ApiException.class, () -> store.searchSessionMessages("missing", "搜索", 30)).status());
+    }
+
+    @Test
+    void searchIndexRebuildsFromExistingMessages() throws Exception {
+        String sessionId = str(store.createSession("a", "已有会话"), "id");
+        store.appendSessionNote("a", sessionId, "old", "索引升级后仍能搜到这条旧记录");
+        store.close(); store = null;
+        try (var db = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite")); var sql = db.createStatement()) {
+            sql.execute("DROP TABLE session_search"); sql.execute("PRAGMA user_version=2");
+        }
+        store = new ExecutionStore(new ObjectMapper(), directory.toString());
+        var results = objects(store.searchSessionMessages("a", "升级后仍能", 30).get("results"));
+        assertEquals(1, results.size()); assertEquals(sessionId, str(results.getFirst(), "sessionId"));
+    }
+
+    @Test
+    void searchTreatsOperatorsLiterallyAndKeepsUnicodeSnippetOffsets() {
+        String sessionId = str(store.createSession("a", "原名称"), "id");
+        store.appendSessionNote("a", sessionId, "symbols", "İ前缀😀 A_B 100% literal \"quote\" OR <script> ΤΕΣΤ ÉX");
+        store.editSession("a", sessionId, obj("expectedVersion", 1, "title", "新名称", "isOpen", false));
+        for (String query : List.of("a_b", "100%", "\"quote\" OR", "😀", "τεστ", "éx")) {
+            var results = objects(store.searchSessionMessages("a", query, 30).get("results"));
+            assertEquals(1, results.size(), query);
+            var result = results.getFirst(); assertEquals("新名称", str(result, "sessionTitle"));
+            String match = str(result, "content").substring(num(result, "matchStart", -1), num(result, "matchEnd", -1));
+            assertTrue(match.equalsIgnoreCase(query), query + ": " + match);
+        }
+        assertEquals(0, objects(store.searchSessionMessages("a", "absent OR quote", 30).get("results")).size());
+        assertEquals(400, assertThrows(ApiException.class, () -> store.searchSessionMessages("a", "x".repeat(121), 30)).status());
+        assertEquals(400, assertThrows(ApiException.class, () -> store.searchSessionMessages("a", "a\0b", 30)).status());
+        assertTrue(store.healthy());
+    }
+
+    @Test
+    void searchLimitsNewestResultsAndIndexFailureRollsBackMessage() throws Exception {
+        String sessionId = str(store.createSession("a", "索引事务"), "id");
+        for (int i = 0; i < 5; i++) store.appendSessionNote("a", sessionId, "n" + i, "needle " + i);
+        var page = store.searchSessionMessages("a", "needle", 2);
+        assertTrue(bool(page, "hasMore", false));
+        assertEquals(List.of("needle 4", "needle 3"), objects(page.get("results")).stream().map(result -> str(result, "content")).toList());
+        var before = store.session("a", sessionId);
+        try (var db = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite")); var sql = db.createStatement()) { sql.execute("DROP TABLE session_search"); }
+        assertEquals(503, assertThrows(ApiException.class, () -> store.appendSessionNote("a", sessionId, "broken", "unindexed")).status());
+        assertEquals(5, objects(store.sessionMessages("a", sessionId, 0, 0, 50).get("messages")).size());
+        assertEquals(before, store.session("a", sessionId)); assertFalse(store.healthy());
+    }
+
+    @Test
+    void migrationFailureLeavesSchemaAndOriginalMessagesUntouched() throws Exception {
+        String sessionId = str(store.createSession("a", "迁移事务"), "id");
+        var note = store.appendSessionNote("a", sessionId, "old", "old text");
+        store.close(); store = null;
+        try (var db = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite")); var sql = db.createStatement()) {
+            sql.execute("DROP TRIGGER session_search_update"); sql.execute("DROP TABLE session_search");
+            sql.execute("UPDATE session_messages SET body='broken json'"); sql.execute("PRAGMA user_version=2");
+        }
+        assertThrows(Exception.class, () -> new ExecutionStore(new ObjectMapper(), directory.toString()));
+        try (var db = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite")); var sql = db.createStatement()) {
+            try (var version = sql.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(2, version.getInt(1)); }
+            try (var table = sql.executeQuery("SELECT name FROM sqlite_master WHERE name='session_search'")) { assertFalse(table.next()); }
+            try (var update = db.prepareStatement("UPDATE session_messages SET body=?")) { update.setString(1, new ObjectMapper().writeValueAsString(note)); update.executeUpdate(); }
+        }
+        store = new ExecutionStore(new ObjectMapper(), directory.toString());
+        assertEquals(1, objects(store.searchSessionMessages("a", "old text", 30).get("results")).size());
+    }
+
+    @Test
     void failedGoalWriteRollsBackTaskSessionAndEventTogether() throws Exception {
         try (var db = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite")); var sql = db.createStatement()) {
             sql.execute("CREATE TRIGGER fail_goal BEFORE INSERT ON session_messages BEGIN SELECT RAISE(ABORT,'injected storage failure'); END");

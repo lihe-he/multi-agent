@@ -1,6 +1,18 @@
 .session-create { display: flex; align-items: end; gap: 16px; padding: 18px 22px; margin-bottom: 18px; }
 .session-create .field { flex: 1; margin: 0; min-width: 0; }
 .session-create > button { flex-shrink: 0; }
+.session-search { display: flex; align-items: end; gap: 12px; margin: 0 0 18px; }
+.session-search .field { flex: 1; margin: 0; min-width: 0; }
+.session-search-results { margin: 0 0 20px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.session-search-results > header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
+.session-search-results h2 { font-size: 14px; margin: 0; }
+.session-search-result { display: grid; grid-template-columns: minmax(150px, 0.7fr) minmax(0, 2fr); gap: 14px; width: 100%; padding: 13px 10px; border: 0; border-top: 1px solid var(--border); background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.session-search-result:hover { background: var(--surface-muted, #f5f7f5); }
+.session-search-result > span:first-child { display: grid; align-content: start; gap: 5px; }
+.session-search-result small { color: var(--muted); }
+.session-search-preview { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; line-height: 1.6; }
+.session-search-preview mark { background: #dff2a8; color: #243321; }
+.session-records article.search-target { background: #f1f7e9; outline: 2px solid #8fae53; outline-offset: 4px; }
 .session-tabs { display: flex; gap: 6px; overflow-x: auto; margin: 18px 0; padding-bottom: 4px; }
 .session-tabs > div { display: flex; align-items: center; flex-shrink: 0; border: 1px solid var(--border); border-radius: 10px; background: var(--surface, #fff); padding: 4px; }
 .session-tabs > div.active { border-color: #b6d5c9; background: #eff6f2; }
@@ -31,6 +43,9 @@
 @media (max-width: 700px) {
   .session-create { display: grid; padding: 16px; }
   .session-create > button { justify-self: end; }
+  .session-search { align-items: stretch; flex-direction: column; }
+  .session-search > button { align-self: end; }
+  .session-search-result { grid-template-columns: 1fr; gap: 8px; }
   .session-columns > .card, .session-history { padding: 16px; }
   .session-tabs [role=tab] span { max-width: 160px; }
 }
