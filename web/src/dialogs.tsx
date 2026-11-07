@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Bot, Check, FolderOpen, GitBranch, Layers3, LockKeyhole, Network, ShieldCheck, Sparkles, TriangleAlert } from 'lucide-react';
 import { api, currentConnection, post, setConnection } from './api';
-import type { Memory, Profile, Project, Route, Task } from './types';
+import type { AgentDefinition, Memory, Profile, Project, Route, Task } from './types';
 import { Field, lines, Modal, SaveButton } from './ui';
 
 type DialogProps = { onClose: () => void; onSaved: () => void };
@@ -34,12 +34,22 @@ export function TaskDialog({ projects, routes, selectedProject, sessionId, onClo
   const [lockRoute, setLockRoute] = useState(false); const [lockModel, setLockModel] = useState(false);
   const [lockEngine, setLockEngine] = useState(false); const [lockProvider, setLockProvider] = useState(false);
   const [includeChanges, setIncludeChanges] = useState(false);
+  const [definitions, setDefinitions] = useState<AgentDefinition[]>([]); const [selectedDefinitions, setSelectedDefinitions] = useState<string[]>([]);
+  const [definitionRefresh, setDefinitionRefresh] = useState(0);
+  const [delegation, setDelegation] = useState(true); const [maxActive, setMaxActive] = useState(6); const [maxDepth, setMaxDepth] = useState(3); const [maxTotal, setMaxTotal] = useState(24);
   const [mcpTools, setMcpTools] = useState<{ serverId: string; serverName: string; name: string; description?: string; configVersion: number; definitionVersion: string; inputSchema: Record<string, unknown>; available: boolean; disabledReason?: string }[]>([]);
   const [mcpSelections, setMcpSelections] = useState<Record<string, { argumentsText: string; timeoutMs: number }>>({});
   const [mcpMaxCalls, setMcpMaxCalls] = useState(8); const [mcpMaxDurationMs, setMcpMaxDurationMs] = useState(240000);
   const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
   const route = routes.find(r => r.id === routeId);
   const project = projects.find(p => p.id === projectId);
+  useEffect(() => {
+    let active = true;
+    api<AgentDefinition[]>(`/agent-definitions?projectId=${encodeURIComponent(projectId)}`).then(value => {
+      if (active) { const available = Array.isArray(value) ? value.filter(definition => definition.enabled) : []; setDefinitions(available); setSelectedDefinitions(available.filter(definition => !definition.routeId || definition.routeId === routeId).map(definition => definition.id)); }
+    }).catch(() => { if (active) { setDefinitions([]); setSelectedDefinitions([]); } });
+    return () => { active = false; };
+  }, [projectId, routeId, definitionRefresh]);
   useEffect(() => {
     if (!projectId) { setMcpTools([]); return; }
     let active = true;
@@ -59,7 +69,8 @@ export function TaskDialog({ projects, routes, selectedProject, sessionId, onClo
         return { serverId: tool.serverId, name: tool.name, configVersion: tool.configVersion, definitionVersion: tool.definitionVersion, fixedArguments, timeoutMs: selected.timeoutMs };
       });
       if (mcpBindings.length && route?.engine !== 'API') throw new Error('MCP 固定动作目前只支持 API 运行路由。');
-      const task = await post<Task>('/tasks', { projectId, ...(sessionId ? { sessionId } : {}), title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, mcpBindings, mcpBudget: { maxCalls: mcpMaxCalls, maxDurationMs: mcpMaxDurationMs }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges });
+      const collaboration = { enabled: delegation && route?.engine === 'API' && selectedDefinitions.length > 0, definitionIds: selectedDefinitions, definitionVersions: Object.fromEntries(definitions.filter(definition => selectedDefinitions.includes(definition.id)).map(definition => [definition.id, definition.version])), maxActive, maxDepth, maxTotal, allowedRouteIds: definitions.filter(definition => selectedDefinitions.includes(definition.id) && definition.routeId).map(definition => definition.routeId!) };
+      const task = await post<Task>('/tasks', { projectId, ...(sessionId ? { sessionId } : {}), title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, collaboration, mcpBindings, mcpBudget: { maxCalls: mcpMaxCalls, maxDurationMs: mcpMaxDurationMs }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges });
       onCreated(task); onClose();
     } catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   }
@@ -89,6 +100,10 @@ export function TaskDialog({ projects, routes, selectedProject, sessionId, onClo
     <div className="form-grid three"><Field label="首选运行路由"><select required value={routeId} onChange={e => setRouteId(e.target.value)}><option value="">请选择运行器</option>{routes.filter(r => r.enabled !== false).map(r => <option key={r.id} value={r.id}>{r.name} · {r.engine}</option>)}</select></Field><Field label="总调用预算"><input type="number" min={2} max={1000} value={maxCalls} onChange={e => setMaxCalls(Number(e.target.value))} /></Field><Field label="验证与审查预留"><input type="number" min={1} max={999} value={reserveCalls} onChange={e => setReserveCalls(Number(e.target.value))} /></Field></div>
     <div className="checkbox-row"><label><input type="checkbox" checked={lockRoute} onChange={e => setLockRoute(e.target.checked)} />锁定此路由</label><label><input type="checkbox" checked={lockModel} disabled={!route?.model} onChange={e => setLockModel(e.target.checked)} />锁定此模型</label><label><input type="checkbox" checked={lockEngine} disabled={!route} onChange={e => setLockEngine(e.target.checked)} />锁定此引擎</label><label><input type="checkbox" checked={lockProvider} disabled={!route?.provider} onChange={e => setLockProvider(e.target.checked)} />锁定此供应商</label></div>
     <p className="form-note">CLI 按会话记录软预算；API 按实际请求累计。开发不能占用验证预留，故障切换遵守硬锁定。</p>
+    <div className="form-divider"><Bot size={16} /><span>动态副 Agent 与团队</span><small>继承同一根预算、范围与硬锁定</small></div>
+    {route?.engine === 'API' && <button type="button" className="text-button" onClick={() => { setDefinitionRefresh(current => current + 1); setError(''); }}>刷新副 Agent 定义</button>}
+    <label className="checkbox-card"><input type="checkbox" disabled={route?.engine !== 'API' || !definitions.length} checked={delegation && route?.engine === 'API' && definitions.length > 0} onChange={event => setDelegation(event.target.checked)} /><span><b>允许在执行中创建副 Agent</b><small>{route?.engine === 'API' ? '副任务使用独立现场，父 Agent 等待时释放模型容量。以下选择同时确认可使用的定义和运行路由。' : '此运行器不能确认挂起，请使用 API 路由进行动态委派。'}</small></span></label>
+    {delegation && route?.engine === 'API' && <><div className="checkbox-row">{definitions.map(definition => <label key={definition.id}><input type="checkbox" checked={selectedDefinitions.includes(definition.id)} onChange={event => setSelectedDefinitions(current => event.target.checked ? [...current, definition.id] : current.filter(id => id !== definition.id))} />{definition.name} v{definition.version} · {routes.find(value => value.id === definition.routeId)?.name || '根任务路由'}</label>)}</div><div className="form-grid three"><Field label="活动或排队 Agent 上限"><input type="number" min={2} max={6} value={maxActive} onChange={event => setMaxActive(Number(event.target.value))} /></Field><Field label="最大委派深度"><input type="number" min={1} max={4} value={maxDepth} onChange={event => setMaxDepth(Number(event.target.value))} /></Field><Field label="根累计委派上限"><input type="number" min={1} max={64} value={maxTotal} onChange={event => setMaxTotal(Number(event.target.value))} /></Field></div></>}
     {project?.dirty && <label className="checkbox-card"><input type="checkbox" checked={includeChanges} onChange={e => setIncludeChanges(e.target.checked)} /><span><b>带入当前未提交修改</b><small>在隔离副本中执行，保留原项目与暂存状态。实际支持范围由核心检查。</small></span></label>}
     <ErrorMessage error={error} />
     {!routes.some(r => r.enabled !== false) && <div className="form-error">请先在「资源与设置」中配置一个运行器。</div>}

@@ -9,6 +9,8 @@ import java.util.function.BooleanSupplier;
 public interface ModelCallObserver extends BooleanSupplier {
     boolean begin(Map<String, Object> metadata);
     void end(Map<String, Object> observation);
+    default AgentToolSession tools() { return null; }
+    default String lastRequestId() { return ""; }
 
     @Override
     default boolean getAsBoolean() { return begin(Map.of()); }

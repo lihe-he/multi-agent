@@ -9,6 +9,10 @@ import java.util.Map;
 public interface AgentToolSession {
     List<Map<String, Object>> definitions();
     AutoCloseable acquireModel();
+    default AutoCloseable acquireTool() { return () -> {}; }
     Map<String, Object> invoke(String alias, Map<String, Object> arguments);
+    default Map<String, Object> invoke(String alias, Map<String, Object> arguments, String requestId, String toolCallId) { return invoke(alias, arguments); }
+    default Map<String, Object> permissions() { return Map.of(); }
+    default List<Map<String, Object>> inbox() { return List.of(); }
     default void checkCurrent() { }
 }

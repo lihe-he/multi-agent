@@ -5,7 +5,7 @@ export interface Project {
 export interface Route {
   id: string; name: string; engine: 'CODEX' | 'CLAUDE' | 'API'; model?: string;
   provider?: string; baseUrl?: string; executable?: string; enabled?: boolean;
-  hasKey?: boolean; hasApiKey?: boolean; available?: boolean; health?: string;
+  hasKey?: boolean; hasApiKey?: boolean; available?: boolean; health?: string; version?: number;
 }
 export interface Memory {
   id: string; projectId: string; kind: string; content: string; source?: string;
@@ -35,9 +35,11 @@ export interface Task {
   context?: { id?: string; kind?: string; content?: string; source?: string; version?: string | number }[];
   issues?: (string | { message?: string; title?: string; severity?: string; [key: string]: unknown })[];
   error?: string;
+  teamId?: string; collaboration?: { enabled: boolean; maxActive: number; maxDepth: number; maxTotal: number; spawned: number; definitions?: AgentDefinition[] };
 }
 export interface WorkbenchState {
   projects: Project[]; tasks: Task[]; routes: Route[]; memories: Memory[]; profiles: Profile[];
+  agentDefinitions?: AgentDefinition[];
   system: { version?: string; modelCapacity?: number; activeModels?: number; storageHealthy?: boolean; capabilities?: (string | { name?: string; available?: boolean; message?: string })[] };
 }
 export interface RunEvent { id: number; taskId?: string; type: string; message: string; createdAt?: string }
@@ -46,7 +48,22 @@ export interface AgentRun {
   attempt: number; state: string; createdAt: string; startedAt?: string; endedAt?: string; elapsedMs?: number; queueMs?: number;
   routeName?: string; engine?: string; model?: string; readOnly: boolean; calls: number; callUnit: string;
   evidenceId?: string; reason?: string; inputVersion?: string; resultVersion?: string;
+  parentRunId?: string; subtaskId?: string; teamId?: string; depth?: number; permissions?: AgentPermission;
 }
+export interface AgentPermission { capabilities: string[]; readScopeLayers: string[][]; writeScopeLayers: string[][] }
+export interface AgentDefinition {
+  id: string; version: number; name: string; role: string; instructions: string; capabilities: string[];
+  projectId?: string; routeId?: string; scope: string[]; maxCalls: number; enabled: boolean;
+  routeSnapshot?: Route;
+}
+export interface Subtask {
+  id: string; taskId: string; agentRunId: string; parentRunId: string; parentSubtaskId?: string; title: string; goal: string; role: string;
+  definitionId: string; definitionVersion: number; depth: number; dependsOn: string[]; state: string; permissions: AgentPermission;
+  createdAt: string; endedAt?: string; evidenceId?: string; reason?: string; resultVersion?: string; integrationState: string;
+  routeId: string; model?: string; requestId: string; toolCallId: string;
+  integrations?: { operationId: string; agentRunId: string; resultVersion: string; createdAt: string }[];
+}
+export interface TeamMessage { id: string; sequence: number; content: string; sender: string; recipient: string; requestId?: string; toolCallId?: string; createdAt: string }
 export interface ModelRequest {
   id: string; taskId: string; agentRunId: string; stage: string; sequence: number; attempt: number;
   engine: string; model?: string; state: string; unit: string; createdAt: string; endedAt?: string; elapsedMs?: number;

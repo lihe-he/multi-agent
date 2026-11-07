@@ -1,6 +1,6 @@
 # 模型请求追踪协议
 
-适用版本：0.2.0-alpha.7。`ModelRequest` 表示一次已承诺根预算的 API 请求或 CLI 会话，归属一个实际 AgentRun。请求收到结果、Agent 阶段完成、独立审查意见和根任务人工验收分别记录。
+适用版本：0.2.0-alpha.7 起，alpha.8 增加动态团队来源。`ModelRequest` 表示一次已承诺根预算的 API 请求或 CLI 会话，归属一个实际 AgentRun。请求收到结果、Agent 阶段完成、独立审查意见和根任务人工验收分别记录。
 
 ## 查询与交付
 
@@ -16,6 +16,7 @@
 | --- | --- |
 | `id`, `schemaVersion` | 核心生成的不可复用身份、实体版本 1 |
 | `taskId`, `rootTaskId`, `projectId`, `sessionId`, `agentRunId`, `stage` | 从实际运行派生的归属；客户端不能指定或改写 |
+| `teamId`, `subtaskId`, `parentRunId`, `definitionId`, `definitionVersion`, `depth` | alpha.8 动态运行存在时从实际 AgentRun 派生的团队、父子与固定定义来源；没有该关系的旧请求不补造 |
 | `sequence`, `round`, `attempt` | 运行内已承诺调用的序号、运行器协议轮次、请求尝试号；当前不自动重试，attempt 固定为 1 |
 | `routeId`, `routeVersion`, `engine`, `model`, `unit` | 运行的固定路由和调用单位；unit 为 API_REQUEST 或 CLI_SESSION，不复制密钥和整个路由配置 |
 | `state`, `createdAt`, `endedAt`, `elapsedMs` | 派发状态、UTC 开始/结束时间及本地耗时；请求结束前没有结束字段 |
@@ -52,4 +53,4 @@ CLI 只观测一次会话，内部模型请求数、Token 和费用均未知，�
 
 已配置路由凭据在截断前经现有脱敏器移除，身份和异常文本也走同一规则；原始 HTTP 错误体不进入请求记录。片段以纯文本呈现。当前本机工作台保存这些片段，用于任务内输入输出核对；脱敏只覆盖已知凭据，不代表删除了项目内容或全部个人信息。记录没有发送到遥测服务，内容采集开关、保留治理与完整敏感内容识别仍待实现。
 
-复用 SQLite `entities` 的 modelRequest 类型及局部索引，数据库 schema 仍为 3，API 仍为 1。旧版本不存在的内部请求不推测补造。本协议完成 F16 的逐轮定位基础；Token 趋势、供应商计费核对、动态 SubAgent/Teams 和远程 Worker 仍需独立实施与验收。
+复用 SQLite `entities` 的 modelRequest 类型及局部索引，数据库 schema 仍为 3，API 仍为 1。旧版本不存在的内部请求不推测补造。alpha.8 的[动态团队协议](./team-contract.md)使用该次成功请求的持久身份关联委派、消息、采纳和 MCP 原来源，全部后代仍使用原根预算。本协议完成 F16 的逐轮定位基础；Token 趋势、供应商计费核对和远程 Worker 继续实施。

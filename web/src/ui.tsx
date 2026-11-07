@@ -10,10 +10,11 @@ const labels: Record<string, string> = {
   PENDING: '尚未执行', ACTIVE: '有效', DISABLED: '已停用', NEEDS_REVIEW: '待核验',
   APPROVED: '审查通过', REJECTED: '需要修复', BLOCKED: '受阻', VERIFIED: '已验证',
   WAITING_TOOL: '等待工具', BUDGET_EXHAUSTED: '预算不足', NOT_RUN: '尚未执行', CHANGES_REQUESTED: '需要修复', UNVERIFIED: '未验证',
+  WAITING_CHILDREN: '等待副任务', WAITING_DEPENDENCY: '等待前置副任务',
 };
 export const modeLabel = (mode: string) => ({ AUTO: '自动选择', LEAD: '主副协作', ROUNDTABLE: '圆桌讨论', PIPELINE: '研发流水线' }[mode] || mode);
 export const statusLabel = (state?: string) => state ? labels[state] || state : '尚未执行';
-export const kindLabel = (kind: string) => ({ FACT: '事实', DECISION: '决策', EXPERIENCE: '经验', RULE: '项目规则', BASELINE: '基线检查', VERIFICATION: '结果验证', REVIEW: '独立审查', IMPLEMENTATION: '实现记录' }[kind] || kind);
+export const kindLabel = (kind: string) => ({ FACT: '事实', DECISION: '决策', EXPERIENCE: '经验', RULE: '项目规则', BASELINE: '基线检查', VERIFICATION: '结果验证', REVIEW: '独立审查', IMPLEMENTATION: '实现记录', AGENT: '阶段执行', SUBAGENT: '副 Agent 执行' }[kind] || kind);
 export const formatTime = (date?: string) => {
   if (!date) return '尚无记录';
   const value = new Date(date);
@@ -25,7 +26,7 @@ export const lines = (text: string) => text.split('\n').map(s => s.trim()).filte
 export function Badge({ state, children }: { state?: string; children?: ReactNode }) {
   const tone = ['COMPLETED', 'SUCCEEDED', 'PASSED', 'APPROVED', 'ACTIVE', 'VERIFIED'].includes(state || '') ? 'success'
     : ['FAILED', 'REJECTED', 'UNKNOWN', 'CHANGES_REQUESTED'].includes(state || '') ? 'danger'
-    : ['WAITING_INPUT', 'WAITING_RESOURCE', 'AWAITING_ACCEPTANCE', 'NEEDS_REVIEW', 'BLOCKED', 'DRAFT'].includes(state || '') ? 'warning'
+    : ['WAITING_INPUT', 'WAITING_RESOURCE', 'WAITING_CHILDREN', 'WAITING_DEPENDENCY', 'AWAITING_ACCEPTANCE', 'NEEDS_REVIEW', 'BLOCKED', 'DRAFT'].includes(state || '') ? 'warning'
     : ['RUNNING', 'DISPATCHING', 'QUEUED', 'PAUSING', 'CANCELLING'].includes(state || '') ? 'live' : 'muted';
   return <span className={`badge ${tone}`}><span className="badge-dot" />{children || statusLabel(state)}</span>;
 }

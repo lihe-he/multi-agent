@@ -160,7 +160,16 @@ public class McpManager {
     }
 
     public Map<String, Object> invokeFixedTool(String taskId, String stageKind, String alias, BooleanSupplier cancelled) {
+        return invokeFixedTool(taskId, stageKind, alias, Map.of(), cancelled);
+    }
+
+    public Map<String, Object> invokeFixedTool(String taskId, String stageKind, String alias, String agentRunId, String requestId, String toolCallId, BooleanSupplier cancelled) {
+        return invokeFixedTool(taskId, stageKind, alias, store.agentToolSource(taskId, agentRunId, requestId, toolCallId), cancelled);
+    }
+
+    private Map<String, Object> invokeFixedTool(String taskId, String stageKind, String alias, Map<String, Object> source, BooleanSupplier cancelled) {
         Map<String, Object> task = store.get("task", taskId);
+        if (!str(task, "teamId").isBlank() && source.isEmpty()) throw new ApiException(403, "团队 MCP 动作需要实际执行者和原请求来源");
         Map<String, Object> authorization = map(task, "mcpAuthorization");
         Map<String, Object> binding = objects(authorization.get("bindings")).stream()
             .filter(item -> alias.equals(str(item, "alias"))).findFirst().orElseThrow(() -> new ApiException(403, "MCP 固定动作未获此任务授权"));
@@ -171,10 +180,11 @@ public class McpManager {
         String operationId = hash(obj("taskId", taskId, "actionKey", actionKey));
         try (var serviceLease = acquireServer(serverId, cancelled)) {
             task = store.get("task", taskId);
+            if (!source.isEmpty()) store.agentToolSource(taskId, str(source, "agentRunId"), str(source, "modelRequestId"), str(source, "toolCallId"));
             McpTaskPolicy.assertCurrent(store, task);
             Map<String, Object> existing = store.find("mcpOperation", operationId);
             if (existing != null) {
-                if ("ACKNOWLEDGED".equals(str(existing, "state"))) return obj("state", "ACKNOWLEDGED", "deduplicated", true, "result", existing.get("result"));
+                if ("ACKNOWLEDGED".equals(str(existing, "state"))) return obj("state", "ACKNOWLEDGED", "deduplicated", true, "result", existing.get("result"), "operationId", existing.get("id"), "sourceAgentRunId", existing.getOrDefault("agentRunId", ""), "sourceRequestId", existing.getOrDefault("modelRequestId", ""));
                 if ("RECONCILED".equals(str(existing, "state")) && "NOT_SENT".equals(str(existing, "dispatchState"))) return obj("state", "REJECTED", "error", existing.get("error"), "operationId", operationId);
                 return obj("state", "UNKNOWN", "error", "此固定动作已有记录，不能自动重放；请先核对记录");
             }
@@ -187,6 +197,7 @@ public class McpManager {
                 "argumentKeys", new ArrayList<>(map(binding, "fixedArguments").keySet()), "argumentHash", hash(binding.get("fixedArguments")),
                 "inputSummary", "固定参数键：" + String.join(", ", map(binding, "fixedArguments").keySet()),
                 "state", "PREPARED", "dispatchState", "NOT_SENT", "stopState", "UNCONFIRMED", "canReconcile", false, "createdAt", now());
+            operation.putAll(source);
             store.beginMcpOperation(taskId, operation, authVersion, timeout);
             boolean sent = false;
             try (var transport = openTransport(server, cancelled, Duration.ofMillis(timeout), operation)) {
@@ -195,6 +206,7 @@ public class McpManager {
                 Map<String, Object> latestTask = store.get("task", taskId);
                 McpTaskPolicy.assertCurrent(store, latestTask);
                 if (cancelled.getAsBoolean()) throw new CancellationException("MCP 动作派发前收到停止请求");
+                if (!source.isEmpty()) store.agentToolSource(taskId, str(source, "agentRunId"), str(source, "modelRequestId"), str(source, "toolCallId"));
                 Map<String, Object> live = store.get("mcpServer", serverId);
                 if (!str(binding, "identity").equals(str(live, "identity")) || num(binding, "configVersion", -1) != num(live, "version", -2)) throw new ApiException(409, "MCP 服务配置变化，派发已阻止");
                 operation.put("state", "DISPATCHED"); operation.put("dispatchState", "SENT"); store.put("mcpOperation", operation); sent = true;
@@ -349,7 +361,7 @@ public class McpManager {
     }
 
     Map<String, Object> discover(Map<String, Object> server, McpTransport transport) throws Exception {
-        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.7")));
+        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.8")));
         String protocol = str(initialized, "protocolVersion");
         if (!Set.of("2025-06-18", "2025-03-26").contains(protocol)) { throw new ApiException(409, "此客户端尚未验证服务协商的 MCP 版本：" + protocol); }
         transport.notify("notifications/initialized", obj());

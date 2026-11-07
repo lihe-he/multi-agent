@@ -1,45 +1,45 @@
 {
-  "createdAt": "2026-11-07T13:25:24.887Z",
+  "createdAt": "2026-11-07T15:18:55.915Z",
   "platform": "win32",
   "status": "passed",
-  "baseUrl": "http://127.0.0.1:55421",
-  "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-5JphD7",
-  "projectPath": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-5JphD7\\中文 sample project",
+  "baseUrl": "http://127.0.0.1:52710",
+  "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-3EF6mZ",
+  "projectPath": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-3EF6mZ\\中文 sample project",
   "checks": [
     {
       "name": "API rejects missing access token",
       "status": "passed",
-      "durationMs": 27
+      "durationMs": 20
     },
     {
       "name": "Core returns persisted state",
       "status": "passed",
-      "durationMs": 66
+      "durationMs": 27
     },
     {
       "name": "Import real Git repository with Chinese and spaced path",
       "status": "passed",
-      "durationMs": 3198
+      "durationMs": 2096
     },
     {
       "name": "Search reports source locations and coverage",
       "status": "passed",
-      "durationMs": 475
+      "durationMs": 242
     },
     {
       "name": "Session routes require authentication and preserve server-owned message identity",
       "status": "passed",
-      "durationMs": 305
+      "durationMs": 251
     },
     {
       "name": "Save project knowledge with an explicit source",
       "status": "passed",
-      "durationMs": 17
+      "durationMs": 16
     },
     {
       "name": "Reject unsupported permission in an imported role template",
       "status": "passed",
-      "durationMs": 14
+      "durationMs": 15
     },
     {
       "name": "Reject cyclic execution plan before dispatch",
@@ -49,92 +49,97 @@
     {
       "name": "Configure local protocol test route",
       "status": "passed",
-      "durationMs": 21
+      "durationMs": 7
     },
     {
       "name": "Create task with fixed contract and route locks",
       "status": "passed",
-      "durationMs": 96
+      "durationMs": 18
     },
     {
       "name": "One session carries multiple tasks with source goals and scoped activity",
       "status": "passed",
-      "durationMs": 215
+      "durationMs": 65
     },
     {
       "name": "Reject route that does not match the hard model lock",
       "status": "passed",
-      "durationMs": 20
+      "durationMs": 16
     },
     {
       "name": "Reject acceptance before required execution and evidence",
       "status": "passed",
-      "durationMs": 19
+      "durationMs": 10
     },
     {
       "name": "Execute actual Java API tool loop, verification and independent review",
       "status": "passed",
-      "durationMs": 15035
+      "durationMs": 11175
     },
     {
       "name": "Agent runs persist real calls, scoped pages and evidence identity",
       "status": "passed",
-      "durationMs": 112
+      "durationMs": 78
     },
     {
       "name": "Model request trace binds each API round to budget, usage and provider receipt",
       "status": "passed",
-      "durationMs": 127
+      "durationMs": 62
     },
     {
       "name": "Preserve source Git worktree and staged state",
       "status": "passed",
-      "durationMs": 203
+      "durationMs": 339
     },
     {
       "name": "Diff and evidence are bound to the delivered version",
       "status": "passed",
-      "durationMs": 611
+      "durationMs": 795
     },
     {
       "name": "Persistent events can be replayed with a cursor",
       "status": "passed",
-      "durationMs": 25
+      "durationMs": 20
     },
     {
       "name": "Reject acceptance and export when content changes after review",
       "status": "passed",
-      "durationMs": 894
+      "durationMs": 844
     },
     {
       "name": "Manual acceptance records completion without writing source",
       "status": "passed",
-      "durationMs": 598
+      "durationMs": 761
     },
     {
       "name": "Export portable delivery archive",
       "status": "passed",
-      "durationMs": 1395
+      "durationMs": 909
     },
     {
       "name": "Disable knowledge while preserving its revision",
       "status": "passed",
-      "durationMs": 31
+      "durationMs": 6
     },
     {
       "name": "Complete LEAD stages under the same root budget",
       "status": "passed",
-      "durationMs": 13316
+      "durationMs": 9884
     },
     {
       "name": "Complete ROUNDTABLE stages under the same root budget",
       "status": "passed",
-      "durationMs": 17550
+      "durationMs": 11698
+    },
+    {
+      "name": "Actual dynamic team shares the root budget, adopts dependencies and preserves MCP source in the ZIP",
+      "status": "passed",
+      "durationMs": 15591
     },
     {
       "name": "Cancel an in-flight task and keep source intact",
       "status": "passed",
-      "durationMs": 6987
+      "durationMs": 5115
     }
   ],
   "calls": [
@@ -646,6 +651,350 @@
       "number": 37,
       "path": "/v1/chat/completions",
       "kind": "analysis",
+      "stage": "INVESTIGATE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "delegate_agent",
+        "wait_agent",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 38,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "INVESTIGATE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "delegate_agent",
+        "wait_agent",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 39,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 40,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 41,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "SUBAGENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 42,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "SUBAGENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 43,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "SUBAGENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 2,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 44,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 2,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 45,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 3,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 46,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "SUBAGENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "wait_agent",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 47,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "SUBAGENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "wait_agent",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 48,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 4,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 49,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 5,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 50,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 6,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 51,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 7,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 52,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 8,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 53,
+      "path": "/v1/chat/completions",
+      "kind": "review",
+      "stage": "REVIEW",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 54,
+      "path": "/v1/chat/completions",
+      "kind": "review",
+      "stage": "REVIEW",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 55,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
       "stage": "DESIGN",
       "tools": [
         "list_files",
@@ -654,6 +1003,389 @@
       ],
       "completedTools": 0,
       "proposalIncludesPriorHandoffs": false
+    }
+  ],
+  "teams": [
+    {
+      "taskId": "cd9546ac-e9ce-4d7f-bd05-9a091c12da34",
+      "teamId": "8751d93d-b3c0-449b-b83f-e08276d294ef",
+      "rootCalls": 18,
+      "children": [
+        {
+          "id": "cb0572c6-7d92-49a2-8b1c-7601d30a0f52",
+          "agentRunId": "53c9b621-ab8e-4106-b1ea-136ea3572e8b",
+          "state": "SUCCEEDED",
+          "dependsOn": [
+            "78f753e3-6b55-47f4-8196-36869457ec19"
+          ],
+          "integrationState": "NOT_ADOPTED"
+        },
+        {
+          "id": "78f753e3-6b55-47f4-8196-36869457ec19",
+          "agentRunId": "6414e65a-58df-42a5-8492-f8aebddb2751",
+          "state": "SUCCEEDED",
+          "dependsOn": [],
+          "integrationState": "ADOPTED"
+        }
+      ],
+      "mcpSource": {
+        "id": "14c20bc43d0a5e8cfedb8d7400077379b434d42643ec0e3ad7c583aec90e67d6",
+        "requestId": "14c20bc43d0a5e8cfedb8d7400077379b434d42643ec0e3ad7c583aec90e67d6",
+        "taskId": "cd9546ac-e9ce-4d7f-bd05-9a091c12da34",
+        "projectId": "56dbc46b-ca3d-4af0-9270-6a6094ae411f",
+        "stage": "IMPLEMENT",
+        "serverId": "b0010639-f3ca-4f8f-b00d-a94f4fc3a7e4",
+        "serverName": "Team source lifecycle fixture",
+        "identity": "61ee910e84c54757b78bd939fc5b80659889740b20da4437f636b4178b98ce65",
+        "tool": "echo",
+        "actionKey": "7b88cd69489c68a7d780037a8cc60ccf60d5f2c3a039a6a6dad3a6de693b7e91",
+        "authorizationVersion": 1,
+        "definitionVersion": 1,
+        "argumentKeys": [
+          "text"
+        ],
+        "argumentHash": "d9f2de30e3a023088aefa4e0428a0ae40298b63e6d07027cd38f31f0a945c084",
+        "inputSummary": "固定参数键：text",
+        "state": "ACKNOWLEDGED",
+        "dispatchState": "ACKNOWLEDGED",
+        "stopState": "CONFIRMED",
+        "canReconcile": false,
+        "createdAt": "2026-11-07T15:18:40.850910600Z",
+        "agentRunId": "6414e65a-58df-42a5-8492-f8aebddb2751",
+        "modelRequestId": "aafd2821-d305-4579-b4d1-0e94eee9fec4",
+        "toolCallId": "team-smoke-6-mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+        "rootTaskId": "cd9546ac-e9ce-4d7f-bd05-9a091c12da34",
+        "actorKind": "SUBAGENT",
+        "teamId": "8751d93d-b3c0-449b-b83f-e08276d294ef",
+        "subtaskId": "78f753e3-6b55-47f4-8196-36869457ec19",
+        "parentRunId": "e02555d1-970a-4094-9586-d910dff5575b",
+        "definitionId": "agent-developer",
+        "depth": 1,
+        "sessionId": "21beb8b9-5334-4823-8f8e-7126aa7a99d4",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "TEAM_SMOKE_MCP_SOURCE"
+            }
+          ],
+          "isError": false
+        },
+        "completedAt": "2026-11-07T15:18:40.867844500Z",
+        "localStoppedAt": "2026-11-07T15:18:40.870748800Z"
+      },
+      "calls": [
+        {
+          "number": 1,
+          "stage": "INVESTIGATE",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "delegate_agent",
+            "wait_agent",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 0
+        },
+        {
+          "number": 2,
+          "stage": "INVESTIGATE",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "delegate_agent",
+            "wait_agent",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 1
+        },
+        {
+          "number": 3,
+          "stage": "IMPLEMENT",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 0
+        },
+        {
+          "number": 4,
+          "stage": "IMPLEMENT",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 1
+        },
+        {
+          "number": 5,
+          "stage": "SUBAGENT",
+          "actor": "writer",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 0
+        },
+        {
+          "number": 6,
+          "stage": "SUBAGENT",
+          "actor": "writer",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 1
+        },
+        {
+          "number": 7,
+          "stage": "SUBAGENT",
+          "actor": "writer",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 2
+        },
+        {
+          "number": 8,
+          "stage": "IMPLEMENT",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 2
+        },
+        {
+          "number": 9,
+          "stage": "IMPLEMENT",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 3
+        },
+        {
+          "number": 10,
+          "stage": "SUBAGENT",
+          "actor": "reader",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "wait_agent",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 0
+        },
+        {
+          "number": 11,
+          "stage": "SUBAGENT",
+          "actor": "reader",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "wait_agent",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 1
+        },
+        {
+          "number": 12,
+          "stage": "IMPLEMENT",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 4
+        },
+        {
+          "number": 13,
+          "stage": "IMPLEMENT",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 5
+        },
+        {
+          "number": 14,
+          "stage": "IMPLEMENT",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 6
+        },
+        {
+          "number": 15,
+          "stage": "IMPLEMENT",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 7
+        },
+        {
+          "number": 16,
+          "stage": "IMPLEMENT",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files",
+            "write_file",
+            "delete_file",
+            "mcp_7b88cd69489c68a7d780037a8cc60ccf60d5f2c3",
+            "delegate_agent",
+            "wait_agent",
+            "adopt_agent_changes",
+            "send_team_message",
+            "list_team_agents"
+          ],
+          "completedTools": 8
+        },
+        {
+          "number": 17,
+          "stage": "REVIEW",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files"
+          ],
+          "completedTools": 0
+        },
+        {
+          "number": 18,
+          "stage": "REVIEW",
+          "actor": "parent",
+          "tools": [
+            "list_files",
+            "read_file",
+            "search_files"
+          ],
+          "completedTools": 1
+        }
+      ],
+      "externalMcpCalls": 1,
+      "zipSourcesVerified": true
     }
   ],
   "scope": "Local deterministic model protocol fixture only; not external provider, CLI or cross-platform certification."

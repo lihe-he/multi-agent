@@ -30,7 +30,7 @@ import static dev.agentworkbench.Json.*;
  * 状态、操作意图和事件共用 SQLite 事务；写失败立即封闭派发。
  */
 @Component
-public class ExecutionStore {
+public class ExecutionStore implements AutoCloseable {
     private final Connection connection;
     private final ObjectMapper mapper;
     private final Path directory;
@@ -77,6 +77,10 @@ public class ExecutionStore {
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_agent_run_task ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.stage')) WHERE kind='agentRun'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_model_request_run ON entities(json_extract(body,'$.agentRunId'),json_extract(body,'$.state')) WHERE kind='modelRequest'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_model_request_task ON entities(json_extract(body,'$.taskId')) WHERE kind='modelRequest'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_subtask_root ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.parentRunId'),json_extract(body,'$.state')) WHERE kind='subtask'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_subtask_dispatch ON entities(json_extract(body,'$.parentRunId'),json_extract(body,'$.requestId'),json_extract(body,'$.toolCallId')) WHERE kind='subtask'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_team_message ON entities(json_extract(body,'$.teamId'),json_extract(body,'$.sequence')) WHERE kind='teamMessage'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_effect_state ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.state')) WHERE kind IN ('operation','mcpOperation','teamOperation')");
                 boolean rebuildSearch;
                 try (var tables = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_search'")) { rebuildSearch = schemaVersion < 3 || !tables.next(); }
                 statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS session_search USING fts5(project_id UNINDEXED,session_id UNINDEXED,message_id UNINDEXED,sequence UNINDEXED,content,tokenize='trigram case_sensitive 1')");
@@ -168,6 +172,7 @@ public class ExecutionStore {
         Map<String, Object> linkedSession = session;
         transaction(() -> {
             write("task", task); appendEvent(str(task, "id"), "TASK_CREATED", "需求、完成约定和策略快照已保存，等待确认计划");
+            if (!str(task, "teamId").isBlank()) write("team", obj("id", task.get("teamId"), "taskId", task.get("id"), "projectId", task.get("projectId"), "sessionId", task.get("sessionId"), "name", task.get("title"), "createdAt", now(), "messageSequence", 0, "version", 1));
             if (linkedSession != null) {
                 write("session", linkedSession);
                 writeSessionMessage(linkedSession, "task:" + str(task, "id"), "TASK_GOAL", str(task, "goal"), str(task, "id"));
@@ -379,13 +384,18 @@ public class ExecutionStore {
         if (run != null) {
             if (!taskId.equals(str(run, "taskId")) || !stage.equals(str(run, "stage")) || !"WAITING_RESOURCE".equals(str(run, "state"))) throw new ApiException(409, "Agent 运行归属或状态不匹配");
             operation.put("agentRunId", agentRunId); run.put("operationId", operation.get("id"));
-            run.put("state", "RUNNING"); run.put("startedAt", now());
+            run.put("state", "RUNNING"); run.putIfAbsent("startedAt", now());
         }
-        task.put("activeOperation", operation.get("id"));
+        if (run == null || str(run, "subtaskId").isBlank()) task.put("activeOperation", operation.get("id"));
         task.put("updatedAt", now());
         transaction(() -> {
             write("operation", operation); write("task", task);
-            if (run != null) write("agentRun", run);
+            if (run != null) {
+                write("agentRun", run);
+                if (!str(run, "subtaskId").isBlank()) {
+                    Map<String, Object> child = subtask(taskId, str(run, "subtaskId")); child.put("state", "RUNNING"); write("subtask", child);
+                }
+            }
             appendEvent(taskId, "OPERATION_PREPARED", stage + "：已保存操作意图");
         });
         return operation;
@@ -410,6 +420,7 @@ public class ExecutionStore {
             "engine", route.get("engine"), "model", route.get("model"), "provider", route.get("provider"),
             "reserved", reserved, "calls", 0, "callUnit", "API".equals(str(route, "engine")) ? "API_REQUEST" : "CLI_SESSION",
             "usage", obj("cost", "UNKNOWN"));
+        if (!str(task, "teamId").isBlank()) run.putAll(obj("teamId", task.get("teamId"), "depth", 0, "permissions", CollaborationPolicy.rootPermissions(task, stage)));
         run.put("profileVersions", objects(task.get("profileSnapshot")).stream().filter(profile -> str(stage, "role").equals(str(profile, "role")))
             .map(profile -> obj("id", profile.get("id"), "version", profile.get("version"))).toList());
         transaction(() -> { write("agentRun", run); appendEvent(taskId, "AGENT_QUEUED", str(stage, "id") + " · AgentRun " + str(run, "id")); });
@@ -417,12 +428,20 @@ public class ExecutionStore {
     }
 
     public synchronized void agentRunWaiting(String runId, String state) {
-        if (!Set.of("WAITING_RESOURCE", "WAITING_TOOL", "RUNNING").contains(state)) throw new ApiException(400, "无效 Agent 等待状态");
+        if (!Set.of("WAITING_RESOURCE", "WAITING_TOOL", "WAITING_CHILDREN", "WAITING_DEPENDENCY", "RUNNING").contains(state)) throw new ApiException(400, "无效 Agent 等待状态");
         Map<String, Object> run = get("agentRun", runId);
-        if (!Set.of("WAITING_RESOURCE", "WAITING_TOOL", "RUNNING").contains(str(run, "state"))) throw new ApiException(409, "已结束的 Agent 不可重新运行");
+        if (!Set.of("WAITING_RESOURCE", "WAITING_TOOL", "WAITING_CHILDREN", "WAITING_DEPENDENCY", "RUNNING").contains(str(run, "state"))) throw new ApiException(409, "已结束的 Agent 不可重新运行");
         if (state.equals(str(run, "state"))) return;
         run.put("state", state);
-        transaction(() -> { write("agentRun", run); appendEvent(str(run, "taskId"), "AGENT_STATE", str(run, "stage") + " · AgentRun " + runId + "：" + state); });
+        transaction(() -> {
+            write("agentRun", run);
+            if (!str(run, "subtaskId").isBlank()) {
+                Map<String, Object> child = subtask(str(run, "taskId"), str(run, "subtaskId"));
+                if (child.containsKey("endedAt")) throw new ApiException(409, "已结束的副任务不可重新运行");
+                child.put("state", state); child.put("updatedAt", now()); write("subtask", child);
+            }
+            appendEvent(str(run, "taskId"), "AGENT_STATE", str(run, "stage") + " · AgentRun " + runId + "：" + state);
+        });
     }
 
     /**
@@ -440,7 +459,7 @@ public class ExecutionStore {
     public synchronized void finishAgentRun(String runId, String state, String reason) {
         if (!Set.of("SUCCEEDED", "FAILED", "UNKNOWN", "CANCELLED", "PAUSED", "WAITING_INPUT", "BUDGET_EXHAUSTED").contains(state)) throw new ApiException(400, "无效 Agent 结束状态");
         Map<String, Object> run = get("agentRun", runId);
-        if (!Set.of("WAITING_RESOURCE", "WAITING_TOOL", "RUNNING").contains(str(run, "state"))) throw new ApiException(409, "已结束的 Agent 运行不可覆盖");
+        if (!Set.of("WAITING_RESOURCE", "WAITING_TOOL", "WAITING_CHILDREN", "WAITING_DEPENDENCY", "RUNNING").contains(str(run, "state"))) throw new ApiException(409, "已结束的 Agent 运行不可覆盖");
         run.put("state", state); run.put("reason", reason); run.put("endedAt", now());
         long elapsed = java.time.Duration.between(java.time.Instant.parse(str(run, "createdAt")), java.time.Instant.parse(str(run, "endedAt"))).toMillis();
         run.put("elapsedMs", Math.max(0, elapsed));
@@ -465,6 +484,7 @@ public class ExecutionStore {
             "sequence", num(run, "calls", 0) + 1, "state", "DISPATCHING", "createdAt", now(), "attempt", 1,
             "routeId", run.get("routeId"), "routeVersion", run.get("routeVersion"), "engine", run.get("engine"), "model", run.get("model"),
             "unit", run.get("callUnit"), "usage", obj("cost", "UNKNOWN"));
+        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth")) if (run.containsKey(key)) request.put(key, run.get(key));
         for (String key : List.of("round", "messageCount", "inputBytes", "inputDigest", "toolCount", "inputPreview", "inputTruncated")) {
             if (metadata.containsKey(key)) request.put(key, metadata.get(key));
         }
@@ -534,7 +554,7 @@ public class ExecutionStore {
         get("project", projectId);
         if (!sessionId.isBlank()) session(projectId, sessionId);
         if (!taskId.isBlank() && !projectId.equals(str(get("task", taskId), "projectId"))) throw new ApiException(403, "任务不属于此项目");
-        if (before < 0 || (!state.isBlank() && !Set.of("WAITING_RESOURCE", "WAITING_TOOL", "RUNNING", "SUCCEEDED", "FAILED", "UNKNOWN", "CANCELLED", "PAUSED", "WAITING_INPUT", "BUDGET_EXHAUSTED").contains(state))) throw new ApiException(400, "无效运行游标或状态");
+        if (before < 0 || (!state.isBlank() && !Set.of("WAITING_RESOURCE", "WAITING_TOOL", "WAITING_CHILDREN", "WAITING_DEPENDENCY", "RUNNING", "SUCCEEDED", "FAILED", "UNKNOWN", "CANCELLED", "PAUSED", "WAITING_INPUT", "BUDGET_EXHAUSTED").contains(state))) throw new ApiException(400, "无效运行游标或状态");
         int limit = Math.max(1, Math.min(100, requestedLimit));
         String sql = "SELECT rowid,body FROM entities WHERE kind='agentRun' AND json_extract(body,'$.projectId')=?"
             + (sessionId.isBlank() ? "" : " AND json_extract(body,'$.sessionId')=?")
@@ -559,6 +579,216 @@ public class ExecutionStore {
         } catch (Exception exception) { throw failure(exception); }
     }
 
+    public synchronized Map<String, Object> saveAgentDefinition(Map<String, Object> definition, Map<String, Object> previous) {
+        Map<String, Object> current = find("agentDefinition", str(definition, "id"));
+        if ((current == null) != (previous == null) || (current != null && num(current, "version", 1) != num(previous, "version", 1))) throw new ApiException(409, "Agent 定义版本冲突");
+        transaction(() -> {
+            if (previous != null) write("agentDefinitionRevision", obj("id", id(), "definitionId", previous.get("id"), "record", previous, "createdAt", now()));
+            write("agentDefinition", definition);
+        });
+        return definition;
+    }
+
+    private Map<String, Object> teamRequest(String taskId, String runId, String requestId) {
+        Map<String, Object> run = get("agentRun", runId), request = get("modelRequest", requestId);
+        if (!taskId.equals(str(run, "taskId")) || !runId.equals(str(request, "agentRunId")) || !"SUCCEEDED".equals(str(request, "state")) || str(run, "teamId").isBlank()) throw new ApiException(403, "委派操作没有所属运行的成功模型回执");
+        if (Set.of("PROPOSAL", "REVIEW").contains(str(run, "kind"))) throw new ApiException(403, "独立提案和审查不能使用共享团队输入输出");
+        if (!Set.of("RUNNING", "WAITING_TOOL", "WAITING_CHILDREN").contains(str(run, "state"))) throw new ApiException(409, "来源 Agent 本轮已结束");
+        return run;
+    }
+
+    /**
+     * 固定 MCP 动作的执行来源只由真实模型回执派生，不能用消息或参数伪造。
+     */
+    public synchronized Map<String, Object> agentToolSource(String taskId, String runId, String requestId, String toolCallId) {
+        Map<String, Object> run = teamRequest(taskId, runId, requestId), permissions = map(run, "permissions");
+        if (toolCallId.isBlank() || toolCallId.length() > 200 || !AgentPermissions.has(permissions, "mcp") || !AgentPermissions.has(permissions, "write")) throw new ApiException(403, "执行者没有固定 MCP 权限或原工具身份");
+        if (!str(run, "subtaskId").isBlank() && (!AgentPermissions.unrestricted(permissions, "read") || !AgentPermissions.unrestricted(permissions, "write"))) throw new ApiException(403, "窄范围副任务不能证明外部 MCP 的文件访问边界，请交回根授权阶段");
+        Map<String, Object> source = obj("agentRunId", runId, "modelRequestId", requestId, "toolCallId", toolCallId, "rootTaskId", run.get("rootTaskId"), "actorKind", run.get("kind"));
+        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "sessionId")) if (run.containsKey(key)) source.put(key, run.get(key));
+        return source;
+    }
+
+    public synchronized boolean hasUnknownEffects(String taskId) {
+        try (var query = connection.prepareStatement("SELECT 1 FROM entities WHERE kind IN ('operation','mcpOperation','teamOperation') AND json_extract(body,'$.taskId')=? AND json_extract(body,'$.state')='UNKNOWN' LIMIT 1")) {
+            query.setString(1, taskId); try (var rows = query.executeQuery()) { return rows.next(); }
+        } catch (SQLException exception) { throw failure(exception); }
+    }
+
+    /**
+     * 副任务和排队运行同事务建立，数量限制按根累计，不随结束、重建或递归清零。
+     */
+    public synchronized Map<String, Object> enqueueSubtask(String taskId, String parentRunId, String requestId, String toolCallId, Map<String, Object> input) {
+        Map<String, Object> parent = teamRequest(taskId, parentRunId, requestId), task = get("task", taskId), policy = map(task, "collaboration");
+        if (!bool(policy, "enabled", false) || !AgentPermissions.has(map(parent, "permissions"), "delegate")) throw new ApiException(403, "当前阶段没有委派权限");
+        if (!Set.of("RUNNING", "WAITING_RESOURCE").contains(str(task, "state"))) throw new ApiException(409, "根任务已停止新增委派");
+        if (toolCallId.isBlank() || toolCallId.length() > 200) throw new ApiException(400, "工具调用身份无效");
+        for (Map<String, Object> old : list("subtask")) {
+            if (parentRunId.equals(str(old, "parentRunId")) && requestId.equals(str(old, "requestId")) && toolCallId.equals(str(old, "toolCallId"))) {
+                if (!map(old, "request").equals(input)) throw new ApiException(409, "同一委派身份的参数不能改变");
+                return old;
+            }
+        }
+        if (hasUnknownEffects(taskId)) throw new ApiException(409, "团队有未确认操作，停止新委派");
+        int depth = num(parent, "depth", 0) + 1;
+        if (depth > num(policy, "maxDepth", 3) || num(policy, "spawned", 0) >= num(policy, "maxTotal", 24)) throw new ApiException(409, "根委派数量或递归深度达到上限");
+        long active = list("agentRun").stream().filter(run -> taskId.equals(str(run, "taskId")) && Set.of("WAITING_RESOURCE", "WAITING_TOOL", "WAITING_CHILDREN", "WAITING_DEPENDENCY", "RUNNING").contains(str(run, "state"))).count();
+        if (active >= num(policy, "maxActive", 6)) throw new ApiException(409, "活动或排队 Agent 达到根上限");
+        Map<String, Object> budget = map(task, "budget");
+        if (num(budget, "usedCalls", 0) + Math.max(0, num(budget, "reserveCalls", 0) - num(budget, "usedReservedCalls", 0)) >= num(budget, "maxCalls", 0)) throw new ApiException(409, "根开发预算不足，不能创建新副任务");
+        Map<String, Object> definition = objects(policy.get("definitions")).stream().filter(value -> str(input, "definitionId").equals(str(value, "id"))).findFirst().orElseThrow(() -> new ApiException(404, "Agent 定义不在任务固定版本中"));
+        Map<String, Object> liveDefinition = find("agentDefinition", str(definition, "id")), liveRoute = find("route", str(map(definition, "routeSnapshot"), "id"));
+        if (liveDefinition == null || !bool(liveDefinition, "enabled", false) || liveRoute == null || !bool(liveRoute, "enabled", false)) throw new ApiException(409, "副 Agent 定义或路由已停用");
+        if (!(input.get("scope") instanceof List<?>)) throw new ApiException(400, "委派需要明确文件范围清单");
+        if (input.containsKey("dependsOn") && (!(input.get("dependsOn") instanceof List<?> values) || values.stream().anyMatch(value -> !(value instanceof String dependency) || dependency.isBlank() || dependency.length() > 100))) throw new ApiException(400, "依赖需要副任务身份清单");
+        if (input.containsKey("maxCalls") && (!(input.get("maxCalls") instanceof Number number) || number.doubleValue() != number.intValue())) throw new ApiException(400, "副任务调用上限必须为整数");
+        Map<String, Object> permissions = AgentPermissions.narrow(map(parent, "permissions"), definition, input);
+        if (strings(permissions.get("capabilities")).isEmpty()) throw new ApiException(403, "副 Agent 没有可用的实际能力交集");
+        List<String> dependencies = strings(input.get("dependsOn")).stream().distinct().toList();
+        if (dependencies.size() > 12) throw new ApiException(400, "依赖最多 12 项");
+        for (String dependency : dependencies) {
+            Map<String, Object> sibling = subtask(taskId, dependency);
+            if (!parentRunId.equals(str(sibling, "parentRunId"))) throw new ApiException(409, "等待依赖必须为同一父运行中已创建的副任务，避免父子等待环");
+        }
+        int maxCalls = num(input, "maxCalls", num(definition, "maxCalls", 8));
+        if (maxCalls < 1 || maxCalls > num(definition, "maxCalls", 8)) throw new ApiException(400, "副任务调用上限不得增加定义的限制");
+        String subtaskId = id(), runId = id(), state = dependencies.isEmpty() ? "WAITING_RESOURCE" : "WAITING_DEPENDENCY";
+        Map<String, Object> route = map(definition, "routeSnapshot");
+        Map<String, Object> child = obj("id", subtaskId, "taskId", taskId, "rootTaskId", taskId, "teamId", parent.get("teamId"), "projectId", task.get("projectId"), "sessionId", task.get("sessionId"),
+            "parentRunId", parentRunId, "parentSubtaskId", parent.getOrDefault("subtaskId", ""), "agentRunId", runId, "requestId", requestId, "toolCallId", toolCallId,
+            "title", required(input, "title", 180), "goal", required(input, "goal", 12000), "definitionId", definition.get("id"), "definitionVersion", definition.get("version"), "role", definition.get("role"),
+            "permissions", permissions, "depth", depth, "dependsOn", dependencies, "state", state, "createdAt", now(), "maxCalls", maxCalls, "request", input,
+            "routeId", route.get("id"), "routeVersion", route.getOrDefault("version", 1), "engine", route.get("engine"), "model", route.get("model"), "integrationState", "NOT_ADOPTED");
+        Map<String, Object> run = obj("id", runId, "schemaVersion", 1, "taskId", taskId, "rootTaskId", taskId, "subtaskId", subtaskId, "teamId", parent.get("teamId"), "parentRunId", parentRunId,
+            "projectId", task.get("projectId"), "sessionId", task.get("sessionId"), "stage", "subagent-" + subtaskId, "kind", "SUBAGENT", "title", child.get("title"), "role", definition.get("role"),
+            "attempt", 1, "depth", depth, "state", state, "createdAt", now(), "permissions", permissions, "readOnly", !AgentPermissions.has(permissions, "write"), "scope", AgentPermissions.layers(permissions, "write"),
+            "routeId", route.get("id"), "routeVersion", route.getOrDefault("version", 1), "routeName", route.get("name"), "engine", "API", "model", route.get("model"), "provider", route.get("provider"),
+            "definitionId", definition.get("id"), "definitionVersion", definition.get("version"), "reserved", false, "calls", 0, "callUnit", "API_REQUEST", "usage", obj("cost", "UNKNOWN"));
+        policy.put("spawned", num(policy, "spawned", 0) + 1); task.put("updatedAt", now());
+        transaction(() -> { write("task", task); write("subtask", child); write("agentRun", run); appendEvent(taskId, "SUBAGENT_CREATED", str(child, "title") + " · " + subtaskId + "，继承根预算和权限交集"); });
+        return child;
+    }
+
+    public synchronized Map<String, Object> subtask(String taskId, String subtaskId) {
+        Map<String, Object> child = get("subtask", subtaskId);
+        if (!taskId.equals(str(child, "taskId"))) throw new ApiException(404, "副任务不属于此根任务");
+        return child;
+    }
+
+    public synchronized Map<String, Object> updateSubtask(String taskId, String subtaskId, Map<String, Object> facts) {
+        Map<String, Object> child = subtask(taskId, subtaskId), run = get("agentRun", str(child, "agentRunId"));
+        if (child.containsKey("endedAt") || !Set.of("WAITING_RESOURCE", "WAITING_TOOL", "WAITING_CHILDREN", "WAITING_DEPENDENCY", "RUNNING").contains(str(run, "state"))) throw new ApiException(409, "副任务结束后的执行事实不可覆盖");
+        if (!Set.of("workspace", "baseWorkspace", "inputVersion", "error").containsAll(facts.keySet())) throw new ApiException(400, "副任务状态来自实际运行，采纳事实来自操作回执");
+        child.putAll(facts);
+        for (String key : List.of("workspace", "inputVersion")) if (facts.containsKey(key)) run.put(key, facts.get(key));
+        child.put("updatedAt", now());
+        transaction(() -> { write("subtask", child); write("agentRun", run); });
+        return child;
+    }
+
+    public synchronized void finishSubtask(String taskId, String subtaskId, String state, String reason) {
+        Map<String, Object> child = subtask(taskId, subtaskId), run = get("agentRun", str(child, "agentRunId"));
+        if (child.containsKey("endedAt")) throw new ApiException(409, "副任务终态不可覆盖");
+        if (!Set.of("SUCCEEDED", "FAILED", "UNKNOWN", "CANCELLED", "PAUSED", "WAITING_INPUT", "BUDGET_EXHAUSTED").contains(state) || !state.equals(str(run, "state"))) throw new ApiException(409, "副任务必须使用实际 AgentRun 的结束事实");
+        child.putAll(obj("state", state, "reason", reason, "endedAt", now(), "evidenceId", run.getOrDefault("evidenceId", ""), "resultVersion", run.getOrDefault("resultVersion", "")));
+        transaction(() -> { write("subtask", child); appendEvent(taskId, "SUBAGENT_FINISHED", str(child, "title") + "：" + state); });
+    }
+
+    public synchronized Map<String, Object> team(String taskId) {
+        Map<String, Object> task = get("task", taskId);
+        if (str(task, "teamId").isBlank()) return obj("team", null, "agents", List.of(), "runs", List.of());
+        Map<String, Object> team = get("team", str(task, "teamId")); team.put("taskState", task.get("state"));
+        List<Map<String, Object>> agents = list("subtask").stream().filter(child -> taskId.equals(str(child, "taskId"))).map(child -> {
+            Map<String, Object> visible = new java.util.LinkedHashMap<>(child); visible.remove("request"); visible.remove("baseWorkspace");
+            if (!child.containsKey("endedAt")) visible.put("state", get("agentRun", str(child, "agentRunId")).get("state"));
+            return visible;
+        }).toList();
+        return obj("team", team, "agents", agents, "runs", list("agentRun").stream().filter(run -> taskId.equals(str(run, "taskId"))).toList(),
+            "limits", obj("maxActive", map(task, "collaboration").get("maxActive"), "maxDepth", map(task, "collaboration").get("maxDepth"), "maxTotal", map(task, "collaboration").get("maxTotal"), "spawned", map(task, "collaboration").get("spawned")));
+    }
+
+    public synchronized Map<String, Object> beginTeamOperation(String taskId, String runId, String requestId, String toolCallId, String kind, String target, Map<String, Object> facts) {
+        Map<String, Object> run = teamRequest(taskId, runId, requestId);
+        if (toolCallId.isBlank() || toolCallId.length() > 200) throw new ApiException(400, "工具调用身份无效");
+        for (Map<String, Object> old : list("teamOperation")) if (runId.equals(str(old, "agentRunId")) && requestId.equals(str(old, "requestId")) && toolCallId.equals(str(old, "toolCallId"))) {
+            if (!kind.equals(str(old, "kind")) || !target.equals(str(old, "target")) || !facts.equals(map(old, "facts"))) throw new ApiException(409, "团队操作身份不能复用或改变参数");
+            return old;
+        }
+        if (list("teamOperation").stream().anyMatch(old -> taskId.equals(str(old, "taskId")) && "UNKNOWN".equals(str(old, "state")))) throw new ApiException(409, "未确认团队操作不能通过新编号重放");
+        Map<String, Object> operation = obj("id", id(), "taskId", taskId, "teamId", run.get("teamId"), "agentRunId", runId, "requestId", requestId, "toolCallId", toolCallId, "kind", kind, "target", target, "state", "PREPARED", "createdAt", now(), "facts", facts);
+        transaction(() -> write("teamOperation", operation)); return operation;
+    }
+
+    public synchronized void finishTeamOperation(String operationId, String state, Map<String, Object> facts) {
+        Map<String, Object> operation = get("teamOperation", operationId);
+        if (!Set.of("PREPARED", "DISPATCHED").contains(str(operation, "state"))) throw new ApiException(409, "团队操作终态不可覆盖");
+        if (!Set.of("DISPATCHED", "ACKNOWLEDGED", "REJECTED", "UNKNOWN", "CANCELLED").contains(state)
+                || (state.equals("DISPATCHED") && !"PREPARED".equals(str(operation, "state")))
+                || (state.equals("ACKNOWLEDGED") && !"DISPATCHED".equals(str(operation, "state")))) throw new ApiException(409, "团队操作必须遵守准备、派发和回执顺序");
+        Map<String, Object> child = null;
+        if ("ACKNOWLEDGED".equals(state) && "ADOPT_SUBAGENT".equals(str(operation, "kind"))) {
+            child = subtask(str(operation, "taskId"), str(operation, "target"));
+            if (!"SUCCEEDED".equals(str(child, "state")) || !AgentPermissions.has(map(child, "permissions"), "write") || !str(operation, "agentRunId").equals(str(child, "parentRunId"))
+                    || !str(map(operation, "facts"), "resultVersion").equals(str(child, "resultVersion")) || str(facts, "resultVersion").isBlank()) throw new ApiException(409, "采纳回执必须对应成功直接副任务的原成果");
+            List<Map<String, Object>> integrations = new ArrayList<>(objects(child.get("integrations")));
+            integrations.add(obj("operationId", operationId, "agentRunId", operation.get("agentRunId"), "resultVersion", facts.get("resultVersion"), "createdAt", now()));
+            child.putAll(obj("integrationState", "ADOPTED", "integrationVersion", facts.get("resultVersion"), "integrations", integrations));
+        }
+        operation.put("state", state); operation.put("observation", facts); operation.put("updatedAt", now());
+        Map<String, Object> adopted = child;
+        transaction(() -> { write("teamOperation", operation); if (adopted != null) write("subtask", adopted); appendEvent(str(operation, "taskId"), "TEAM_OPERATION", str(operation, "kind") + "：" + state); });
+    }
+
+    /**
+     * 发件身份由认证用户或真实模型回执派生；重复编号不能改变收件人和正文。
+     */
+    public synchronized Map<String, Object> teamMessage(String taskId, String sender, String recipient, String key, String content, String requestId, String toolCallId) {
+        Map<String, Object> task = get("task", taskId), team = get("team", str(task, "teamId"));
+        if (!sender.equals("USER")) {
+            teamRequest(taskId, sender, requestId);
+            if (toolCallId.isBlank() || toolCallId.length() > 200) throw new ApiException(400, "团队消息缺少原工具调用身份");
+        }
+        if (!recipient.isBlank()) {
+            Map<String, Object> target = get("agentRun", recipient);
+            if (!str(team, "id").equals(str(target, "teamId"))) throw new ApiException(404, "收件人不属于此团队");
+        }
+        if (key.isBlank() || key.length() > 200 || content.isBlank() || content.length() > 6000) throw new ApiException(400, "团队消息编号或正文无效");
+        for (Map<String, Object> old : list("teamMessage")) if (str(team, "id").equals(str(old, "teamId")) && sender.equals(str(old, "sender")) && key.equals(str(old, "key"))) {
+            if (!recipient.equals(str(old, "recipient")) || !content.equals(str(old, "content"))) throw new ApiException(409, "重复消息不能改变内容");
+            return old;
+        }
+        if (num(team, "messageSequence", 0) >= 2000) throw new ApiException(409, "本团队消息达到保留上限");
+        int sequence = num(team, "messageSequence", 0) + 1; team.put("messageSequence", sequence);
+        Map<String, Object> message = obj("id", id(), "teamId", team.get("id"), "taskId", taskId, "projectId", task.get("projectId"), "sessionId", task.get("sessionId"), "sequence", sequence,
+            "sender", sender, "recipient", recipient, "key", key, "content", content, "requestId", requestId, "toolCallId", toolCallId, "createdAt", now());
+        transaction(() -> { write("team", team); write("teamMessage", message); appendEvent(taskId, "TEAM_MESSAGE", "团队消息 #" + sequence + " · " + sender); }); return message;
+    }
+
+    public synchronized Map<String, Object> teamMessages(String taskId, long after, long before, int requestedLimit, String reader) {
+        Map<String, Object> task = get("task", taskId);
+        if (!reader.isBlank() && !str(task, "teamId").equals(str(get("agentRun", reader), "teamId"))) throw new ApiException(404, "读者不属于此团队");
+        if (after < 0 || before < 0 || (after > 0 && before > 0)) throw new ApiException(400, "消息游标无效");
+        int limit = Math.max(1, Math.min(100, requestedLimit));
+        List<Map<String, Object>> messages = list("teamMessage").stream().filter(message -> str(task, "teamId").equals(str(message, "teamId")))
+            .filter(message -> reader.isBlank() || str(message, "recipient").isBlank() || reader.equals(str(message, "recipient")) || reader.equals(str(message, "sender")))
+            .filter(message -> (after == 0 || num(message, "sequence", 0) > after) && (before == 0 || num(message, "sequence", 0) < before))
+            .sorted(java.util.Comparator.comparingInt(message -> (after > 0 ? 1 : -1) * num(message, "sequence", 0))).limit(limit + 1L).toList();
+        boolean more = messages.size() > limit; if (more) messages = messages.subList(0, limit);
+        return obj("messages", messages, "cursor", messages.isEmpty() ? (after > 0 ? after : before) : messages.getLast().get("sequence"), "hasMore", more);
+    }
+
+    /**
+     * 成员收件箱从序号零正向读取，避免第一轮静默跳过较早的待收消息。
+     */
+    public synchronized List<Map<String, Object>> teamInbox(String taskId, long after, String reader) {
+        Map<String, Object> task = get("task", taskId), run = get("agentRun", reader);
+        if (after < 0 || !str(task, "teamId").equals(str(run, "teamId")) || str(run, "teamId").isBlank()) throw new ApiException(404, "收件箱不属于此团队");
+        if (Set.of("PROPOSAL", "REVIEW").contains(str(run, "kind"))) return List.of();
+        return list("teamMessage").stream().filter(message -> str(task, "teamId").equals(str(message, "teamId")) && num(message, "sequence", 0) > after)
+            .filter(message -> str(message, "recipient").isBlank() || reader.equals(str(message, "recipient")) || reader.equals(str(message, "sender")))
+            .sorted(java.util.Comparator.comparingInt(message -> num(message, "sequence", 0))).limit(40).toList();
+    }
+
     public synchronized void markOperation(String operationId, String state, Map<String, Object> details) {
         Map<String, Object> operation = get("operation", operationId);
         operation.put("state", state); operation.put("updatedAt", now());
@@ -573,13 +803,14 @@ public class ExecutionStore {
         Map<String, Object> task = get("task", taskId);
         List<Map<String, Object>> evidenceList = new ArrayList<>(objects(task.get("evidence")));
         evidenceList.add(evidence); task.put("evidence", evidenceList);
-        task.remove("activeOperation"); task.put("updatedAt", now());
+        if (operationId.equals(str(task, "activeOperation"))) task.remove("activeOperation"); task.put("updatedAt", now());
         Map<String, Object> operation = get("operation", operationId);
         operation.put("state", "UNKNOWN".equals(str(evidence, "status")) ? "UNKNOWN" : "ACKNOWLEDGED");
         operation.put("evidenceId", evidence.get("id")); operation.put("updatedAt", now());
         Map<String, Object> run = str(operation, "agentRunId").isBlank() ? null : get("agentRun", str(operation, "agentRunId"));
         if (run != null) {
             evidence.put("agentRunId", run.get("id")); run.put("evidenceId", evidence.get("id"));
+            for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth")) if (run.containsKey(key)) evidence.put(key, run.get(key));
             run.put("resultVersion", evidence.getOrDefault("resultVersion", evidence.get("version"))); run.put("usage", evidence.getOrDefault("usage", obj("cost", "UNKNOWN")));
         }
         transaction(() -> {

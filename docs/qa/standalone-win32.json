@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-07T13:24:42.609Z",
-  "version": "0.2.0-alpha.7",
+  "date": "2026-11-07T15:18:33.015Z",
+  "version": "0.2.0-alpha.8",
   "platform": "win32",
   "coreIndependentOfWebAndNpm": true,
   "runtimeProxyConfiguration": true,
@@ -16,5 +16,27 @@
   "desktopExitPreservesCore": true,
   "clientExitPreservesRunningTask": true,
   "modelRequestsBeforeAndAfterReconnect": 1,
-  "pageErrors": []
+  "childRequestPreservedOnReconnect": "4e5530e7-c169-4146-a676-0baf5811504f",
+  "parentWaitReleasesModelCapacity": true,
+  "teamDependencyAdoptionThroughProxy": true,
+  "teamMessagesSurviveReload": true,
+  "mcpActualChildSourceThroughProxy": true,
+  "teamRootCalls": 18,
+  "teamChildRuns": [
+    {
+      "id": "6a2115f5-d8b8-4083-9c51-c1b976b4cf1b",
+      "agentRunId": "f205d468-aa07-4be7-9e0f-f12d54f69d12",
+      "state": "SUCCEEDED",
+      "integrationState": "NOT_ADOPTED"
+    },
+    {
+      "id": "2b280eb7-4065-42b2-a3eb-8bcfc08b3500",
+      "agentRunId": "eef5b5c7-07c1-4046-a388-f44006fdd8a6",
+      "state": "SUCCEEDED",
+      "integrationState": "ADOPTED"
+    }
+  ],
+  "externalMcpCalls": 1,
+  "pageErrors": [],
+  "modelErrors": []
 }

@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { configureTeamMcp, createTeamProtocol, teamGoal, userNote, verifyTeamResult, zipEntry } from './team-smoke-fixture.mjs';
 
 // This endpoint is a deterministic test fixture. It is not an external-model certification.
 const baseUrl = (process.env.WORKBENCH_URL || 'http://127.0.0.1:18765').replace(/\/$/, '');
@@ -13,6 +14,8 @@ const fixture = await mkdtemp(path.join(process.env.WORKBENCH_SMOKE_ROOT || tmpd
 const projectPath = path.join(fixture, '中文 sample project');
 const checks = [];
 const calls = [];
+const teamProtocol = createTeamProtocol();
+const teamReports = [];
 let routeId;
 let routeConfig;
 let server;
@@ -63,6 +66,7 @@ function tool(name, args) {
 async function startFixture() {
   server = createServer(async (incoming, response) => {
     try {
+      if (incoming.url === '/team-mcp') { await teamProtocol.handleMcp(incoming, response); return; }
       if (incoming.method === 'GET') {
         response.writeHead(200, { 'Content-Type': 'application/json' });
         response.end(JSON.stringify({ object: 'list', data: [{ id: 'smoke-model', object: 'model' }] }));
@@ -84,6 +88,7 @@ async function startFixture() {
       const kind = reviewing ? 'review' : writable ? 'implementation' : 'analysis';
       calls.push({ number: calls.length + 1, path: incoming.url, kind, stage, tools: toolNames, completedTools: completedTools.length,
         proposalIncludesPriorHandoffs: stage === 'PROPOSAL' && prompt.includes('已完成阶段交接资料') });
+      if (teamProtocol.matches(body)) { reply(response, await teamProtocol.message(body)); return; }
       if (prompt.includes('SMOKE_DELAY')) await new Promise(resolve => setTimeout(resolve, 1_500));
       if (completedTools.length === 0 && toolNames.includes('read_file')) {
         reply(response, { content: null, tool_calls: [tool('read_file', { path: 'src/greeting.txt' })] });
@@ -359,6 +364,42 @@ try {
       assert.equal(git('status', '--porcelain'), '');
     });
   }
+  await check('Actual dynamic team shares the root budget, adopts dependencies and preserves MCP source in the ZIP', async () => {
+    const api = async (url, body) => (await request(url, body)).data;
+    await request('/agent-definitions', undefined, { authorized: false, expected: 401 });
+    const definitions = await api(`/agent-definitions?projectId=${project.id}`);
+    const selected = definitions.filter(item => ['agent-developer', 'agent-reviewer'].includes(item.id)); assert.equal(selected.length, 2);
+    const collaboration = { enabled: true, definitionIds: selected.map(item => item.id), definitionVersions: Object.fromEntries(selected.map(item => [item.id, item.version])), maxActive: 3, maxDepth: 2, maxTotal: 2 };
+    const mcp = await configureTeamMcp(api, project.id, fixtureUrl.replace(/\/v1$/, '/team-mcp'));
+    const teamDefinition = { ...definition, goal: teamGoal, title: `SMOKE actual team ${Date.now()}`, mode: 'LEAD', contract: { ...definition.contract, scope: ['**'] }, budget: { maxCalls: 40, reserveCalls: 6 }, collaboration, mcpBindings: [mcp.binding], mcpBudget: { maxCalls: 2, maxDurationMs: 10000 } };
+    const rootCount = (await api('/state')).tasks.length;
+    await request('/tasks', { ...teamDefinition, collaboration: { ...collaboration, definitionVersions: { ...collaboration.definitionVersions, 'agent-developer': 9999 } } }, { expected: 409 });
+    assert.equal((await api('/state')).tasks.length, rootCount);
+    const created = await api('/tasks', teamDefinition); assert.ok(created.teamId); assert.equal(created.state, 'DRAFT');
+    assert.deepEqual(created.collaboration.definitions.map(item => [item.id, item.version]), selected.map(item => [item.id, item.version]));
+    await request(`/tasks/${created.id}/team`, undefined, { authorized: false, expected: 401 });
+    await request(`/tasks/${created.id}/team/messages`, undefined, { authorized: false, expected: 401 });
+    const message = { requestId: 'team_smoke_note_1', content: userNote, sender: 'forged-model', modelRequestId: 'forged-request' };
+    const first = await api(`/tasks/${created.id}/team/messages`, message), repeated = await api(`/tasks/${created.id}/team/messages`, message);
+    assert.equal(first.sender, 'USER'); assert.equal(first.requestId, ''); assert.equal(first.id, repeated.id);
+    await request(`/tasks/${created.id}/team/messages`, { ...message, content: 'conflicting retry' }, { expected: 409 });
+    await api(`/tasks/${created.id}/approve`, {});
+    const result = await untilTask(created.id, ['AWAITING_ACCEPTANCE']);
+    const observed = await verifyTeamResult(api, result, teamProtocol);
+    assert.equal((await api('/state')).tasks.length, rootCount + 1, 'Children must not create independent root tasks or budgets');
+    assert.equal(git('status', '--porcelain'), ''); assert.equal(await readFile(path.join(projectPath, 'src/greeting.txt'), 'utf8'), 'hello\n');
+    await api(`/tasks/${created.id}/accept`, {}); assert.equal((await api(`/tasks/${created.id}`)).state, 'COMPLETED');
+    const response = await fetch(`${baseUrl}/api/tasks/${created.id}/export`, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(20000) }); assert.equal(response.status, 200);
+    const archive = Buffer.from(await response.arrayBuffer()), json = name => JSON.parse(zipEntry(archive, name).toString('utf8'));
+    assert.equal(json('team.json').agents.length, 2); assert.equal(json('team-operations.json').length, 1); assert.equal(json('team-operations.json')[0].state, 'ACKNOWLEDGED');
+    assert.equal(json('team-operations.json')[0].id, observed.writer.integrations[0].operationId);
+    assert.equal(json('team-messages.json').length, 2); assert.equal(json('model-requests.json').length, result.budget.usedCalls);
+    assert.equal(json('mcp-operations.json')[0].agentRunId, observed.writer.agentRunId); assert.equal(json('mcp-operations.json')[0].modelRequestId, observed.mcp[0].modelRequestId);
+    assert.ok(json('agent-runs.json').some(run => run.id === observed.reader.agentRunId)); assert.match(zipEntry(archive, 'changes.patch').toString('utf8'), /parent change preserved/);
+    await writeFile(path.join(fixture, 'team-delivery.zip'), archive);
+    teamReports.push({ taskId: created.id, teamId: created.teamId, rootCalls: result.budget.usedCalls, children: observed.team.agents.map(agent => ({ id: agent.id, agentRunId: agent.agentRunId, state: agent.state, dependsOn: agent.dependsOn, integrationState: agent.integrationState })), mcpSource: observed.mcp[0], calls: teamProtocol.calls, externalMcpCalls: teamProtocol.mcpCalls.length, zipSourcesVerified: true });
+    await api('/mcp/servers', { ...mcp.server, enabled: false });
+  });
   await check('Cancel an in-flight task and keep source intact', async () => {
     const start = calls.length;
     const value = (await request('/tasks', { ...definition, title: `SMOKE cancel ${Date.now()}`, goal: `${definition.goal}\nSMOKE_DELAY` }, { expected: [200, 201] })).data;
@@ -387,7 +428,7 @@ try {
     server.closeAllConnections();
     await new Promise(resolve => server.close(resolve));
   }
-  const report = { createdAt: new Date().toISOString(), platform: process.platform, status: process.exitCode ? 'failed' : 'passed', baseUrl, fixture, projectPath, checks, calls, scope: 'Local deterministic model protocol fixture only; not external provider, CLI or cross-platform certification.' };
+  const report = { createdAt: new Date().toISOString(), platform: process.platform, status: process.exitCode ? 'failed' : 'passed', baseUrl, fixture, projectPath, checks, calls, teams: teamReports, scope: 'Local deterministic model protocol fixture only; not external provider, CLI or cross-platform certification.' };
   const serialized = JSON.stringify(report, (_key, value) => typeof value === 'string'
     ? value.replaceAll(token, '[REDACTED]').replaceAll('test-only-not-a-secret', '[REDACTED_FIXTURE_KEY]')
     : value, 2);

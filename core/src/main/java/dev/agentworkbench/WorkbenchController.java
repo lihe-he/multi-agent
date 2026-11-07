@@ -41,7 +41,7 @@ public class WorkbenchController {
     }
 
     @GetMapping("/health")
-    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.7", "apiVersion", 1, "schemaVersion", 3); }
+    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.8", "apiVersion", 1, "schemaVersion", 3); }
 
     @PostMapping("/shutdown")
     public Map<String, Object> shutdown() {
@@ -58,10 +58,11 @@ public class WorkbenchController {
         List<Map<String, Object>> summaries = tasks.stream().map(task -> {
             Map<String, Object> value = new java.util.LinkedHashMap<>(task);
             value.remove("evidence"); value.remove("context"); value.remove("profileSnapshot"); value.remove("routeSnapshot");
+            if (value.containsKey("collaboration")) { Map<String, Object> collaboration = new java.util.LinkedHashMap<>(map(value, "collaboration")); collaboration.remove("definitions"); value.put("collaboration", collaboration); }
             value.put("evidenceCount", objects(task.get("evidence")).size()); return value;
         }).toList();
-        return obj("projects", store.list("project"), "tasks", summaries, "routes", catalog.routes(), "memories", store.list("memory"), "profiles", store.list("profile"),
-            "system", obj("version", "0.2.0-alpha.7", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
+        return obj("projects", store.list("project"), "tasks", summaries, "routes", catalog.routes(), "memories", store.list("memory"), "profiles", store.list("profile"), "agentDefinitions", store.list("agentDefinition"),
+            "system", obj("version", "0.2.0-alpha.8", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
                 "eventCursor", store.latestEvent(), "credentialStorage", "SESSION_ONLY", "releaseStatus", "DEVELOPMENT_PREVIEW", "capabilities", List.of("Git 隔离工作目录", "三模式阶段编排", "根预算与验证预留", "独立审查与人工验收", "结果未知保护", "持久事件续读"),
                 "limitations", List.of("API 兼容性须按实际端点验证", "原生 CLI 费用与内部请求数为软预算", "本机工作目录隔离不等于操作系统安全隔离", "MCP、自动采纳、三端打包与长期性能尚待发布验收")));
     }
@@ -96,6 +97,28 @@ public class WorkbenchController {
             @RequestParam(defaultValue = "0") long before, @RequestParam(defaultValue = "30") int limit,
             @RequestParam(defaultValue = "") String state, @RequestParam(defaultValue = "") String q) {
         return store.modelRequestPage(id, runId, before, limit, state, q);
+    }
+
+    @GetMapping("/agent-definitions")
+    public List<Map<String, Object>> agentDefinitions(@RequestParam(defaultValue = "") String projectId) {
+        if (!projectId.isBlank()) store.get("project", projectId);
+        return store.list("agentDefinition").stream().filter(definition -> projectId.isBlank() || str(definition, "projectId").isBlank() || projectId.equals(str(definition, "projectId"))).toList();
+    }
+
+    @PostMapping("/agent-definitions")
+    public Map<String, Object> saveAgentDefinition(@RequestBody Map<String, Object> body) { return catalog.saveAgentDefinition(body); }
+
+    @GetMapping("/tasks/{id}/team")
+    public Map<String, Object> team(@PathVariable String id) { return store.team(id); }
+
+    @GetMapping("/tasks/{id}/team/messages")
+    public Map<String, Object> teamMessages(@PathVariable String id, @RequestParam(defaultValue = "0") long after, @RequestParam(defaultValue = "0") long before,
+            @RequestParam(defaultValue = "40") int limit) { return store.teamMessages(id, after, before, limit, ""); }
+
+    @PostMapping("/tasks/{id}/team/messages")
+    public Map<String, Object> sendTeamMessage(@PathVariable String id, @RequestBody Map<String, Object> body) {
+        if (!str(body, "requestId").matches("[A-Za-z0-9_-]{8,100}")) throw new ApiException(400, "用户团队消息编号无效");
+        return store.teamMessage(id, "USER", str(body, "recipient"), str(body, "requestId"), catalog.redact(required(body, "content", 6000)), "", "");
     }
 
     @GetMapping("/tasks/{id}/mcp-operations")
@@ -194,6 +217,10 @@ public class WorkbenchController {
             putZip(zip, "operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(operations(id)));
             putZip(zip, "agent-runs.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("agentRun").stream().filter(run -> id.equals(str(run, "taskId"))).toList()));
             putZip(zip, "model-requests.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("modelRequest").stream().filter(request -> id.equals(str(request, "taskId"))).toList()));
+            putZip(zip, "mcp-operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(mcpOperations(id)));
+            putZip(zip, "team.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.team(id)));
+            putZip(zip, "team-messages.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("teamMessage").stream().filter(message -> id.equals(str(message, "taskId"))).toList()));
+            putZip(zip, "team-operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("teamOperation").stream().filter(operation -> id.equals(str(operation, "taskId"))).toList()));
             StringBuilder lines = new StringBuilder(); long cursor = 0;
             while (true) {
                 Map<String, Object> page = store.events(id, cursor, 200);

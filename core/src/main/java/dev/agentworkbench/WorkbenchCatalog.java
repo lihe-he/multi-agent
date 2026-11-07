@@ -30,6 +30,7 @@ public class WorkbenchCatalog {
 
     @PostConstruct
     void defaults() {
+        defaultAgentDefinitions();
         if (!store.list("profile").isEmpty()) { return; }
         for (Map<String, Object> profile : List.of(
             obj("id", "builtin-lead", "name", "研发负责人", "role", "lead", "instructions", "基于证据规划工作，保留未知、失败与交接信息。不得自行降低验收条件。", "capabilities", List.of("read", "search")),
@@ -40,6 +41,35 @@ public class WorkbenchCatalog {
             profile.put("version", 1); profile.put("builtin", true); profile.put("createdAt", now());
             store.put("profile", profile);
         }
+    }
+
+    private void defaultAgentDefinitions() {
+        if (!store.list("agentDefinition").isEmpty()) return;
+        for (Map<String, Object> definition : List.of(
+                obj("id", "agent-research", "name", "调查副 Agent", "role", "researcher", "instructions", "调查委派范围中的资料，保留原始路径、版本和未知。需要进一步调查时可在根限制内委派。", "capabilities", List.of("read", "search", "delegate")),
+                obj("id", "agent-developer", "name", "实现副 Agent", "role", "developer", "instructions", "在独立现场完成有边界的实现，保留已有注释、失败和验证记录。结果由父 Agent 核对采纳，不能代替独立审查。", "capabilities", List.of("read", "search", "write", "verify", "delegate", "mcp")),
+                obj("id", "agent-reviewer", "name", "核对副 Agent", "role", "reviewer", "instructions", "只读检查委派成果与原始资料，报告证据、缺口和反证条件；不能把自报完成视为验证。", "capabilities", List.of("read", "search")))) {
+            definition.putAll(obj("version", 1, "builtin", true, "projectId", "", "routeId", "", "scope", List.of("**"), "maxCalls", 8, "enabled", true, "createdAt", now(), "updatedAt", now()));
+            store.put("agentDefinition", definition);
+        }
+    }
+
+    public Map<String, Object> saveAgentDefinition(Map<String, Object> input) {
+        for (String field : List.of("maxCalls", "expectedVersion")) if (input.containsKey(field) && (!(input.get(field) instanceof Number number) || number.doubleValue() != number.intValue() || number.intValue() < 1)) throw new ApiException(400, field + " 必须为正整数");
+        if (input.containsKey("enabled") && !(input.get("enabled") instanceof Boolean)) throw new ApiException(400, "enabled 必须为布尔值");
+        String definitionId = str(input, "id").isBlank() ? id() : str(input, "id");
+        Map<String, Object> previous = store.find("agentDefinition", definitionId);
+        if (previous != null && num(input, "expectedVersion", -1) != num(previous, "version", 1)) throw new ApiException(409, "Agent 定义已变化，请刷新后编辑");
+        String projectId = str(input, "projectId"), routeId = str(input, "routeId");
+        if (!projectId.isBlank()) store.get("project", projectId);
+        if (!routeId.isBlank() && !"API".equals(str(store.get("route", routeId), "engine"))) throw new ApiException(400, "动态 Agent 定义只支持 API 路由");
+        int maxCalls = num(input, "maxCalls", 8);
+        if (maxCalls < 1 || maxCalls > 32) throw new ApiException(400, "单次副 Agent 调用上限为 1 至 32");
+        Map<String, Object> definition = obj("id", definitionId, "version", previous == null ? 1 : num(previous, "version", 1) + 1,
+            "projectId", projectId, "routeId", routeId, "name", required(input, "name", 160), "role", required(input, "role", 64),
+            "instructions", required(input, "instructions", 24000), "capabilities", AgentPermissions.capabilities(input.get("capabilities")),
+            "scope", AgentPermissions.scope(input.get("scope")), "maxCalls", maxCalls, "enabled", bool(input, "enabled", true), "updatedAt", now());
+        return store.saveAgentDefinition(definition, previous);
     }
 
     public Map<String, Object> importProject(Map<String, Object> body) {
@@ -178,6 +208,7 @@ public class WorkbenchCatalog {
     }
 
     public synchronized Map<String, Object> createTask(Map<String, Object> body) {
+        if (body.containsKey("collaboration") && !(body.get("collaboration") instanceof Map<?, ?>)) throw new ApiException(400, "collaboration 必须为对象");
         Map<String, Object> project = store.get("project", required(body, "projectId", 100));
         String goal = required(body, "goal", 40000), title = required(body, "title", 200);
         for (Map<String, Object> task : store.list("task")) {
@@ -191,10 +222,12 @@ public class WorkbenchCatalog {
         Map<String, Object> requested = map(body, "contract");
         List<String> acceptance = strings(requested.get("acceptance")).stream().filter(item -> !item.isBlank()).toList();
         List<String> commands = strings(requested.get("commands")).stream().filter(item -> !item.isBlank()).toList();
+        if (requested.containsKey("scope") && (!(requested.get("scope") instanceof List<?> values) || values.stream().anyMatch(value -> !(value instanceof String)))) throw new ApiException(400, "修改范围必须为相对路径清单");
         List<String> scope = strings(requested.get("scope"));
         if (acceptance.isEmpty() || commands.isEmpty()) { throw new ApiException(400, "请至少填写一项验收条件和一条必要验证命令"); }
         if (acceptance.size() > 30 || commands.size() > 12 || scope.size() > 100) { throw new ApiException(400, "完成约定过大，请拆分任务"); }
         if (scope.isEmpty()) { scope = List.of("**"); }
+        scope = AgentPermissions.scope(scope);
         Map<String, Object> contract = obj("id", id(), "version", 1, "scope", scope, "acceptance", acceptance, "commands", commands,
             "permissions", List.of("read", "search", "write", "verify"), "createdAt", now(), "confirmed", false);
         int max = num(map(body, "budget"), "maxCalls", 24), reserve = num(map(body, "budget"), "reserveCalls", 6);
@@ -222,11 +255,13 @@ public class WorkbenchCatalog {
         Map<String, Object> task = obj("id", id(), "schemaVersion", 1, "projectId", project.get("id"), "title", title, "goal", goal,
             "mode", mode, "modeReason", reason, "state", "DRAFT", "outcome", "UNDETERMINED", "createdAt", now(), "updatedAt", now(),
             "contract", contract, "budget", obj("maxCalls", max, "reserveCalls", reserve, "usedCalls", 0, "usedDevelopmentCalls", 0, "usedReservedCalls", 0, "developmentAvailable", max - reserve, "type", route.get("budgetType")),
-            "locks", locks, "routeId", route.get("id"), "routeSnapshot", route, "profileSnapshot", store.list("profile"), "policyVersion", "1.1/0.2.0-alpha.7",
+            "locks", locks, "routeId", route.get("id"), "routeSnapshot", route, "profileSnapshot", store.list("profile"), "policyVersion", "1.1/0.2.0-alpha.8",
             "includeChanges", bool(body, "includeChanges", false), "plan", plan, "context", context, "evidence", new ArrayList<>(), "issues", new ArrayList<>(),
             "review", obj("status", "NOT_RUN"), "planValidation", result, "workspace", "", "baseline", "", "version", "", "repairRounds", 0);
         task.put("mcpAuthorization", McpTaskPolicy.snapshot(store, str(project, "id"), route, body.get("mcpBindings"), 1));
         task.put("mcpBudget", McpTaskPolicy.budget(map(body, "mcpBudget"), Map.of()));
+        task.put("collaboration", CollaborationPolicy.snapshot(store, str(project, "id"), route, locks, map(body, "collaboration")));
+        if (bool(map(task, "collaboration"), "enabled", false)) task.put("teamId", id());
         String sessionId = str(body, "sessionId");
         if (!sessionId.isBlank()) { store.session(str(project, "id"), sessionId); task.put("sessionId", sessionId); }
         return store.createTask(task);
