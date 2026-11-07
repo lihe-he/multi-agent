@@ -1,6 +1,6 @@
 # Agent 运行协议
 
-适用版本：0.2.0-alpha.6。AgentRun 表示一次实际 Agent 阶段执行，独立于计划阶段、模型请求和根任务最终验收。当前固定阶段调度使用此实体；动态 SubAgent、Team、父子运行与远程节点尚未接入。
+适用版本：0.2.0-alpha.6 起，alpha.7 新增关联的[模型请求追踪协议](./model-request-contract.md)。AgentRun 表示一次实际 Agent 阶段执行，独立于计划阶段、模型请求和根任务最终验收。当前固定阶段调度使用此实体；动态 SubAgent、Team、父子运行与远程节点尚未接入。
 
 ## 查询
 
@@ -38,4 +38,4 @@
 
 复用 SQLite `entities` 并新增局部索引，schema 3 和 API 1 不变。写证据与运行证据关联在同一事务，结束状态在执行后的内容核验完成时另行保存；两者之间崩溃会保守留下 UNKNOWN，已有证据继续保留。交付包新增 `agent-runs.json`。
 
-本轮不提供模型请求/尝试级 trace、Token 趋势、动态递归或 Team 消息。不能用运行列表的绿色状态代替这些功能的验收。
+alpha.7 在每次模型请求前把请求身份、运行 calls 和根预算同事务保存，AgentRun 结束时把缺少回执的请求记 UNKNOWN，已有请求终态保持原样；交付包另含 `model-requests.json`。Token 趋势、动态递归和 Team 消息仍待实现。不能用运行列表的绿色状态代替这些功能的验收。

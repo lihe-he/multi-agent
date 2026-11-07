@@ -44,6 +44,7 @@ async function fixture(page: Page, taskState = '') {
     const url = new URL(route.request().url());
     const path = url.pathname.replace('/api', '');
     if (path.endsWith('/agent-runs')) return route.fulfill({ json: { runs: [], cursor: 0, hasMore: false } });
+    if (path.endsWith('/model-requests')) return route.fulfill({ json: { requests: [], cursor: 0, hasMore: false } });
     if (path === '/state') return route.fulfill({ json: { projects: [project], tasks: taskState ? [task] : [], routes: [runner], memories: [], profiles: [], system: { modelCapacity: 2, activeModels: 0, version: 'ui-test', storageHealthy: true } } });
     if (path === '/mcp/task-tools') return route.fulfill({ json: { tools: [{ serverId: 'mcp-fixture', serverName: '测试服务', name: 'write_note', description: '写入笔记', configVersion: 3, definitionVersion: 'fixture-def', inputSchema: { type: 'object' }, available: true }] } });
     if (path.endsWith('/mcp-operations')) return route.fulfill({ json: [] });
@@ -206,10 +207,49 @@ test('项目 MCP 令牌独立创建复制撤销，离开页面后不保留明文
   expect(requests.map(request => request.method)).toEqual(['POST', 'DELETE']);
 });
 for (const width of [1440, 430]) {
+  test(`模型请求追踪保留未知用量、筛选和历史位置 ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1100 });
+    await fixture(page, 'AWAITING_ACCEPTANCE');
+    const queries: string[] = [];
+    const request = { id: 'request-current', agentRunId: 'run-current', taskId: 'task-fixture', stage: 'implement', sequence: 3, attempt: 1, state: 'SUCCEEDED', engine: 'API', model: 'fixture-model', unit: 'API_REQUEST', createdAt: '2026-11-07T09:00:00Z', elapsedMs: 1250, httpStatus: 200, providerRequestId: 'provider-abc', responseId: 'response-abc', finishReason: 'stop', inputPreview: '<script>请求输入 [REDACTED]</script>', inputTruncated: true, inputBytes: 3200, inputDigest: 'a'.repeat(64), messageCount: 5, toolCount: 3, usage: { inputTokens: 0, outputTokens: 'UNKNOWN', cachedInputTokens: 0 }, outputPreview: '<script>仅显示的输出 [REDACTED]</script>' };
+    await page.route('**/api/tasks/task-fixture/model-requests*', route => {
+      const url = new URL(route.request().url()); queries.push(url.search);
+      const failed = url.searchParams.get('state') === 'FAILED'; const older = Number(url.searchParams.get('before')) > 0;
+      return route.fulfill({ json: { requests: [{ ...request, id: older ? 'request-older' : request.id, sequence: older ? 1 : 3, ...(failed ? { state: 'FAILED', httpStatus: 429, errorType: 'HTTP_429', reason: '未自动重试' } : {}) }], cursor: older ? 1 : 30, hasMore: !older && !failed } });
+    });
+    await page.goto('/'); await page.getByRole('button', { name: /验证恢复流程/ }).click();
+    await page.getByRole('button', { name: '模型请求', exact: true }).click();
+    const panel = page.getByRole('region', { name: '模型请求追踪' });
+    await expect(panel.getByText('implement · 第 3 次 API 请求')).toBeVisible();
+    await expect(panel.locator('.badge')).toHaveText('已收到结果');
+    await expect(panel.getByText(/输入 0 · 输出 未知 · 缓存读取 0 · 推理 未知/)).toBeVisible();
+    await panel.getByRole('button', { name: '加载更早请求' }).click();
+    await expect(panel.getByText('implement · 第 1 次 API 请求')).toBeVisible();
+    await page.waitForTimeout(3200); expect(queries.at(-1)).toContain('before=30');
+    await panel.getByRole('button', { name: '返回最新请求' }).click();
+    await panel.getByLabel('请求状态').selectOption('FAILED');
+    await expect(panel.getByText('HTTP_429', { exact: true })).toBeVisible();
+    await expect(panel.locator('.badge')).toHaveText('请求失败');
+    await panel.getByLabel('检索请求记录').fill('中文 HTTP_429'); await panel.getByRole('button', { name: '检索', exact: true }).click();
+    await expect.poll(() => queries.at(-1)).toContain('q=%E4%B8%AD%E6%96%87%20HTTP_429');
+    await panel.getByText('查看脱敏输入片段（已截断）', { exact: true }).click();
+    await expect(panel.getByText('<script>请求输入 [REDACTED]</script>', { exact: true })).toBeVisible();
+    await panel.getByText('查看脱敏输出片段', { exact: true }).click();
+    await expect(panel.getByText('<script>仅显示的输出 [REDACTED]</script>', { exact: true })).toBeVisible();
+    expect(await panel.locator('script').count()).toBe(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await page.screenshot({ path: `qa/model-requests-${width === 430 ? 'narrow' : 'desktop'}.png`, fullPage: true });
+  });
+
   test(`Agent 运行按状态筛选、稳定翻页并定位证据 ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 });
     await fixture(page, 'AWAITING_ACCEPTANCE');
     const requests: string[] = [];
+    const modelRequests: string[] = [];
+    await page.route('**/api/tasks/task-fixture/model-requests*', route => {
+      modelRequests.push(new URL(route.request().url()).search);
+      return route.fulfill({ json: { requests: [], cursor: 0, hasMore: false } });
+    });
     const current = { id: 'run-current', taskId: 'task-fixture', sessionId: 'session-fixture', stage: 'implement', kind: 'IMPLEMENT', title: '完成接口实现', role: 'developer', attempt: 2, state: 'SUCCEEDED', createdAt: '2026-11-07T09:00:00Z', endedAt: '2026-11-07T09:00:02Z', elapsedMs: 2000, routeName: '测试路由', engine: 'API', model: 'fixture', readOnly: false, calls: 3, callUnit: 'API_REQUEST', inputVersion: 'input-version', resultVersion: 'result-version', evidenceId: 'evidence-fixture', reason: '执行已返回；人工验收独立记录。' };
     await page.route('**/api/tasks/task-fixture/agent-runs*', route => {
       const url = new URL(route.request().url()); requests.push(url.search);
@@ -234,6 +274,11 @@ for (const width of [1440, 430]) {
     expect(await panel.locator('script').count()).toBe(0);
     await panel.getByLabel('运行状态').selectOption('');
     await expect(panel.getByText('完成接口实现', { exact: true })).toBeVisible();
+    await panel.getByRole('button', { name: '查看模型请求', exact: true }).click();
+    await expect(panel.getByRole('region', { name: '模型请求追踪' })).toBeVisible();
+    await expect.poll(() => modelRequests.at(-1)).toContain('runId=run-current');
+    await panel.getByRole('button', { name: '收起模型请求', exact: true }).click();
+    await expect(panel.getByRole('region', { name: '模型请求追踪' })).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.screenshot({ path: `qa/agent-runs-${width === 430 ? 'narrow' : 'desktop'}.png`, fullPage: true });
     await panel.getByRole('button', { name: '查看关联证据' }).click();

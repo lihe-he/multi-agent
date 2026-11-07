@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpServer;
 import dev.agentworkbench.mcp.McpManager;
 import dev.agentworkbench.runtime.WorkspaceRuntime;
+import dev.agentworkbench.runtime.ModelCallObserver;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -86,6 +87,33 @@ class WorkbenchEngineTest {
     }
 
     private static Map<String, Object> success(String output) { return obj("status", "SUCCEEDED", "exitCode", 0, "output", output, "usage", obj("cost", "UNKNOWN")); }
+
+    @Test
+    void requestOutputRedactsCredentialsBeforeTruncatingAndRestartKeepsUnknown() throws Exception {
+        String secret = "trace-secret-0123456789-abcdef";
+        route = catalog.saveRoute(obj("id", route.get("id"), "name", "traced", "engine", "API", "model", "fixture", "baseUrl", "http://127.0.0.1:18901/v1", "apiKey", secret));
+        doAnswer(invocation -> {
+            ModelCallObserver observed = invocation.getArgument(8);
+            if (!observed.begin(obj("inputBytes", 20, "inputDigest", "digest", "inputPreview", "x".repeat(5990) + secret))) return obj("status", "FAILED", "exitCode", -1);
+            observed.end(obj("state", "SUCCEEDED", "outputPreview", "x".repeat(5990) + secret, "outputTruncated", true, "providerRequestId", secret, "usage", obj("inputTokens", 0, "outputTokens", "UNKNOWN")));
+            return success("{\"approved\":true,\"issues\":[]}");
+        }).when(runtime).run(anyMap(), anyString(), anyString(), anyString(), anyBoolean(), anyList(), any(), any(), any());
+        String taskId = str(task(16, 5), "id"); engine.action(taskId, "approve", obj());
+        await(taskId, Set.of("AWAITING_ACCEPTANCE"));
+        var requests = objects(store.modelRequestPage(taskId, "", 0, 30, "", "").get("requests"));
+        assertEquals(3, requests.size());
+        assertTrue(requests.stream().allMatch(request -> "SUCCEEDED".equals(str(request, "state"))));
+        assertTrue(requests.stream().allMatch(request -> "[REDACTED]".equals(str(request, "providerRequestId"))));
+        assertTrue(requests.stream().allMatch(request -> str(request, "outputPreview").length() == 6000 && !str(request, "outputPreview").contains("trace-secret")));
+        assertTrue(requests.stream().allMatch(request -> str(request, "inputPreview").length() == 6000 && !str(request, "inputPreview").contains("trace-secret")));
+        assertTrue(requests.stream().allMatch(request -> !bool(request, "inputTruncated", true) && !bool(request, "outputTruncated", true)));
+        String runId = str(store.queueAgentRun(taskId, obj("id", "restart", "role", "lead"), "workspace", "version", false), "id");
+        store.beginOperation(taskId, "restart", "MODEL", "workspace", runId);
+        String pending = store.beginModelRequest(taskId, runId, false, Map.of());
+        engine.recover();
+        assertEquals("UNKNOWN", str(store.get("modelRequest", pending), "state"));
+        assertEquals("SUCCEEDED", str(store.get("modelRequest", str(requests.getFirst(), "id")), "state"));
+    }
 
     @Test
     void mcpReauthorizationUsesExpectedVersionAndPreservesBudget() {

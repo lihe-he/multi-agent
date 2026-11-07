@@ -138,6 +138,12 @@ try {
   await runPanel.getByRole('button', { name: '查看来源任务', exact: true }).click();
   await page.getByRole('button', { name: 'Agent 运行', exact: true }).click();
   await page.getByRole('region', { name: 'Agent 运行记录' }).getByText('方案与交接', { exact: true }).waitFor();
+  await page.getByRole('button', { name: '模型请求', exact: true }).click();
+  const tracePanel = page.getByRole('region', { name: '模型请求追踪' });
+  await tracePanel.getByText('analysis · 第 1 次 API 请求', { exact: true }).waitFor();
+  const requestTrace = (await api(`/tasks/${task.id}/model-requests`)).requests;
+  assert.equal(requestTrace.length, 1); assert.equal(requestTrace[0].state, 'DISPATCHING');
+  assert.equal(requestTrace[0].agentRunId, runs[0].id);
   await page.getByRole('button', { name: '返回会话', exact: true }).click();
 
   await page.getByRole('button', { name: '关闭会话 独立浏览器持久会话', exact: true }).click();
@@ -165,7 +171,7 @@ try {
   assert.equal(existsSync(join(dir, 'desktop/core')), false, '附加模式不创建嵌入核心');
   assert.deepEqual(errors, []);
   await api(`/tasks/${task.id}/cancel`, {});
-  const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, sessionWorkflowThroughProxy: true, sessionSearchAndReopenThroughProxy: true, agentRunActivityThroughProxy: true, savedNotesSurviveReload: true, sessionClosePreservesRunningTask: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, pageErrors: errors };
+  const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, sessionWorkflowThroughProxy: true, sessionSearchAndReopenThroughProxy: true, agentRunActivityThroughProxy: true, modelRequestTraceThroughProxy: true, savedNotesSurviveReload: true, sessionClosePreservesRunningTask: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, pageErrors: errors };
   mkdirSync(join(root, 'docs/qa'), { recursive: true });
   writeFileSync(join(root, `docs/qa/standalone-${process.platform}.json`), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report, null, 2));

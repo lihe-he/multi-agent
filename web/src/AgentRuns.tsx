@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { api } from './api';
 import type { AgentRun } from './types';
 import { Badge, formatTime, shortHash } from './ui';
+import { ModelRequests } from './ModelRequests';
 
 type RunPage = { runs: AgentRun[]; cursor: number; hasMore: boolean };
 
 export function AgentRuns({ endpoint, onTask, onEvidence }: { endpoint: string; onTask?: (taskId: string) => void; onEvidence?: (evidenceId: string) => void }) {
   const [page, setPage] = useState<RunPage | null>(null);
   const [state, setState] = useState(''); const [error, setError] = useState(''); const [before, setBefore] = useState(0);
+  const [expandedRun, setExpandedRun] = useState('');
   useEffect(() => {
     let active = true; let timer: ReturnType<typeof setTimeout>;
     const controller = new AbortController(); setPage(null); setError('');
@@ -32,7 +34,8 @@ export function AgentRuns({ endpoint, onTask, onEvidence }: { endpoint: string; 
       <header><div><h3>{run.title || run.stage}</h3><p>{run.role} · 第 {run.attempt} 次 · {run.readOnly ? '只读' : '允许范围内修改'}</p></div><Badge state={run.state} /></header>
       <dl><dt>运行器</dt><dd>{run.routeName || '已固定路由'} · {run.engine} · {run.model || '默认模型'}</dd><dt>调用</dt><dd>{run.calls} {run.callUnit === 'CLI_SESSION' ? '次 CLI 会话（内部请求未知）' : '次 API 请求'} · {run.elapsedMs === undefined ? '尚未结束' : `${(run.elapsedMs / 1000).toFixed(1)} 秒`}</dd><dt>时间</dt><dd>{formatTime(run.createdAt)}{run.endedAt ? ` → ${formatTime(run.endedAt)}` : ''}</dd><dt>版本</dt><dd><code>{shortHash(run.inputVersion)} → {shortHash(run.resultVersion)}</code></dd></dl>
       {run.reason && <p className="agent-run-reason">{run.reason}</p>}
-      <footer><code title={run.id}>RUN {run.id.slice(0, 8)}</code>{onTask && <button className="text-button" onClick={() => onTask(run.taskId)}>查看来源任务</button>}{run.evidenceId && onEvidence && <button className="text-button" onClick={() => onEvidence(run.evidenceId!)}>查看关联证据</button>}</footer>
+      <footer><code title={run.id}>RUN {run.id.slice(0, 8)}</code><button className="text-button" onClick={() => setExpandedRun(expandedRun === run.id ? '' : run.id)}>{expandedRun === run.id ? '收起模型请求' : '查看模型请求'}</button>{onTask && <button className="text-button" onClick={() => onTask(run.taskId)}>查看来源任务</button>}{run.evidenceId && onEvidence && <button className="text-button" onClick={() => onEvidence(run.evidenceId!)}>查看关联证据</button>}</footer>
+      {expandedRun === run.id && <ModelRequests taskId={run.taskId} runId={run.id} />}
     </article>)}</div>
     <div className="agent-run-pagination">{before > 0 && <button className="button secondary small" onClick={() => setBefore(0)}>返回最新运行</button>}{page?.hasMore && <button className="button secondary small" onClick={() => setBefore(page.cursor)}>加载更早运行</button>}</div>
   </section>;

@@ -2,6 +2,7 @@ package dev.agentworkbench;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.agentworkbench.runtime.WorkspaceRuntime;
+import dev.agentworkbench.runtime.ModelCallObserver;
 import dev.agentworkbench.mcp.McpManager;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -287,11 +288,10 @@ public class WorkbenchEngine {
                 if (!bindings.isEmpty() && mcp != null) {
                     result = runtime.runWithMcp(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), workspace, prompt, readOnly,
                         strings(map(task, "contract").get("scope")), () -> cancelled(control), message -> log(taskId, stageId, message),
-                        () -> {
+                        observedCalls(taskId, runId, reserved, control, denied, () -> {
                             if ("WAITING_TOOL".equals(str(store.get("agentRun", runId), "state"))) store.agentRunWaiting(runId, "WAITING_RESOURCE");
                             capacity.acquire(); store.agentRunWaiting(runId, "RUNNING");
-                            return acquireCall(taskId, runId, reserved, control, denied);
-                        }, bindings,
+                        }), bindings,
                         alias -> {
                             store.agentRunWaiting(runId, "WAITING_TOOL");
                             capacity.release();
@@ -301,7 +301,7 @@ public class WorkbenchEngine {
                 } else {
                     result = runtime.run(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), workspace, prompt, readOnly,
                         strings(map(task, "contract").get("scope")), () -> cancelled(control), message -> log(taskId, stageId, message),
-                        () -> acquireCall(taskId, runId, reserved, control, denied));
+                        observedCalls(taskId, runId, reserved, control, denied, () -> {}));
                 }
                 String version = runtime.fingerprint(workspace);
                 Map<String, Object> evidence = evidence(stageId, "AGENT", version, "", result);
@@ -371,7 +371,7 @@ public class WorkbenchEngine {
                 store.markOperation(str(operation, "id"), "DISPATCHED", obj("version", version));
                 AtomicBoolean denied = new AtomicBoolean();
                 Map<String, Object> result = runtime.run(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), copy, prompt(task, stage, extra), true, List.of("**"),
-                    () -> cancelled(control), message -> log(taskId, stageId, message), () -> acquireCall(taskId, runId, true, control, denied));
+                    () -> cancelled(control), message -> log(taskId, stageId, message), observedCalls(taskId, runId, true, control, denied, () -> {}));
                 String reviewedVersion = runtime.fingerprint(copy);
                 boolean copyChanged = !reviewVersion.equals(reviewedVersion);
                 Map<String, Object> item = evidence(stageId, "REVIEW", version, "", result);
@@ -480,21 +480,51 @@ public class WorkbenchEngine {
     @FunctionalInterface
     private interface AgentWork<T> { T execute(String runId) throws Exception; }
 
-    private boolean acquireCall(String taskId, String runId, boolean reserved, Control control, AtomicBoolean denied) {
-        if (cancelled(control)) { return false; }
-        boolean accepted = store.acquireAgentCall(taskId, runId, reserved);
-        if (!accepted) denied.set(true);
-        return accepted;
+    private ModelCallObserver observedCalls(String taskId, String runId, boolean reserved, Control control, AtomicBoolean denied, Runnable before) {
+        return new ModelCallObserver() {
+            private String requestId = "";
+
+            @Override
+            public boolean begin(Map<String, Object> metadata) {
+                if (cancelled(control)) return false;
+                before.run();
+                if (cancelled(control)) return false;
+                if (!requestId.isBlank()) end(obj("state", "UNKNOWN", "errorType", "MISSING_OBSERVATION", "reason", "前次请求缺少观测回执"));
+                Map<String, Object> safeInput = new LinkedHashMap<>(metadata);
+                if (safeInput.containsKey("inputPreview")) {
+                    String redacted = catalog.redact(str(safeInput, "inputPreview"));
+                    safeInput.put("inputPreview", redacted.substring(0, Math.min(6000, redacted.length())));
+                    safeInput.put("inputTruncated", redacted.length() > 6000);
+                }
+                requestId = store.beginModelRequest(taskId, runId, reserved, safeInput);
+                if (requestId.isBlank()) denied.set(true);
+                return !requestId.isBlank();
+            }
+
+            @Override
+            public void end(Map<String, Object> observation) {
+                if (requestId.isBlank()) return;
+                Map<String, Object> safe = new LinkedHashMap<>(observation);
+                for (String field : List.of("providerRequestId", "responseId", "responseModel", "finishReason", "outputPreview", "reason", "errorType")) {
+                    if (safe.containsKey(field)) {
+                        String redacted = catalog.redact(str(safe, field));
+                        safe.put(field, redacted.substring(0, Math.min(6000, redacted.length())));
+                        if (field.equals("outputPreview")) safe.put("outputTruncated", redacted.length() > 6000);
+                    }
+                }
+                store.finishModelRequest(requestId, safe); requestId = "";
+            }
+        };
     }
 
     private void checkResult(Map<String, Object> result, Control control, boolean denied) {
         String status = str(result, "status");
         if ("UNKNOWN".equals(status)) { throw new UnknownResult("运行器返回结果未知，必须核对后才能继续"); }
         checkStopped(control);
-        if ("WAITING_INPUT".equals(status)) { throw new NeedsInput(cap(str(result, "output"), 1800)); }
+        if ("WAITING_INPUT".equals(status)) { throw new NeedsInput(cap(catalog.redact(str(result, "output")), 1800)); }
         if (denied) { throw new BudgetExhausted("开发额度或根调用预算不足，已有成果与必要检查记录已保存；请调整任务范围或预算后继续"); }
         if ("CANCELLED".equals(status)) { throw new CancellationException(); }
-        if (num(result, "exitCode", -1) != 0 || !"SUCCEEDED".equals(status)) { throw new ApiException(409, "运行器执行失败：" + cap(str(result, "output"), 1800)); }
+        if (num(result, "exitCode", -1) != 0 || !"SUCCEEDED".equals(status)) { throw new ApiException(409, "运行器执行失败：" + cap(catalog.redact(str(result, "output")), 1800)); }
     }
 
     private Map<String, Object> evidence(String stage, String kind, String version, String command, Map<String, Object> result) {
@@ -633,7 +663,7 @@ public class WorkbenchEngine {
     }
 
     private void requireState(String state, Set<String> allowed) { if (!allowed.contains(state)) { throw new ApiException(409, "当前状态 " + state + " 不允许此操作"); } }
-    private String safeMessage(Exception exception) { return catalog.redact(cap(exception.getMessage() == null ? exception.getClass().getSimpleName() : exception.getMessage(), 3000)); }
+    private String safeMessage(Exception exception) { return cap(catalog.redact(exception.getMessage() == null ? exception.getClass().getSimpleName() : exception.getMessage()), 3000); }
     private static String cap(String text, int length) { return text.length() <= length ? text : text.substring(0, length) + "\n[摘要截断；完整记录保存在任务证据中]"; }
 
     @PreDestroy

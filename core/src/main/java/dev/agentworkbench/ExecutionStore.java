@@ -75,6 +75,8 @@ public class ExecutionStore {
                 statement.execute("CREATE INDEX IF NOT EXISTS session_messages_cursor ON session_messages(session_id,sequence)");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_session_project ON entities(kind,json_extract(body,'$.projectId'))");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_agent_run_task ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.stage')) WHERE kind='agentRun'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_model_request_run ON entities(json_extract(body,'$.agentRunId'),json_extract(body,'$.state')) WHERE kind='modelRequest'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_model_request_task ON entities(json_extract(body,'$.taskId')) WHERE kind='modelRequest'");
                 boolean rebuildSearch;
                 try (var tables = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_search'")) { rebuildSearch = schemaVersion < 3 || !tables.next(); }
                 statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS session_search USING fts5(project_id UNINDEXED,session_id UNINDEXED,message_id UNINDEXED,sequence UNINDEXED,content,tokenize='trigram case_sensitive 1')");
@@ -443,7 +445,89 @@ public class ExecutionStore {
         long elapsed = java.time.Duration.between(java.time.Instant.parse(str(run, "createdAt")), java.time.Instant.parse(str(run, "endedAt"))).toMillis();
         run.put("elapsedMs", Math.max(0, elapsed));
         if (!str(run, "startedAt").isBlank()) run.put("queueMs", Math.max(0, java.time.Duration.between(java.time.Instant.parse(str(run, "createdAt")), java.time.Instant.parse(str(run, "startedAt"))).toMillis()));
-        transaction(() -> { write("agentRun", run); appendEvent(str(run, "taskId"), "AGENT_FINISHED", str(run, "stage") + " · AgentRun " + runId + "：" + state); });
+        transaction(() -> {
+            for (Map<String, Object> request : pendingModelRequests(runId)) {
+                endModelRequest(request, obj("state", "UNKNOWN", "errorType", "MISSING_OBSERVATION", "reason", "执行已结束但请求回执缺失，不推测成功或自动重试"));
+            }
+            write("agentRun", run); appendEvent(str(run, "taskId"), "AGENT_FINISHED", str(run, "stage") + " · AgentRun " + runId + "：" + state);
+        });
+    }
+
+    /**
+     * 请求身份、运行调用和根预算同事务保存；拒绝时不生成请求记录。
+     */
+    public synchronized String beginModelRequest(String taskId, String runId, boolean reserved, Map<String, Object> metadata) {
+        Map<String, Object> task = get("task", taskId), run = get("agentRun", runId);
+        if (!taskId.equals(str(run, "taskId")) || !"RUNNING".equals(str(run, "state"))) throw new ApiException(409, "Agent 运行不可继续调用");
+        if (!BudgetPolicy.acquire(map(task, "budget"), reserved)) return "";
+        Map<String, Object> request = obj("id", id(), "schemaVersion", 1, "taskId", taskId, "rootTaskId", run.get("rootTaskId"),
+            "projectId", run.get("projectId"), "sessionId", run.get("sessionId"), "agentRunId", runId, "stage", run.get("stage"),
+            "sequence", num(run, "calls", 0) + 1, "state", "DISPATCHING", "createdAt", now(), "attempt", 1,
+            "routeId", run.get("routeId"), "routeVersion", run.get("routeVersion"), "engine", run.get("engine"), "model", run.get("model"),
+            "unit", run.get("callUnit"), "usage", obj("cost", "UNKNOWN"));
+        for (String key : List.of("round", "messageCount", "inputBytes", "inputDigest", "toolCount", "inputPreview", "inputTruncated")) {
+            if (metadata.containsKey(key)) request.put(key, metadata.get(key));
+        }
+        run.put("calls", num(run, "calls", 0) + 1); task.put("updatedAt", now());
+        transaction(() -> {
+            write("task", task); write("agentRun", run); write("modelRequest", request);
+            appendEvent(taskId, "MODEL_REQUEST", str(run, "stage") + " · 请求 " + request.get("id") + "：已承诺根预算，准备派发");
+        });
+        return str(request, "id");
+    }
+
+    public synchronized void finishModelRequest(String requestId, Map<String, Object> observation) {
+        Map<String, Object> request = get("modelRequest", requestId);
+        if (!"DISPATCHING".equals(str(request, "state"))) throw new ApiException(409, "已结束的模型请求不可覆盖");
+        if (!Set.of("SUCCEEDED", "FAILED", "CANCELLED", "UNKNOWN").contains(str(observation, "state"))) throw new ApiException(400, "无效模型请求状态");
+        transaction(() -> endModelRequest(request, observation));
+    }
+
+    private void endModelRequest(Map<String, Object> request, Map<String, Object> observation) throws Exception {
+        for (String key : List.of("state", "httpStatus", "providerRequestId", "responseId", "responseModel", "finishReason", "outputPreview", "outputTruncated", "errorType", "reason", "usage", "remoteOutcome")) {
+            if (observation.containsKey(key)) request.put(key, observation.get(key));
+        }
+        request.put("endedAt", now());
+        request.put("elapsedMs", Math.max(0, java.time.Duration.between(java.time.Instant.parse(str(request, "createdAt")), java.time.Instant.parse(str(request, "endedAt"))).toMillis()));
+        write("modelRequest", request);
+        appendEvent(str(request, "taskId"), "MODEL_RESPONSE", str(request, "stage") + " · 请求 " + request.get("id") + "：" + request.get("state"));
+    }
+
+    private List<Map<String, Object>> pendingModelRequests(String runId) throws Exception {
+        List<Map<String, Object>> requests = new ArrayList<>();
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='modelRequest' AND json_extract(body,'$.agentRunId')=? AND json_extract(body,'$.state')='DISPATCHING'")) {
+            query.setString(1, runId);
+            try (var rows = query.executeQuery()) { while (rows.next()) requests.add(decode(rows.getString(1))); }
+        }
+        return requests;
+    }
+
+    public synchronized Map<String, Object> modelRequestPage(String taskId, String runId, long before, int requestedLimit, String state, String queryText) {
+        get("task", taskId);
+        if (!runId.isBlank() && !taskId.equals(str(get("agentRun", runId), "taskId"))) throw new ApiException(404, "运行不属于此任务");
+        if (before < 0 || (!state.isBlank() && !Set.of("DISPATCHING", "SUCCEEDED", "FAILED", "CANCELLED", "UNKNOWN").contains(state)) || queryText.length() > 200) throw new ApiException(400, "无效请求游标、状态或查询");
+        int limit = Math.max(1, Math.min(100, requestedLimit));
+        String sql = "SELECT rowid,body FROM entities WHERE kind='modelRequest' AND json_extract(body,'$.taskId')=?"
+            + (runId.isBlank() ? "" : " AND json_extract(body,'$.agentRunId')=?")
+            + (state.isBlank() ? "" : " AND json_extract(body,'$.state')=?")
+            + (queryText.isBlank() ? "" : " AND instr(session_search_fold(body),session_search_fold(?))>0")
+            + (before == 0 ? "" : " AND rowid<?") + " ORDER BY rowid DESC LIMIT ?";
+        try (var query = connection.prepareStatement(sql)) {
+            int index = 1; query.setString(index++, taskId);
+            if (!runId.isBlank()) query.setString(index++, runId);
+            if (!state.isBlank()) query.setString(index++, state);
+            if (!queryText.isBlank()) query.setString(index++, queryText);
+            if (before > 0) query.setLong(index++, before);
+            query.setInt(index, limit + 1);
+            List<Map<String, Object>> requests = new ArrayList<>(); long cursor = before;
+            try (var rows = query.executeQuery()) {
+                while (rows.next()) {
+                    if (requests.size() == limit) return obj("requests", requests, "cursor", cursor, "hasMore", true);
+                    cursor = rows.getLong(1); requests.add(decode(rows.getString(2)));
+                }
+            }
+            return obj("requests", requests, "cursor", cursor, "hasMore", false);
+        } catch (Exception exception) { throw failure(exception); }
     }
 
     public synchronized Map<String, Object> agentRunPage(String projectId, String sessionId, String taskId, long before, int requestedLimit, String state) {

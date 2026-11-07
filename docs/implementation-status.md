@@ -2,6 +2,23 @@
 
 产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-07。
 
+## 0.2.0-alpha.7 开发迭代
+
+接续实际 AgentRun，按 F16 保存每轮模型请求身份、根预算、输入摘要、供应商回执、耗时和脱敏输入输出片段。任务详情与单次运行支持状态/字面检索、稳定游标分页和保留历史位置的轮询；交付包包含请求记录。协议见[模型请求追踪协议](./model-request-contract.md)，固定提交的开源参考、取舍及失败记录见[请求追踪来源与自审](./research/model-requests-2026-11-07.md)。
+
+| 检查 | 本轮证据 |
+| --- | --- |
+| `npm run build`、最后修正后的 `npm run build:core` / `npm run build:web` | 核心 107 项中 106 通过、1 项 Windows POSIX 权限跳过，0 失败/错误；最后的截断标记修正后核心全部重跑通过，最终 Web TypeScript 与生产构建通过 |
+| 请求存储、真实 HTTP 与引擎回归 | 请求/预算/运行计数事务故障回滚、持久重开、终态不可覆盖、回执缺失 UNKNOWN、作用域及字面分页；两轮 HTTP 工具请求/供应商身份/已知及缺失用量、HTTP 500/无效协议/断连/取消均不重试；凭据先脱敏再截断、最终长度标记及重启保留旧终态均通过 |
+| `npm run test:ui --prefix web` | 最终 21 / 21；1440px/430px 覆盖 UNKNOWN 与 0、状态/检索、历史轮询、返回最新、脱敏输入输出纯文本、单次运行展开/收起及真实 runId 参数；请求回执文案已验证，最终截图已复查，无横向溢出 |
+| `npm run test:integration` | 最终 alpha.7 Jar 本机协议 26 / 26；逐轮身份/预算/用量/输入片段、任务/运行筛选、供应商身份、认证及游标边界和交付 ZIP 均覆盖；[Windows 协议报告](./qa/smoke-win32.json) |
+| `npm run test:standalone` | 真实 Java 和生产 Web 经同源代理显示 DISPATCHING 请求并核对 AgentRun 归属；客户端退出后同一在途模型请求仍为 1，无页面异常；[Windows 独立运行报告](./qa/standalone-win32.json) |
+| `node --test tools/connection.test.cjs` | 3 / 3；API 兼容仍独立于数据库版本 |
+| `npm run package:prepared`、`npm run test:packaged` | 最终 Web 构建后的 Windows NSIS alpha.7 生成成功；打包程序 packaged=true、version=alpha.7，禁用外部 Java 后以内置 Java 启动，API 200，无页面异常；[Windows 打包报告](./qa/desktop-packaged-win32.json)。本轮未重复完整安装/卸载验收 |
+| 多端 CI | 推送后按本次提交 SHA 核对；不使用 alpha.6 的通过结果代替本轮验收 |
+
+schema 仍为 3、API 仍为 1。结束记录不可覆盖，传输中断/在途 HTTP 取消/重启回执缺失均保留 UNKNOWN，不自动重试或重放。缺失用量与 0 分别保存，费用和 CLI 内部调用仍未知；当前输入输出是本机保存的脱敏片段，尚无遥测内容采集开关。本轮完成 F16 的逐轮定位基础，Token 趋势/F21、动态 SubAgent/Teams、远程 Worker、终端与完整 F01–F21/计划验收仍继续实施。
+
 ## 0.2.0-alpha.6 开发迭代
 
 按架构迁移第二步建立持久 AgentRun：每次实际模型阶段和独立审查先保存排队身份，再关联操作意图、根预算调用、输入输出版本与原始证据。任务详情和会话活动提供状态筛选、稳定游标分页及来源定位；交付包包含运行记录。协议见 [Agent 运行协议](./agent-run-contract.md)，固定提交的开源来源、设计取舍和失败记录见 [AgentRun 来源与自审](./research/agent-runs-2026-11-07.md)。
@@ -15,7 +32,7 @@
 | `npm run test:standalone` | 真实 Java 与生产 Web 经同源代理展示在途 AgentRun，跳转来源任务/运行页后返回会话；退出客户端后在途请求仍为 1、无页面异常；[Windows 独立运行报告](./qa/standalone-win32.json) |
 | `node --test tools/connection.test.cjs` | 3 / 3；API 兼容判断保持独立于数据库版本 |
 | `npm run package:prepared`、`npm run test:packaged` | Windows NSIS alpha.6 生成成功；打包程序 packaged=true、version=alpha.6，禁用外部 Java 后以内置 Java 启动，API 200、无页面异常；[Windows 打包报告](./qa/desktop-packaged-win32.json)。本轮未重复完整安装/卸载验收 |
-| 多端 CI | 推送后按当前提交 SHA 核对，不以历史版本结果替代 |
+| 多端 CI | 提交 `f5ab9660db3a6b4209f8605b531a77fc6c797e94` 的 [run 42360593180](https://github.com/lihe-he/multi-agent/actions/runs/42360593180) 已完成，Windows、macOS、Ubuntu 三项均成功；这是 alpha.6 历史结果 |
 
 schema 仍为 3、API 仍为 1；旧数据不推测补造运行。重启和未知外部效果保留 UNKNOWN，不自动重放；运行成功、审查意见与人工验收分别保存。动态 SubAgent、父子运行、Teams、远程 Worker、F16 请求级追踪和 Token 趋势仍未完成，本轮不代表完整 F01–F21 或计划验收。
 
@@ -146,6 +163,7 @@ run `42229839029` 验证 Linux 的 `--no-sandbox` 修复成功；随后 macOS UI
 
 - 三种模式使用固定角色阶段：负责人调查 / 方案、实现、验证、审查；圆桌额外执行独立提案、交叉质疑和汇总。尚未提供运行中动态创建副 Agent 的完整委派协议。
 - API 运行器支持兼容 Chat Completions 的工具调用；Codex 与 Claude Code 有原生命令适配与版本探测。版本探测不会确认登录、模型访问、费用或长期接管能力。
+- 每轮 API 请求和 CLI 会话已有持久请求身份、根预算及 AgentRun 归属、脱敏输入输出、供应商回执和可观测用量；缺失回执及远端未知保留 UNKNOWN。Token 趋势、账单核对、CLI 内部请求与内容采集/保留治理仍需扩展。
 - API 工具强制文件范围、路径与只读限制；约定的命令在本机子进程中执行。工作目录隔离不等于操作系统权限隔离，仅适用于信任的项目与验证命令。
 - API 密钥仅会话内保存。系统凭据服务、账号额度组与自动跨账号接管尚未完成。
 - 独立 MCP 客户端支持 HTTP JSON/SSE 和 stdio 协议、服务定义与权限检查、操作去重及未知状态；固定参数动作已接入 API 实现/修复阶段，使用无参数别名、独立预算和持久操作状态。只读服务端提供项目读取工具，并使用可撤销的项目专属会话令牌，不能访问管理接口或其他项目；动态委派、原生 CLI MCP 注入及混合运行器协同仍未完成。

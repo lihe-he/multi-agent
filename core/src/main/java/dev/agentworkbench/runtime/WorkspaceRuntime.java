@@ -260,7 +260,6 @@ public class WorkspaceRuntime {
         }
         String executable = executable(route, engine);
         requireNativeIsolation(engine, executable, cancelled);
-        if (!acquireCall.getAsBoolean()) return result(-1, "根任务可用模型额度不足", "FAILED");
         List<String> args = new ArrayList<>();
         String model = str(route, "model", "");
         if (engine.equals("CODEX")) {
@@ -271,10 +270,17 @@ public class WorkspaceRuntime {
             args.addAll(List.of("-p", "--output-format", "json", "--permission-mode", "acceptEdits", "--safe-mode", "--tools", readOnly ? "Read,Glob,Grep" : "Read,Glob,Grep,Edit,Write", "--disallowedTools", "Bash"));
             if (!model.isBlank()) args.addAll(List.of("--model", model));
         }
-        Map<String, Object> run = execute(nativeCommand(executable, args), Path.of(workspace), prompt, cancelled, log, Duration.ofMinutes(15), true);
-        run.put("output", finalNativeOutput(engine, run.get("output").toString()));
-        run.put("usage", object("softBudget", true, "unit", "CLI_SESSION", "modelRequests", "UNKNOWN", "cost", "UNKNOWN"));
-        return run;
+        if (!beginCall(acquireCall, inputMetadata(prompt, 1, 1, 0))) return result(-1, "根任务可用模型额度不足", "FAILED");
+        Map<String, Object> observation = object("state", "UNKNOWN", "errorType", "CLI_INTERRUPTED", "remoteOutcome", "UNKNOWN");
+        try {
+            Map<String, Object> run = execute(nativeCommand(executable, args), Path.of(workspace), prompt, cancelled, log, Duration.ofMinutes(15), true);
+            run.put("output", finalNativeOutput(engine, run.get("output").toString()));
+            run.put("usage", object("softBudget", true, "unit", "CLI_SESSION", "modelRequests", "UNKNOWN", "inputTokens", "UNKNOWN", "outputTokens", "UNKNOWN", "cost", "UNKNOWN"));
+            observation = object("state", run.get("status"), "usage", run.get("usage"), "remoteOutcome", "UNKNOWN",
+                "outputPreview", run.get("output").toString(), "outputTruncated", run.get("output").toString().length() > 6000);
+            if (!"SUCCEEDED".equals(run.get("status"))) observation.put("errorType", "CLI_" + run.get("status"));
+            return run;
+        } finally { endCall(acquireCall, observation); }
     }
 
     /**
@@ -289,10 +295,26 @@ public class WorkspaceRuntime {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private Map<String, Object> apiRun(Map<String, Object> route, String key, Path root, String prompt, boolean readOnly,
                                        List<String> scope, BooleanSupplier cancelled, Consumer<String> log, BooleanSupplier acquireCall,
                                        List<Map<String, Object>> mcpBindings, FixedToolInvoker mcpInvoker) {
+        List<Map<String, Object>> observedUsage = new ArrayList<>();
+        Map<String, Object> result = apiRunLoop(route, key, root, prompt, readOnly, scope, cancelled, log, acquireCall, mcpBindings, mcpInvoker, observedUsage);
+        Map<String, Object> usage = object("modelRequests", observedUsage.size(), "cost", "UNKNOWN", "softBudget", true);
+        for (String field : List.of("inputTokens", "outputTokens", "cachedInputTokens", "reasoningTokens")) {
+            long sum = 0; int known = 0;
+            for (Map<String, Object> observed : observedUsage) if (observed.get(field) instanceof Number value) { sum += value.longValue(); known++; }
+            usage.put(field, known == observedUsage.size() && known > 0 ? sum : "UNKNOWN");
+            usage.put("observed" + Character.toUpperCase(field.charAt(0)) + field.substring(1), sum);
+        }
+        result.put("usage", usage);
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> apiRunLoop(Map<String, Object> route, String key, Path root, String prompt, boolean readOnly,
+                                       List<String> scope, BooleanSupplier cancelled, Consumer<String> log, BooleanSupplier acquireCall,
+                                       List<Map<String, Object>> mcpBindings, FixedToolInvoker mcpInvoker, List<Map<String, Object>> observedUsage) {
         URI url = endpoint(str(route, "baseUrl", ""));
         if ((key == null || key.isBlank()) && !isLoopback(url)) throw new IllegalArgumentException("API 密钥未配置；请在资源设置中添加本次会话凭据。");
         String model = str(route, "model", "");
@@ -304,34 +326,14 @@ public class WorkspaceRuntime {
                 + (readOnly ? "当前为只读调查/独立审查，不能修改文件或执行命令。审查结论必须以JSON {\"approved\":boolean,\"issues\":[]} 输出，依据实际资料。" : "通过工具实际完成变更，不能仅宣称完成。运行命令必须在任务白名单中。")
                 + "本次工作目录为 " + root));
         messages.add(object("role", "user", "content", prompt));
-        long inputTokens = 0, outputTokens = 0;
-        int calls = 0;
         List<Map<String, Object>> definitions = toolDefinitions(readOnly, mcpBindings);
         Map<String, Map<String, Object>> mcpByAlias = new HashMap<>();
         for (Map<String, Object> binding : mcpBindings) mcpByAlias.put(str(binding, "alias", ""), binding);
         try {
             for (int round = 0; round < 32; round++) {
                 if (cancelled.getAsBoolean()) return result(-1, "执行已取消；在途远程请求费用可能仍发生。", "CANCELLED");
-                if (!acquireCall.getAsBoolean()) return result(-1, "根任务模型额度不足，已停止新增请求。", "FAILED");
                 Map<String, Object> payload = object("model", model, "messages", messages, "tools", definitions, "tool_choice", "auto");
-                HttpRequest.Builder request = HttpRequest.newBuilder(url).timeout(Duration.ofMinutes(3)).header("Content-Type", "application/json");
-                if (key != null && !key.isBlank()) request.header("Authorization", "Bearer " + key);
-                log.accept("模型请求 " + (round + 1) + " · " + model);
-                CompletableFuture<HttpResponse<String>> future = http.sendAsync(request.POST(HttpRequest.BodyPublishers.ofString(json.writeValueAsString(payload))).build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-                HttpResponse<String> response;
-                try {
-                    while (true) {
-                        if (cancelled.getAsBoolean()) { future.cancel(true); return result(-1, "已停止等待模型，远端结果未知，不自动重放。", "UNKNOWN"); }
-                        try { response = future.get(150, TimeUnit.MILLISECONDS); break; }
-                        catch (TimeoutException ignored) { }
-                    }
-                } catch (Exception e) { future.cancel(true); throw e; }
-                calls++;
-                if (response.statusCode() < 200 || response.statusCode() > 299) return result(response.statusCode(), "模型接口返回 HTTP " + response.statusCode() + "；未自动重试，避免重复费用。", "FAILED");
-                if (response.body().length() > 4_000_000) return result(-1, "模型响应超过安全读取上限", "FAILED");
-                Map<String, Object> body = json.readValue(response.body(), new TypeReference<>() {});
-                Map<String, Object> usage = (Map<String, Object>) body.getOrDefault("usage", Map.of());
-                inputTokens += number(usage.get("prompt_tokens")); outputTokens += number(usage.get("completion_tokens"));
+                Map<String, Object> body = apiRequest(url, key, payload, round + 1, cancelled, log, acquireCall, observedUsage);
                 List<Map<String, Object>> choices = (List<Map<String, Object>>) body.get("choices");
                 if (choices == null || choices.isEmpty()) return result(-1, "API 响应缺少 choices，工具协议不兼容。", "FAILED");
                 Map<String, Object> message = (Map<String, Object>) choices.getFirst().get("message");
@@ -340,7 +342,6 @@ public class WorkspaceRuntime {
                 if (toolCalls.isEmpty()) {
                     String answer = Objects.toString(message.get("content"), "");
                     Map<String, Object> result = result(0, answer, "SUCCEEDED");
-                    result.put("usage", object("modelRequests", calls, "inputTokens", inputTokens, "outputTokens", outputTokens, "cost", "UNKNOWN", "softBudget", true));
                     return result;
                 }
                 if (toolCalls.size() > 16) return result(-1, "单轮工具数量超限", "FAILED");
@@ -404,7 +405,110 @@ public class WorkspaceRuntime {
                 if (json.writeValueAsBytes(messages).length > 1_500_000) return result(-1, "上下文达到本地上限，请缩小任务范围后接续。", "FAILED");
             }
             return result(-1, "达到单阶段 32 轮工具上限，保留现场待处理。", "FAILED");
-        } catch (Exception e) { return result(-1, "模型调用中断，结果未知：" + e.getClass().getSimpleName(), "UNKNOWN"); }
+        } catch (ModelCallFailure e) { return e.result; }
+        catch (Exception e) { return result(-1, "模型调用中断，结果未知：" + e.getClass().getSimpleName(), "UNKNOWN"); }
+    }
+
+    /**
+     * 仅围住一次传输和协议回执，工具执行失败不会改写已经成功收到的模型请求。
+     */
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> apiRequest(URI url, String key, Map<String, Object> payload, int round, BooleanSupplier cancelled,
+            Consumer<String> log, BooleanSupplier acquireCall, List<Map<String, Object>> observedUsage) throws Exception {
+        String input = json.writeValueAsString(payload);
+        HttpRequest.Builder request = HttpRequest.newBuilder(url).timeout(Duration.ofMinutes(3)).header("Content-Type", "application/json");
+        if (key != null && !key.isBlank()) request.header("Authorization", "Bearer " + key);
+        HttpRequest prepared = request.POST(HttpRequest.BodyPublishers.ofString(input)).build();
+        if (!beginCall(acquireCall, inputMetadata(input, round, ((List<?>) payload.get("messages")).size(), ((List<?>) payload.get("tools")).size()))) {
+            throw new ModelCallFailure(result(-1, "根任务模型额度不足，已停止新增请求。", "FAILED"));
+        }
+        Map<String, Object> observation = object("state", "UNKNOWN", "remoteOutcome", "UNKNOWN", "usage", object("cost", "UNKNOWN"));
+        CompletableFuture<HttpResponse<String>> future = null;
+        boolean received = false;
+        try {
+            log.accept("模型请求 " + round + " · " + payload.get("model"));
+            future = http.sendAsync(prepared, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            HttpResponse<String> response;
+            while (true) {
+                if (cancelled.getAsBoolean()) {
+                    observation.put("errorType", "LOCAL_CANCEL_WAIT");
+                    throw new ModelCallFailure(result(-1, "已停止等待模型，远端结果未知，不自动重放。", "UNKNOWN"));
+                }
+                try { response = future.get(150, TimeUnit.MILLISECONDS); break; }
+                catch (TimeoutException ignored) { }
+            }
+            received = true; observation.put("httpStatus", response.statusCode()); observation.put("remoteOutcome", "RESPONSE_RECEIVED");
+            response.headers().firstValue("x-request-id").ifPresent(value -> observation.put("providerRequestId", value));
+            if (response.statusCode() < 200 || response.statusCode() > 299) {
+                observation.put("errorType", "HTTP_" + response.statusCode());
+                throw new ModelCallFailure(result(response.statusCode(), "模型接口返回 HTTP " + response.statusCode() + "；未自动重试，避免重复费用。", "FAILED"));
+            }
+            if (response.body().length() > 4_000_000) throw new IllegalArgumentException("模型响应超过安全读取上限");
+            Map<String, Object> body = json.readValue(response.body(), new TypeReference<>() {});
+            Map<String, Object> usage = normalizedUsage(body.get("usage")); observation.put("usage", usage);
+            observation.put("responseId", Objects.toString(body.get("id"), ""));
+            observation.put("responseModel", Objects.toString(body.get("model"), ""));
+            List<Map<String, Object>> choices = (List<Map<String, Object>>) body.get("choices");
+            if (choices == null || choices.isEmpty() || !(choices.getFirst().get("message") instanceof Map<?, ?>)) throw new IllegalArgumentException("API 响应缺少有效 choices/message，工具协议不兼容");
+            Map<String, Object> message = (Map<String, Object>) choices.getFirst().get("message");
+            if (message.containsKey("tool_calls")) {
+                if (!(message.get("tool_calls") instanceof List<?> tools) || tools.size() > 16) throw new IllegalArgumentException("API 工具列表格式无效或超限");
+                for (Object tool : tools) {
+                    if (!(tool instanceof Map<?, ?> call) || !(call.get("function") instanceof Map<?, ?> function)
+                            || !(function.get("name") instanceof String) || !(function.get("arguments") instanceof String) || !(call.get("id") instanceof String)) {
+                        throw new IllegalArgumentException("API 工具调用格式无效");
+                    }
+                }
+            }
+            String output = json.writeValueAsString(choices.getFirst().get("message"));
+            observation.put("outputPreview", output); observation.put("outputTruncated", output.length() > 6000);
+            observation.put("finishReason", Objects.toString(choices.getFirst().get("finish_reason"), ""));
+            observation.put("state", "SUCCEEDED");
+            return body;
+        } catch (Exception exception) {
+            observation.put("state", received ? "FAILED" : "UNKNOWN");
+            observation.putIfAbsent("errorType", received ? "INVALID_RESPONSE" : exception.getClass().getSimpleName());
+            observation.put("reason", received ? "已收到接口回执，请检查 HTTP 状态与协议格式；未自动重试" : "未取得完整远端回执，结果与计费未知；未自动重试");
+            if (received && !(exception instanceof ModelCallFailure)) throw new ModelCallFailure(result(-1, "模型接口回执格式无效：" + exception.getClass().getSimpleName(), "FAILED"));
+            throw exception;
+        } finally {
+            if (future != null && !future.isDone()) future.cancel(true);
+            observedUsage.add((Map<String, Object>) observation.get("usage"));
+            endCall(acquireCall, observation);
+        }
+    }
+
+    private boolean beginCall(BooleanSupplier callback, Map<String, Object> metadata) {
+        return callback instanceof ModelCallObserver observer ? observer.begin(metadata) : callback.getAsBoolean();
+    }
+
+    private void endCall(BooleanSupplier callback, Map<String, Object> observation) {
+        if (callback instanceof ModelCallObserver observer) observer.end(observation);
+    }
+
+    private Map<String, Object> inputMetadata(String input, int round, int messages, int tools) {
+        try {
+            byte[] bytes = input.getBytes(StandardCharsets.UTF_8);
+            return object("round", round, "messageCount", messages, "toolCount", tools, "inputBytes", bytes.length, "inputPreview", input,
+                "inputDigest", HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes)));
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    private Map<String, Object> normalizedUsage(Object raw) {
+        Map<?, ?> usage = raw instanceof Map<?, ?> map ? map : Map.of();
+        Map<?, ?> input = usage.get("prompt_tokens_details") instanceof Map<?, ?> map ? map : Map.of();
+        Map<?, ?> output = usage.get("completion_tokens_details") instanceof Map<?, ?> map ? map : Map.of();
+        return object("inputTokens", tokenValue(usage.get("prompt_tokens")), "outputTokens", tokenValue(usage.get("completion_tokens")),
+            "cachedInputTokens", tokenValue(input.get("cached_tokens")), "reasoningTokens", tokenValue(output.get("reasoning_tokens")), "cost", "UNKNOWN");
+    }
+
+    private Object tokenValue(Object value) {
+        return value instanceof Number number && number.longValue() >= 0 && number.doubleValue() == number.longValue() ? number.longValue() : "UNKNOWN";
+    }
+
+    private static class ModelCallFailure extends RuntimeException {
+        final Map<String, Object> result;
+        ModelCallFailure(Map<String, Object> result) { this.result = result; }
     }
 
     private Object invokeTool(Path root, String name, Map<String, Object> args, boolean readOnly, List<String> scope,

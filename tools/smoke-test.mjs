@@ -52,7 +52,7 @@ async function request(url, body, { expected = 200, method, authorized = true } 
 }
 
 function reply(response, message) {
-  response.writeHead(200, { 'Content-Type': 'application/json' });
+  response.writeHead(200, { 'Content-Type': 'application/json', 'x-request-id': `provider-${calls.length}` });
   response.end(JSON.stringify({ id: `fixture-${calls.length}`, object: 'chat.completion', model: 'smoke-model', choices: [{ index: 0, message: { role: 'assistant', ...message }, finish_reason: message.tool_calls ? 'tool_calls' : 'stop' }], usage: { prompt_tokens: 40, completion_tokens: 20, total_tokens: 60 } }));
 }
 
@@ -268,6 +268,28 @@ try {
     assert.notEqual(first.runs[0].id, second.runs[0].id);
     assert.equal((await request(`${base}?state=FAILED`)).data.runs.length, 0);
   });
+  await check('Model request trace binds each API round to budget, usage and provider receipt', async () => {
+    const endpoint = `/tasks/${task.id}/model-requests`;
+    await request(endpoint, undefined, { expected: 401, authorized: false });
+    await request(`${endpoint}?state=FORGED`, undefined, { expected: 400 });
+    await request(`${endpoint}?before=-1`, undefined, { expected: 400 });
+    const page = (await request(endpoint)).data;
+    assert.equal(page.requests.length, finished.budget.usedCalls);
+    assert.ok(page.requests.every(value => value.state === 'SUCCEEDED' && value.httpStatus === 200 && value.elapsedMs >= 0));
+    assert.ok(page.requests.every(value => value.providerRequestId?.startsWith('provider-') && value.responseId?.startsWith('fixture-')));
+    assert.ok(page.requests.every(value => value.usage.inputTokens === 40 && value.usage.outputTokens === 20 && value.usage.cachedInputTokens === 'UNKNOWN'));
+    assert.ok(page.requests.every(value => value.inputDigest.length === 64 && value.inputBytes > 0 && !value.input && !value.messages));
+    assert.ok(page.requests.every(value => typeof value.inputPreview === 'string' && value.inputPreview.length <= 6000 && typeof value.inputTruncated === 'boolean'));
+    assert.ok(!JSON.stringify(page).includes('test-only-not-a-secret'));
+    const runId = page.requests[0].agentRunId;
+    const scoped = (await request(`${endpoint}?runId=${runId}`)).data;
+    assert.ok(scoped.requests.length > 0 && scoped.requests.every(value => value.agentRunId === runId));
+    const newest = (await request(`${endpoint}?limit=1`)).data;
+    const older = (await request(`${endpoint}?limit=1&before=${newest.cursor}`)).data;
+    assert.notEqual(newest.requests[0].id, older.requests[0].id);
+    assert.equal((await request(`${endpoint}?q=${encodeURIComponent(page.requests[0].responseId)}`)).data.requests.length, 1);
+    assert.equal((await request(`${endpoint}?state=FAILED`)).data.requests.length, 0);
+  });
   await check('Preserve source Git worktree and staged state', async () => {
     assert.equal(await readFile(path.join(projectPath, 'src/greeting.txt'), 'utf8'), 'hello\n');
     assert.equal(git('status', '--porcelain'), '');
@@ -310,6 +332,7 @@ try {
     const archive = Buffer.from(await response.arrayBuffer());
     assert.equal(archive.subarray(0, 2).toString(), 'PK');
     assert.ok(archive.includes(Buffer.from('agent-runs.json')), '交付包必须包含运行记录');
+    assert.ok(archive.includes(Buffer.from('model-requests.json')), '交付包必须包含请求追踪');
     await writeFile(path.join(fixture, 'delivery.zip'), archive);
   });
   await check('Disable knowledge while preserving its revision', async () => {

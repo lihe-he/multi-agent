@@ -3,7 +3,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { ArrowUpRight, Check, Circle, LoaderCircle, X } from 'lucide-react';
 
 const labels: Record<string, string> = {
-  DRAFT: '待确认计划', QUEUED: '排队中', RUNNING: '执行中', PAUSING: '正在暂停', PAUSED: '已暂停',
+  DRAFT: '待确认计划', QUEUED: '排队中', DISPATCHING: '派发中', RUNNING: '执行中', PAUSING: '正在暂停', PAUSED: '已暂停',
   WAITING_INPUT: '需要你处理', WAITING_RESOURCE: '等待资源', UNKNOWN: '结果待核对',
   CANCELLING: '正在取消', CANCELLED: '已取消', FAILED: '执行失败',
   AWAITING_ACCEPTANCE: '待验收', COMPLETED: '已完成', SUCCEEDED: '已通过', PASSED: '已通过',
@@ -26,7 +26,7 @@ export function Badge({ state, children }: { state?: string; children?: ReactNod
   const tone = ['COMPLETED', 'SUCCEEDED', 'PASSED', 'APPROVED', 'ACTIVE', 'VERIFIED'].includes(state || '') ? 'success'
     : ['FAILED', 'REJECTED', 'UNKNOWN', 'CHANGES_REQUESTED'].includes(state || '') ? 'danger'
     : ['WAITING_INPUT', 'WAITING_RESOURCE', 'AWAITING_ACCEPTANCE', 'NEEDS_REVIEW', 'BLOCKED', 'DRAFT'].includes(state || '') ? 'warning'
-    : ['RUNNING', 'QUEUED', 'PAUSING', 'CANCELLING'].includes(state || '') ? 'live' : 'muted';
+    : ['RUNNING', 'DISPATCHING', 'QUEUED', 'PAUSING', 'CANCELLING'].includes(state || '') ? 'live' : 'muted';
   return <span className={`badge ${tone}`}><span className="badge-dot" />{children || statusLabel(state)}</span>;
 }
 

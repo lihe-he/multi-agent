@@ -47,6 +47,15 @@ export interface AgentRun {
   routeName?: string; engine?: string; model?: string; readOnly: boolean; calls: number; callUnit: string;
   evidenceId?: string; reason?: string; inputVersion?: string; resultVersion?: string;
 }
+export interface ModelRequest {
+  id: string; taskId: string; agentRunId: string; stage: string; sequence: number; attempt: number;
+  engine: string; model?: string; state: string; unit: string; createdAt: string; endedAt?: string; elapsedMs?: number;
+  httpStatus?: number; providerRequestId?: string; responseId?: string; responseModel?: string; finishReason?: string;
+  inputBytes?: number; inputDigest?: string; messageCount?: number; toolCount?: number;
+  inputPreview?: string; inputTruncated?: boolean;
+  usage?: { inputTokens?: number | string; outputTokens?: number | string; cachedInputTokens?: number | string; reasoningTokens?: number | string };
+  outputPreview?: string; outputTruncated?: boolean; errorType?: string; reason?: string; remoteOutcome?: string;
+}
 export interface Connection { baseUrl: string; token: string }
 export interface Session { id: string; projectId: string; title: string; version: number; isOpen: boolean; createdAt: string; updatedAt: string }
 export interface SessionMessage { id: string; sessionId: string; projectId: string; sequence: number; role: string; kind: 'NOTE' | 'TASK_GOAL'; content: string; taskId?: string; createdAt: string }

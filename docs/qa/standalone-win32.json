@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-07T09:32:52.586Z",
-  "version": "0.2.0-alpha.6",
+  "date": "2026-11-07T13:24:42.609Z",
+  "version": "0.2.0-alpha.7",
   "platform": "win32",
   "coreIndependentOfWebAndNpm": true,
   "runtimeProxyConfiguration": true,
@@ -8,6 +8,7 @@
   "sessionWorkflowThroughProxy": true,
   "sessionSearchAndReopenThroughProxy": true,
   "agentRunActivityThroughProxy": true,
+  "modelRequestTraceThroughProxy": true,
   "savedNotesSurviveReload": true,
   "sessionClosePreservesRunningTask": true,
   "browserClosePreservesCore": true,

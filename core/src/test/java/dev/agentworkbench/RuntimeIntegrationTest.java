@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpServer;
 import dev.agentworkbench.runtime.WorkspaceRuntime;
+import dev.agentworkbench.runtime.ModelCallObserver;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -36,15 +37,106 @@ class RuntimeIntegrationTest {
 
     private final ObjectMapper json = new ObjectMapper();
 
+    private static class ObservedCalls implements ModelCallObserver {
+        final List<Map<String, Object>> inputs = new CopyOnWriteArrayList<>();
+        final List<Map<String, Object>> outputs = new CopyOnWriteArrayList<>();
+        @Override public boolean begin(Map<String, Object> metadata) { inputs.add(metadata); return true; }
+        @Override public void end(Map<String, Object> observation) { outputs.add(observation); }
+    }
+
+    @Test
+    void apiRequestObservationsSeparateRoundsAndPreserveUnknownUsage() throws Exception {
+        Path root = Files.createDirectories(temporary.resolve("observed-project"));
+        Files.writeString(root.resolve("read.txt"), "read result");
+        AtomicInteger requests = new AtomicInteger();
+        var readTool = tool("read_file", Map.of("path", "read.txt"));
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/", exchange -> {
+            try {
+                exchange.getRequestBody().readAllBytes();
+                int index = requests.incrementAndGet();
+                Map<String, Object> message = index == 1 ? Map.of("role", "assistant", "tool_calls", List.of(readTool)) : Map.of("role", "assistant", "content", "done");
+                Map<String, Object> body = new java.util.LinkedHashMap<>(Map.of("id", "response-" + index, "model", "observed-model", "choices", List.of(Map.of("message", message, "finish_reason", index == 1 ? "tool_calls" : "stop"))));
+                if (index == 1) body.put("usage", Map.of("prompt_tokens", 7, "completion_tokens", 0, "prompt_tokens_details", Map.of("cached_tokens", 3), "completion_tokens_details", Map.of("reasoning_tokens", -1)));
+                byte[] bytes = json.writeValueAsBytes(body);
+                exchange.getResponseHeaders().add("x-request-id", "provider-" + index);
+                exchange.sendResponseHeaders(200, bytes.length); exchange.getResponseBody().write(bytes);
+            } finally { exchange.close(); }
+        });
+        server.start();
+        try {
+            ObservedCalls observed = new ObservedCalls();
+            Map<String, Object> result = runtime().run(route(server), "fixture-secret", root.toString(), "private input", true, List.of("**"), () -> false, ignored -> {}, observed);
+            assertEquals("SUCCEEDED", result.get("status"), result.toString());
+            assertEquals(2, observed.inputs.size()); assertEquals(2, observed.outputs.size()); assertEquals(2, requests.get());
+            assertEquals(1, observed.inputs.getFirst().get("round"));
+            assertNotEquals(observed.inputs.getFirst().get("inputDigest"), observed.inputs.getLast().get("inputDigest"));
+            assertTrue(observed.inputs.toString().contains("private input")); assertFalse(observed.inputs.toString().contains("fixture-secret"));
+            assertTrue(observed.outputs.stream().allMatch(value -> value.get("state").equals("SUCCEEDED")));
+            assertEquals("provider-2", observed.outputs.getLast().get("providerRequestId"));
+            assertEquals("response-1", observed.outputs.getFirst().get("responseId"));
+            var firstUsage = (Map<?, ?>) observed.outputs.getFirst().get("usage");
+            assertEquals(0L, firstUsage.get("outputTokens")); assertEquals(3L, firstUsage.get("cachedInputTokens")); assertEquals("UNKNOWN", firstUsage.get("reasoningTokens"));
+            var aggregate = (Map<?, ?>) result.get("usage");
+            assertEquals("UNKNOWN", aggregate.get("inputTokens")); assertEquals(7L, aggregate.get("observedInputTokens")); assertEquals(2, aggregate.get("modelRequests"));
+        } finally { server.stop(0); }
+    }
+
+    @ParameterizedTest
+    @CsvSource({"500,FAILED,HTTP_500", "invalid,FAILED,INVALID_RESPONSE", "disconnect,UNKNOWN,ExecutionException"})
+    void requestFailureFactsDistinguishResponseFromUnknownTransport(String mode, String expectedState, String expectedError) throws Exception {
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        AtomicInteger requests = new AtomicInteger();
+        server.createContext("/", exchange -> {
+            try {
+                exchange.getRequestBody().readAllBytes(); requests.incrementAndGet();
+                if (mode.equals("disconnect")) return;
+                byte[] bytes = "malformed fixture-secret body".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(mode.equals("500") ? 500 : 200, bytes.length); exchange.getResponseBody().write(bytes);
+            } finally { exchange.close(); }
+        });
+        server.start();
+        try {
+            ObservedCalls observed = new ObservedCalls();
+            var result = runtime().run(route(server), "fixture-secret", temporary.toString(), "input", true, List.of("**"), () -> false, ignored -> {}, observed);
+            assertEquals(expectedState, result.get("status"));
+            assertEquals(1, observed.outputs.size()); assertEquals(1, requests.get(), "failed requests are not replayed");
+            assertEquals(expectedState, observed.outputs.getFirst().get("state"));
+            assertEquals(expectedError, observed.outputs.getFirst().get("errorType"));
+            assertFalse(observed.outputs.toString().contains("fixture-secret"), "raw invalid response bodies are excluded");
+        } finally { server.stop(0); }
+    }
+
+    @Test
+    void cancellingModelWaitRecordsUnknownRemoteOutcomeOnce() throws Exception {
+        var entered = new java.util.concurrent.CountDownLatch(1); var release = new java.util.concurrent.CountDownLatch(1);
+        var cancelled = new java.util.concurrent.atomic.AtomicBoolean();
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/", exchange -> {
+            try { exchange.getRequestBody().readAllBytes(); entered.countDown(); release.await(5, java.util.concurrent.TimeUnit.SECONDS); }
+            catch (InterruptedException exception) { Thread.currentThread().interrupt(); }
+            finally { exchange.close(); }
+        });
+        server.start();
+        try (var executor = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            ObservedCalls observed = new ObservedCalls();
+            var work = executor.submit(() -> runtime().run(route(server), "fixture", temporary.toString(), "input", true, List.of("**"), cancelled::get, ignored -> {}, observed));
+            assertTrue(entered.await(5, java.util.concurrent.TimeUnit.SECONDS)); cancelled.set(true);
+            assertEquals("UNKNOWN", work.get(5, java.util.concurrent.TimeUnit.SECONDS).get("status"));
+            assertEquals(1, observed.outputs.size()); assertEquals("LOCAL_CANCEL_WAIT", observed.outputs.getFirst().get("errorType"));
+            assertEquals("UNKNOWN", observed.outputs.getFirst().get("remoteOutcome"));
+        } finally { release.countDown(); server.stop(0); }
+    }
+
     @Test
     void nativeRunnersUseIsolationFlagsAndKeepReadOnlyToolPolicy() throws Exception {
         Path project = Files.createDirectories(temporary.resolve("native project"));
         for (String engine : List.of("CODEX", "CLAUDE")) {
             Path captured = temporary.resolve(engine + "-args.json");
             Path cli = nativeFixture(engine, captured, true);
-            AtomicInteger calls = new AtomicInteger();
+            ObservedCalls calls = new ObservedCalls();
             Map<String, Object> outcome = runtime().run(Map.of("engine", engine, "executable", cli.toString()), "", project.toString(), "fixture prompt", true,
-                    List.of("**"), () -> false, ignored -> {}, () -> { calls.incrementAndGet(); return true; });
+                    List.of("**"), () -> false, ignored -> {}, calls);
             assertEquals("SUCCEEDED", outcome.get("status"), outcome.toString());
             String args = Files.readString(captured);
             if (engine.equals("CODEX")) {
@@ -52,7 +144,10 @@ class RuntimeIntegrationTest {
             } else {
                 assertTrue(args.contains("--safe-mode")); assertTrue(args.contains("Read,Glob,Grep")); assertFalse(args.contains("Edit,Write"));
             }
-            assertEquals(1, calls.get(), "配置能力探测不能消耗模型预算");
+            assertEquals(1, calls.inputs.size(), "配置能力探测不能消耗模型预算");
+            assertEquals(1, calls.outputs.size());
+            assertEquals("SUCCEEDED", calls.outputs.getFirst().get("state"));
+            assertEquals("UNKNOWN", ((Map<?, ?>) calls.outputs.getFirst().get("usage")).get("modelRequests"));
         }
     }
 

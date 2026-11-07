@@ -12,6 +12,7 @@
 - `POST /api/tasks` `{projectId,title,goal,mode:'AUTO'|'LEAD'|'ROUNDTABLE'|'PIPELINE',routeId,contract:{scope:string[],acceptance:string[],commands:string[]},budget:{maxCalls,reserveCalls},locks:{engine?,model?,provider?,routeId?},includeChanges:false}` → Task
 - `GET /api/tasks/{id}` → Task（含详情）
 - 任务/会话的实际 Agent 运行查询、状态和证据关系：见[Agent 运行协议](./agent-run-contract.md)。
+- 每轮模型请求的身份、预算、回执、脱敏片段和用量查询：见[模型请求追踪协议](./model-request-contract.md)。
 - `POST /api/tasks/{id}/{action}`，action 为 `approve`/`pause`/`resume`/`cancel`/`accept`（空对象）；`accept` 只记录人工验收，不写原项目。
 - `GET /api/tasks/{id}/diff` → `{diff,version,workspace}`
 - `GET /api/tasks/{id}/export` → 可下载 zip
@@ -52,5 +53,7 @@ List<Map<String,Object>> search(String projectPath, String query, int limit);
 ```
 
 `prepare` 返回 `{workspace,baseline,version,sourceDirty}`；run 返回 `{exitCode,output,status:'SUCCEEDED'|'FAILED'|'CANCELLED'|'UNKNOWN',usage:{...}}`。每次真实模型请求前调用 acquireCall；返回 false 必须不发送。CLI 调用保守视为一个不可观测会话预算单位，usage 明确 softBudget。验证命令不消耗模型次数。API agent 的每一轮请求独立申请预算。readOnly 必须实际使用适配器只读权限或隔离目录，API工具层强制只读；不支持强边界的CLI显示能力限制，不宣称OS隔离。
+
+运行器可接收实现 BooleanSupplier 的 `ModelCallObserver`，实际请求前以 begin(metadata) 承诺预算与身份，结束以 end(observation) 保存回执；普通预算回调继续兼容。核心在保存前脱敏输入输出，具体字段与 UNKNOWN 口径见模型请求协议。
 
 调用/验证返回值只提供事实，最终状态与不可变证据由核心持久化。主 Agent 负责 Runtime 与 Electron、启动构建脚本；backend Agent 负责其余 core 与测试；frontend Agent 负责 web；audit Agent 负责端到端检查及实际完成度矩阵。互不覆盖文件。
