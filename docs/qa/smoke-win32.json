@@ -1,45 +1,45 @@
 {
-  "createdAt": "2026-11-07T08:42:36.656Z",
+  "createdAt": "2026-11-07T09:33:33.833Z",
   "platform": "win32",
   "status": "passed",
-  "baseUrl": "http://127.0.0.1:56342",
-  "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-jgQ9sZ",
-  "projectPath": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-jgQ9sZ\\中文 sample project",
+  "baseUrl": "http://127.0.0.1:53845",
+  "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-2faxzq",
+  "projectPath": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-2faxzq\\中文 sample project",
   "checks": [
     {
       "name": "API rejects missing access token",
       "status": "passed",
-      "durationMs": 20
+      "durationMs": 25
     },
     {
       "name": "Core returns persisted state",
       "status": "passed",
-      "durationMs": 82
+      "durationMs": 60
     },
     {
       "name": "Import real Git repository with Chinese and spaced path",
       "status": "passed",
-      "durationMs": 2079
+      "durationMs": 2570
     },
     {
       "name": "Search reports source locations and coverage",
       "status": "passed",
-      "durationMs": 365
+      "durationMs": 494
     },
     {
       "name": "Session routes require authentication and preserve server-owned message identity",
       "status": "passed",
-      "durationMs": 345
+      "durationMs": 318
     },
     {
       "name": "Save project knowledge with an explicit source",
       "status": "passed",
-      "durationMs": 13
+      "durationMs": 25
     },
     {
       "name": "Reject unsupported permission in an imported role template",
       "status": "passed",
-      "durationMs": 27
+      "durationMs": 16
     },
     {
       "name": "Reject cyclic execution plan before dispatch",
@@ -49,82 +49,87 @@
     {
       "name": "Configure local protocol test route",
       "status": "passed",
-      "durationMs": 15
+      "durationMs": 17
     },
     {
       "name": "Create task with fixed contract and route locks",
       "status": "passed",
-      "durationMs": 69
+      "durationMs": 65
     },
     {
       "name": "One session carries multiple tasks with source goals and scoped activity",
       "status": "passed",
-      "durationMs": 94
+      "durationMs": 111
     },
     {
       "name": "Reject route that does not match the hard model lock",
       "status": "passed",
-      "durationMs": 19
+      "durationMs": 17
     },
     {
       "name": "Reject acceptance before required execution and evidence",
       "status": "passed",
-      "durationMs": 16
+      "durationMs": 18
     },
     {
       "name": "Execute actual Java API tool loop, verification and independent review",
       "status": "passed",
-      "durationMs": 11945
+      "durationMs": 11862
+    },
+    {
+      "name": "Agent runs persist real calls, scoped pages and evidence identity",
+      "status": "passed",
+      "durationMs": 118
     },
     {
       "name": "Preserve source Git worktree and staged state",
       "status": "passed",
-      "durationMs": 194
+      "durationMs": 226
     },
     {
       "name": "Diff and evidence are bound to the delivered version",
       "status": "passed",
-      "durationMs": 509
+      "durationMs": 645
     },
     {
       "name": "Persistent events can be replayed with a cursor",
       "status": "passed",
-      "durationMs": 35
+      "durationMs": 22
     },
     {
       "name": "Reject acceptance and export when content changes after review",
       "status": "passed",
-      "durationMs": 616
+      "durationMs": 750
     },
     {
       "name": "Manual acceptance records completion without writing source",
       "status": "passed",
-      "durationMs": 343
+      "durationMs": 407
     },
     {
       "name": "Export portable delivery archive",
       "status": "passed",
-      "durationMs": 963
+      "durationMs": 1031
     },
     {
       "name": "Disable knowledge while preserving its revision",
       "status": "passed",
-      "durationMs": 16
+      "durationMs": 18
     },
     {
       "name": "Complete LEAD stages under the same root budget",
       "status": "passed",
-      "durationMs": 7770
+      "durationMs": 12711
     },
     {
       "name": "Complete ROUNDTABLE stages under the same root budget",
       "status": "passed",
-      "durationMs": 8992
+      "durationMs": 17721
     },
     {
       "name": "Cancel an in-flight task and keep source intact",
       "status": "passed",
-      "durationMs": 5563
+      "durationMs": 6729
     }
   ],
   "calls": [

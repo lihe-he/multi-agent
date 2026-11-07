@@ -2,6 +2,23 @@
 
 产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-07。
 
+## 0.2.0-alpha.6 开发迭代
+
+按架构迁移第二步建立持久 AgentRun：每次实际模型阶段和独立审查先保存排队身份，再关联操作意图、根预算调用、输入输出版本与原始证据。任务详情和会话活动提供状态筛选、稳定游标分页及来源定位；交付包包含运行记录。协议见 [Agent 运行协议](./agent-run-contract.md)，固定提交的开源来源、设计取舍和失败记录见 [AgentRun 来源与自审](./research/agent-runs-2026-11-07.md)。
+
+| 检查 | 本轮证据 |
+| --- | --- |
+| `npm run build` | 最终 alpha.6 核心 98 项检查中 97 通过、1 项 Windows POSIX 权限跳过，0 失败/错误；Jar、Web TypeScript 与生产构建通过 |
+| 核心生命周期与存储回归 | 覆盖持久重开、独立尝试号、作用域/游标、结束不可覆盖、调用保存故障时根预算与运行计数同时回滚；排队取消不派发且不扣预算、运行/证据关联、预算不足、取消、重启 UNKNOWN 与重复审查均通过 |
+| `npm run test:ui --prefix web` | 19 / 19；桌面/430px 覆盖状态筛选、翻页后轮询不跳回、返回最新、原因纯文本及证据展开定位；最终截图已复查，无横向溢出 |
+| `npm run test:integration` | 最终 alpha.6 Jar 的本机协议 25 / 25；真实 HTTP 运行身份/计数/证据、会话查询、认证、非法游标/状态、凭据排除和交付 ZIP 均覆盖；[Windows 协议报告](./qa/smoke-win32.json) |
+| `npm run test:standalone` | 真实 Java 与生产 Web 经同源代理展示在途 AgentRun，跳转来源任务/运行页后返回会话；退出客户端后在途请求仍为 1、无页面异常；[Windows 独立运行报告](./qa/standalone-win32.json) |
+| `node --test tools/connection.test.cjs` | 3 / 3；API 兼容判断保持独立于数据库版本 |
+| `npm run package:prepared`、`npm run test:packaged` | Windows NSIS alpha.6 生成成功；打包程序 packaged=true、version=alpha.6，禁用外部 Java 后以内置 Java 启动，API 200、无页面异常；[Windows 打包报告](./qa/desktop-packaged-win32.json)。本轮未重复完整安装/卸载验收 |
+| 多端 CI | 推送后按当前提交 SHA 核对，不以历史版本结果替代 |
+
+schema 仍为 3、API 仍为 1；旧数据不推测补造运行。重启和未知外部效果保留 UNKNOWN，不自动重放；运行成功、审查意见与人工验收分别保存。动态 SubAgent、父子运行、Teams、远程 Worker、F16 请求级追踪和 Token 趋势仍未完成，本轮不代表完整 F01–F21 或计划验收。
+
 ## 0.2.0-alpha.5 开发迭代
 
 按 F02 的会话记录检索方向新增项目内跨会话消息搜索。SQLite FTS5 trigram 索引支持连续子串；少于三个 Unicode 码点的查询使用项目消息字面回退。返回结果带会话标题、消息定位和纯文本片段，前端以文本节点高亮。schema 升至 3，旧消息回填派生索引，消息与索引写入处于同一事务。开源来源、自审与范围见[会话检索审查](./research/session-search-2026-11-07.md)。
@@ -21,6 +38,8 @@ F02 在会话消息范围的全文检索已实现；项目文件符号索引、�
 开发中直调 Maven 选择了系统旧 Java，未进入编译；改用项目 Java 选择脚本后完成最终构建。首次中文短语用例漏写了正文中的“话”，预期与字面查询不符，修正为实际连续短语后通过；首次 UI 用例点击到关闭标签按钮，已使用结果区域定位器。自审另修复已关闭会话结果无法打开、定位历史被轮询跳走、Unicode 高亮区间及迁移原子性，并新增故障/浏览器回归。失败尝试不计作通过证据。
 
 首次推送 `30cc344` 的 run `42357045462` 在 Ubuntu 的既有 `modelCrashRequiresReconciliationInsteadOfAutomaticReplay` 用例失败：UNKNOWN 已落库但执行控制仍在 finally 收尾，人工核对正确返回 409。用例现仅对该停止收尾 409 做有界重试，期间断言任务仍为 UNKNOWN；其他异常继续直接失败，产品停止门禁保持原样。该次失败不计作三端验收，修订后的当前提交需重新跑 CI。
+
+后续核验：修订提交 `28ff22834dd7bb3492c55ebc24cfec91b6f655cd` 的 run `42357684175` 已在 Windows、macOS、Ubuntu 全部成功。该结果只对应 alpha.5 修订提交。
 
 ## 0.2.0-alpha.4 开发迭代
 

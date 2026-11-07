@@ -9,7 +9,7 @@ const labels: Record<string, string> = {
   AWAITING_ACCEPTANCE: '待验收', COMPLETED: '已完成', SUCCEEDED: '已通过', PASSED: '已通过',
   PENDING: '尚未执行', ACTIVE: '有效', DISABLED: '已停用', NEEDS_REVIEW: '待核验',
   APPROVED: '审查通过', REJECTED: '需要修复', BLOCKED: '受阻', VERIFIED: '已验证',
-  NOT_RUN: '尚未执行', CHANGES_REQUESTED: '需要修复', UNVERIFIED: '未验证',
+  WAITING_TOOL: '等待工具', BUDGET_EXHAUSTED: '预算不足', NOT_RUN: '尚未执行', CHANGES_REQUESTED: '需要修复', UNVERIFIED: '未验证',
 };
 export const modeLabel = (mode: string) => ({ AUTO: '自动选择', LEAD: '主副协作', ROUNDTABLE: '圆桌讨论', PIPELINE: '研发流水线' }[mode] || mode);
 export const statusLabel = (state?: string) => state ? labels[state] || state : '尚未执行';

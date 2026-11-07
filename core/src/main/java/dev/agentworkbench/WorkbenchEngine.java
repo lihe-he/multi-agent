@@ -47,6 +47,11 @@ public class WorkbenchEngine {
 
     @PostConstruct
     void recover() {
+        for (Map<String, Object> run : store.list("agentRun")) {
+            if (Set.of("WAITING_RESOURCE", "WAITING_TOOL", "RUNNING").contains(str(run, "state"))) {
+                store.finishAgentRun(str(run, "id"), "UNKNOWN", "核心重启，旧运行的进程及外部效果需随根任务核对；不自动重放");
+            }
+        }
         for (Map<String, Object> task : store.list("task")) {
             if (Set.of("QUEUED", "RUNNING", "PAUSING", "CANCELLING", "WAITING_RESOURCE").contains(str(task, "state"))) {
                 String id = str(task, "id");
@@ -268,39 +273,47 @@ public class WorkbenchEngine {
         boolean readOnly = bool(stage, "readOnly", true);
         String before = runtime.fingerprint(workspace);
         String prompt = prompt(task, stage, extra);
-        try (var capacity = new ModelCapacity(taskId, str(task, "routeId"), control)) {
-            capacity.acquire();
-            checkStopped(control);
-            store.editTask(taskId, value -> value.put("state", "RUNNING"), "ROUTE_SELECTED", "使用已固定路由 " + str(route, "name") + "；遵守锁定、根预算与阶段权限");
-            Map<String, Object> operation = store.beginOperation(taskId, stageId, "MODEL", workspace);
-            store.markOperation(str(operation, "id"), "DISPATCHED", obj("routeId", task.get("routeId"), "routeVersion", route.get("version")));
-            AtomicBoolean denied = new AtomicBoolean();
-            List<Map<String, Object>> bindings = "IMPLEMENT".equals(str(stage, "kind")) || "REPAIR".equals(str(stage, "kind"))
-                ? objects(map(task, "mcpAuthorization").get("bindings")) : List.of();
-            Map<String, Object> result;
-            if (!bindings.isEmpty() && mcp != null) {
-                result = runtime.runWithMcp(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), workspace, prompt, readOnly,
-                    strings(map(task, "contract").get("scope")), () -> cancelled(control), message -> log(taskId, stageId, message),
-                    () -> { capacity.acquire(); return acquireCall(taskId, stageId, reserved, control, denied); }, bindings,
-                    alias -> {
-                        capacity.release();
-                        try { return mcp.invokeFixedTool(taskId, str(stage, "kind"), alias, () -> cancelled(control)); }
-                        catch (ApiException exception) { return obj("state", "REJECTED", "error", exception.getMessage()); }
-                    });
-            } else {
-                result = runtime.run(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), workspace, prompt, readOnly,
-                    strings(map(task, "contract").get("scope")), () -> cancelled(control), message -> log(taskId, stageId, message),
-                    () -> acquireCall(taskId, stageId, reserved, control, denied));
+        trackedAgent(task, stage, workspace, before, reserved, control, runId -> {
+            try (var capacity = new ModelCapacity(taskId, str(task, "routeId"), control)) {
+                capacity.acquire();
+                checkStopped(control);
+                store.editTask(taskId, value -> value.put("state", "RUNNING"), "ROUTE_SELECTED", "使用已固定路由 " + str(route, "name") + "；遵守锁定、根预算与阶段权限");
+                Map<String, Object> operation = store.beginOperation(taskId, stageId, "MODEL", workspace, runId);
+                store.markOperation(str(operation, "id"), "DISPATCHED", obj("routeId", task.get("routeId"), "routeVersion", route.get("version")));
+                AtomicBoolean denied = new AtomicBoolean();
+                List<Map<String, Object>> bindings = "IMPLEMENT".equals(str(stage, "kind")) || "REPAIR".equals(str(stage, "kind"))
+                    ? objects(map(task, "mcpAuthorization").get("bindings")) : List.of();
+                Map<String, Object> result;
+                if (!bindings.isEmpty() && mcp != null) {
+                    result = runtime.runWithMcp(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), workspace, prompt, readOnly,
+                        strings(map(task, "contract").get("scope")), () -> cancelled(control), message -> log(taskId, stageId, message),
+                        () -> {
+                            if ("WAITING_TOOL".equals(str(store.get("agentRun", runId), "state"))) store.agentRunWaiting(runId, "WAITING_RESOURCE");
+                            capacity.acquire(); store.agentRunWaiting(runId, "RUNNING");
+                            return acquireCall(taskId, runId, reserved, control, denied);
+                        }, bindings,
+                        alias -> {
+                            store.agentRunWaiting(runId, "WAITING_TOOL");
+                            capacity.release();
+                            try { return mcp.invokeFixedTool(taskId, str(stage, "kind"), alias, () -> cancelled(control)); }
+                            catch (ApiException exception) { return obj("state", "REJECTED", "error", exception.getMessage()); }
+                        });
+                } else {
+                    result = runtime.run(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), workspace, prompt, readOnly,
+                        strings(map(task, "contract").get("scope")), () -> cancelled(control), message -> log(taskId, stageId, message),
+                        () -> acquireCall(taskId, runId, reserved, control, denied));
+                }
+                String version = runtime.fingerprint(workspace);
+                Map<String, Object> evidence = evidence(stageId, "AGENT", version, "", result);
+                evidence.put("role", stage.get("role")); evidence.put("inputVersion", before); evidence.put("independent", "PROPOSAL".equals(str(stage, "kind")));
+                store.recordEvidence(taskId, str(operation, "id"), evidence);
+                store.editTask(taskId, value -> { value.put("version", version); value.put("lastCheckpoint", obj("version", version, "stage", stageId, "createdAt", now(), "workspace", workspace)); }, "CHECKPOINT", "已保存阶段记录与内容标识");
+                checkResult(result, control, denied.get());
+                if (readOnly && !before.equals(version)) { throw new UnknownResult("只读阶段修改了交付目录，已停止并保留现场供核对"); }
+                if (!readOnly) { checkScope(taskId); }
             }
-            String version = runtime.fingerprint(workspace);
-            Map<String, Object> evidence = evidence(stageId, "AGENT", version, "", result);
-            evidence.put("role", stage.get("role")); evidence.put("inputVersion", before); evidence.put("independent", "PROPOSAL".equals(str(stage, "kind")));
-            store.recordEvidence(taskId, str(operation, "id"), evidence);
-            store.editTask(taskId, value -> { value.put("version", version); value.put("lastCheckpoint", obj("version", version, "stage", stageId, "createdAt", now(), "workspace", workspace)); }, "CHECKPOINT", "已保存阶段记录与内容标识");
-            checkResult(result, control, denied.get());
-            if (readOnly && !before.equals(version)) { throw new UnknownResult("只读阶段修改了交付目录，已停止并保留现场供核对"); }
-            if (!readOnly) { checkScope(taskId); }
-        }
+            return null;
+        });
     }
 
     private boolean verification(String taskId, String stageId, boolean baseline, Control control) {
@@ -351,32 +364,35 @@ public class WorkbenchEngine {
         String extra = "\n最终差异（先于实现者说明）：\n" + cap(runtime.diff(workspace), 60000)
             + "\n平台独立验证证据：\n" + mapper.writeValueAsString(objects(task.get("evidence")).stream().filter(item -> Set.of("BASELINE", "VERIFICATION").contains(str(item, "kind"))).toList())
             + "\n审查必须只输出一个 JSON 对象：{\"approved\":true或false,\"issues\":[{\"title\":\"问题\",\"severity\":\"blocking或suggestion\",\"evidence\":\"位置与证据\"}]}。未验证或无法确认不能 approved:true。";
-        try (var ignored = resources.acquire(Map.of("model", 1, "process", 1, "route:" + str(task, "routeId"), 1), () -> cancelled(control))) {
-            Map<String, Object> operation = store.beginOperation(taskId, stageId, "REVIEW", copy);
-            store.markOperation(str(operation, "id"), "DISPATCHED", obj("version", version));
-            AtomicBoolean denied = new AtomicBoolean();
-            Map<String, Object> result = runtime.run(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), copy, prompt(task, stage, extra), true, List.of("**"),
-                () -> cancelled(control), message -> log(taskId, stageId, message), () -> acquireCall(taskId, stageId, true, control, denied));
-            String reviewedVersion = runtime.fingerprint(copy);
-            boolean copyChanged = !reviewVersion.equals(reviewedVersion);
-            Map<String, Object> item = evidence(stageId, "REVIEW", version, "", result);
-            item.put("independent", true); item.put("reviewWorkspace", copy); item.put("inputVersion", reviewVersion); item.put("resultVersion", reviewedVersion);
-            if (copyChanged && !Set.of("UNKNOWN", "CANCELLED").contains(str(item, "status"))) { item.put("status", "FAILED"); item.put("integrity", "REVIEW_WORKSPACE_CHANGED"); }
-            store.recordEvidence(taskId, str(operation, "id"), item);
-            checkResult(result, control, denied.get());
-            if (copyChanged) {
-                store.editTask(taskId, value -> value.put("review", obj("status", "INVALIDATED", "output", catalog.redact(str(result, "output")), "version", version, "resultVersion", reviewedVersion, "workspace", copy, "createdAt", now())), "REVIEW_INVALIDATED", "只读审查目录发生变化，审查意见不具备验收效力");
-                throw new ApiException(409, "独立审查目录在审查期间被修改，不能将批准绑定到原交付版本");
+        return trackedAgent(task, stage, copy, reviewVersion, true, control, runId -> {
+            try (var ignored = resources.acquire(Map.of("model", 1, "process", 1, "route:" + str(task, "routeId"), 1), () -> cancelled(control))) {
+                checkStopped(control);
+                Map<String, Object> operation = store.beginOperation(taskId, stageId, "REVIEW", copy, runId);
+                store.markOperation(str(operation, "id"), "DISPATCHED", obj("version", version));
+                AtomicBoolean denied = new AtomicBoolean();
+                Map<String, Object> result = runtime.run(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), copy, prompt(task, stage, extra), true, List.of("**"),
+                    () -> cancelled(control), message -> log(taskId, stageId, message), () -> acquireCall(taskId, runId, true, control, denied));
+                String reviewedVersion = runtime.fingerprint(copy);
+                boolean copyChanged = !reviewVersion.equals(reviewedVersion);
+                Map<String, Object> item = evidence(stageId, "REVIEW", version, "", result);
+                item.put("independent", true); item.put("reviewWorkspace", copy); item.put("inputVersion", reviewVersion); item.put("resultVersion", reviewedVersion);
+                if (copyChanged && !Set.of("UNKNOWN", "CANCELLED").contains(str(item, "status"))) { item.put("status", "FAILED"); item.put("integrity", "REVIEW_WORKSPACE_CHANGED"); }
+                store.recordEvidence(taskId, str(operation, "id"), item);
+                checkResult(result, control, denied.get());
+                if (copyChanged) {
+                    store.editTask(taskId, value -> value.put("review", obj("status", "INVALIDATED", "output", catalog.redact(str(result, "output")), "version", version, "resultVersion", reviewedVersion, "workspace", copy, "createdAt", now())), "REVIEW_INVALIDATED", "只读审查目录发生变化，审查意见不具备验收效力");
+                    throw new ApiException(409, "独立审查目录在审查期间被修改，不能将批准绑定到原交付版本");
+                }
+                if (!version.equals(runtime.fingerprint(workspace))) { throw new ApiException(409, "审查期间交付内容变化，必须重新验证和审查"); }
+                Map<String, Object> parsed = parseReview(catalog.redact(str(result, "output")));
+                boolean approved = bool(parsed, "approved", false) && objects(parsed.get("issues")).stream().noneMatch(issue -> "blocking".equalsIgnoreCase(str(issue, "severity")));
+                store.editTask(taskId, value -> {
+                    value.put("review", obj("status", approved ? "APPROVED" : "CHANGES_REQUESTED", "output", catalog.redact(str(result, "output")), "version", version, "workspace", copy, "createdAt", now()));
+                    value.put("issues", parsed.getOrDefault("issues", List.of()));
+                }, "REVIEW_RECORDED", approved ? "独立审查通过，等待最终版本核验" : "独立审查请求修改或未提供有效批准证据");
+                return approved;
             }
-            if (!version.equals(runtime.fingerprint(workspace))) { throw new ApiException(409, "审查期间交付内容变化，必须重新验证和审查"); }
-            Map<String, Object> parsed = parseReview(catalog.redact(str(result, "output")));
-            boolean approved = bool(parsed, "approved", false) && objects(parsed.get("issues")).stream().noneMatch(issue -> "blocking".equalsIgnoreCase(str(issue, "severity")));
-            store.editTask(taskId, value -> {
-                value.put("review", obj("status", approved ? "APPROVED" : "CHANGES_REQUESTED", "output", catalog.redact(str(result, "output")), "version", version, "workspace", copy, "createdAt", now()));
-                value.put("issues", parsed.getOrDefault("issues", List.of()));
-            }, "REVIEW_RECORDED", approved ? "独立审查通过，等待最终版本核验" : "独立审查请求修改或未提供有效批准证据");
-            return approved;
-        }
+        });
     }
 
     private Map<String, Object> parseReview(String output) {
@@ -438,13 +454,37 @@ public class WorkbenchEngine {
         }
     }
 
-    private boolean acquireCall(String taskId, String stageId, boolean reserved, Control control, AtomicBoolean denied) {
+    /**
+     * 运行记录包住资源等待、实际调用和结果核验；失败不会抹去旧运行及证据。
+     */
+    private <T> T trackedAgent(Map<String, Object> task, Map<String, Object> stage, String workspace, String version,
+                               boolean reserved, Control control, AgentWork<T> work) throws Exception {
+        String runId = str(store.queueAgentRun(str(task, "id"), stage, workspace, version, reserved), "id");
+        try {
+            T value = work.execute(runId);
+            store.finishAgentRun(runId, "SUCCEEDED", "执行已返回且内容核验完成；任务验收与审查结论另行记录");
+            return value;
+        } catch (Exception exception) {
+            if (store.healthy()) {
+                Map<String, Object> run = store.get("agentRun", runId);
+                Map<String, Object> operation = str(run, "operationId").isBlank() ? Map.of() : store.get("operation", str(run, "operationId"));
+                String state = exception instanceof UnknownResult || Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")) ? "UNKNOWN"
+                    : exception instanceof CancellationException ? ("CANCEL".equals(control.request) ? "CANCELLED" : "PAUSED")
+                    : exception instanceof BudgetExhausted ? "BUDGET_EXHAUSTED" : exception instanceof NeedsInput ? "WAITING_INPUT" : "FAILED";
+                store.finishAgentRun(runId, state, safeMessage(exception));
+            }
+            throw exception;
+        }
+    }
+
+    @FunctionalInterface
+    private interface AgentWork<T> { T execute(String runId) throws Exception; }
+
+    private boolean acquireCall(String taskId, String runId, boolean reserved, Control control, AtomicBoolean denied) {
         if (cancelled(control)) { return false; }
-        AtomicBoolean accepted = new AtomicBoolean();
-        store.editTask(taskId, task -> accepted.set(BudgetPolicy.acquire(map(task, "budget"), reserved)), null, null);
-        if (accepted.get()) { store.event(taskId, "MODEL_CALL", stageId + "：已计入根任务" + (reserved ? "验证预留" : "开发额度")); }
-        else { denied.set(true); }
-        return accepted.get();
+        boolean accepted = store.acquireAgentCall(taskId, runId, reserved);
+        if (!accepted) denied.set(true);
+        return accepted;
     }
 
     private void checkResult(Map<String, Object> result, Control control, boolean denied) {

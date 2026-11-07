@@ -4,6 +4,7 @@ import { api, currentConnection, post } from './api';
 import type { RunEvent, Session, SessionMessage, SessionSearchResult, Task } from './types';
 import { Badge, Empty, Field, formatTime, PageTitle } from './ui';
 import './sessions.css';
+import { AgentRuns } from './AgentRuns';
 
 type SessionPage = { sessions: Session[]; cursor: number; hasMore: boolean };
 type MessagePage = { messages: SessionMessage[]; cursor: number; latestCursor: number; hasMore: boolean };
@@ -203,6 +204,7 @@ function SessionPanel({ session, base, target, onLatest, tasks, draft, onDraft, 
     </section><section className="card session-tasks" aria-label="会话任务"><header><h2>会话任务</h2><button className="button primary small" onClick={onCreate}><Plus size={14} />新建会话任务</button></header>
       {!tasks.length && <p className="muted-text">任务仍需确认完成约定、权限与预算。</p>}
       {tasks.map(task => <button className="session-task" key={task.id} onClick={() => onTask(task)}><span>{task.title}</span><Badge state={task.state} /></button>)}
+      <AgentRuns key={session.id} endpoint={`${base}/${session.id}/agent-runs`} onTask={taskId => { const task = tasks.find(item => item.id === taskId); if (task) onTask(task); }} />
       <h2>任务活动</h2><p className="form-note">显示最近 500 条已读取活动；来源链接回到实际任务。</p>
       {events.map(event => <article className="session-event" key={event.id}><small>#{event.id} · {event.type} · {formatTime(event.createdAt)}</small><p>{event.message}</p>{tasks.find(task => task.id === event.taskId) && <button className="text-button" onClick={() => onTask(tasks.find(task => task.id === event.taskId)!)}>查看活动来源</button>}</article>)}
       <button className="button secondary small" onClick={() => void refresh().catch(e => setError(e.message))}><RefreshCw size={13} />{moreEvents ? '读取后续活动' : '刷新活动'}</button>

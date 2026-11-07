@@ -63,4 +63,11 @@ public class SessionController {
             @RequestParam(defaultValue = "0") long after, @RequestParam(defaultValue = "100") int limit) {
         return store.sessionEvents(projectId, sessionId, after, limit);
     }
+
+    @GetMapping("/{sessionId}/agent-runs")
+    public Map<String, Object> runs(@PathVariable String projectId, @PathVariable String sessionId,
+            @RequestParam(defaultValue = "0") long before, @RequestParam(defaultValue = "30") int limit,
+            @RequestParam(defaultValue = "") String state) {
+        return store.agentRunPage(projectId, sessionId, "", before, limit, state);
+    }
 }

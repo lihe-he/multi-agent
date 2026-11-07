@@ -11,6 +11,7 @@
 - 项目会话、幂等笔记、消息历史和任务活动：见[会话接口约定](./session-contract.md)。`POST /api/tasks` 新增可选 `sessionId`，不提供时自动创建会话。
 - `POST /api/tasks` `{projectId,title,goal,mode:'AUTO'|'LEAD'|'ROUNDTABLE'|'PIPELINE',routeId,contract:{scope:string[],acceptance:string[],commands:string[]},budget:{maxCalls,reserveCalls},locks:{engine?,model?,provider?,routeId?},includeChanges:false}` → Task
 - `GET /api/tasks/{id}` → Task（含详情）
+- 任务/会话的实际 Agent 运行查询、状态和证据关系：见[Agent 运行协议](./agent-run-contract.md)。
 - `POST /api/tasks/{id}/{action}`，action 为 `approve`/`pause`/`resume`/`cancel`/`accept`（空对象）；`accept` 只记录人工验收，不写原项目。
 - `GET /api/tasks/{id}/diff` → `{diff,version,workspace}`
 - `GET /api/tasks/{id}/export` → 可下载 zip

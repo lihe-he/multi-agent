@@ -250,6 +250,24 @@ try {
     assert.ok(value.budget.usedCalls > 0 && value.budget.usedCalls <= value.budget.maxCalls);
     return value;
   });
+  await check('Agent runs persist real calls, scoped pages and evidence identity', async () => {
+    await request(`/tasks/${task.id}/agent-runs`, undefined, { expected: 401, authorized: false });
+    const base = `/projects/${project.id}/sessions/${task.sessionId}/agent-runs`;
+    await request(`${base}?state=FORGED`, undefined, { expected: 400 });
+    await request(`${base}?before=-1`, undefined, { expected: 400 });
+    const page = (await request(`/tasks/${task.id}/agent-runs`)).data;
+    assert.equal(page.runs.length, 3); assert.equal(page.hasMore, false);
+    assert.ok(page.runs.every(run => run.taskId === task.id && run.rootTaskId === task.id && run.state === 'SUCCEEDED' && run.elapsedMs >= 0));
+    assert.equal(page.runs.reduce((sum, run) => sum + run.calls, 0), finished.budget.usedCalls);
+    assert.equal(page.runs.filter(run => run.reserved).length, 1);
+    assert.ok(page.runs.every(run => finished.evidence.some(item => item.id === run.evidenceId && item.agentRunId === run.id)));
+    assert.ok(!JSON.stringify(page).includes('test-only-not-a-secret'));
+    const first = (await request(`${base}?limit=1`)).data;
+    assert.equal(first.runs.length, 1); assert.equal(first.hasMore, true);
+    const second = (await request(`${base}?limit=1&before=${first.cursor}`)).data;
+    assert.notEqual(first.runs[0].id, second.runs[0].id);
+    assert.equal((await request(`${base}?state=FAILED`)).data.runs.length, 0);
+  });
   await check('Preserve source Git worktree and staged state', async () => {
     assert.equal(await readFile(path.join(projectPath, 'src/greeting.txt'), 'utf8'), 'hello\n');
     assert.equal(git('status', '--porcelain'), '');
@@ -291,6 +309,7 @@ try {
     assert.equal(response.status, 200);
     const archive = Buffer.from(await response.arrayBuffer());
     assert.equal(archive.subarray(0, 2).toString(), 'PK');
+    assert.ok(archive.includes(Buffer.from('agent-runs.json')), '交付包必须包含运行记录');
     await writeFile(path.join(fixture, 'delivery.zip'), archive);
   });
   await check('Disable knowledge while preserving its revision', async () => {

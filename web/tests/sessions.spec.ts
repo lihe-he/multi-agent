@@ -13,6 +13,7 @@ async function sessionsFixture(page: Page, loseFirstNoteResponse = false) {
   let lost = false;
   await page.route('**/api/**', async route => {
     const request = route.request(); const url = new URL(request.url()); const path = url.pathname;
+    if (path.endsWith('/agent-runs')) return route.fulfill({ json: { runs: [], cursor: 0, hasMore: false } });
     if (path === '/api/state') return route.fulfill({ json: { projects: [project, { ...project, id: 'b', name: '另一个项目' }], tasks, routes: [routeConfig], profiles: [], memories: [], system: { storageHealthy: true } } });
     if (path === '/api/mcp/task-tools') return route.fulfill({ json: { tools: [] } });
     if (path === '/api/tasks' && request.method() === 'POST') {

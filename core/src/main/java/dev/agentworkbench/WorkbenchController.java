@@ -41,7 +41,7 @@ public class WorkbenchController {
     }
 
     @GetMapping("/health")
-    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.5", "apiVersion", 1, "schemaVersion", 3); }
+    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.6", "apiVersion", 1, "schemaVersion", 3); }
 
     @PostMapping("/shutdown")
     public Map<String, Object> shutdown() {
@@ -61,7 +61,7 @@ public class WorkbenchController {
             value.put("evidenceCount", objects(task.get("evidence")).size()); return value;
         }).toList();
         return obj("projects", store.list("project"), "tasks", summaries, "routes", catalog.routes(), "memories", store.list("memory"), "profiles", store.list("profile"),
-            "system", obj("version", "0.2.0-alpha.5", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
+            "system", obj("version", "0.2.0-alpha.6", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
                 "eventCursor", store.latestEvent(), "credentialStorage", "SESSION_ONLY", "releaseStatus", "DEVELOPMENT_PREVIEW", "capabilities", List.of("Git 隔离工作目录", "三模式阶段编排", "根预算与验证预留", "独立审查与人工验收", "结果未知保护", "持久事件续读"),
                 "limitations", List.of("API 兼容性须按实际端点验证", "原生 CLI 费用与内部请求数为软预算", "本机工作目录隔离不等于操作系统安全隔离", "MCP、自动采纳、三端打包与长期性能尚待发布验收")));
     }
@@ -83,6 +83,13 @@ public class WorkbenchController {
 
     @GetMapping("/tasks/{id}")
     public Map<String, Object> task(@PathVariable String id) { return store.get("task", id); }
+
+    @GetMapping("/tasks/{id}/agent-runs")
+    public Map<String, Object> agentRuns(@PathVariable String id, @RequestParam(defaultValue = "0") long before,
+            @RequestParam(defaultValue = "30") int limit, @RequestParam(defaultValue = "") String state) {
+        Map<String, Object> task = store.get("task", id);
+        return store.agentRunPage(str(task, "projectId"), "", id, before, limit, state);
+    }
 
     @GetMapping("/tasks/{id}/mcp-operations")
     public List<Map<String, Object>> mcpOperations(@PathVariable String id) {
@@ -178,6 +185,7 @@ public class WorkbenchController {
             putZip(zip, "task.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(task));
             putZip(zip, "changes.patch", patch.getBytes(StandardCharsets.UTF_8));
             putZip(zip, "operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(operations(id)));
+            putZip(zip, "agent-runs.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("agentRun").stream().filter(run -> id.equals(str(run, "taskId"))).toList()));
             StringBuilder lines = new StringBuilder(); long cursor = 0;
             while (true) {
                 Map<String, Object> page = store.events(id, cursor, 200);

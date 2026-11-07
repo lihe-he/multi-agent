@@ -198,6 +198,12 @@ class WorkbenchEngineTest {
         assertEquals("AWAITING_ACCEPTANCE", str(completed, "state"), () -> completed.toString());
         assertEquals("PASSED", str(map(completed, "verification"), "status")); assertEquals("APPROVED", str(map(completed, "review"), "status"));
         assertTrue(objects(completed.get("evidence")).stream().anyMatch(item -> "BASELINE".equals(str(item, "kind"))));
+        var runs = store.list("agentRun");
+        assertEquals(3, runs.size());
+        assertTrue(runs.stream().allMatch(run -> "SUCCEEDED".equals(str(run, "state")) && id.equals(str(run, "rootTaskId"))));
+        assertEquals(num(map(completed, "budget"), "usedCalls", -1), runs.stream().mapToInt(run -> num(run, "calls", 0)).sum());
+        assertTrue(runs.stream().allMatch(run -> !str(run, "evidenceId").isBlank() && !str(run, "operationId").isBlank()));
+        assertEquals(1, runs.stream().filter(run -> bool(run, "reserved", false)).count());
         verify(runtime).reviewCopy(anyString(), eq(id), eq("version-2"));
         assertEquals("UNDETERMINED", str(completed, "outcome"));
         var accepted = engine.action(id, "accept", obj()); assertEquals("COMPLETED", str(accepted, "state")); assertEquals("SUCCESS", str(accepted, "outcome"));
@@ -257,6 +263,10 @@ class WorkbenchEngineTest {
             }
         }
         assertNotNull(reconciled, "人工核对须等待执行生命周期停止后完成");
+        assertEquals(1, store.list("agentRun").size());
+        assertEquals("UNKNOWN", str(store.list("agentRun").getFirst(), "state"));
+        assertTrue(str(store.list("agentRun").getFirst(), "reason").contains("connection lost"));
+
         assertEquals("PAUSED", str(reconciled, "state"));
         assertTrue(store.list("operation").stream().filter(operation -> id.equals(str(operation, "taskId"))).noneMatch(operation -> "DISPATCHED".equals(str(operation, "state"))));
     }
@@ -275,6 +285,8 @@ class WorkbenchEngineTest {
         var cancelled = await(id, Set.of("CANCELLED", "UNKNOWN")); assertEquals("CANCELLED", str(cancelled, "state"));
         assertEquals(1, num(map(cancelled, "budget"), "usedCalls", -1));
         assertTrue(objects(cancelled.get("evidence")).size() >= 2);
+        assertEquals("CANCELLED", str(store.list("agentRun").getFirst(), "state"));
+        assertEquals(1, num(store.list("agentRun").getFirst(), "calls", 0));
     }
 
     @Test
@@ -300,18 +312,62 @@ class WorkbenchEngineTest {
         assertEquals(2, num(map(result, "budget"), "usedCalls", -1)); assertEquals(1, num(map(result, "budget"), "usedReservedCalls", -1));
         assertTrue(objects(result.get("evidence")).stream().anyMatch(item -> "VERIFICATION".equals(str(item, "kind"))));
         assertNotEquals("SUCCESS", str(result, "outcome"));
+        assertTrue(store.list("agentRun").stream().anyMatch(run -> "BUDGET_EXHAUSTED".equals(str(run, "state")) && num(run, "calls", -1) == 0));
     }
 
     @Test
     void restartMarksDispatchedOperationsUnknown() throws Exception {
         String id = str(task(16, 5), "id");
         store.editTask(id, task -> task.put("state", "RUNNING"), "TEST", "simulate crash");
-        var operation = store.beginOperation(id, "implement", "MODEL", "workspace");
+        var run = store.queueAgentRun(id, obj("id", "implement", "kind", "IMPLEMENT", "role", "developer"), "workspace", "version-1", false);
+        var operation = store.beginOperation(id, "implement", "MODEL", "workspace", str(run, "id"));
         store.markOperation(str(operation, "id"), "DISPATCHED", obj());
         engine.recover();
         assertEquals("UNKNOWN", str(store.get("task", id), "state"));
         assertEquals("UNKNOWN", str(store.get("operation", str(operation, "id")), "state"));
+        assertEquals("UNKNOWN", str(store.get("agentRun", str(run, "id")), "state"));
         verify(runtime, never()).run(anyMap(), anyString(), anyString(), anyString(), anyBoolean(), anyList(), any(), any(), any());
+    }
+
+    @Test
+    void cancellingResourceWaitRecordsNoModelDispatchOrBudgetCharge() throws Exception {
+        engine.shutdown();
+        ResourceManager resources = new ResourceManager();
+        engine = new WorkbenchEngine(store, catalog, runtime, resources, new ObjectMapper());
+        try (var held = resources.acquire(Map.of("model", 2), () -> false)) {
+            String taskId = str(task(16, 5), "id"); engine.action(taskId, "approve", obj());
+            await(taskId, Set.of("WAITING_RESOURCE"));
+            assertEquals("WAITING_RESOURCE", str(store.list("agentRun").getFirst(), "state"));
+            engine.action(taskId, "cancel", obj());
+            var stopped = await(taskId, Set.of("CANCELLED", "UNKNOWN"));
+            assertEquals("CANCELLED", str(stopped, "state"));
+            assertEquals(0, num(map(stopped, "budget"), "usedCalls", -1));
+            assertEquals("CANCELLED", str(store.list("agentRun").getFirst(), "state"));
+            assertFalse(store.list("agentRun").getFirst().containsKey("operationId"));
+            verify(runtime, never()).run(anyMap(), anyString(), anyString(), anyString(), anyBoolean(), anyList(), any(), any(), any());
+        }
+    }
+
+    @Test
+    void repeatReviewKeepsEarlierRunIdentityAndIncrementsAttempt() throws Exception {
+        String taskId = str(task(16, 5), "id"); engine.action(taskId, "approve", obj());
+        await(taskId, Set.of("AWAITING_ACCEPTANCE"));
+        var oldReview = store.list("agentRun").stream().filter(run -> "REVIEW".equals(str(run, "kind"))).findFirst().orElseThrow();
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(8);
+        while (true) {
+            engine.action(taskId, "revalidate", obj());
+            try { engine.action(taskId, "resume", obj()); break; }
+            catch (ApiException exception) {
+                if (!exception.getMessage().contains("停止或执行中") || System.nanoTime() > deadline) throw exception;
+                Thread.sleep(10);
+            }
+        }
+        await(taskId, Set.of("AWAITING_ACCEPTANCE"));
+        var reviews = store.list("agentRun").stream().filter(run -> "REVIEW".equals(str(run, "kind"))).toList();
+        assertEquals(2, reviews.size());
+        assertEquals(2, num(reviews.getFirst(), "attempt", 0));
+        assertEquals(oldReview, store.get("agentRun", str(oldReview, "id")));
+        assertEquals("SUCCEEDED", str(reviews.getFirst(), "state"));
     }
 
     @Test

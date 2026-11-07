@@ -74,6 +74,7 @@ public class ExecutionStore {
                 statement.execute("CREATE TABLE IF NOT EXISTS session_messages(sequence INTEGER PRIMARY KEY AUTOINCREMENT,id TEXT NOT NULL UNIQUE,session_id TEXT NOT NULL,request_id TEXT NOT NULL,body TEXT NOT NULL,UNIQUE(session_id,request_id))");
                 statement.execute("CREATE INDEX IF NOT EXISTS session_messages_cursor ON session_messages(session_id,sequence)");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_session_project ON entities(kind,json_extract(body,'$.projectId'))");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_agent_run_task ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.stage')) WHERE kind='agentRun'");
                 boolean rebuildSearch;
                 try (var tables = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_search'")) { rebuildSearch = schemaVersion < 3 || !tables.next(); }
                 statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS session_search USING fts5(project_id UNINDEXED,session_id UNINDEXED,message_id UNINDEXED,sequence UNINDEXED,content,tokenize='trigram case_sensitive 1')");
@@ -365,16 +366,113 @@ public class ExecutionStore {
      * 外部操作开始前先保存意图和任务位置。崩溃后只核对，不重放。
      */
     public synchronized Map<String, Object> beginOperation(String taskId, String stage, String kind, String target) {
+        return beginOperation(taskId, stage, kind, target, "");
+    }
+
+    public synchronized Map<String, Object> beginOperation(String taskId, String stage, String kind, String target, String agentRunId) {
         Map<String, Object> operation = obj("id", id(), "taskId", taskId, "stage", stage, "kind", kind,
             "target", target, "state", "PREPARED", "createdAt", now());
         Map<String, Object> task = get("task", taskId);
+        Map<String, Object> run = agentRunId.isBlank() ? null : get("agentRun", agentRunId);
+        if (run != null) {
+            if (!taskId.equals(str(run, "taskId")) || !stage.equals(str(run, "stage")) || !"WAITING_RESOURCE".equals(str(run, "state"))) throw new ApiException(409, "Agent 运行归属或状态不匹配");
+            operation.put("agentRunId", agentRunId); run.put("operationId", operation.get("id"));
+            run.put("state", "RUNNING"); run.put("startedAt", now());
+        }
         task.put("activeOperation", operation.get("id"));
         task.put("updatedAt", now());
         transaction(() -> {
             write("operation", operation); write("task", task);
+            if (run != null) write("agentRun", run);
             appendEvent(taskId, "OPERATION_PREPARED", stage + "：已保存操作意图");
         });
         return operation;
+    }
+
+    /**
+     * 每次实际 Agent 调度保留独立身份；排队也先落库，重跑不覆盖旧运行。
+     */
+    public synchronized Map<String, Object> queueAgentRun(String taskId, Map<String, Object> stage, String workspace, String inputVersion, boolean reserved) {
+        Map<String, Object> task = get("task", taskId), route = map(task, "routeSnapshot");
+        int attempt;
+        try (var query = connection.prepareStatement("SELECT COUNT(*) FROM entities WHERE kind='agentRun' AND json_extract(body,'$.taskId')=? AND json_extract(body,'$.stage')=?")) {
+            query.setString(1, taskId); query.setString(2, str(stage, "id"));
+            try (var rows = query.executeQuery()) { attempt = rows.next() ? rows.getInt(1) + 1 : 1; }
+        } catch (SQLException exception) { throw failure(exception); }
+        Map<String, Object> run = obj("id", id(), "schemaVersion", 1, "taskId", taskId, "rootTaskId", taskId,
+            "projectId", task.get("projectId"), "sessionId", task.getOrDefault("sessionId", ""),
+            "stage", stage.get("id"), "kind", stage.get("kind"), "title", stage.get("title"), "role", stage.get("role"),
+            "attempt", attempt, "state", "WAITING_RESOURCE", "createdAt", now(), "workspace", workspace, "inputVersion", inputVersion,
+            "readOnly", bool(stage, "readOnly", true), "scope", map(task, "contract").getOrDefault("scope", List.of()),
+            "routeId", task.get("routeId"), "routeVersion", route.getOrDefault("version", 1), "routeName", route.get("name"),
+            "engine", route.get("engine"), "model", route.get("model"), "provider", route.get("provider"),
+            "reserved", reserved, "calls", 0, "callUnit", "API".equals(str(route, "engine")) ? "API_REQUEST" : "CLI_SESSION",
+            "usage", obj("cost", "UNKNOWN"));
+        run.put("profileVersions", objects(task.get("profileSnapshot")).stream().filter(profile -> str(stage, "role").equals(str(profile, "role")))
+            .map(profile -> obj("id", profile.get("id"), "version", profile.get("version"))).toList());
+        transaction(() -> { write("agentRun", run); appendEvent(taskId, "AGENT_QUEUED", str(stage, "id") + " · AgentRun " + str(run, "id")); });
+        return run;
+    }
+
+    public synchronized void agentRunWaiting(String runId, String state) {
+        if (!Set.of("WAITING_RESOURCE", "WAITING_TOOL", "RUNNING").contains(state)) throw new ApiException(400, "无效 Agent 等待状态");
+        Map<String, Object> run = get("agentRun", runId);
+        if (!Set.of("WAITING_RESOURCE", "WAITING_TOOL", "RUNNING").contains(str(run, "state"))) throw new ApiException(409, "已结束的 Agent 不可重新运行");
+        if (state.equals(str(run, "state"))) return;
+        run.put("state", state);
+        transaction(() -> { write("agentRun", run); appendEvent(str(run, "taskId"), "AGENT_STATE", str(run, "stage") + " · AgentRun " + runId + "：" + state); });
+    }
+
+    /**
+     * 运行调用数与根预算共用事务，失败或取消不退回已承诺的调用。
+     */
+    public synchronized boolean acquireAgentCall(String taskId, String agentRunId, boolean reserved) {
+        Map<String, Object> task = get("task", taskId), run = get("agentRun", agentRunId);
+        if (!taskId.equals(str(run, "taskId")) || !"RUNNING".equals(str(run, "state"))) throw new ApiException(409, "Agent 运行不可继续调用");
+        if (!BudgetPolicy.acquire(map(task, "budget"), reserved)) return false;
+        run.put("calls", num(run, "calls", 0) + 1); task.put("updatedAt", now());
+        transaction(() -> { write("task", task); write("agentRun", run); appendEvent(taskId, "MODEL_CALL", str(run, "stage") + " · AgentRun " + agentRunId + "：已计入根任务" + (reserved ? "验证预留" : "开发额度")); });
+        return true;
+    }
+
+    public synchronized void finishAgentRun(String runId, String state, String reason) {
+        if (!Set.of("SUCCEEDED", "FAILED", "UNKNOWN", "CANCELLED", "PAUSED", "WAITING_INPUT", "BUDGET_EXHAUSTED").contains(state)) throw new ApiException(400, "无效 Agent 结束状态");
+        Map<String, Object> run = get("agentRun", runId);
+        if (!Set.of("WAITING_RESOURCE", "WAITING_TOOL", "RUNNING").contains(str(run, "state"))) throw new ApiException(409, "已结束的 Agent 运行不可覆盖");
+        run.put("state", state); run.put("reason", reason); run.put("endedAt", now());
+        long elapsed = java.time.Duration.between(java.time.Instant.parse(str(run, "createdAt")), java.time.Instant.parse(str(run, "endedAt"))).toMillis();
+        run.put("elapsedMs", Math.max(0, elapsed));
+        if (!str(run, "startedAt").isBlank()) run.put("queueMs", Math.max(0, java.time.Duration.between(java.time.Instant.parse(str(run, "createdAt")), java.time.Instant.parse(str(run, "startedAt"))).toMillis()));
+        transaction(() -> { write("agentRun", run); appendEvent(str(run, "taskId"), "AGENT_FINISHED", str(run, "stage") + " · AgentRun " + runId + "：" + state); });
+    }
+
+    public synchronized Map<String, Object> agentRunPage(String projectId, String sessionId, String taskId, long before, int requestedLimit, String state) {
+        get("project", projectId);
+        if (!sessionId.isBlank()) session(projectId, sessionId);
+        if (!taskId.isBlank() && !projectId.equals(str(get("task", taskId), "projectId"))) throw new ApiException(403, "任务不属于此项目");
+        if (before < 0 || (!state.isBlank() && !Set.of("WAITING_RESOURCE", "WAITING_TOOL", "RUNNING", "SUCCEEDED", "FAILED", "UNKNOWN", "CANCELLED", "PAUSED", "WAITING_INPUT", "BUDGET_EXHAUSTED").contains(state))) throw new ApiException(400, "无效运行游标或状态");
+        int limit = Math.max(1, Math.min(100, requestedLimit));
+        String sql = "SELECT rowid,body FROM entities WHERE kind='agentRun' AND json_extract(body,'$.projectId')=?"
+            + (sessionId.isBlank() ? "" : " AND json_extract(body,'$.sessionId')=?")
+            + (taskId.isBlank() ? "" : " AND json_extract(body,'$.taskId')=?")
+            + (state.isBlank() ? "" : " AND json_extract(body,'$.state')=?")
+            + (before == 0 ? "" : " AND rowid<?") + " ORDER BY rowid DESC LIMIT ?";
+        try (var query = connection.prepareStatement(sql)) {
+            int index = 1; query.setString(index++, projectId);
+            if (!sessionId.isBlank()) query.setString(index++, sessionId);
+            if (!taskId.isBlank()) query.setString(index++, taskId);
+            if (!state.isBlank()) query.setString(index++, state);
+            if (before != 0) query.setLong(index++, before);
+            query.setInt(index, limit + 1);
+            List<Map<String, Object>> runs = new ArrayList<>(); long cursor = before;
+            try (var rows = query.executeQuery()) {
+                while (rows.next()) {
+                    if (runs.size() == limit) return obj("runs", runs, "cursor", cursor, "hasMore", true);
+                    cursor = rows.getLong(1); runs.add(decode(rows.getString(2)));
+                }
+            }
+            return obj("runs", runs, "cursor", cursor, "hasMore", false);
+        } catch (Exception exception) { throw failure(exception); }
     }
 
     public synchronized void markOperation(String operationId, String state, Map<String, Object> details) {
@@ -395,9 +493,15 @@ public class ExecutionStore {
         Map<String, Object> operation = get("operation", operationId);
         operation.put("state", "UNKNOWN".equals(str(evidence, "status")) ? "UNKNOWN" : "ACKNOWLEDGED");
         operation.put("evidenceId", evidence.get("id")); operation.put("updatedAt", now());
+        Map<String, Object> run = str(operation, "agentRunId").isBlank() ? null : get("agentRun", str(operation, "agentRunId"));
+        if (run != null) {
+            evidence.put("agentRunId", run.get("id")); run.put("evidenceId", evidence.get("id"));
+            run.put("resultVersion", evidence.getOrDefault("resultVersion", evidence.get("version"))); run.put("usage", evidence.getOrDefault("usage", obj("cost", "UNKNOWN")));
+        }
         transaction(() -> {
             if (find("evidence", str(evidence, "id")) != null) { throw new IllegalStateException("证据不可覆盖"); }
             write("evidence", evidence); write("task", task); write("operation", operation);
+            if (run != null) write("agentRun", run);
             appendEvent(taskId, "EVIDENCE", str(evidence, "stage") + "：" + str(evidence, "status"));
         });
     }

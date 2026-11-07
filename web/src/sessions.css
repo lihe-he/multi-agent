@@ -49,3 +49,8 @@
   .session-columns > .card, .session-history { padding: 16px; }
   .session-tabs [role=tab] span { max-width: 160px; }
 }
+.agent-run-heading,.agent-run>header,.agent-run>footer,.agent-run-pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.agent-run-heading{margin-bottom:16px}.agent-run-heading h2{margin:0}.agent-run-heading label{display:flex;align-items:center;gap:8px;font-size:12px}.agent-run-heading select{width:auto;min-width:130px}
+.agent-run-list{display:grid;gap:12px}.agent-run{padding:18px;min-width:0}.agent-run h3{font-size:14px;margin:0}.agent-run header p{font-size:12px;color:var(--muted);margin:5px 0}.agent-run dl{display:grid;grid-template-columns:56px minmax(0,1fr);gap:8px;font-size:12px;margin:14px 0}.agent-run dt{color:var(--muted)}.agent-run dd{margin:0;overflow-wrap:anywhere}.agent-run-reason{font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}.agent-run footer code{font-size:11px}.agent-run-pagination{justify-content:flex-start;margin-top:12px}.session-tasks .agent-runs{margin:20px 0}
+@media(max-width:600px){.agent-run-heading{align-items:flex-start}.agent-run{padding:14px}.agent-run-heading select{max-width:160px}}
+.agent-run-heading h2{font-size:18px;line-height:1.5}.agent-run-heading .form-note{margin:6px 0 0;line-height:1.6}

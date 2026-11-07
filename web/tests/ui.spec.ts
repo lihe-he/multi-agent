@@ -43,6 +43,7 @@ async function fixture(page: Page, taskState = '') {
   await page.route('**/api/**', async route => {
     const url = new URL(route.request().url());
     const path = url.pathname.replace('/api', '');
+    if (path.endsWith('/agent-runs')) return route.fulfill({ json: { runs: [], cursor: 0, hasMore: false } });
     if (path === '/state') return route.fulfill({ json: { projects: [project], tasks: taskState ? [task] : [], routes: [runner], memories: [], profiles: [], system: { modelCapacity: 2, activeModels: 0, version: 'ui-test', storageHealthy: true } } });
     if (path === '/mcp/task-tools') return route.fulfill({ json: { tools: [{ serverId: 'mcp-fixture', serverName: '测试服务', name: 'write_note', description: '写入笔记', configVersion: 3, definitionVersion: 'fixture-def', inputSchema: { type: 'object' }, available: true }] } });
     if (path.endsWith('/mcp-operations')) return route.fulfill({ json: [] });
@@ -204,3 +205,38 @@ test('项目 MCP 令牌独立创建复制撤销，离开页面后不保留明文
   await expect(page.getByText('尚未创建项目只读令牌。')).toBeVisible();
   expect(requests.map(request => request.method)).toEqual(['POST', 'DELETE']);
 });
+for (const width of [1440, 430]) {
+  test(`Agent 运行按状态筛选、稳定翻页并定位证据 ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await fixture(page, 'AWAITING_ACCEPTANCE');
+    const requests: string[] = [];
+    const current = { id: 'run-current', taskId: 'task-fixture', sessionId: 'session-fixture', stage: 'implement', kind: 'IMPLEMENT', title: '完成接口实现', role: 'developer', attempt: 2, state: 'SUCCEEDED', createdAt: '2026-11-07T09:00:00Z', endedAt: '2026-11-07T09:00:02Z', elapsedMs: 2000, routeName: '测试路由', engine: 'API', model: 'fixture', readOnly: false, calls: 3, callUnit: 'API_REQUEST', inputVersion: 'input-version', resultVersion: 'result-version', evidenceId: 'evidence-fixture', reason: '执行已返回；人工验收独立记录。' };
+    await page.route('**/api/tasks/task-fixture/agent-runs*', route => {
+      const url = new URL(route.request().url()); requests.push(url.search);
+      const failed = url.searchParams.get('state') === 'FAILED'; const older = Number(url.searchParams.get('before')) > 0;
+      return route.fulfill({ json: { runs: [failed ? { ...current, id: 'failed-run', state: 'FAILED', reason: '<script>不能执行的纯文本</script>' } : older ? { ...current, id: 'run-old', title: '较早执行尝试', attempt: 1 } : current], cursor: older ? 1 : 30, hasMore: !older && !failed } });
+    });
+    await page.goto('/');
+    await page.getByRole('button', { name: /验证恢复流程/ }).click();
+    await page.getByRole('button', { name: 'Agent 运行', exact: true }).click();
+    const panel = page.getByRole('region', { name: 'Agent 运行记录' });
+    await expect(panel.getByText('完成接口实现', { exact: true })).toBeVisible();
+    await expect(panel.getByText(/3 次 API 请求/)).toBeVisible();
+    await panel.getByRole('button', { name: '加载更早运行' }).click();
+    await expect(panel.getByText('较早执行尝试')).toBeVisible();
+    await page.waitForTimeout(3200);
+    await expect(panel.getByText('较早执行尝试')).toBeVisible();
+    expect(requests.at(-1)).toContain('before=30');
+    await panel.getByRole('button', { name: '返回最新运行' }).click();
+    await expect(panel.getByText('完成接口实现', { exact: true })).toBeVisible();
+    await panel.getByLabel('运行状态').selectOption('FAILED');
+    await expect(panel.getByText('<script>不能执行的纯文本</script>')).toBeVisible();
+    expect(await panel.locator('script').count()).toBe(0);
+    await panel.getByLabel('运行状态').selectOption('');
+    await expect(panel.getByText('完成接口实现', { exact: true })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await page.screenshot({ path: `qa/agent-runs-${width === 430 ? 'narrow' : 'desktop'}.png`, fullPage: true });
+    await panel.getByRole('button', { name: '查看关联证据' }).click();
+    await expect(page.getByText('Fixture result: one check')).toBeVisible();
+  });
+}

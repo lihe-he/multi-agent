@@ -131,6 +131,15 @@ try {
   await api(`/tasks/${task.id}/approve`, {});
   for (let attempt = 0; attempt < 100 && !pendingModelResponses.length; attempt++) await new Promise(resolveWait => setTimeout(resolveWait, 100));
   assert.equal(pendingModelResponses.length, 1, '任务必须实际进入模型请求，不能只验证空闲核心');
+  const runs = (await api(`/tasks/${task.id}/agent-runs`)).runs;
+  assert.equal(runs.length, 1); assert.equal(runs[0].state, 'RUNNING'); assert.equal(runs[0].calls, 1);
+  const runPanel = page.getByRole('region', { name: 'Agent 运行记录' });
+  await runPanel.getByText('方案与交接', { exact: true }).waitFor();
+  await runPanel.getByRole('button', { name: '查看来源任务', exact: true }).click();
+  await page.getByRole('button', { name: 'Agent 运行', exact: true }).click();
+  await page.getByRole('region', { name: 'Agent 运行记录' }).getByText('方案与交接', { exact: true }).waitFor();
+  await page.getByRole('button', { name: '返回会话', exact: true }).click();
+
   await page.getByRole('button', { name: '关闭会话 独立浏览器持久会话', exact: true }).click();
   await page.getByRole('tab', { name: '独立浏览器持久会话', exact: true }).waitFor({ state: 'hidden' });
   assert.equal((await api(`/tasks/${task.id}`)).state, 'RUNNING', '关闭会话标签不能停止运行中的任务');
@@ -156,7 +165,7 @@ try {
   assert.equal(existsSync(join(dir, 'desktop/core')), false, '附加模式不创建嵌入核心');
   assert.deepEqual(errors, []);
   await api(`/tasks/${task.id}/cancel`, {});
-  const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, sessionWorkflowThroughProxy: true, sessionSearchAndReopenThroughProxy: true, savedNotesSurviveReload: true, sessionClosePreservesRunningTask: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, pageErrors: errors };
+  const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, sessionWorkflowThroughProxy: true, sessionSearchAndReopenThroughProxy: true, agentRunActivityThroughProxy: true, savedNotesSurviveReload: true, sessionClosePreservesRunningTask: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, pageErrors: errors };
   mkdirSync(join(root, 'docs/qa'), { recursive: true });
   writeFileSync(join(root, `docs/qa/standalone-${process.platform}.json`), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report, null, 2));

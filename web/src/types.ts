@@ -41,6 +41,12 @@ export interface WorkbenchState {
   system: { version?: string; modelCapacity?: number; activeModels?: number; storageHealthy?: boolean; capabilities?: (string | { name?: string; available?: boolean; message?: string })[] };
 }
 export interface RunEvent { id: number; taskId?: string; type: string; message: string; createdAt?: string }
+export interface AgentRun {
+  id: string; taskId: string; sessionId: string; stage: string; kind: string; title?: string; role: string;
+  attempt: number; state: string; createdAt: string; startedAt?: string; endedAt?: string; elapsedMs?: number; queueMs?: number;
+  routeName?: string; engine?: string; model?: string; readOnly: boolean; calls: number; callUnit: string;
+  evidenceId?: string; reason?: string; inputVersion?: string; resultVersion?: string;
+}
 export interface Connection { baseUrl: string; token: string }
 export interface Session { id: string; projectId: string; title: string; version: number; isOpen: boolean; createdAt: string; updatedAt: string }
 export interface SessionMessage { id: string; sessionId: string; projectId: string; sequence: number; role: string; kind: 'NOTE' | 'TASK_GOAL'; content: string; taskId?: string; createdAt: string }
