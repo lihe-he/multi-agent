@@ -246,7 +246,17 @@ class WorkbenchEngineTest {
         String id = str(task(16, 5), "id"); engine.action(id, "approve", obj());
         assertEquals("UNKNOWN", str(await(id, Set.of("UNKNOWN")), "state"));
         assertThrows(ApiException.class, () -> engine.action(id, "reconcile", obj()));
-        var reconciled = engine.action(id, "reconcile", obj("processesStopped", true, "sideEffectsChecked", true, "note", "operator verified process tree and filesystem"));
+        Map<String, Object> reconciled = null;
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(8);
+        while (reconciled == null && System.nanoTime() < deadline) {
+            try { reconciled = engine.action(id, "reconcile", obj("processesStopped", true, "sideEffectsChecked", true, "note", "operator verified process tree and filesystem")); }
+            catch (ApiException exception) {
+                if (exception.status() != 409 || !exception.getMessage().contains("停止或收尾中")) throw exception;
+                assertEquals("UNKNOWN", str(store.get("task", id), "state"));
+                Thread.sleep(10);
+            }
+        }
+        assertNotNull(reconciled, "人工核对须等待执行生命周期停止后完成");
         assertEquals("PAUSED", str(reconciled, "state"));
         assertTrue(store.list("operation").stream().filter(operation -> id.equals(str(operation, "taskId"))).noneMatch(operation -> "DISPATCHED".equals(str(operation, "state"))));
     }
