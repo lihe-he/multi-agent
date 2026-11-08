@@ -41,11 +41,17 @@ public class WorkspaceRuntime {
     private final HttpClient http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).followRedirects(HttpClient.Redirect.NEVER).build();
     private final ConcurrentMap<Long, Process> processes = new ConcurrentHashMap<>();
     private final ConcurrentMap<Long, String> processWorkspaces = new ConcurrentHashMap<>();
+    private volatile Consumer<Map<String, Object>> processObserver = ignored -> {};
 
     public WorkspaceRuntime(ObjectMapper json, @Value("${workbench.data-dir:./data}") String dataDir) {
         this.json = json;
         this.data = Path.of(dataDir).toAbsolutePath().normalize();
     }
+
+    /**
+     * 实际启动者报告首次观察的进程身份，核心只保存原事实并核验出生时间。
+     */
+    public void observeProcesses(Consumer<Map<String, Object>> observer) { this.processObserver = Objects.requireNonNull(observer); }
 
     public Map<String, Object> inspect(String projectPath) {
         Path root = projectRoot(projectPath);
@@ -907,6 +913,7 @@ public class WorkspaceRuntime {
         String processFacts = "";
         AtomicBoolean truncated = new AtomicBoolean(false);
         Set<ProcessHandle> observedChildren = ConcurrentHashMap.newKeySet();
+        Map<Long, String> childStarts = new ConcurrentHashMap<>();
         try {
             Files.createDirectories(cwd);
             ProcessBuilder builder = new ProcessBuilder(argv).directory(cwd.toFile());
@@ -917,6 +924,8 @@ public class WorkspaceRuntime {
             builder.environment().put("PYTHONIOENCODING", "utf-8");
             process = builder.start();
             Process active = process;
+            String activeStart = process.info().startInstant().map(Object::toString).orElse("");
+            observedProcess(process.toHandle(), ProcessHandle.current());
             processes.put(process.pid(), process); processWorkspaces.put(process.pid(), cwd.toAbsolutePath().toString());
             if (receipt) {
                 Path receipts = data.resolve("processes"); Files.createDirectories(receipts);
@@ -952,9 +961,9 @@ public class WorkspaceRuntime {
             });
             long deadline = System.nanoTime() + timeout.toNanos();
             String state = "SUCCEEDED";
-            observedChildren.addAll(process.descendants().toList());
+            observeChildren(process, observedChildren, childStarts, activeStart);
             while (!process.waitFor(150, TimeUnit.MILLISECONDS)) {
-                observedChildren.addAll(process.descendants().toList());
+                observeChildren(process, observedChildren, childStarts, activeStart);
                 if (cancelled.getAsBoolean() || System.nanoTime() > deadline) {
                     boolean stopped = terminate(process);
                     state = stopped ? (cancelled.getAsBoolean() ? "CANCELLED" : "FAILED") : "UNKNOWN";
@@ -967,14 +976,14 @@ public class WorkspaceRuntime {
             List<ProcessHandle> unconfirmed = observedChildren.stream().filter(ProcessHandle::isAlive).toList();
             if (!unconfirmed.isEmpty()) {
                 processFacts = "未确认子进程（共 " + unconfirmed.size() + " 个，最多列出 50 个）：" + unconfirmed.stream().limit(50)
-                    .map(child -> child.pid() + "@" + child.info().startInstant().map(Object::toString).orElse("UNKNOWN_START_TIME")).toList();
+                    .map(child -> child.pid() + "@" + childStarts.getOrDefault(child.pid(), "UNKNOWN_START_TIME")).toList();
                 synchronized (errors) {
                     int remaining = MAX_OUTPUT - errors.length();
                     String diagnostic = "\n" + processFacts;
                     if (diagnostic.length() > remaining) truncated.set(true);
                     if (remaining > 0) errors.append(diagnostic, 0, Math.min(diagnostic.length(), remaining));
                 }
-                unconfirmed.stream().filter(ProcessHandle::isAlive).forEach(ProcessHandle::destroyForcibly);
+                unconfirmed.stream().filter(child -> originalProcess(child, childStarts.getOrDefault(child.pid(), ""))).forEach(ProcessHandle::destroyForcibly);
                 state = "UNKNOWN";
                 log.accept("父进程退出后仍发现子进程，已请求停止；结果未知，不能自动重放。");
                 log.accept(processFacts);
@@ -994,6 +1003,22 @@ public class WorkspaceRuntime {
         } finally {
             if (process != null && !process.isAlive()) { processes.remove(process.pid()); processWorkspaces.remove(process.pid()); }
         }
+    }
+
+    private void observedProcess(ProcessHandle handle, ProcessHandle owner) {
+        processObserver.accept(object("pid", handle.pid(), "processStartedAt", handle.info().startInstant().map(Object::toString).orElse(""),
+            "observedFromPid", owner.pid(), "observedFromStartedAt", owner.info().startInstant().map(Object::toString).orElse("")));
+    }
+
+    private void observeChildren(Process process, Set<ProcessHandle> children, Map<Long, String> starts, String ownerStart) {
+        for (ProcessHandle child : process.descendants().toList()) if (children.add(child)) {
+            String birth = child.info().startInstant().map(Object::toString).orElse(""); starts.put(child.pid(), birth);
+            processObserver.accept(object("pid", child.pid(), "processStartedAt", birth, "observedFromPid", process.pid(), "observedFromStartedAt", ownerStart));
+        }
+    }
+
+    private boolean originalProcess(ProcessHandle process, String startedAt) {
+        return !startedAt.isBlank() && process.isAlive() && startedAt.equals(process.info().startInstant().map(Object::toString).orElse(""));
     }
 
     private boolean terminate(Process process) {

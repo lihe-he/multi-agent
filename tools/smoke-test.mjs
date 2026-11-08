@@ -154,13 +154,16 @@ try {
     await request('/execution-nodes', undefined, { expected: 401, authorized: false });
     await request(`/repository-bindings?projectId=${project.id}`, undefined, { expected: 401, authorized: false });
     const nodes = (await request('/execution-nodes')).data, workers = (await request('/workers')).data, bindings = (await request(`/repository-bindings?projectId=${project.id}`)).data;
-    assert.equal(nodes.length, 1); assert.equal(nodes[0].deployment, 'CORE_PROCESS'); assert.equal(nodes[0].state, 'ONLINE');
+    assert.equal(nodes.length, 1); assert.equal(nodes[0].deployment, 'LOCAL_PROCESS'); assert.equal(nodes[0].state, 'ONLINE');
     assert.equal(workers[0].executionNodeId, nodes[0].id); assert.ok(Number.isInteger(workers[0].pid)); assert.equal(workers[0].state, 'RUNNING');
+    assert.equal(workers[0].deployment, 'LOCAL_PROCESS'); assert.notEqual(workers[0].pid, workers[0].corePid); assert.equal(workers[0].parentPid, workers[0].corePid);
+    if (process.env.WORKBENCH_EXPECTED_CORE_PID) assert.equal(workers[0].corePid, Number(process.env.WORKBENCH_EXPECTED_CORE_PID));
+    assert.ok(Number.isFinite(Date.parse(workers[0].processStartedAt))); assert.equal(workers[0].controlEnvironmentPresent, false); assert.equal(workers[0].jvmOptionsEnvironmentPresent, false); assert.equal(workers[0].controlPropertiesPresent, false);
     assert.equal(bindings.length, 1); assert.equal(bindings[0].id, project.repositoryBindingId); assert.equal(bindings[0].executionNodeId, nodes[0].id); assert.equal(bindings[0].projectId, project.id);
     await request('/execution-nodes', { id: nodes[0].id, expectedVersion: nodes[0].version, name: 'bad input', enabled: 'true' }, { expected: 400 });
     await request('/execution-nodes', { id: nodes[0].id, expectedVersion: nodes[0].version + 1, name: 'stale configuration', enabled: true }, { expected: 409 });
     await request('/repository-bindings', { projectId: project.id, executionNodeId: nodes[0].id, name: 'relative input', path: 'relative' }, { expected: 400 });
-    return { executionNodeId: nodes[0].id, repositoryBindingId: bindings[0].id, workerId: workers[0].id, epoch: workers[0].epoch };
+    return { executionNodeId: nodes[0].id, repositoryBindingId: bindings[0].id, workerId: workers[0].id, epoch: workers[0].epoch, workerPid: workers[0].pid, corePid: workers[0].corePid, deployment: workers[0].deployment };
   });
   await check('Search reports source locations and coverage', async () => {
     const value = (await request(`/projects/${project.id}/search?q=hello`)).data;

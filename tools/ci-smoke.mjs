@@ -13,6 +13,7 @@ const env = { ...process.env, WORKBENCH_PORT: String(port), WORKBENCH_URL: `http
 const java = join(javaHome(resolve('.')), 'bin', process.platform === 'win32' ? 'java.exe' : 'java');
 const version = JSON.parse(readFileSync(resolve('package.json'), 'utf8')).version;
 const child = spawn(java, ['-Dfile.encoding=UTF-8', `-Djdk.net.unixdomain.tmpdir=${dir}`, '-jar', resolve(`core/target/agent-workbench-core-${version}.jar`)], { env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+env.WORKBENCH_EXPECTED_CORE_PID = String(child.pid);
 let logs = ''; child.stdout.on('data', b => { logs = (logs + b).slice(-10000); }); child.stderr.on('data', b => { logs = (logs + b).slice(-10000); });
 try {
   let ready = false;

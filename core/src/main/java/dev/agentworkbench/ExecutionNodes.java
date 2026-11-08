@@ -90,7 +90,7 @@ final class ExecutionNodes {
             if (input.containsKey("nodeVersion") && integer(input, "nodeVersion") != num(node, "version", 1)) throw new ApiException(409, "执行节点版本已变化，请刷新后确认");
             if (!bool(binding, "enabled", false) || !bool(node, "enabled", false) || !str(node, "id").equals(str(localNode(), "id"))) throw new ApiException(409, "仓库绑定或本机执行节点未启用");
             return obj("version", authorizationVersion, "protocolVersion", 1, "executionNodeId", node.get("id"), "nodeVersion", node.get("version"), "nodeName", node.get("name"),
-                "repositoryBindingId", bindingId, "bindingVersion", binding.get("version"), "bindingName", binding.get("name"), "sourcePath", binding.get("path"), "deployment", "CORE_PROCESS", "createdAt", now());
+                "repositoryBindingId", bindingId, "bindingVersion", binding.get("version"), "bindingName", binding.get("name"), "sourcePath", binding.get("path"), "deployment", node.get("deployment"), "createdAt", now());
         }
     }
 

@@ -8,7 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class WorkbenchApplication {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        if (args.length == 1 && "--workbench-internal-worker".equals(args[0])) { WorkerProcessMain.main(args); return; }
         prepareWindowsPipeDirectory();
         SpringApplication.run(WorkbenchApplication.class, args);
     }

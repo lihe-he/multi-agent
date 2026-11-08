@@ -433,7 +433,8 @@ public class ExecutionStore implements AutoCloseable {
             "engine", route.get("engine"), "model", route.get("model"), "provider", route.get("provider"),
             "reserved", reserved, "calls", 0, "callUnit", "API".equals(str(route, "engine")) ? "API_REQUEST" : "CLI_SESSION",
             "usage", obj("cost", "UNKNOWN"));
-        if (!str(task, "teamId").isBlank()) run.putAll(obj("teamId", task.get("teamId"), "depth", 0, "permissions", CollaborationPolicy.rootPermissions(task, stage)));
+        run.put("permissions", CollaborationPolicy.rootPermissions(task, stage));
+        if (!str(task, "teamId").isBlank()) run.putAll(obj("teamId", task.get("teamId"), "depth", 0));
         run.put("profileVersions", objects(task.get("profileSnapshot")).stream().filter(profile -> str(stage, "role").equals(str(profile, "role")))
             .map(profile -> obj("id", profile.get("id"), "version", profile.get("version"))).toList());
         transaction(() -> { write("agentRun", run); appendEvent(taskId, "AGENT_QUEUED", str(stage, "id") + " · AgentRun " + str(run, "id")); });
@@ -497,7 +498,7 @@ public class ExecutionStore implements AutoCloseable {
             "sequence", num(run, "calls", 0) + 1, "state", "DISPATCHING", "createdAt", now(), "attempt", 1,
             "routeId", run.get("routeId"), "routeVersion", run.get("routeVersion"), "engine", run.get("engine"), "model", run.get("model"),
             "unit", run.get("callUnit"), "usage", obj("cost", "UNKNOWN"));
-        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion")) if (run.containsKey(key)) request.put(key, run.get(key));
+        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid")) if (run.containsKey(key)) request.put(key, run.get(key));
         for (String key : List.of("round", "messageCount", "inputBytes", "inputDigest", "toolCount", "inputPreview", "inputTruncated")) {
             if (metadata.containsKey(key)) request.put(key, metadata.get(key));
         }
@@ -602,11 +603,17 @@ public class ExecutionStore implements AutoCloseable {
         return definition;
     }
 
-    private Map<String, Object> teamRequest(String taskId, String runId, String requestId) {
+    private Map<String, Object> agentRequest(String taskId, String runId, String requestId) {
         Map<String, Object> run = get("agentRun", runId), request = get("modelRequest", requestId);
-        if (!taskId.equals(str(run, "taskId")) || !runId.equals(str(request, "agentRunId")) || !"SUCCEEDED".equals(str(request, "state")) || str(run, "teamId").isBlank()) throw new ApiException(403, "委派操作没有所属运行的成功模型回执");
-        if (Set.of("PROPOSAL", "REVIEW").contains(str(run, "kind"))) throw new ApiException(403, "独立提案和审查不能使用共享团队输入输出");
+        if (!taskId.equals(str(run, "taskId")) || !taskId.equals(str(request, "taskId")) || !runId.equals(str(request, "agentRunId")) || !"SUCCEEDED".equals(str(request, "state"))) throw new ApiException(403, "工具操作没有所属运行的成功模型回执");
         if (!Set.of("RUNNING", "WAITING_TOOL", "WAITING_CHILDREN").contains(str(run, "state"))) throw new ApiException(409, "来源 Agent 本轮已结束");
+        return run;
+    }
+
+    private Map<String, Object> teamRequest(String taskId, String runId, String requestId) {
+        Map<String, Object> run = agentRequest(taskId, runId, requestId);
+        if (str(run, "teamId").isBlank()) throw new ApiException(403, "委派操作没有所属团队");
+        if (Set.of("PROPOSAL", "REVIEW").contains(str(run, "kind"))) throw new ApiException(403, "独立提案和审查不能使用共享团队输入输出");
         return run;
     }
 
@@ -614,11 +621,12 @@ public class ExecutionStore implements AutoCloseable {
      * 固定 MCP 动作的执行来源只由真实模型回执派生，不能用消息或参数伪造。
      */
     public synchronized Map<String, Object> agentToolSource(String taskId, String runId, String requestId, String toolCallId) {
-        Map<String, Object> run = teamRequest(taskId, runId, requestId), permissions = map(run, "permissions");
-        if (toolCallId.isBlank() || toolCallId.length() > 200 || !AgentPermissions.has(permissions, "mcp") || !AgentPermissions.has(permissions, "write")) throw new ApiException(403, "执行者没有固定 MCP 权限或原工具身份");
+        Map<String, Object> run = agentRequest(taskId, runId, requestId), permissions = map(run, "permissions");
+        if (toolCallId.isBlank() || toolCallId.length() > 200 || bool(run, "readOnly", true) || Set.of("PROPOSAL", "REVIEW").contains(str(run, "kind"))
+                || !AgentPermissions.has(permissions, "mcp") || !AgentPermissions.has(permissions, "write")) throw new ApiException(403, "执行者没有固定 MCP 权限或原工具身份");
         if (!str(run, "subtaskId").isBlank() && (!AgentPermissions.unrestricted(permissions, "read") || !AgentPermissions.unrestricted(permissions, "write"))) throw new ApiException(403, "窄范围副任务不能证明外部 MCP 的文件访问边界，请交回根授权阶段");
         Map<String, Object> source = obj("agentRunId", runId, "modelRequestId", requestId, "toolCallId", toolCallId, "rootTaskId", run.get("rootTaskId"), "actorKind", run.get("kind"));
-        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "sessionId", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion")) if (run.containsKey(key)) source.put(key, run.get(key));
+        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "sessionId", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid")) if (run.containsKey(key)) source.put(key, run.get(key));
         return source;
     }
 
@@ -988,6 +996,7 @@ public class ExecutionStore implements AutoCloseable {
 
     @PreDestroy
     public synchronized void close() throws Exception {
+        healthy = false;
         try { connection.close(); }
         finally {
             try { if (ownershipLock.isValid()) { ownershipLock.release(); } }

@@ -55,13 +55,19 @@ class TeamExecutionTest {
         Files.writeString(source.resolve("src/source.txt"), "base\n"); Files.writeString(source.resolve("outside.txt"), "outside-private-value\n");
         Files.writeString(source.resolve("verify.mjs"), "import {readFileSync} from 'node:fs'; import assert from 'node:assert/strict'; assert.match(readFileSync('src/source.txt','utf8'), /^(base|made)\\n$/); console.log('source verified');\n");
         git(source, "init", "--initial-branch=main"); git(source, "config", "user.name", "Team Test"); git(source, "config", "user.email", "team@example.invalid"); git(source, "config", "core.autocrlf", "false"); git(source, "add", "."); git(source, "commit", "-m", "fixture");
-        store = new ExecutionStore(mapper, directory.resolve("data").toString()); runtime = new WorkspaceRuntime(mapper, directory.resolve("data").toString());
+        store = new ExecutionStore(mapper, directory.resolve("data").toString()); runtime = new ProcessWorkspaceRuntime(mapper, directory.resolve("data").toString());
         catalog = new WorkbenchCatalog(store, runtime, new PlanValidator()); catalog.defaults(); resources = new ResourceManager();
         engine = new WorkbenchEngine(store, catalog, runtime, resources, mapper); project = catalog.importProject(obj("name", "actual team", "path", source.toString()));
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0); httpWorkers = Executors.newVirtualThreadPerTaskExecutor(); server.setExecutor(httpWorkers);
         server.createContext("/", exchange -> {
             try {
-                Map<String, Object> request = mapper.readValue(exchange.getRequestBody(), new TypeReference<>() {}); calls.incrementAndGet(); peak.accumulateAndGet(resources.activeModels(), Math::max);
+                byte[] original = exchange.getRequestBody().readAllBytes(); Map<String, Object> request = mapper.readValue(original, new TypeReference<>() {});
+                String digest = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(original));
+                Map<String, Object> persisted = store.list("modelRequest").stream().filter(value -> digest.equals(str(value, "inputDigest")) && "DISPATCHING".equals(str(value, "state"))).findFirst().orElseThrow();
+                assertFalse(str(persisted, "workerLeaseId").isBlank()); assertEquals(engine.workerIdentity().get("id"), persisted.get("workerId"));
+                assertNotEquals(ProcessHandle.current().pid(), ((Number) engine.workerIdentity().get("pid")).longValue()); assertEquals("LOCAL_PROCESS", engine.workerIdentity().get("deployment"));
+                assertTrue(num(store.get("agentRun", str(persisted, "agentRunId")), "calls", 0) > 0, "原请求与预算在 HTTP 到达前已经保存");
+                calls.incrementAndGet(); peak.accumulateAndGet(resources.activeModels(), Math::max);
                 List<Map<String, Object>> messages = objects(request.get("messages"));
                 String prompt = messages.stream().filter(message -> Set.of("user", "system").contains(str(message, "role"))).map(message -> str(message, "content")).reduce("", (a, b) -> a + "\n" + b); prompts.add(prompt);
                 List<Map<String, Object>> toolResults = messages.stream().filter(message -> "tool".equals(str(message, "role"))).toList();
@@ -178,6 +184,7 @@ class TeamExecutionTest {
         release.countDown();
         assertTrue(store.workerLeases("", taskId, "UNKNOWN").stream().anyMatch(lease -> child.get("agentRunId").equals(lease.get("agentRunId")))); assertEquals(1, num(map(store.get("task", taskId), "execution"), "nodeVersion", 0));
         engine.shutdown(); engine = null; store.close(); store = new ExecutionStore(mapper, directory.resolve("data").toString());
+        runtime = new ProcessWorkspaceRuntime(mapper, directory.resolve("data").toString());
         catalog = new WorkbenchCatalog(store, runtime, new PlanValidator()); engine = new WorkbenchEngine(store, catalog, runtime, new ResourceManager(), mapper); engine.recover();
         assertEquals(before, calls.get()); assertEquals(identity.get("executionNodeId"), engine.workerIdentity().get("executionNodeId")); assertNotEquals(identity.get("id"), engine.workerIdentity().get("id"));
         assertEquals(num(identity, "epoch", 0) + 1, num(engine.workerIdentity(), "epoch", 0)); assertEquals("UNKNOWN", store.get("task", taskId).get("state")); assertFalse(store.workerLeases("", taskId, "UNKNOWN").isEmpty());
@@ -257,6 +264,7 @@ class TeamExecutionTest {
         assertEquals("UNKNOWN", str(request, "state")); assertEquals("UNKNOWN", str(request, "remoteOutcome")); assertEquals(0, resources.activeModels());
         assertEquals(409, assertThrows(ApiException.class, () -> engine.action(taskId, "resume", obj())).status());
         engine.shutdown(); engine = null; store.close(); store = new ExecutionStore(mapper, directory.resolve("data").toString());
+        runtime = new ProcessWorkspaceRuntime(mapper, directory.resolve("data").toString());
         catalog = new WorkbenchCatalog(store, runtime, new PlanValidator()); resources = new ResourceManager(); engine = new WorkbenchEngine(store, catalog, runtime, resources, mapper); engine.recover();
         assertEquals("UNKNOWN", str(store.get("modelRequest", str(request, "id")), "state")); assertEquals("UNKNOWN", str(store.subtask(taskId, str(child, "id")), "state"));
         assertEquals(409, assertThrows(ApiException.class, () -> engine.action(taskId, "resume", obj())).status()); Thread.sleep(150); assertEquals(before, calls.get(), "reopening the store must not repeat the remote request");
@@ -347,23 +355,8 @@ class TeamExecutionTest {
     @Test
     void childMcpActionPreservesActualSourceAndRootReuseDoesNotDispatchAgain() throws Exception {
         AtomicInteger externalCalls = new AtomicInteger();
-        server.createContext("/mcp", exchange -> {
-            try {
-                if ("DELETE".equals(exchange.getRequestMethod())) { exchange.sendResponseHeaders(204, -1); return; }
-                Map<String, Object> request = mapper.readValue(exchange.getRequestBody(), new TypeReference<>() {}); String method = str(request, "method");
-                if (method.startsWith("notifications/")) { exchange.sendResponseHeaders(202, -1); return; }
-                Map<String, Object> result;
-                if (method.equals("initialize")) { exchange.getResponseHeaders().set("Mcp-Session-Id", "actual-team-mcp"); result = obj("protocolVersion", "2025-06-18", "capabilities", obj("tools", obj()), "serverInfo", obj("name", "team fixture", "version", "1")); }
-                else if (method.equals("tools/list")) result = obj("tools", List.of(obj("name", "echo", "inputSchema", obj("type", "object", "properties", obj("text", obj("type", "string")), "required", List.of("text"), "additionalProperties", false))));
-                else { assertEquals("tools/call", method); externalCalls.incrementAndGet(); result = obj("content", List.of(obj("type", "text", "text", mapper.writeValueAsString(map(map(request, "params"), "arguments")))), "isError", false); }
-                byte[] bytes = mapper.writeValueAsBytes(obj("jsonrpc", "2.0", "id", request.get("id"), "result", result)); exchange.getResponseHeaders().set("Content-Type", "application/json"); exchange.sendResponseHeaders(200, bytes.length); exchange.getResponseBody().write(bytes);
-            } catch (Throwable error) { errors.add(error.toString()); exchange.sendResponseHeaders(500, -1); }
-            finally { exchange.close(); }
-        });
-        McpManager manager = new McpManager(store, mapper, catalog, resources); engine.shutdown(); engine = new WorkbenchEngine(store, catalog, runtime, resources, mapper, manager);
-        Map<String, Object> saved = manager.save(obj("name", "actual team MCP", "transport", "HTTP", "url", "http://127.0.0.1:" + server.getAddress().getPort() + "/mcp", "projectIds", List.of(project.get("id")), "allowedTools", List.of("echo")));
-        Map<String, Object> discovery = manager.probe(str(saved, "id")); assertTrue(bool(discovery, "available", false));
-        Map<String, Object> selection = obj("serverId", saved.get("id"), "name", "echo", "configVersion", saved.get("version"), "definitionVersion", discovery.get("definitionVersion"), "fixedArguments", obj("text", "MCP_CHILD_SOURCE"), "timeoutMs", 5000);
+        McpManager manager = mcpFixture(externalCalls);
+        Map<String, Object> selection = mcpSelection(manager, "MCP_CHILD_SOURCE");
         Map<String, Object> task = task("CHILD_MCP", 30, obj("contract", obj("scope", List.of("**"), "commands", List.of("node verify.mjs"), "acceptance", List.of("actual source remains correct")), "mcpBindings", List.of(selection), "mcpBudget", obj("maxCalls", 2, "maxDurationMs", 10000))); String taskId = str(task, "id");
         String alias = str(objects(map(task, "mcpAuthorization").get("bindings")).getFirst(), "alias");
         fixture.set((prompt, results, names) -> {
@@ -382,5 +375,56 @@ class TeamExecutionTest {
         assertEquals(1, externalCalls.get()); assertEquals(1, num(map(finished, "mcpBudget"), "usedCalls", 0)); assertEquals(1, store.list("mcpOperation").size()); assertEquals(child.get("agentRunId"), operation.get("agentRunId")); assertEquals(child.get("id"), operation.get("subtaskId"));
         Map<String, Object> receipt = store.get("modelRequest", str(operation, "modelRequestId")); assertEquals(child.get("agentRunId"), receipt.get("agentRunId")); assertEquals("SUCCEEDED", str(receipt, "state")); assertFalse(str(operation, "toolCallId").isBlank());
         assertEquals(calls.get(), num(map(finished, "budget"), "usedCalls", 0)); manager.requireTaskStopped(taskId); assertEquals(0, resources.activeModels()); assertTrue(errors.isEmpty(), errors.toString());
+    }
+
+    @Test
+    void fixedStageWithoutDynamicTeamPreservesOriginalMcpSourceAndCapacity() throws Exception {
+        AtomicInteger externalCalls = new AtomicInteger(); McpManager manager = mcpFixture(externalCalls);
+        Map<String, Object> selection = mcpSelection(manager, "ROOT_MCP_ORIGINAL_SOURCE");
+        Map<String, Object> task = task("ROOT_FIXED_MCP", 16, obj("collaboration", obj("enabled", false), "contract", obj("scope", List.of("**"), "commands", List.of("node verify.mjs"), "acceptance", List.of("actual MCP source")),
+            "mcpBindings", List.of(selection), "mcpBudget", obj("maxCalls", 2, "maxDurationMs", 10000))); String taskId = str(task, "id"), alias = str(objects(map(task, "mcpAuthorization").get("bindings")).getFirst(), "alias");
+        assertTrue(str(task, "teamId").isBlank());
+        fixture.set((prompt, results, names) -> {
+            if (stage(prompt, "IMPLEMENT")) {
+                assertTrue(names.contains(alias)); assertFalse(names.contains("delegate_agent"));
+                if (results.isEmpty()) return call(alias, obj());
+                assertEquals("ACKNOWLEDGED", str(result(results, 0), "state"));
+                if (results.size() == 1) return call(alias, obj());
+                assertTrue(bool(result(results, 1), "deduplicated", false)); return answer("original fixed MCP receipt retained");
+            }
+            return ordinary(prompt);
+        });
+        engine.action(taskId, "approve", obj()); Map<String, Object> finished = awaitTask(taskId, Set.of("AWAITING_ACCEPTANCE"));
+        assertEquals(1, externalCalls.get()); assertEquals(1, store.list("mcpOperation").size()); assertEquals(1, num(map(finished, "mcpBudget"), "usedCalls", 0)); assertTrue(store.list("subtask").isEmpty());
+        Map<String, Object> operation = store.list("mcpOperation").getFirst(), receipt = store.get("modelRequest", str(operation, "modelRequestId"));
+        assertEquals("SUCCEEDED", receipt.get("state")); assertEquals("IMPLEMENT", store.get("agentRun", str(operation, "agentRunId")).get("kind")); assertTrue(str(operation, "teamId").isBlank());
+        assertEquals(receipt.get("workerLeaseId"), operation.get("workerLeaseId")); assertEquals(engine.workerIdentity().get("id"), operation.get("workerId"));
+        assertEquals("LOCAL_PROCESS", operation.get("deployment")); assertEquals(((Number) engine.workerIdentity().get("pid")).longValue(), ((Number) operation.get("executorPid")).longValue());
+        assertEquals(calls.get(), num(map(finished, "budget"), "usedCalls", 0)); assertEquals(0, resources.activeModels()); manager.requireTaskStopped(taskId); assertTrue(errors.isEmpty(), errors.toString());
+    }
+
+    private McpManager mcpFixture(AtomicInteger externalCalls) throws Exception {
+        server.createContext("/mcp", exchange -> {
+            try {
+                if ("DELETE".equals(exchange.getRequestMethod())) { exchange.sendResponseHeaders(204, -1); return; }
+                Map<String, Object> request = mapper.readValue(exchange.getRequestBody(), new TypeReference<>() {}); String method = str(request, "method");
+                if (method.startsWith("notifications/")) { exchange.sendResponseHeaders(202, -1); return; }
+                Map<String, Object> result;
+                if (method.equals("initialize")) { exchange.getResponseHeaders().set("Mcp-Session-Id", "actual-team-mcp"); result = obj("protocolVersion", "2025-06-18", "capabilities", obj("tools", obj()), "serverInfo", obj("name", "team fixture", "version", "1")); }
+                else if (method.equals("tools/list")) result = obj("tools", List.of(obj("name", "echo", "inputSchema", obj("type", "object", "properties", obj("text", obj("type", "string")), "required", List.of("text"), "additionalProperties", false))));
+                else { assertEquals("tools/call", method); assertEquals(0, resources.activeModels(), "actual MCP HTTP must not retain a model slot"); externalCalls.incrementAndGet(); result = obj("content", List.of(obj("type", "text", "text", mapper.writeValueAsString(map(map(request, "params"), "arguments")))), "isError", false); }
+                byte[] bytes = mapper.writeValueAsBytes(obj("jsonrpc", "2.0", "id", request.get("id"), "result", result)); exchange.getResponseHeaders().set("Content-Type", "application/json"); exchange.sendResponseHeaders(200, bytes.length); exchange.getResponseBody().write(bytes);
+            } catch (Throwable error) { errors.add(error.toString()); exchange.sendResponseHeaders(500, -1); }
+            finally { exchange.close(); }
+        });
+        engine.shutdown(); runtime = new ProcessWorkspaceRuntime(mapper, directory.resolve("data").toString()); catalog = new WorkbenchCatalog(store, runtime, new PlanValidator());
+        McpManager manager = new McpManager(store, mapper, catalog, resources); engine = new WorkbenchEngine(store, catalog, runtime, resources, mapper, manager);
+        return manager;
+    }
+
+    private Map<String, Object> mcpSelection(McpManager manager, String text) {
+        Map<String, Object> saved = manager.save(obj("name", "actual team MCP", "transport", "HTTP", "url", "http://127.0.0.1:" + server.getAddress().getPort() + "/mcp", "projectIds", List.of(project.get("id")), "allowedTools", List.of("echo")));
+        Map<String, Object> discovery = manager.probe(str(saved, "id")); assertTrue(bool(discovery, "available", false));
+        return obj("serverId", saved.get("id"), "name", "echo", "configVersion", saved.get("version"), "definitionVersion", discovery.get("definitionVersion"), "fixedArguments", obj("text", text), "timeoutMs", 5000);
     }
 }

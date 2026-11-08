@@ -166,22 +166,29 @@ class WorkbenchEngineTest {
                 "definitionVersion", discovery.get("definitionVersion"), "fixedArguments", obj("text", "confirmed"), "timeoutMs", 5000);
             engine = new WorkbenchEngine(store, catalog, runtime, resources, mapper, manager);
             when(runtime.runWithMcp(anyMap(), anyString(), anyString(), anyString(), anyBoolean(), anyList(), any(), any(), any(), anyList(), any())).thenAnswer(invocation -> {
-                BooleanSupplier acquire = invocation.getArgument(8);
-                if (!acquire.getAsBoolean()) return obj("status", "FAILED", "exitCode", 1, "output", "budget stopped");
+                ModelCallObserver observed = invocation.getArgument(8);
+                if (!observed.begin(obj("round", 1))) return obj("status", "FAILED", "exitCode", 1, "output", "budget stopped");
+                observed.end(obj("state", "SUCCEEDED", "finishReason", "tool_calls"));
+                String originalRequest = observed.lastRequestId();
+                assertFalse(originalRequest.isBlank());
                 WorkspaceRuntime.FixedToolInvoker invoker = invocation.getArgument(10);
                 List<Map<String, Object>> bindings = invocation.getArgument(9);
-                Map<String, Object> dispatched = invoker.invoke(str(bindings.getFirst(), "alias"));
+                Map<String, Object> dispatched = invoker.invoke(str(bindings.getFirst(), "alias"), originalRequest, "fixture-tool-1");
                 if (loseResponse) {
                     assertEquals("UNKNOWN", str(dispatched, "state"));
                     return obj("status", "UNKNOWN", "exitCode", -1, "output", "MCP response was not confirmed");
                 }
                 assertEquals("ACKNOWLEDGED", str(dispatched, "state"));
                 assertEquals(0, resources.activeModels());
-                assertTrue(acquire.getAsBoolean());
+                assertTrue(observed.begin(obj("round", 2)));
+                observed.end(obj("state", "SUCCEEDED", "finishReason", "tool_calls"));
                 assertEquals(1, resources.activeModels(), "The next model request must reacquire capacity");
-                var duplicate = invoker.invoke(str(bindings.getFirst(), "alias"));
+                var duplicate = invoker.invoke(str(bindings.getFirst(), "alias"), observed.lastRequestId(), "fixture-tool-2");
                 assertTrue(bool(duplicate, "deduplicated", false));
-                assertTrue(acquire.getAsBoolean());
+                assertEquals(originalRequest, store.list("mcpOperation").getFirst().get("modelRequestId"));
+                assertEquals("fixture-tool-1", store.list("mcpOperation").getFirst().get("toolCallId"));
+                assertTrue(observed.begin(obj("round", 3)));
+                observed.end(obj("state", "SUCCEEDED", "finishReason", "stop"));
                 assertEquals(1, resources.activeModels());
                 version.set("version-" + changes.incrementAndGet());
                 return success("implementation stage completed");

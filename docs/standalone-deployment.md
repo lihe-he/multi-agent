@@ -1,6 +1,6 @@
 # 独立前端、核心与桌面连接
 
-此入口实现前后端分离迁移的第一步：Web 静态产物、Java 核心和 Electron 可以独立启动；现阶段仍是单用户、本机执行。用户、远程设备、Worker 节点、PostgreSQL 和移动审批仍按架构审查的后续阶段实施，不把独立进程等同于完整远程服务。
+Web 静态产物、Java 核心和 Electron 可以独立启动。alpha.10 起核心用同一 Jar/JRE 启动独立本机 Worker，实际现场、模型、文件工具和验证在子 JVM，SQLite、预算与调度由核心持有，详见[独立 Worker 约定](./worker-process-contract.md)。现阶段仍是单用户、本机执行；远程设备配对、Worker 网络重连、PostgreSQL 和移动审批继续实施。
 
 ## 单独构建和运行
 
@@ -50,6 +50,6 @@ Remove-Item Env:WORKBENCH_CORE_URL, Env:WORKBENCH_CORE_TOKEN -ErrorAction Silent
 
 `npm run test:standalone` 需要已构建核心/Web、根依赖、Web 测试依赖、Java 21 与 Playwright 浏览器。Linux 带桌面检查时需要显示服务，例如 `xvfb-run -a npm run test:standalone`。
 
-检查会在独立空目录启动真实 Java 核心，使用生产 Web 静态产物及同源代理，验证浏览器无 Electron 桥接时的连接、设置和刷新。随后导入独立 Git 样例、批准任务，等待本机测试模型实际接到请求；关闭浏览器、启动并退出连接已有服务的 Electron 后，核对任务仍为 RUNNING 且请求只派发一次。最后显式取消测试任务并关闭测试服务。不会使用真实供应商或日常项目数据。
+检查会在独立空目录启动真实 Java 核心和独立 Worker，使用生产 Web 静态产物及同源代理，验证浏览器无 Electron 桥接时的连接、设置和刷新。随后导入独立 Git 样例、批准实际父/副 Agent 任务，等待本机 HTTP 模型收到子请求；核对 Worker PID 与核心 PID、原请求/领取与真实子进程心跳。关闭会话、浏览器、启动并退出连接已有服务的 Electron 后，原请求与租约仍保持同一编号且只派发一次。释放测试模型屏障后完成依赖复制、采纳、验证/审查和原 MCP 来源核对，再关闭测试服务。不会使用真实供应商或日常项目数据。
 
 报告输出 `docs/qa/standalone-<platform>.json`。这不验证外部供应商、远程账号、全部业务 UI 流程或三端 Computer Use；完整验收范围继续见实施记录与计划书。

@@ -4,9 +4,9 @@
 
 平台使用 Java 21、Spring Boot、SQLite、React、TypeScript 和 Electron。任务在独立工作目录中执行，验证和审查记录绑定代码版本，最终由用户验收。验收操作记录用户决定，不会自动提交、推送或改写原项目。
 
-当前开发版本为 **0.2.0-alpha.9**，稳定预览基线仍为 `v0.1.0`。任务固定本机执行节点、仓库绑定及授权版本，实际 Worker 记录 JVM 进程、执行代次与操作租约；关闭客户端后在途执行继续保留，租约失效和迟到结果保存为未知。设置页支持节点与仓库配置，任务页可核对操作、租约和原始证据。协议见[本机 Worker 约定](./docs/worker-contract.md)。
+当前开发版本为 **0.2.0-alpha.10**，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。协议见[本机 Worker 约定](./docs/worker-contract.md)和[独立进程约定](./docs/worker-process-contract.md)。
 
-API 任务可按创建时固定的定义、模型路由和限制实际委派副 Agent。副任务在独立 Git 副本中执行，父 Agent 等待时释放模型容量，核对依赖成果后采纳文件；全部后代共用根模型和 MCP 预算。设置页可编辑版本化定义，任务页显示真实父子状态、权限、依赖、消息、原模型/工具来源和采纳回执。逐轮请求追踪、会话搜索、独立验证/审查及人工验收继续保留；未知效果不自动重放。协议见[动态团队约定](./docs/team-contract.md)、[模型请求协议](./docs/model-request-contract.md)及[Agent 运行协议](./docs/agent-run-contract.md)。Worker 独立进程与远程配对、终端、动态 workflow、Token 趋势、原生 CLI 委派、完整备份恢复与正式发布仍在实施。
+API 任务可按创建时固定的定义、模型路由和限制实际委派副 Agent。副任务在独立 Git 副本中执行，父 Agent 等待时释放模型容量，核对依赖成果后采纳文件；全部后代共用根模型和 MCP 预算。设置页可编辑版本化定义，任务页显示真实父子状态、权限、依赖、消息、原模型/工具来源和采纳回执。逐轮请求追踪、会话搜索、独立验证/审查及人工验收继续保留；未知效果不自动重放。协议见[动态团队约定](./docs/team-contract.md)、[模型请求协议](./docs/model-request-contract.md)及[Agent 运行协议](./docs/agent-run-contract.md)。持久队列、远程配对及旧进程树跨重启核验、终端、动态 workflow、Token 趋势、原生 CLI 委派、完整备份恢复与正式发布仍在实施。
 
 前后端分离的本机启动、独立构建、配置与客户端退出语义见[独立部署说明](./docs/standalone-deployment.md)。新增需求 F01—F21 及后续节点架构见[架构审查](./docs/research/current-architecture-audit-2026-11-06.md)，本轮来源和范围见[迭代记录](./docs/research/iteration-foundation-2026-11-06.md)。独立入口不代表远程多用户或移动端能力已交付。
 

@@ -194,7 +194,8 @@ try {
   const childLease = pendingLeases.find(lease => lease.agentRunId === pendingWriter.agentRunId && lease.kind === 'SUBAGENT_MODEL');
   assert.ok(childLease); assert.equal(childLease.state, 'ACTIVE'); assert.equal(childLease.id, childRequest.workerLeaseId);
   const actualWorker = (await api('/workers')).find(worker => worker.id === childLease.workerId);
-  assert.ok(actualWorker); assert.equal(actualWorker.pid, core.pid); assert.equal(childLease.executionNodeId, task.execution.executionNodeId);
+  assert.ok(actualWorker); assert.notEqual(actualWorker.pid, core.pid); assert.equal(actualWorker.corePid, core.pid); assert.equal(actualWorker.parentPid, core.pid); assert.equal(actualWorker.deployment, 'LOCAL_PROCESS');
+  assert.equal(childLease.executorPid, actualWorker.pid); assert.equal(childLease.processStartedAt, actualWorker.processStartedAt); assert.equal(childLease.executionNodeId, task.execution.executionNodeId);
   await page.getByRole('button', { name: 'Worker 执行', exact: true }).click();
   await page.getByRole('region', { name: 'Worker 实际执行记录' }).getByText(childLease.operationId, { exact: false }).waitFor();
   await page.getByRole('button', { name: '返回会话', exact: true }).click();
@@ -225,6 +226,8 @@ try {
   assert.equal(teamProtocol.calls.length, callsBeforeReconnect, '父执行者等待子任务时，客户端重连不能重放已有请求');
   const reconnectedLease = (await api(`/tasks/${task.id}/worker-leases?limit=100`)).leases.find(lease => lease.id === childLease.id);
   assert.ok(reconnectedLease); assert.equal(reconnectedLease.state, 'ACTIVE'); assert.equal(reconnectedLease.workerId, childLease.workerId); assert.equal(reconnectedLease.epoch, childLease.epoch); assert.equal(reconnectedLease.createdAt, childLease.createdAt);
+  const reconnectedWorker = (await api('/workers')).find(worker => worker.id === actualWorker.id);
+  assert.equal(reconnectedWorker.pid, actualWorker.pid); assert.equal(reconnectedWorker.processStartedAt, actualWorker.processStartedAt); assert.equal(reconnectedWorker.heartbeatSource, 'CHILD_PIPE'); assert.ok(reconnectedWorker.lastHeartbeatSequence > 0);
   assert.equal(existsSync(join(dir, 'desktop/core')), false, '附加模式不创建嵌入核心');
   assert.deepEqual(errors, []);
   teamProtocol.releaseWriter();
@@ -257,6 +260,7 @@ try {
   const writerLeaseCard = workerPanel.locator('.worker-lease').filter({ hasText: childLease.operationId });
   await writerLeaseCard.getByText('本机执行已返回', { exact: true }).waitFor();
   await writerLeaseCard.getByText(childLease.workerId, { exact: true }).waitFor();
+  await writerLeaseCard.getByText(`本机独立 Worker · PID ${actualWorker.pid}`, { exact: true }).waitFor(); await writerLeaseCard.getByText(`PID ${core.pid}`, { exact: true }).waitFor();
   await resultPage.evaluate(() => window.scrollTo(0, 0)); await resultPage.screenshot({ path: join(root, `web/qa/worker-real-${process.platform}.png`), fullPage: true });
   await resultPage.getByRole('button', { name: '团队与副 Agent', exact: true }).click();
   const messagePanel = resultPanel.getByRole('region', { name: '团队消息' }); await messagePanel.getByLabel('团队消息', { exact: true }).fill('通过真实代理保存的用户团队资料'); await messagePanel.getByRole('button', { name: '发送团队消息', exact: true }).click(); await messagePanel.getByRole('status').getByText('消息已保存').waitFor();
@@ -265,6 +269,7 @@ try {
   await api(`/tasks/${task.id}/accept`, {}); assert.equal((await api(`/tasks/${task.id}`)).state, 'COMPLETED');
   assert.deepEqual(errors, []);
   const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, sessionWorkflowThroughProxy: true, sessionSearchAndReopenThroughProxy: true, agentRunActivityThroughProxy: true, modelRequestTraceThroughProxy: true, savedNotesSurviveReload: true, sessionClosePreservesRunningTask: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, childRequestPreservedOnReconnect: childRequest.id, workerLeasePreservedOnReconnect: childLease.id, workerId: childLease.workerId, workerEpoch: childLease.epoch, workerPid: actualWorker.pid, repositoryBindingId: finished.execution.repositoryBindingId, workerReceiptsVerified: observed.workerLeases.length, parentWaitReleasesModelCapacity: true, teamDependencyAdoptionThroughProxy: true, teamMessagesSurviveReload: true, mcpActualChildSourceThroughProxy: true, teamRootCalls: finished.budget.usedCalls, teamChildRuns: observed.team.agents.map(agent => ({ id: agent.id, agentRunId: agent.agentRunId, state: agent.state, integrationState: agent.integrationState })), externalMcpCalls: teamProtocol.mcpCalls.length, pageErrors: errors, modelErrors };
+  Object.assign(report, { corePid: core.pid, workerDeployment: actualWorker.deployment, workerProcessStartedAt: actualWorker.processStartedAt, workerHeartbeatSource: reconnectedWorker.heartbeatSource, workerHeartbeatSequenceOnReconnect: reconnectedWorker.lastHeartbeatSequence });
   mkdirSync(join(root, 'docs/qa'), { recursive: true });
   writeFileSync(join(root, `docs/qa/standalone-${process.platform}.json`), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report, null, 2));

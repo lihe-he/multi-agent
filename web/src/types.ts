@@ -22,6 +22,7 @@ export interface Evidence {
   id: string; kind?: string; stage?: string; version?: string; command?: string;
   exitCode?: number; output?: string; createdAt?: string; status?: string;
   workerId?: string; workerLeaseId?: string; workerEpoch?: number; executionNodeId?: string; repositoryBindingId?: string; bindingVersion?: number; observedStatus?: string;
+  deployment?: string; executorPid?: number; corePid?: number; processStartedAt?: string;
 }
 export interface Task {
   id: string; projectId: string; sessionId?: string; title: string; goal: string; mode: string; modeReason?: string;
@@ -54,12 +55,13 @@ export interface AgentRun {
   evidenceId?: string; reason?: string; inputVersion?: string; resultVersion?: string;
   parentRunId?: string; subtaskId?: string; teamId?: string; depth?: number; permissions?: AgentPermission;
   workerId?: string; workerLeaseId?: string; workerEpoch?: number; executionNodeId?: string; repositoryBindingId?: string; bindingVersion?: number;
+  deployment?: string; executorPid?: number; corePid?: number; processStartedAt?: string;
 }
 export interface ExecutionNode { id: string; name: string; version: number; protocolVersion: number; type: string; deployment: string; platform: string; architecture: string; enabled: boolean; epoch: number; state?: string; workerId?: string; lastSeenAt?: string }
 export interface RepositoryBinding { id: string; projectId: string; executionNodeId: string; name: string; path: string; version: number; enabled: boolean; head?: string; branch?: string }
-export interface Worker { id: string; executionNodeId: string; epoch: number; state: string; pid: number; processStartedAt: string; startedAt: string; heartbeatAt: string; expiresAt: string; stopState?: string; deployment: string; platform: string; reason?: string }
+export interface Worker { id: string; executionNodeId: string; epoch: number; state: string; pid: number; corePid?: number; parentPid?: number; processStartedAt: string; startedAt: string; heartbeatAt: string; heartbeatSource?: string; lastHeartbeatSequence?: number; expiresAt: string; stopState?: string; deployment: string; platform: string; reason?: string }
 export interface ExecutionSnapshot { version: number; protocolVersion: number; executionNodeId: string; nodeVersion: number; nodeName: string; repositoryBindingId: string; bindingVersion: number; bindingName: string; sourcePath: string; deployment: string }
-export interface WorkerLease { id: string; sequence: number; operationId: string; operationKind: string; kind: string; operationState: string; taskId: string; agentRunId?: string; workerId: string; executionNodeId: string; epoch: number; repositoryBindingId: string; bindingVersion: number; authorizationVersion: number; workingDirectory: string; state: string; stopState: string; createdAt: string; heartbeatAt: string; expiresAt: string; endedAt?: string; reason?: string; evidenceId?: string }
+export interface WorkerLease { id: string; sequence: number; operationId: string; operationKind: string; kind: string; operationState: string; taskId: string; agentRunId?: string; workerId: string; executionNodeId: string; epoch: number; repositoryBindingId: string; bindingVersion: number; authorizationVersion: number; workingDirectory: string; deployment?: string; executorPid?: number; corePid?: number; processStartedAt?: string; state: string; stopState: string; createdAt: string; heartbeatAt: string; expiresAt: string; endedAt?: string; reason?: string; evidenceId?: string }
 export interface AgentPermission { capabilities: string[]; readScopeLayers: string[][]; writeScopeLayers: string[][] }
 export interface AgentDefinition {
   id: string; version: number; name: string; role: string; instructions: string; capabilities: string[];
@@ -83,6 +85,7 @@ export interface ModelRequest {
   usage?: { inputTokens?: number | string; outputTokens?: number | string; cachedInputTokens?: number | string; reasoningTokens?: number | string };
   outputPreview?: string; outputTruncated?: boolean; errorType?: string; reason?: string; remoteOutcome?: string;
   workerId?: string; workerLeaseId?: string; workerEpoch?: number; executionNodeId?: string; repositoryBindingId?: string; bindingVersion?: number;
+  deployment?: string; executorPid?: number; corePid?: number; processStartedAt?: string;
 }
 export interface Connection { baseUrl: string; token: string }
 export interface Session { id: string; projectId: string; title: string; version: number; isOpen: boolean; createdAt: string; updatedAt: string }

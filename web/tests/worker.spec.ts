@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
 // These are browser protocol fixtures; real worker ownership is checked with Java and the packaged Jar.
-async function workerFixture(page: Page) {
+async function workerFixture(page: Page, independent = false) {
   const node: any = { id: 'node-local-id', name: '已配对本机', version: 2, protocolVersion: 1, type: 'LOCAL', deployment: 'CORE_PROCESS', platform: 'Windows', architecture: 'amd64', enabled: true, epoch: 7, state: 'ONLINE', workerId: 'actual-worker-source', lastSeenAt: '2026-11-07T13:00:00Z' };
   const project = { id: 'worker-project', name: '节点归属项目', path: 'C:\\Projects\\项目 repo', repositoryBindingId: 'binding-original', executionNodeId: node.id };
   const bindings: any[] = [{ id: 'binding-original', name: '原仓库目录', projectId: project.id, executionNodeId: node.id, path: project.path, enabled: true, version: 3 }, { id: 'binding-another', name: '另一个本机副本', projectId: project.id, executionNodeId: node.id, path: 'D:\\Projects\\项目 repo', enabled: true, version: 1 }];
@@ -11,6 +11,10 @@ async function workerFixture(page: Page) {
   const tasks: any[] = [task];
   const worker = { id: node.workerId, executionNodeId: node.id, epoch: 7, state: 'RUNNING', pid: 4000, processStartedAt: task.createdAt, startedAt: task.createdAt, heartbeatAt: node.lastSeenAt, expiresAt: '2026-11-07T13:00:30Z', deployment: 'CORE_PROCESS', platform: 'Windows' };
   const leases: any[] = Array.from({ length: 65 }, (_, index) => ({ id: `lease-${index + 1}`, sequence: index + 1, operationId: `operation-${index + 1}`, operationKind: 'operation', kind: index === 64 ? 'SUBAGENT_MODEL' : 'VERIFICATION', taskId: task.id, agentRunId: 'child-real-run-source', workerId: worker.id, executionNodeId: node.id, epoch: 7, repositoryBindingId: bindings[0].id, bindingVersion: 1, authorizationVersion: 1, workingDirectory: `${task.workspace}\\${'long-name-'.repeat(10)}`, state: index === 64 ? 'UNKNOWN' : 'RELEASED', operationState: index === 64 ? 'UNKNOWN' : 'ACKNOWLEDGED', stopState: index === 64 ? 'UNKNOWN' : 'CONFIRMED', createdAt: task.createdAt, heartbeatAt: node.lastSeenAt, expiresAt: worker.expiresAt, reason: index === 64 ? '失去归属，旧远端效果尚未确认' : '', evidenceId: index === 64 ? 'lease-evidence' : '' }));
+  if (independent) {
+    node.deployment = 'LOCAL_PROCESS'; task.execution.deployment = 'LOCAL_PROCESS'; Object.assign(worker, { deployment: 'LOCAL_PROCESS', pid: 5200, corePid: 4000, parentPid: 4000 });
+    for (const lease of leases) Object.assign(lease, { deployment: 'LOCAL_PROCESS', executorPid: worker.pid, corePid: 4000, processStartedAt: worker.processStartedAt });
+  }
   const queries: string[] = [], bindingPosts: any[] = [], nodePosts: any[] = [], taskPosts: any[] = [], authorizations: any[] = [], errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.route('**/api/**', async intercepted => {
@@ -55,6 +59,15 @@ async function workerFixture(page: Page) {
 async function openWorker(page: Page) { await page.goto('/'); await page.getByRole('button', { name: '研发任务', exact: true }).click(); await page.getByRole('button', { name: '核对实际操作与租约' }).click(); await page.getByRole('button', { name: 'Worker 执行', exact: true }).click(); }
 
 for (const width of [1440, 430]) {
+  test(`独立 Worker 与核心进程使用各自的原 PID ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 }); const fixture = await workerFixture(page, true); await openWorker(page);
+    const first = page.getByRole('region', { name: 'Worker 实际执行记录' }).locator('.worker-lease').first();
+    await expect(first.getByText('本机独立 Worker · PID 5200', { exact: true })).toBeVisible(); await expect(first.getByText('PID 4000', { exact: true })).toBeVisible();
+    await expect(first.getByText('旧进程或外部效果未确认', { exact: true })).toBeVisible(); expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({ path: `qa/worker-independent-${width === 430 ? 'narrow' : 'desktop'}.png` });
+    await page.getByRole('button', { name: '资源与设置', exact: true }).click(); await page.getByRole('button', { name: '执行节点与仓库', exact: true }).click();
+    await expect(page.getByRole('heading', { name: '进程 5200 · 代次 7' })).toBeVisible(); await expect(page.getByText(/本机独立 Worker · 核心 PID 4000/)).toBeVisible(); expect(fixture.errors).toEqual([]);
+  });
   test(`Worker 来源、未知事实和历史游标 ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 }); const fixture = await workerFixture(page); await openWorker(page); const panel = page.getByRole('region', { name: 'Worker 实际执行记录' });
     await expect(panel.getByRole('heading', { name: 'SUBAGENT_MODEL', exact: true })).toBeVisible(); const first = panel.locator('.worker-lease').first();

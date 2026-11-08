@@ -53,6 +53,39 @@ class TeamRecordsTest {
     }
 
     @Test
+    void fixedMcpSourceUsesFrozenPermissionsAndCannotAuthorizeSharedTeamTools() throws Exception {
+        try (var store = new ExecutionStore(new ObjectMapper(), directory.toString())) {
+            WorkbenchCatalog catalog = catalog(store); Map<String, Object> initial = root(store, catalog, 6, 24, 3);
+            String taskId = str(map(initial, "task"), "id");
+            store.editTask(taskId, task -> {
+                task.remove("teamId"); map(task, "collaboration").put("enabled", false);
+                map(task, "mcpAuthorization").put("bindings", List.of(obj("alias", "fixed-action")));
+            }, null, "");
+            Map<String, Object> stage = obj("id", "fixed-mcp", "kind", "IMPLEMENT", "role", "developer", "readOnly", false);
+            Map<String, Object> run = store.queueAgentRun(taskId, stage, "workspace", "version", false); String runId = str(run, "id");
+            assertTrue(str(run, "teamId").isBlank()); assertTrue(AgentPermissions.has(map(run, "permissions"), "mcp"));
+            store.beginOperation(taskId, "fixed-mcp", "MODEL", "workspace", runId);
+            String receipt = store.beginModelRequest(taskId, runId, false, obj());
+            assertEquals(403, assertThrows(ApiException.class, () -> store.agentToolSource(taskId, runId, receipt, "tool-1")).status());
+            store.finishModelRequest(receipt, obj("state", "SUCCEEDED"));
+            Map<String, Object> source = store.agentToolSource(taskId, runId, receipt, "tool-1");
+            assertEquals(runId, source.get("agentRunId")); assertEquals(receipt, source.get("modelRequestId")); assertFalse(source.containsKey("teamId"));
+            assertEquals(403, assertThrows(ApiException.class, () -> store.agentToolSource(taskId, runId, str(initial, "requestId"), "tool-1")).status());
+            assertEquals(403, assertThrows(ApiException.class, () -> store.agentToolSource(taskId, runId, receipt, "")).status());
+            assertEquals(403, assertThrows(ApiException.class, () -> store.enqueueSubtask(taskId, runId, receipt, "delegate", request("agent-research"))).status());
+            store.editTask(taskId, task -> task.put("profileSnapshot", List.of(obj("id", "read-only-developer", "role", "developer", "capabilities", List.of("read", "search")))), null, "");
+            assertEquals(source, store.agentToolSource(taskId, runId, receipt, "tool-1"), "an existing run keeps its original frozen grant");
+            Map<String, Object> denied = store.queueAgentRun(taskId, obj("id", "denied-mcp", "kind", "IMPLEMENT", "role", "developer", "readOnly", false), "workspace", "version", false);
+            String deniedRun = str(denied, "id"); store.beginOperation(taskId, "denied-mcp", "MODEL", "workspace", deniedRun);
+            String deniedReceipt = store.beginModelRequest(taskId, deniedRun, false, obj()); store.finishModelRequest(deniedReceipt, obj("state", "SUCCEEDED"));
+            assertEquals(403, assertThrows(ApiException.class, () -> store.agentToolSource(taskId, deniedRun, deniedReceipt, "tool-2")).status());
+            store.finishAgentRun(runId, "SUCCEEDED", "completed");
+            assertEquals(409, assertThrows(ApiException.class, () -> store.agentToolSource(taskId, runId, receipt, "tool-1")).status());
+            assertTrue(store.list("subtask").isEmpty()); assertTrue(store.list("mcpOperation").isEmpty());
+        }
+    }
+
+    @Test
     void stableIdentityCumulativeLimitsAndScopeIntersectionSurviveReopen() throws Exception {
         String taskId, firstId;
         try (var store = new ExecutionStore(new ObjectMapper(), directory.toString())) {

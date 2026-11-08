@@ -42,6 +42,6 @@
 
 这组夹具最初仅设置 unref，在 Windows 随 Node 父进程一起关闭，不能证明仍有实际在途子进程。修订为 detached/windowsHide、原 PID 核对、有界退出及 finally 清理后，原停止边界通过；另加的原 PID 证据断言先在旧代码失败（`.runtime/alpha9-child-facts-before.log`），补全结果来源后两项定向通过（`.runtime/alpha9-child-facts-after.log`）。较早夹具失败保留在 `.runtime/alpha9-child-exit-before/` 及对应日志，不归因为产品停止故障。夹具的清理另核对进程开始时间不晚于原 PID 回执，拒绝清理后出生的同号进程。
 
-最后完整核心回归 142 项中 141 通过、1 项 Windows POSIX 跳过（`.runtime/alpha9-process-facts-final-core.log`）；上述夹具清理保护后两项再验通过（`.runtime/alpha9-process-facts-final-child-regression.log`）。最终 Jar 协议 28 / 28、独立浏览器/附加桌面生命周期、Windows 打包运行与 Jar 同一性均通过；当前三份 Java 文件的 14 条已有注释原文保留，新 Javadoc 为标准多行。修订提交的三端 CI 仍须单独核对，不能用这些本机通过替代原 Windows 失败。
+最后完整核心回归 142 项中 141 通过、1 项 Windows POSIX 跳过（`.runtime/alpha9-process-facts-final-core.log`）；上述夹具清理保护后两项再验通过（`.runtime/alpha9-process-facts-final-child-regression.log`）。最终 Jar 协议 28 / 28、独立浏览器/附加桌面生命周期、Windows 打包运行与 Jar 同一性均通过；当前三份 Java 文件的 14 条已有注释原文保留，新 Javadoc 为标准多行。后续提交 `4f21a83ad4488e73e88bccd1da4495f92e432f8c` 的 [run 42440191423](https://github.com/lihe-he/multi-agent/actions/runs/42440191423) 已完成，三端均成功，准确结果在 `.runtime/ci-alpha9-result.json`。成功只对应该补充提交，不能改写两次历史失败或证明此前输出缺失的具体原因。
 
 远程主机身份与配对、Worker 独立进程与持久队列、旧进程树跨重启核验、终端/PTY、任意 workflow/角色租约、完整备份、保留策略与长期验收仍继续实施。本轮基础不能替代 F01–F21 或 M0–M3 全部退出条件。

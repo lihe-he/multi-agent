@@ -23,17 +23,27 @@ final class WorkerLedger {
     WorkerLedger(ExecutionStore store, ExecutionNodes nodes) { this.store = store; this.nodes = nodes; }
 
     Map<String, Object> start(Instant time) {
+        return start(time, obj("deployment", "CORE_PROCESS", "pid", ProcessHandle.current().pid(), "processStartedAt", ProcessHandle.current().info().startInstant().map(Instant::toString).orElse(""), "protocolVersion", 1));
+    }
+
+    /**
+     * 独立进程身份来自已完成握手的实际句柄，核心计时器不能代替子进程心跳。
+     */
+    Map<String, Object> start(Instant time, Map<String, Object> process) {
         synchronized (store) {
             Map<String, Object> node = nodes.localNode();
-            long pid = ProcessHandle.current().pid();
-            String processStart = ProcessHandle.current().info().startInstant().map(Instant::toString).orElse("");
+            if (!Set.of("CORE_PROCESS", "LOCAL_PROCESS").contains(str(process, "deployment")) || !(process.get("pid") instanceof Number actualPid)
+                    || actualPid.longValue() < 1 || str(process, "processStartedAt").isBlank() || num(process, "protocolVersion", -1) != 1) throw new ApiException(403, "Worker 缺少已核验的实际进程身份");
+            long pid = actualPid.longValue(); String processStart = str(process, "processStartedAt");
             List<Map<String, Object>> oldWorkers = store.list("worker").stream().filter(worker -> str(node, "id").equals(str(worker, "executionNodeId")) && "RUNNING".equals(str(worker, "state"))).toList();
             if (oldWorkers.stream().anyMatch(worker -> ((Number) worker.get("pid")).longValue() == pid && processStart.equals(str(worker, "processStartedAt")))) throw new ApiException(409, "当前核心进程已有本机 Worker，请先确认旧执行停止");
             node.put("epoch", num(node, "epoch", 0) + 1);
             Map<String, Object> worker = obj("id", id(), "executionNodeId", node.get("id"), "epoch", node.get("epoch"), "protocolVersion", 1,
-                "deployment", "CORE_PROCESS", "pid", pid, "processStartedAt", processStart, "startedAt", time.toString(), "heartbeatAt", time.toString(),
+                "deployment", process.get("deployment"), "pid", pid, "processStartedAt", processStart, "startedAt", time.toString(), "heartbeatAt", time.toString(),
                 "expiresAt", time.plusMillis(LEASE_MILLIS).toString(), "state", "RUNNING", "platform", System.getProperty("os.name"), "architecture", System.getProperty("os.arch"));
-            node.put("workerId", worker.get("id")); node.put("lastSeenAt", time.toString());
+            for (String field : List.of("parentPid", "corePid", "coreStartedAt", "controlEnvironmentPresent", "jvmOptionsEnvironmentPresent", "controlPropertiesPresent")) if (process.containsKey(field)) worker.put(field, process.get(field));
+            worker.put("heartbeatSource", "LOCAL_PROCESS".equals(str(process, "deployment")) ? "STARTUP_HANDSHAKE" : "CORE_TIMER"); worker.put("lastHeartbeatSequence", 0L);
+            node.put("workerId", worker.get("id")); node.put("lastSeenAt", time.toString()); node.put("deployment", worker.get("deployment"));
             for (Map<String, Object> old : oldWorkers) old.putAll(obj("state", "LOST", "endedAt", time.toString(), "stopState", "UNKNOWN", "reason", "核心会话更换，旧执行不自动重放"));
             List<Map<String, Object>> workerRecords = new ArrayList<>(oldWorkers); workerRecords.add(worker);
             Map<String, List<Map<String, Object>>> records = new LinkedHashMap<>(); records.put("executionNode", List.of(node)); records.put("worker", workerRecords);
@@ -47,6 +57,7 @@ final class WorkerLedger {
     void requireOwner(Map<String, Object> identity, Instant time) {
         Map<String, Object> worker = store.get("worker", str(identity, "id")), node = store.get("executionNode", str(identity, "executionNodeId"));
         if (!"RUNNING".equals(str(worker, "state")) || !str(identity, "id").equals(str(node, "workerId")) || num(identity, "epoch", -1) != num(node, "epoch", -2)
+                || !samePid(worker, identity) || !str(identity, "processStartedAt").equals(str(worker, "processStartedAt")) || !str(identity, "deployment").equals(str(worker, "deployment"))
                 || !time.isBefore(Instant.parse(str(worker, "expiresAt")))) throw new ApiException(409, "Worker 归属或租约已失效，不允许继续派发");
     }
 
@@ -67,18 +78,33 @@ final class WorkerLedger {
                 "repositoryBindingId", execution.getOrDefault("repositoryBindingId", ""), "bindingVersion", execution.getOrDefault("bindingVersion", 0), "authorizationVersion", execution.getOrDefault("version", 0),
                 "claimDigest", digest, "state", "ACTIVE", "stopState", "RUNNING", "workingDirectory", Path.of(workspace).toAbsolutePath().normalize().toString(),
                 "createdAt", time.toString(), "heartbeatAt", time.toString(), "expiresAt", time.plusMillis(LEASE_MILLIS).toString());
+            lease.putAll(obj("operationType", operation.get("kind"), "subjectId", subject(operation, task), "deployment", worker.get("deployment"), "executorPid", worker.get("pid"), "processStartedAt", worker.get("processStartedAt")));
+            if (worker.containsKey("corePid")) lease.put("corePid", worker.get("corePid"));
+            if ("LOCAL_PROCESS".equals(str(worker, "deployment"))) {
+                try { lease.put("realWorkingDirectory", Path.of(workspace).toRealPath().toString()); }
+                catch (java.io.IOException exception) { throw new ApiException(409, "无法固定 Worker 领取的实际目录"); }
+            }
             operation.putAll(details);
             operation.putAll(obj("state", "DISPATCHED", "updatedAt", time.toString(), "workerLeaseId", leaseId, "workerId", worker.get("id"), "executionNodeId", worker.get("executionNodeId"),
                 "workerEpoch", worker.get("epoch"), "repositoryBindingId", execution.getOrDefault("repositoryBindingId", ""), "bindingVersion", execution.getOrDefault("bindingVersion", 0), "workingDirectory", lease.get("workingDirectory"), "dispatchCount", 1));
+            for (String key : List.of("deployment", "executorPid", "processStartedAt", "corePid")) if (lease.containsKey(key)) operation.put(key, lease.get(key));
             Map<String, List<Map<String, Object>>> records = new LinkedHashMap<>(); records.put(kind, List.of(operation)); records.put("workerLease", List.of(lease));
             if (!str(operation, "agentRunId").isBlank()) {
                 Map<String, Object> run = store.get("agentRun", str(operation, "agentRunId"));
-                for (String key : List.of("workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion")) run.put(key, operation.get(key));
+                for (String key : List.of("workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid")) if (operation.containsKey(key)) run.put(key, operation.get(key));
                 records.put("agentRun", List.of(run));
             }
             store.commitRecords(records, str(task, "id"), "WORKER_DISPATCHED", str(operation, "stage") + " · 操作 " + operationId + " · Worker " + str(worker, "id"));
             return lease;
         }
+    }
+
+    private String subject(Map<String, Object> operation, Map<String, Object> task) {
+        if ("ADOPT_SUBAGENT".equals(str(operation, "kind"))) return str(operation, "target");
+        if (!str(operation, "agentRunId").isBlank()) {
+            String child = str(store.get("agentRun", str(operation, "agentRunId")), "subtaskId"); if (!child.isBlank()) return child;
+        }
+        return str(task, "id");
     }
 
     private void requireWorkspace(Map<String, Object> operation, Map<String, Object> task, String workspace) {
@@ -93,9 +119,20 @@ final class WorkerLedger {
     }
 
     void heartbeat(Map<String, Object> identity, Instant time) {
+        heartbeat(identity, time, obj());
+    }
+
+    void heartbeat(Map<String, Object> identity, Instant time, Map<String, Object> pulse) {
         synchronized (store) {
             requireOwner(identity, time);
             Map<String, Object> worker = store.get("worker", str(identity, "id")), node = store.get("executionNode", str(identity, "executionNodeId"));
+            if ("LOCAL_PROCESS".equals(str(identity, "deployment"))) {
+                if (!str(identity, "id").equals(str(pulse, "workerId")) || num(identity, "epoch", -1) != num(pulse, "epoch", -2)
+                        || !(pulse.get("pid") instanceof Number pid) || pid.longValue() != ((Number) identity.get("pid")).longValue()
+                        || !str(identity, "processStartedAt").equals(str(pulse, "processStartedAt")) || !(pulse.get("sequence") instanceof Number sequence)
+                        || sequence.longValue() != ((Number) worker.get("lastHeartbeatSequence")).longValue() + 1) throw new ApiException(403, "续约必须来自原子进程的下一条实际心跳");
+                worker.putAll(obj("lastHeartbeatSequence", sequence.longValue(), "heartbeatSource", "CHILD_PIPE", "activeCalls", pulse.get("activeCalls")));
+            }
             worker.putAll(obj("heartbeatAt", time.toString(), "expiresAt", time.plusMillis(LEASE_MILLIS).toString())); node.put("lastSeenAt", time.toString());
             List<Map<String, Object>> leases = store.workerLeases(str(identity, "id"), "", "ACTIVE");
             for (Map<String, Object> lease : leases) {
@@ -129,12 +166,26 @@ final class WorkerLedger {
     }
 
     void stop(Map<String, Object> identity, Instant time, String reason) {
+        stop(identity, time, reason, obj());
+    }
+
+    void stop(Map<String, Object> identity, Instant time, String reason, Map<String, Object> processFacts) {
         synchronized (store) {
             Map<String, Object> worker = store.get("worker", str(identity, "id"));
             if (!"RUNNING".equals(str(worker, "state"))) return;
             List<Map<String, Object>> leases = store.workerLeases(str(identity, "id"), "", "ACTIVE");
-            worker.putAll(obj("state", leases.isEmpty() ? "STOPPED" : "LOST", "stopState", leases.isEmpty() ? "CONFIRMED" : "UNKNOWN", "endedAt", time.toString(), "reason", reason));
+            boolean stopped = !"LOCAL_PROCESS".equals(str(identity, "deployment")) || Boolean.TRUE.equals(processFacts.get("treeStopped"));
+            worker.putAll(obj("state", leases.isEmpty() && stopped ? "STOPPED" : "LOST", "stopState", leases.isEmpty() && stopped ? "CONFIRMED" : "UNKNOWN", "endedAt", time.toString(), "reason", reason));
+            if (!processFacts.isEmpty()) worker.put("processStopFacts", processFacts);
             Map<String, List<Map<String, Object>>> records = new LinkedHashMap<>(); records.put("worker", List.of(worker)); appendUnknown(records, leases, reason, time); store.commitRecords(records, null, null, null);
+        }
+    }
+
+    void observeStopped(Map<String, Object> identity, Map<String, Object> facts, Instant time) {
+        synchronized (store) {
+            Map<String, Object> worker = store.get("worker", str(identity, "id"));
+            if (!samePid(identity, worker) || !str(identity, "processStartedAt").equals(str(worker, "processStartedAt"))) throw new ApiException(403, "停止事实不属于原 Worker");
+            worker.putAll(obj("processStopFacts", facts, "processStopObservedAt", time.toString())); store.put("worker", worker);
         }
     }
 
@@ -159,6 +210,7 @@ final class WorkerLedger {
     }
 
     static Map<String, Object> publicLease(Map<String, Object> lease) { Map<String, Object> visible = new LinkedHashMap<>(lease); visible.remove("claimDigest"); return visible; }
+    private static boolean samePid(Map<String, Object> left, Map<String, Object> right) { return left.get("pid") instanceof Number a && right.get("pid") instanceof Number b && a.longValue() == b.longValue(); }
     private static String unknownReason(Map<String, Object> task, String reason) {
         String previous = str(task, "error");
         return previous.isBlank() ? reason : previous.contains(reason) ? previous : previous + "\n" + reason;

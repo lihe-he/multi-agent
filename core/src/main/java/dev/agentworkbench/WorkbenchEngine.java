@@ -46,7 +46,7 @@ public class WorkbenchEngine {
     @org.springframework.beans.factory.annotation.Autowired
     public WorkbenchEngine(ExecutionStore store, WorkbenchCatalog catalog, WorkspaceRuntime runtime, ResourceManager resources, ObjectMapper mapper, McpManager mcp) {
         this.store = store; this.catalog = catalog; this.runtime = runtime; this.resources = resources; this.mapper = mapper; this.mcp = mcp;
-        this.executionWorker = new LocalExecutionWorker(store, catalog.nodes());
+        this.executionWorker = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.startWorker(store, catalog.nodes()) : new LocalExecutionWorker(store, catalog.nodes());
         this.teams = new TeamCoordinator(store, catalog, runtime, resources, mapper, mcp, workers, executionWorker);
     }
 
@@ -355,11 +355,13 @@ public class WorkbenchEngine {
                             if ("WAITING_TOOL".equals(str(store.get("agentRun", runId), "state"))) store.agentRunWaiting(runId, "WAITING_RESOURCE");
                             capacity.acquire(); store.agentRunWaiting(runId, "RUNNING");
                         }), bindings,
-                        alias -> {
-                            store.agentRunWaiting(runId, "WAITING_TOOL");
-                            capacity.release();
-                            try { return mcp.invokeFixedTool(taskId, str(stage, "kind"), alias, () -> cancelled(control)); }
-                            catch (ApiException exception) { return obj("state", "REJECTED", "error", exception.getMessage()); }
+                        new WorkspaceRuntime.FixedToolInvoker() {
+                            @Override public Map<String, Object> invoke(String alias) { return obj("state", "REJECTED", "error", "MCP 动作缺少原模型请求身份"); }
+                            @Override public Map<String, Object> invoke(String alias, String requestId, String toolCallId) {
+                                store.agentRunWaiting(runId, "WAITING_TOOL"); capacity.release();
+                                try { return mcp.invokeFixedTool(taskId, str(stage, "kind"), alias, runId, requestId, toolCallId, () -> cancelled(control)); }
+                                catch (ApiException exception) { return obj("state", exception.status() >= 500 ? "UNKNOWN" : "REJECTED", "error", catalog.redact(exception.getMessage())); }
+                            }
                         });
                 } else {
                     result = runtime.run(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), workspace, prompt, readOnly,
