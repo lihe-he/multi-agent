@@ -47,7 +47,11 @@ jobs:
         env:
           PLAYWRIGHT_CHANNEL: chromium
       - name: Desktop dependencies
-        run: npm ci --cache .runtime/npm-cache
+        run: node tools/install-desktop-deps.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Desktop dependency download guards
+        run: node --test tools/install-desktop-deps.test.mjs
       - name: Desktop connection policy
         run: node --test tools/connection.test.cjs
       - name: Actual core crash and original process recovery
@@ -93,6 +97,8 @@ jobs:
             docs/qa/standalone-*.json
             docs/qa/process-recovery-*.json
             .runtime/process-recovery-*/
+            .runtime/desktop-deps-*.log
+            .runtime/desktop-deps-verified.json
             docs/qa/desktop-home.png
             web/test-results/
             web/qa/

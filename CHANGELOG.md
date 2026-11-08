@@ -9,6 +9,7 @@
 - 长进程清单的停止检查按每轮共享系统 PID 快照，避免逐条重复枚举拖慢响应；信号仍核验原出生，未确认记录继续阻止停止声明。
 - 交付 ZIP 新增进程会话和完整原观察清单，界面显示上限不截断导出或停止门禁；重复原依据提交去重，迟到后代重新触发核验并保留历史。
 - SQLite schema 升为 5，公开 API 与私有 Worker 协议仍为 1。新增真实核心崩溃、MCP EOF 后存活、三次核心启动、生产界面和原证据导出的验收入口；三端 CI 保存恢复及团队容量失败诊断。
+- Windows CI 的固定 Electron 下载连续三次 HTTP 504 后，依赖安装增加官方发布 API 回退：资产版本、名称、大小与包内 SHA-256 均复查，通过后写入原 @electron/get 缓存，并仅重试一次原 npm ci/install.js；原失败日志继续保存，后续完整桌面步骤仍是必需检查。
 
 协议见[进程恢复约定](./docs/process-recovery-contract.md)，固定 OpenJDK 源码、自审和实际失败记录见[恢复研究](./docs/research/process-recovery-2026-11-08.md)。具体产物及平台结果以[实施记录](./docs/implementation-status.md)为准；持久队列、远程配对、PTY、workflow 和完整发布验收继续实施。
 

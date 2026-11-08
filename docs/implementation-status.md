@@ -16,7 +16,7 @@
 | 独立运行 | 最终 Jar/生产 Web 的 Worker PID 54444、核心 PID 54008；客户端退出和重连保持原请求/租约编号，随后 18 次根调用、两名副 Agent、13 条 Worker 回执及一次 MCP 派发完成。无页面/模型异常；[Windows 独立报告](./qa/standalone-win32.json)与实际 Worker/团队截图已复查 |
 | Windows 打包运行 | 最新 Jar/Web 生成 NSIS，打包程序 version/application.version 均为 alpha.11、packaged=true；禁用外部 Java 后使用内置运行时，API 200、无页面异常并正常退出。内置核心 SHA 与最终 Jar 一致，安装包及来源哈希见[最终产物核对](./qa/alpha11-recovery-validation-win32.json)；本轮未重复完整安装/卸载验收 |
 | 源码审查 | 17 份新增/受改 Java 的 59 条原注释全部保留，新增 Javadoc 为标准多行；根/Web/锁文件/POM 版本一致，脚本语法和 diff whitespace 通过。连接策略原 3 / 3，连接代码无本次变更 |
-| 三端 CI | 本机验证与推送提交的 Windows/macOS/Ubuntu CI 分别记录；本次提交的三端结果将在推送后按准确 SHA 核对，本机通过不替代平台结果 |
+| 三端 CI | `3471160c0e9e6cfd86fc849f29a1a172b2c162ce` 的 [run 42464690847](https://github.com/lihe-he/multi-agent/actions/runs/42464690847) 终态为 failure：macOS、Ubuntu 整条成功，ZIP digest、18 套核心报告和实际恢复/协议/独立及打包结果均已核验；Windows 三次的核心 181 项、协议 28 项和 UI 43 项通过，均在固定 Electron 下载的 HTTP 504 处失败，后续桌面步骤未执行。三次失败及日志保留于[准确提交记录](./qa/alpha11-ci-process-receipt.json)。新增官方发布 API 与包内固定 SHA-256 双重核对的缓存回退，继续使用原 install.js，守卫 6 / 6 和实际 136609029 字节预取/原安装成功；修订提交的三端 CI 另行跟进，未计作已通过 |
 
 本轮 schema 为 5，公开 API 与私有 Worker 协议仍为 1。进程覆盖为 OBSERVED_ONLY，真实完整历史树、持久派发队列、远程配对/重连、PTY、角色/写入租约、workflow、完整备份及 F01–F21/M0–M3 退出条件继续实施。完整项目目标仍未完成。
 

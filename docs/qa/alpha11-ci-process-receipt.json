@@ -1,0 +1,203 @@
+{
+  "recordedAt": "2026-11-08T09:50:02.7838189Z",
+  "version": "0.2.0-alpha.11",
+  "commit": "3471160c0e9e6cfd86fc849f29a1a172b2c162ce",
+  "run": 42464690847,
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/42464690847",
+  "conclusion": "failure",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "windowsJobId": 128681358202,
+      "failedStep": "Desktop dependencies",
+      "failure": "Electron node install.js fixed release download: HTTP 504 Gateway Time-out",
+      "core": {
+        "tests": 181,
+        "passed": 180,
+        "skipped": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      "protocolChecks": 28,
+      "uiTests": 43,
+      "laterDesktopStepsExecuted": false,
+      "log": ".runtime/ci-job-128681358202.log",
+      "logSha256": "f73f60ab524da6c78cb0ab4bfa20a03edddd82b85c96a0d6411649c49fb4ab1f"
+    },
+    {
+      "attempt": 2,
+      "status": "completed",
+      "conclusion": "failure",
+      "windowsJobId": 128685349395,
+      "failedStep": "Desktop dependencies",
+      "failure": "Electron node install.js fixed release download: HTTP 504 Gateway Time-out",
+      "core": {
+        "tests": 181,
+        "passed": 180,
+        "skipped": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      "protocolChecks": 28,
+      "uiTests": 43,
+      "laterDesktopStepsExecuted": false,
+      "log": ".runtime/ci-job-128685349395.log",
+      "logSha256": "ca00d69d194dae5f1551f5fc4257ba078822de000830794579614c92cc59c6ec"
+    },
+    {
+      "attempt": 3,
+      "status": "completed",
+      "conclusion": "failure",
+      "windowsJobId": 128688034850,
+      "failedStep": "Desktop dependencies",
+      "failure": "Electron node install.js fixed release download: HTTP 504 Gateway Time-out",
+      "core": {
+        "tests": 181,
+        "passed": 180,
+        "skipped": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      "protocolChecks": 28,
+      "uiTests": 43,
+      "laterDesktopStepsExecuted": false,
+      "log": ".runtime/ci-job-128688034850.log",
+      "logSha256": "6d0242f640a4d3112008fc09876706b6c0d0e0976ece349f1215b8150947e26a"
+    }
+  ],
+  "successfulPlatforms": [
+    {
+      "platform": "macos-latest",
+      "actualJobStartedAt": "2026-11-08T08:51:31Z",
+      "actualJobCompletedAt": "2026-11-08T09:00:07Z",
+      "conclusion": "success",
+      "artifact": {
+        "id": 13611457641,
+        "name": "evidence-macos-latest",
+        "sha256": "18c90922e349498b3126856124798e2290ccd4c98a79e15705b054fb5decd16e",
+        "digestVerified": true
+      },
+      "core": {
+        "suites": 18,
+        "tests": 181,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2,
+        "passed": 179,
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2
+      },
+      "recovery": {
+        "checks": 11,
+        "jarSha256": "a1c2e546dbd233bbcc58ee6d10b25bec321fc6bf84acb90b4f468a5cd65e0207",
+        "originalCorePid": 12454,
+        "originalWorkerPid": 12458,
+        "originalMcpPid": 12640,
+        "originalModelCalls": 3,
+        "originalExternalCalls": 1,
+        "newTaskCalls": 3,
+        "automaticReplay": false,
+        "processCoverage": "OBSERVED_ONLY"
+      },
+      "protocol": {
+        "checks": 28,
+        "status": "passed"
+      },
+      "standalone": {
+        "workerPid": 13872,
+        "corePid": 13789,
+        "originalRequestId": "23a2ada6-8b0b-4e9b-8b0c-aa9baa7f45da",
+        "originalLeaseId": "e826ac8b-2695-4e3e-b5e1-31e94a072464",
+        "rootCalls": 18,
+        "receipts": 13
+      },
+      "packaged": {
+        "desktop": "PASS",
+        "api": 200,
+        "version": "0.2.0-alpha.11",
+        "application": {
+          "packaged": true,
+          "version": "0.2.0-alpha.11"
+        },
+        "externalJavaDisabled": true,
+        "pageErrors": []
+      },
+      "note": "Successful attempt 1 execution; rerun API retained its success. No rerun execution is inferred from an inherited job ID."
+    },
+    {
+      "platform": "ubuntu-latest",
+      "actualJobStartedAt": "2026-11-08T08:51:31Z",
+      "actualJobCompletedAt": "2026-11-08T08:59:01Z",
+      "conclusion": "success",
+      "artifact": {
+        "id": 13611241923,
+        "name": "evidence-ubuntu-latest",
+        "sha256": "e11816adccbfdd6e44728b59f7478f4c29ff6f5c1c9527ce49255492d7a9daad",
+        "digestVerified": true
+      },
+      "core": {
+        "suites": 18,
+        "tests": 181,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2,
+        "passed": 179,
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2
+      },
+      "recovery": {
+        "checks": 11,
+        "jarSha256": "2b96e0b720730ca501d7e6dae8cf39cdf64a9c08371c5fcee3b2c9d4a28dcb26",
+        "originalCorePid": 11023,
+        "originalWorkerPid": 11051,
+        "originalMcpPid": 11217,
+        "originalModelCalls": 3,
+        "originalExternalCalls": 1,
+        "newTaskCalls": 3,
+        "automaticReplay": false,
+        "processCoverage": "OBSERVED_ONLY"
+      },
+      "protocol": {
+        "checks": 28,
+        "status": "passed"
+      },
+      "standalone": {
+        "workerPid": 11876,
+        "corePid": 11848,
+        "originalRequestId": "01eda921-cee9-4dca-8965-20eda05a492b",
+        "originalLeaseId": "3a68fd65-1a55-42d3-ace6-463c5f5be20b",
+        "rootCalls": 18,
+        "receipts": 13
+      },
+      "packaged": {
+        "desktop": "PASS",
+        "api": 200,
+        "version": "0.2.0-alpha.11",
+        "application": {
+          "packaged": true,
+          "version": "0.2.0-alpha.11"
+        },
+        "externalJavaDisabled": true,
+        "pageErrors": []
+      },
+      "note": "Successful attempt 1 execution; rerun API retained its success. No rerun execution is inferred from an inherited job ID."
+    }
+  ],
+  "checkedInQaUsedAsUnexecutedPlatformProof": false,
+  "remediation": {
+    "originalFailurePreserved": true,
+    "boundedRerunsExhausted": 3,
+    "source": "Official Electron release API and pinned npm package checksums",
+    "version": "39.2.7",
+    "assetId": 327945425,
+    "assetSize": 136609029,
+    "sha256": "3464537fa4be6b7b073f1c9b694ac2eb1f632d6ec36f6eeac9e00d8a279f188c",
+    "originalInstallScriptRetained": true,
+    "downloadGuardTests": 6,
+    "localOfficialPrefetch": "passed",
+    "localOriginalInstall": "passed",
+    "repairCommitCi": "pending; must validate its own exact commit"
+  }
+}
