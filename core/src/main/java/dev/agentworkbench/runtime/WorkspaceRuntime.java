@@ -87,7 +87,7 @@ public class WorkspaceRuntime {
                 throw new IllegalStateException("准备中的现场已存在但没有完整一致的回执，请核对后选择人工接手或放弃任务；目录不会被覆盖：" + dest);
             }
             if (dirty && !includeChanges) throw new IllegalArgumentException("项目有未提交改动，请选择带入当前改动或先整理工作区。");
-            writeAtomic(manifest, json.writeValueAsBytes(object("taskId", taskId, "source", root.toString(), "baseline", baseline, "sourceDirty", dirty, "state", "PREPARED")));
+            writeMetadataAtomic(manifest, json.writeValueAsBytes(object("taskId", taskId, "source", root.toString(), "baseline", baseline, "sourceDirty", dirty, "state", "PREPARED")));
             ensureSpace();
             git(dest.getParent(), "-c", "protocol.file.allow=always", "clone", "--no-hardlinks", "--no-local", "--", root.toString(), dest.toString());
             git(dest, "checkout", "--detach", baseline);
@@ -100,7 +100,7 @@ public class WorkspaceRuntime {
                 throw new IllegalStateException("原项目在快照过程中变化，请重新创建任务；原目录未被修改。");
             }
             String version = fingerprint(dest.toString());
-            writeAtomic(manifest, json.writeValueAsBytes(object("taskId", taskId, "source", root.toString(), "baseline", baseline, "sourceDirty", dirty, "state", "READY", "version", version)));
+            writeMetadataAtomic(manifest, json.writeValueAsBytes(object("taskId", taskId, "source", root.toString(), "baseline", baseline, "sourceDirty", dirty, "state", "READY", "version", version)));
             return object("workspace", dest.toString(), "baseline", baseline, "version", version, "sourceDirty", dirty);
         } catch (IOException e) { throw failure(e); }
     }
@@ -411,6 +411,8 @@ public class WorkspaceRuntime {
                     }
                     Path operation = null;
                     Map<String, Object> entry = null;
+                    String receiptPhase = "PREPARE_METADATA";
+                    boolean toolReturned = false;
                     try {
                         Map<String, Object> args = json.readValue(Objects.toString(function.get("arguments"), "{}"), new TypeReference<>() {});
                         String opId = UUID.randomUUID().toString();
@@ -418,32 +420,36 @@ public class WorkspaceRuntime {
                         Files.createDirectories(ledger);
                         operation = ledger.resolve(opId + ".json");
                         entry = object("id", opId, "tool", name, "path", args.get("path"), "state", "PREPARED", "createdAt", java.time.Instant.now().toString());
-                        writeAtomic(operation, json.writeValueAsBytes(entry));
-                        entry.put("state", "SENT"); writeAtomic(operation, json.writeValueAsBytes(entry));
+                        writeMetadataAtomic(operation, json.writeValueAsBytes(entry));
+                        receiptPhase = "SEND_METADATA";
+                        entry.put("state", "SENT"); writeMetadataAtomic(operation, json.writeValueAsBytes(entry));
                         log.accept("工具 · " + name + (args.containsKey("path") ? " · " + args.get("path") : ""));
                         Object observation;
+                        receiptPhase = "TOOL_EXECUTION";
                         try (AutoCloseable toolLease = session == null ? () -> {} : session.acquireTool()) {
                             observation = invokeTool(root, name, args, readOnly, scope, route, cancelled, log, session);
+                            toolReturned = true;
                         }
                         toolResult = json.writeValueAsString(observation);
+                        receiptPhase = "CONFIRM_METADATA";
                         if (observation instanceof Map<?, ?> observed && Set.of("UNKNOWN", "CANCELLED").contains(Objects.toString(observed.get("status"), ""))) {
                             String toolStatus = observed.get("status").toString();
                             entry.put("state", toolStatus); entry.put("completedAt", java.time.Instant.now().toString());
-                            writeAtomic(operation, json.writeValueAsBytes(entry));
+                            writeMetadataAtomic(operation, json.writeValueAsBytes(entry));
                             return result(-1, "工具 " + name + " 返回 " + toolStatus + "；停止后续模型请求，保留操作账本供核对。\n" + toolResult, toolStatus);
                         }
                         entry.put("state", "CONFIRMED"); entry.put("completedAt", java.time.Instant.now().toString());
-                        writeAtomic(operation, json.writeValueAsBytes(entry));
+                        writeMetadataAtomic(operation, json.writeValueAsBytes(entry));
                     } catch (IllegalArgumentException e) {
                         toolResult = json.writeValueAsString(object("error", e.getMessage()));
                         if (operation != null && entry != null) {
-                            entry.put("state", "REJECTED"); writeAtomic(operation, json.writeValueAsBytes(entry));
+                            entry.put("state", "REJECTED"); writeMetadataAtomic(operation, json.writeValueAsBytes(entry));
                         }
                     } catch (Exception e) {
                         if (operation != null && entry != null) {
-                            entry.put("state", "UNKNOWN");
-                            try { writeAtomic(operation, json.writeValueAsBytes(entry)); } catch (IOException ignored) { }
-                            return result(-1, "工具操作未取得完整回执，结果未知：" + name + " · " + e.getClass().getSimpleName(), "UNKNOWN");
+                            entry.putAll(object("state", "UNKNOWN", "errorType", e.getClass().getSimpleName(), "failedReceiptPhase", receiptPhase, "toolReturned", toolReturned));
+                            try { writeMetadataAtomic(operation, json.writeValueAsBytes(entry)); } catch (IOException ignored) { }
+                            return result(-1, "工具操作未取得完整回执，结果未知：" + name + " · " + e.getClass().getSimpleName() + " · " + receiptPhase, "UNKNOWN");
                         }
                         toolResult = json.writeValueAsString(object("error", "工具参数格式无效"));
                     }
@@ -930,7 +936,7 @@ public class WorkspaceRuntime {
             if (receipt) {
                 Path receipts = data.resolve("processes"); Files.createDirectories(receipts);
                 receiptFile = receipts.resolve(process.pid() + ".json");
-                writeAtomic(receiptFile, json.writeValueAsBytes(object("pid", process.pid(), "workspace", cwd.toString(), "startedAt", process.info().startInstant().map(Object::toString).orElse(""), "state", "RUNNING")));
+                writeMetadataAtomic(receiptFile, json.writeValueAsBytes(object("pid", process.pid(), "workspace", cwd.toString(), "startedAt", process.info().startInstant().map(Object::toString).orElse(""), "state", "RUNNING")));
             }
             try (OutputStream stdin = process.getOutputStream()) { stdin.write(input.getBytes(StandardCharsets.UTF_8)); }
             Thread reader = Thread.ofVirtual().start(() -> {
@@ -989,7 +995,7 @@ public class WorkspaceRuntime {
                 log.accept(processFacts);
             }
             if (state.equals("SUCCEEDED") && exit != 0) state = "FAILED";
-            if (receiptFile != null) writeAtomic(receiptFile, json.writeValueAsBytes(object("pid", process.pid(), "workspace", cwd.toString(), "state", state, "exitCode", exit)));
+            if (receiptFile != null) writeMetadataAtomic(receiptFile, json.writeValueAsBytes(object("pid", process.pid(), "workspace", cwd.toString(), "state", state, "exitCode", exit)));
             synchronized (output) {
                 Map<String, Object> outcome = result(exit, output + (errors.isEmpty() ? "" : "\n" + errors), state);
                 outcome.put("stdout", output.toString());
@@ -1055,12 +1061,35 @@ public class WorkspaceRuntime {
         if (disk.getUsableSpace() < 2_000_000_000L || disk.getUsableSpace() < disk.getTotalSpace() * .05) throw new IllegalStateException("磁盘可用空间不足，停止创建新任务。");
     }
     private void requireId(String id) { if (id == null || !id.matches("[a-zA-Z0-9_-]{1,100}")) throw new IllegalArgumentException("无效任务编号。"); }
-    private void writeAtomic(Path target, byte[] bytes) throws IOException {
+    /**
+     * Windows 共享冲突只重试原元数据替换，最多等待一秒；工具与用户文件写入不重放。
+     */
+    private void writeMetadataAtomic(Path target, byte[] bytes) throws IOException { writeAtomic(target, bytes, true); }
+
+    private void writeAtomic(Path target, byte[] bytes) throws IOException { writeAtomic(target, bytes, false); }
+
+    private void writeAtomic(Path target, byte[] bytes, boolean metadata) throws IOException {
         Path tmp = target.resolveSibling(target.getFileName() + ".tmp-" + UUID.randomUUID());
         try {
             Files.write(tmp, bytes, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
-            try { Files.move(tmp, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING); }
-            catch (AtomicMoveNotSupportedException e) { Files.move(tmp, target, StandardCopyOption.REPLACE_EXISTING); }
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(1);
+            int attempt = 0;
+            while (true) {
+                try {
+                    try { Files.move(tmp, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING); }
+                    catch (AtomicMoveNotSupportedException e) { Files.move(tmp, target, StandardCopyOption.REPLACE_EXISTING); }
+                    return;
+                } catch (AccessDeniedException exception) {
+                    long remaining = deadline - System.nanoTime();
+                    if (!metadata || !System.getProperty("os.name", "").startsWith("Windows") || remaining <= 0) throw exception;
+                    try { TimeUnit.NANOSECONDS.sleep(Math.min(remaining, TimeUnit.MILLISECONDS.toNanos(Math.min(100, 25L * ++attempt)))); }
+                    catch (InterruptedException interrupted) {
+                        Thread.currentThread().interrupt();
+                        java.io.InterruptedIOException failed = new java.io.InterruptedIOException("元数据替换等待被中断，原操作不重放");
+                        failed.initCause(interrupted); throw failed;
+                    }
+                }
+            }
         } finally { Files.deleteIfExists(tmp); }
     }
     private static String str(Map<String, Object> map, String key, String fallback) { return Objects.toString(map.get(key), fallback); }

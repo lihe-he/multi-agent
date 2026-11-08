@@ -293,6 +293,7 @@ public class McpManager {
         private final McpTransport delegate;
         private final ResourceManager.Lease lease;
         private final String operationId;
+        private final ReentrantLock stopLock = new ReentrantLock();
         private boolean closed;
         private boolean released;
 
@@ -303,39 +304,45 @@ public class McpManager {
         @Override public Map<String, Object> request(String method, Map<String, Object> params) throws Exception { return delegate.request(method, params); }
         @Override public void notify(String method, Map<String, Object> params) throws Exception { delegate.notify(method, params); }
         @Override public boolean definitionsChanged() { return delegate.definitionsChanged(); }
-        @Override public synchronized boolean stopConfirmed() { return closed && delegate.stopConfirmed(); }
+        @Override public boolean stopConfirmed() { stopLock.lock(); try { return closed && delegate.stopConfirmed(); } finally { stopLock.unlock(); } }
 
-        private synchronized boolean releaseIfStopped() {
-            if (released) return true;
-            if (!closed || !delegate.stopConfirmed()) return false;
-            synchronized (store) {
-                Map<String, Object> current = operationId.isBlank() ? null : store.find("mcpOperation", operationId);
-                if (current != null) {
-                    current.put("stopState", "CONFIRMED"); current.put("localStoppedAt", now());
-                    if ("UNKNOWN".equals(str(current, "state"))) current.put("canReconcile", true);
-                    store.put("mcpOperation", current);
+        private boolean releaseIfStopped() {
+            stopLock.lock();
+            try {
+                if (released) return true;
+                if (!closed || !delegate.stopConfirmed()) return false;
+                synchronized (store) {
+                    Map<String, Object> current = operationId.isBlank() ? null : store.find("mcpOperation", operationId);
+                    if (current != null) {
+                        current.put("stopState", "CONFIRMED"); current.put("localStoppedAt", now());
+                        if ("UNKNOWN".equals(str(current, "state"))) current.put("canReconcile", true);
+                        store.put("mcpOperation", current);
+                    }
                 }
-            }
-            lease.close(); transports.remove(serverId, this);
-            released = true;
-            return true;
+                lease.close(); transports.remove(serverId, this);
+                released = true;
+                return true;
+            } finally { stopLock.unlock(); }
         }
 
         @Override
-        public synchronized void close() {
-            try { delegate.close(); }
-            finally {
-                closed = true;
-                if (!releaseIfStopped()) {
-                    Thread.startVirtualThread(() -> {
-                        while (observing && transports.get(serverId) == this) {
-                            try { Thread.sleep(100); if (releaseIfStopped()) return; }
-                            catch (InterruptedException exception) { Thread.currentThread().interrupt(); return; }
-                        }
-                    });
-                    throw new McpTransport.McpFailure("MCP 本地进程或传输未确认停止，容量继续保留；请核对实际进程", true);
+        public void close() {
+            stopLock.lock();
+            try {
+                try { delegate.close(); }
+                finally {
+                    closed = true;
+                    if (!releaseIfStopped()) {
+                        Thread.startVirtualThread(() -> {
+                            while (observing && transports.get(serverId) == this) {
+                                try { Thread.sleep(100); if (releaseIfStopped()) return; }
+                                catch (InterruptedException exception) { Thread.currentThread().interrupt(); return; }
+                            }
+                        });
+                        throw new McpTransport.McpFailure("MCP 本地进程或传输未确认停止，容量继续保留；请核对实际进程", true);
+                    }
                 }
-            }
+            } finally { stopLock.unlock(); }
         }
     }
 

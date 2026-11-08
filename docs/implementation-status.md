@@ -8,16 +8,20 @@
 
 | 检查 | 本轮最终证据 |
 | --- | --- |
-| 核心构建 | `mvn -B -ntp -f core/pom.xml package`：159 项中 158 通过、1 项 Windows POSIX 权限跳过，0 失败/错误；最终 alpha.10 Jar 成功生成 |
-| 进程与回调边界 | 最终完整构建中的 Wire 2、RPC 4、真实 Worker JVM/Node 4、核心桥接 5、Worker 租约 9、实际独立 JVM 团队 12、团队账本 9 全部通过；包含原请求在 HTTP 前落库、存储故障零派发、模型成功/回调回执丢失的不同 UNKNOWN 边界、EOF 后真实命令停止、原序号心跳、两个父子进展、冻结权限、根取消与 MCP 原来源 |
-| 浏览器与 Web | 全量 37 / 37，TypeScript/生产 Web 构建成功；1440px/430px 的独立 Worker 与核心 PID 分别展示，新增截图和最终实际 Worker 截图已查看 |
-| 最终 Jar 集成 | `npm run test:integration`：28 / 28；三种模式、真实 Git/HTTP/命令、实际副 Agent、依赖采纳、根预算、原模型/MCP/Worker 来源、一次派发和 ZIP 去除领取摘要均核对；[Windows 协议报告](./qa/smoke-win32.json) |
-| 独立运行 | `npm run test:standalone`：最终 Jar/生产 Web/同源代理核对独立 Worker PID 36804、核心 PID 32368；关闭会话、浏览器和附加桌面后同一在途副请求/租约保持原编号，重连仍沿原进程出生时间和 CHILD_PIPE 心跳。随后 18 次根模型调用、两名副 Agent、13 条 Worker 回执及一次 MCP 派发完成，无页面/模型夹具异常；[Windows 独立报告](./qa/standalone-win32.json)及[实际 Worker 截图](../web/qa/worker-real-win32.png) |
-| Windows 打包运行 | `npm run package:prepared` / `npm run test:packaged` 均成功，NSIS 和 packaged=true 程序为 alpha.10；禁用外部 Java 后以内置 Java 启动，API 200、无页面异常、正常退出。[Windows 打包报告](./qa/desktop-packaged-win32.json)；打包核心 SHA-256 为 `b85d59dc567f815d3f3c6d84f29e9f0867bac94bb40c392e6f7dabde8a30b61b`，与最终验证 Jar 完全相同。本轮未重复完整安装/卸载验收 |
-| 源码与连接审查 | 23 份新增/受改 Java 文件中 50 条原注释逐项保留，新增 Javadoc 为标准多行；版本一致性、脚本语法、diff whitespace 通过；连接策略 3 / 3 |
-| 三端 CI | 本轮提交推送后按对应 SHA 查询并跟到终态；alpha.9 的绿色 CI 只作为历史记录 |
+| 核心构建 | Windows 元数据替换修订后的最终 package 成功：162 项中 161 通过、1 项 Windows POSIX 权限跳过，0 失败/错误；17 份 Surefire 报告均核对载体 parallelism/maxPoolSize 为 2。最新 Jar 与完整报告单独保留，见[产物核对](./qa/alpha10-receipt-validation-win32.json) |
+| 进程与回调边界 | 最终完整构建中的 Wire 2、RPC 4、真实 Worker JVM/Node 4、核心桥接 5、Worker 租约 9、实际独立 JVM 团队 12、团队账本 9、MCP 19 全部通过；包含原请求在 HTTP 前落库、存储故障零派发、模型成功/回调回执丢失的不同 UNKNOWN 边界、EOF 后真实命令停止、原序号心跳、两个父子进展、冻结权限、根取消与 MCP 原来源；新增真实暂停 stdin 后的大参数取消和进程退出 |
+| 浏览器与 Web | 原独立 Worker 迭代全量 37 / 37，TypeScript/生产 Web 构建成功；1440px/430px 的 Worker 与核心 PID 分别展示，截图已查看。本次锁和 stdio 修订无 Web 源码变化，继续使用这份 Web 构建；最终 Jar 的独立浏览器和打包程序另行验证 |
+| 最终 Jar 集成 | 最新 162 项构建的 Jar 实际协议 28 / 28；包含此前失败的圆桌质疑、三模式、实际团队、依赖采纳、MCP 原来源及 ZIP 交付完整流程，见[Windows 协议报告](./qa/smoke-win32.json)。此前管道修订 Jar 的 26 项中 25 通过、一项失败及原 SHA 保留于 `.runtime/alpha10-carrier-integration-attempt1/` |
+| 独立运行 | 最新 Jar/生产 Web 核对 Worker PID 16044、核心 PID 6996；退出会话、浏览器及附加桌面，重连保持原请求/租约。随后 18 次根调用、两名副 Agent、13 条 Worker 回执及一次 MCP 派发完成；无页面或模型夹具异常。[Windows 独立报告](./qa/standalone-win32.json)、[实际 Worker](../web/qa/worker-real-win32.png)与[团队截图](../web/qa/team-real-win32.png)已复查 |
+| Windows 打包运行 | 最新 Jar/Web 重新生成 NSIS，`npm run test:packaged` 成功；packaged=true、version=alpha.10，禁用外部 Java 后使用内置 Java，API 200、无页面异常、正常退出。打包核心 SHA-256 与最新 Jar 同为 `c64d2d2c21b2647b3c0747f5d2292ab2db539aa2194e6095fff06f8786d6fea7`，见[产物核对](./qa/alpha10-receipt-validation-win32.json)与[打包报告](./qa/desktop-packaged-win32.json)。首次独立 Worker 产物另存，本轮未重复完整安装/卸载验收 |
+| 源码与连接审查 | 原独立 Worker 23 份新增/受改 Java 文件的 50 条原注释逐项保留；本次十份受改 Java 文件另核对 27 条原注释全部保留，新增 Javadoc 为标准多行。版本一致性、脚本语法、diff whitespace 通过；连接策略原 3 / 3，连接代码无本次变更 |
+| 三端 CI | 首次 `391d42e5052dc3f5d2cad5ee029fd8c04d08a55c` 的 [run 42447144181](https://github.com/lihe-he/multi-agent/actions/runs/42447144181) 已终态：macOS 成功，Ubuntu/Windows 两项团队超时失败，Windows 另有后代夹具临时目录清理错误。最终修订提交的准确 SHA 与三端终态以[工作流记录](https://github.com/lihe-he/multi-agent/actions/workflows/verify.yml)为准；首次失败和 alpha.9 历史结果分别保留 |
 
 普通固定阶段的 MCP 来源缺口已先用真实独立 JVM/HTTP 复现，再修复成功运行回执与团队资格的检查。所有新阶段冻结根/阶段/角色权限；固定 MCP 仍要求成功模型回执、原工具编号及写入/MCP 权限，窄范围副任务和独立提案/审查拒绝调用。完整构建中原两个 MCP 参数化夹具和新增门禁回归均通过。此前中断、157 项中的两个夹具失败、Windows BIND/NIO 失败及固定阶段产品失败继续保留于研究记录，不改写为通过。
+
+CI 的两项团队超时已在实际两载体 JVM 中复现：阻塞核心回调持有 monitor，使父调用占满载体；原线程栈、失败报告和固定 OpenJDK 21 源码核对见[来源与自审](./research/worker-processes-2026-11-08.md)。核心/Worker 回调、私有管道写入和资源等待改为 ReentrantLock/Condition，继续保留原序号与原子授予。定向 22 / 22 通过。首次完整两载体回归另暴露 MCP stdio 原生读取与同步请求占满载体；修订后 159 项中 158 通过、1 项 Windows POSIX 跳过。随后大参数实际探针发现原生 stdin 写入也会阻塞取消，现请求/通知读写均在受限平台线程；最终完整核心 160 项中 159 通过、1 项 Windows POSIX 跳过，0 失败/错误。Windows 夹具另补失败路径清理和原后代进程停止断言，不能用 cwd 修订掩盖仍在途的后代。首次 Jar/打包产物与最终修订分别记录，不以旧 SHA 替代最新验证。
+
+实际 Jar 在工具返回后的 Windows 元数据替换处失败后，使用真实 NOSHARE_DELETE 共享锁复现临时失败与持续失败。修订只对原临时文件的元数据替换做每次最多一秒的 Windows AccessDeniedException 重试；实际工具及用户文件写入不重放，持续失败仍 UNKNOWN。最终 162 项构建、28 项 Jar 协议、独立生命周期与 Windows 打包均已完成，日志与报告在 `.runtime/alpha10-receipt-final-core-evidence/` 分别保存；正式 QA 记录最新结果，原失败副本继续保留。
 
 schema 仍为 4，公开 API 仍为 1；私有 Worker 帧协议为 1。生产方式为 LOCAL_PROCESS，基础运行时测试和历史记录保留 CORE_PROCESS。失联封闭原会话，执行/远端效果保持 UNKNOWN，实际进程停止前保留收尾和资源。持久拉取队列、旧进程树跨重启完整核验、远程配对/重连、PTY、角色/写入租约、workflow、完整备份及其他 F01–F21/M0–M3 退出条件继续实施，完整项目目标未完成。
 

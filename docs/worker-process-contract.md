@@ -18,6 +18,8 @@
 
 读线程只路由，实际处理器使用独立虚拟线程，允许 Worker 等待核心团队工具时，核心再向 Worker 派发副任务复制或执行。不同调用分别同步保护预算观察者、消息游标和资源 token，心跳有独立线程。模型不能通过参数提供核心执行上下文。
 
+阻塞回调、RPC/帧写入和资源等待使用 ReentrantLock/Condition，Java 21 的父调用等待不会持有 monitor 占满载体。MCP stdio 的原生管道请求/通知读写使用每传输一条平台线程，stderr 另有一条平台排空线程；传输仍受原工具/进程容量限制，虚拟线程只等待结果和取消，不直接阻塞在原生管道写入。停止确认前继续保留原容量。
+
 核心先原子保存操作 DISPATCHED、租约 ACTIVE 与 AgentRun 来源，再交接原领取。私有领取固定 workerId、epoch、operationKind/operationId、taskId、agentRunId、节点/仓库/授权版本、workingDirectory、realWorkingDirectory、operationType、subjectId 和领取摘要。每次实际调用还有原 callId 与递增 callSequence；同一领取按顺序完成多次依赖整合与副本创建，不能并发或重放。
 
 Worker 核对原随机领取凭据、操作允许的方法、任务/副任务编号与原目录解析目标。执行前必须向核心 CHECK_CURRENT；核心核对原领取、根停止、当前授权与未知效果。回执带原 callId、租约、Worker/epoch、实际 PID 与出生时间，核心核验后才保存结果。私有调用不对外暴露领取/回执 API。
@@ -27,6 +29,8 @@ Worker 核对原随机领取凭据、操作允许的方法、任务/副任务编
 Worker 的 MODEL_BEGIN 回调在 HTTP 到达前由核心原子保存根预算和原 modelRequestId。MODEL_END 保存实际 HTTP/供应商/用量观测；只有核心保存真实成功回执后才返回原请求编号。子进程沿该编号调用团队或固定 MCP 工具，携带原 toolCallId，不能自行构造成功身份。
 
 所有新固定阶段在 AgentRun 中冻结根约定、阶段与角色的实际权限。普通固定阶段可使用其成功模型回执调用已授权 MCP，无需创建动态团队；共享团队工具仍要求所属团队。固定 MCP 同时核对写入/MCP 能力与原工具编号，独立提案和审查拒绝使用，历史缺失权限不会由实时配置补造授权。
+
+准备、进程与工具账本的元数据先写原临时文件再替换。Windows AccessDeniedException 仅对这次元数据替换有界重试，每次最多一秒；实际工具、用户文件及整合写入不重放。持续失败或中断仍保留 UNKNOWN 和已扣预算；缺失回执另记录异常分类、失败回执阶段及工具是否已返回，不保存原异常参数或工具内容。
 
 团队定义与实际权限在调用开始时固定，checkCurrent、资源申请/释放、收件箱、委派、等待、采纳和消息调用都回到核心。资源 token 对应原 ResourceManager.Lease，逐请求释放模型容量后再等待副任务或 MCP；后代继续使用同一根模型/工具预算。MCP 网络/stdio 传输仍在核心的原管理器，Worker 通过原模型/工具编号请求固定动作，父复用保存原子来源并去重。
 

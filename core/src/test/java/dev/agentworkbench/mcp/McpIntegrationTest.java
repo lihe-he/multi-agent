@@ -224,6 +224,40 @@ class McpIntegrationTest {
     }
 
     @Test
+    void cancellingBlockedStdioInputStopsRealProcessWithoutWaitingForPipeWrite() throws Exception {
+        Path marker = directory.resolve("paused-stdin-pid"), script = directory.resolve("paused-stdin.mjs");
+        Files.writeString(script, "import {writeFileSync} from 'node:fs'; writeFileSync(process.argv[2], String(process.pid)); process.stdin.pause(); setInterval(()=>{},1000);\n");
+        AtomicBoolean cancelled = new AtomicBoolean();
+        McpTransport transport = McpTransport.open(obj("transport", "STDIO", "command", "node", "args", List.of(script.toString(), marker.toString())), "", mapper, cancelled::get, java.time.Duration.ofSeconds(10));
+        ProcessHandle child = null;
+        String birth = "";
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            try {
+                long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+                while (!Files.exists(marker) && System.nanoTime() < deadline) Thread.sleep(20);
+                assertTrue(Files.exists(marker), "the real service must pause its input before the large request");
+                child = ProcessHandle.of(Long.parseLong(Files.readString(marker))).orElseThrow();
+                birth = child.info().startInstant().orElseThrow().toString();
+                CountDownLatch entered = new CountDownLatch(1);
+                var invocation = executor.submit(() -> { entered.countDown(); return transport.request("initialize", obj("padding", "x".repeat(500_000))); });
+                assertTrue(entered.await(2, TimeUnit.SECONDS));
+                Thread.sleep(150);
+                assertFalse(invocation.isDone(), "the paused service cannot acknowledge the large request");
+                cancelled.set(true);
+                var failure = assertThrows(java.util.concurrent.ExecutionException.class, () -> invocation.get(3, TimeUnit.SECONDS));
+                assertInstanceOf(java.util.concurrent.CancellationException.class, failure.getCause());
+                assertTrue(transport.stopConfirmed(), "cancellation must confirm the original local process exit");
+                assertFalse(child.isAlive());
+            } finally {
+                cancelled.set(true);
+                if (child != null && child.isAlive() && birth.equals(child.info().startInstant().map(Object::toString).orElse(""))) child.destroyForcibly();
+                if (child != null) child.onExit().get(5, TimeUnit.SECONDS);
+                transport.close();
+            }
+        }
+    }
+
+    @Test
     void unconfirmedStopRetainsCapacityAndBlocksReconciliationDespiteAcknowledgedResult() throws Exception {
         assertUnconfirmedStop(false);
     }

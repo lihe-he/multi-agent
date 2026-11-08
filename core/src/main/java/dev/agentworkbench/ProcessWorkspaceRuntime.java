@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import static dev.agentworkbench.Json.*;
@@ -166,7 +167,8 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
                 process.awaitStopped();
                 try { worker.processStopped(process.stopFacts()); } catch (RuntimeException ignored) { }
             }
-            synchronized (call) {
+            call.callbackLock.lock();
+            try {
                 call.closed = true;
                 try {
                     if (call.requestInFlight) {
@@ -178,7 +180,7 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
                     call.resources.clear(); invocations.remove(call.id, call); claim.active.set(false);
                     if (interrupted) Thread.currentThread().interrupt();
                 }
-            }
+            } finally { call.callbackLock.unlock(); }
         }
     }
 
@@ -195,9 +197,10 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         Invocation call = invocations.get(str(message, "callId"));
         if (call == null) throw new ApiException(409, "回调不属于原在途 Worker 调用");
         Claim before = current.get();
+        call.callbackLock.lock();
         try {
-            synchronized (call) { return call.callback(message); }
-        } finally { if (before == null) current.remove(); else current.set(before); }
+            return call.callback(message);
+        } finally { call.callbackLock.unlock(); if (before == null) current.remove(); else current.set(before); }
     }
 
     private static final class Claim {
@@ -219,6 +222,10 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         final AgentToolSession tools;
         final FixedToolInvoker mcp;
         final AtomicBoolean cancelSent = new AtomicBoolean();
+        /**
+         * 阻塞回调保持原顺序，同时允许 Java 21 虚拟线程释放载体供子调用推进。
+         */
+        final ReentrantLock callbackLock = new ReentrantLock();
         final Map<String, AutoCloseable> resources = new LinkedHashMap<>();
         long callbacks;
         boolean requestInFlight;

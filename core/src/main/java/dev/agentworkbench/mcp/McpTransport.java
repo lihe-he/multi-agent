@@ -23,6 +23,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
 import static dev.agentworkbench.Json.*;
 
@@ -103,7 +104,11 @@ interface McpTransport extends AutoCloseable {
         private final Process process;
         private final BufferedWriter input;
         private final BufferedReader output;
-        private final java.util.concurrent.ExecutorService reader = Executors.newVirtualThreadPerTaskExecutor();
+        /**
+         * Java 21 原生进程管道会阻塞载体，每个受容量限制的传输只使用一条管道读写线程。
+         */
+        private final java.util.concurrent.ExecutorService reader = Executors.newSingleThreadExecutor(Thread.ofPlatform().daemon(true).name("workbench-mcp-stdout-", 0).factory());
+        private final ReentrantLock requests = new ReentrantLock();
         private final Map<Long, ProcessHandle> descendants = new java.util.concurrent.ConcurrentHashMap<>();
         private volatile boolean stopped;
         private volatile boolean closed;
@@ -120,30 +125,33 @@ interface McpTransport extends AutoCloseable {
             descendants.put(process.pid(), process.toHandle());
             input = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8));
             output = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
-            Thread.startVirtualThread(() -> { try (InputStream stream = process.getErrorStream()) { stream.transferTo(java.io.OutputStream.nullOutputStream()); } catch (Exception ignored) { } });
+            Thread.ofPlatform().daemon(true).name("workbench-mcp-stderr-" + process.pid()).start(() -> { try (InputStream stream = process.getErrorStream()) { stream.transferTo(java.io.OutputStream.nullOutputStream()); } catch (Exception ignored) { } });
         }
 
         @Override
-        public synchronized Map<String, Object> request(String method, Map<String, Object> params) throws Exception {
-            check();
-            Map<String, Object> request = message(method, params, false);
-            write(request);
-            var future = reader.submit(() -> {
-                int messages = 0;
-                while (messages++ < 1000) {
-                    String line = boundedLine(output);
-                    if (line == null) { throw new McpFailure("MCP 子进程在返回结果前退出", true); }
-                    Map<String, Object> response = decode(line);
-                    observe(response);
-                    if (String.valueOf(request.get("id")).equals(String.valueOf(response.get("id"))) && !response.containsKey("method")) { return unwrap(response); }
-                    if (response.containsKey("method") && response.containsKey("id")) {
-                        write(obj("jsonrpc", "2.0", "id", response.get("id"), "error", obj("code", -32601, "message", "Client capability not supported")));
+        public Map<String, Object> request(String method, Map<String, Object> params) throws Exception {
+            requests.lock();
+            try {
+                check();
+                Map<String, Object> request = message(method, params, false);
+                var future = reader.submit(() -> {
+                    check(); write(request);
+                    int messages = 0;
+                    while (messages++ < 1000) {
+                        String line = boundedLine(output);
+                        if (line == null) { throw new McpFailure("MCP 子进程在返回结果前退出", true); }
+                        Map<String, Object> response = decode(line);
+                        observe(response);
+                        if (String.valueOf(request.get("id")).equals(String.valueOf(response.get("id"))) && !response.containsKey("method")) { return unwrap(response); }
+                        if (response.containsKey("method") && response.containsKey("id")) {
+                            write(obj("jsonrpc", "2.0", "id", response.get("id"), "error", obj("code", -32601, "message", "Client capability not supported")));
+                        }
                     }
-                }
-                throw new McpFailure("MCP 通知数量超过请求边界", true);
-            });
-            try { return await(future); }
-            catch (Exception exception) { future.cancel(true); close(); throw exception; }
+                    throw new McpFailure("MCP 通知数量超过请求边界", true);
+                });
+                try { return await(future); }
+                catch (Exception exception) { future.cancel(true); close(); throw exception; }
+            } finally { requests.unlock(); }
         }
 
         @Override void check() {
@@ -152,29 +160,38 @@ interface McpTransport extends AutoCloseable {
         }
 
         @Override
-        public synchronized void notify(String method, Map<String, Object> params) throws Exception { check(); write(message(method, params, true)); }
+        public void notify(String method, Map<String, Object> params) throws Exception {
+            requests.lock();
+            try {
+                check(); Map<String, Object> notification = message(method, params, true);
+                await(reader.submit(() -> { check(); write(notification); return null; }));
+            } finally { requests.unlock(); }
+        }
 
         private void write(Map<String, Object> value) throws Exception { input.write(mapper.writeValueAsString(value)); input.newLine(); input.flush(); }
 
         @Override
-        public synchronized void close() {
-            if (closed) { return; } closed = true;
-            process.descendants().forEach(child -> descendants.put(child.pid(), child));
-            long stopDeadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(1000);
-            descendants.values().stream().filter(child -> child.pid() != process.pid()).forEach(child -> { if (child.isAlive()) child.destroyForcibly(); });
-            long childDeadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(200);
-            while (descendants.values().stream().anyMatch(child -> child.pid() != process.pid() && child.isAlive()) && System.nanoTime() < childDeadline) {
-                try { Thread.sleep(20); } catch (InterruptedException error) { Thread.currentThread().interrupt(); break; }
-            }
-            process.descendants().forEach(child -> descendants.put(child.pid(), child));
-            descendants.values().forEach(child -> { if (child.isAlive()) child.destroyForcibly(); });
-            while (descendants.values().stream().anyMatch(ProcessHandle::isAlive) && System.nanoTime() < stopDeadline) {
-                try { Thread.sleep(20); } catch (InterruptedException error) { Thread.currentThread().interrupt(); break; }
-            }
-            stopped = descendants.values().stream().noneMatch(ProcessHandle::isAlive);
-            try { process.getOutputStream().close(); } catch (Exception ignored) { }
-            try { process.getInputStream().close(); } catch (Exception ignored) { }
-            reader.shutdownNow();
+        public void close() {
+            requests.lock();
+            try {
+                if (closed) { return; } closed = true;
+                process.descendants().forEach(child -> descendants.put(child.pid(), child));
+                long stopDeadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(1000);
+                descendants.values().stream().filter(child -> child.pid() != process.pid()).forEach(child -> { if (child.isAlive()) child.destroyForcibly(); });
+                long childDeadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(200);
+                while (descendants.values().stream().anyMatch(child -> child.pid() != process.pid() && child.isAlive()) && System.nanoTime() < childDeadline) {
+                    try { Thread.sleep(20); } catch (InterruptedException error) { Thread.currentThread().interrupt(); break; }
+                }
+                process.descendants().forEach(child -> descendants.put(child.pid(), child));
+                descendants.values().forEach(child -> { if (child.isAlive()) child.destroyForcibly(); });
+                while (descendants.values().stream().anyMatch(ProcessHandle::isAlive) && System.nanoTime() < stopDeadline) {
+                    try { Thread.sleep(20); } catch (InterruptedException error) { Thread.currentThread().interrupt(); break; }
+                }
+                stopped = descendants.values().stream().noneMatch(ProcessHandle::isAlive);
+                try { process.getOutputStream().close(); } catch (Exception ignored) { }
+                try { process.getInputStream().close(); } catch (Exception ignored) { }
+                reader.shutdownNow();
+            } finally { requests.unlock(); }
         }
         @Override public boolean stopConfirmed() {
             if (closed && !stopped) stopped = descendants.values().stream().noneMatch(ProcessHandle::isAlive);

@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -14,10 +17,13 @@ import java.util.function.BooleanSupplier;
 public class ResourceManager {
     private final Map<String, Integer> used = new HashMap<>();
     private final Map<String, Integer> capacities = new HashMap<>(Map.of("model", 2, "tool", 2, "process", 4));
+    private final ReentrantLock reservations = new ReentrantLock();
+    private final Condition changed = reservations.newCondition();
 
     public Lease acquire(Map<String, Integer> requested, BooleanSupplier cancelled) {
         Map<String, Integer> ordered = new TreeMap<>(requested);
-        synchronized (this) {
+        reservations.lock();
+        try {
             for (var entry : ordered.entrySet()) {
                 int capacity = capacities.getOrDefault(entry.getKey(), 1);
                 if (entry.getValue() < 1 || entry.getValue() > capacity) {
@@ -31,14 +37,14 @@ public class ResourceManager {
                     ordered.forEach((key, count) -> used.merge(key, count, Integer::sum));
                     return new Lease(ordered);
                 }
-                try { wait(100); } catch (InterruptedException exception) { Thread.currentThread().interrupt(); throw new CancellationException(); }
+                try { changed.await(100, TimeUnit.MILLISECONDS); } catch (InterruptedException exception) { Thread.currentThread().interrupt(); throw new CancellationException(); }
             }
-        }
+        } finally { reservations.unlock(); }
     }
 
-    public synchronized int activeModels() { return used.getOrDefault("model", 0); }
+    public int activeModels() { reservations.lock(); try { return used.getOrDefault("model", 0); } finally { reservations.unlock(); } }
 
-    public synchronized Map<String, Integer> snapshot() { return Map.copyOf(used); }
+    public Map<String, Integer> snapshot() { reservations.lock(); try { return Map.copyOf(used); } finally { reservations.unlock(); } }
 
     public final class Lease implements AutoCloseable {
         private final Map<String, Integer> resources;
@@ -47,11 +53,12 @@ public class ResourceManager {
 
         @Override
         public void close() {
-            synchronized (ResourceManager.this) {
+            reservations.lock();
+            try {
                 if (closed) { return; }
                 resources.forEach((key, count) -> used.compute(key, (ignored, current) -> Math.max(0, (current == null ? 0 : current) - count)));
-                closed = true; ResourceManager.this.notifyAll();
-            }
+                closed = true; changed.signalAll();
+            } finally { reservations.unlock(); }
         }
     }
 }

@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantLock;
 import static dev.agentworkbench.Json.*;
 
 /**
@@ -240,28 +241,32 @@ public final class WorkerProcessMain {
         final long sequence;
         final AtomicBoolean cancelled = new AtomicBoolean();
         final RemoteObserver observer = new RemoteObserver();
+        private final ReentrantLock callbackLock = new ReentrantLock();
         private long callbacks;
         Call(String id, Map<String, Object> lease, Map<String, Object> parameters, long sequence) { this.id = id; this.lease = lease; this.parameters = parameters; this.sequence = sequence; }
         boolean stopped() { return cancelled.get() || stopping.get() || !rpc.open(); }
 
-        synchronized Object callback(String action, Map<String, Object> arguments) {
-            var result = rpc.request("CALLBACK", obj("callId", id, "workerId", assignment.get("id"), "workerEpoch", assignment.get("epoch"), "workerLeaseId", lease.get("id"),
-                "operationId", lease.get("operationId"), "operationKind", lease.get("operationKind"), "taskId", lease.get("taskId"), "executorPid", pid,
-                "processStartedAt", startedAt, "callSequence", sequence, "callbackSequence", ++callbacks, "action", action, "arguments", arguments));
+        Object callback(String action, Map<String, Object> arguments) {
+            callbackLock.lock();
             try {
-                while (true) {
-                    if (stopped() && !Set.of("MODEL_END", "RESOURCE_CLOSE", "MCP", "TOOL").contains(action)) throw new CancellationException("原 Worker 调用已停止");
-                    try { return result.get(150, TimeUnit.MILLISECONDS); } catch (TimeoutException ignored) { }
+                var result = rpc.request("CALLBACK", obj("callId", id, "workerId", assignment.get("id"), "workerEpoch", assignment.get("epoch"), "workerLeaseId", lease.get("id"),
+                    "operationId", lease.get("operationId"), "operationKind", lease.get("operationKind"), "taskId", lease.get("taskId"), "executorPid", pid,
+                    "processStartedAt", startedAt, "callSequence", sequence, "callbackSequence", ++callbacks, "action", action, "arguments", arguments));
+                try {
+                    while (true) {
+                        if (stopped() && !Set.of("MODEL_END", "RESOURCE_CLOSE", "MCP", "TOOL").contains(action)) throw new CancellationException("原 Worker 调用已停止");
+                        try { return result.get(150, TimeUnit.MILLISECONDS); } catch (TimeoutException ignored) { }
+                    }
+                } catch (InterruptedException exception) { Thread.currentThread().interrupt(); throw new CancellationException("原 Worker 回调被停止"); }
+                catch (ExecutionException exception) {
+                    if (exception.getCause() instanceof WorkerRpc.RemoteFailure remote) {
+                        if ("VALIDATION".equals(remote.category())) throw new IllegalArgumentException(remote.getMessage());
+                        if ("CANCELLED".equals(remote.category())) throw new CancellationException(remote.getMessage());
+                        if ("API".equals(remote.category())) throw new ApiException(remote.status(), remote.getMessage());
+                    }
+                    throw new IllegalStateException("核心回调未取得完整回执，不自动重试");
                 }
-            } catch (InterruptedException exception) { Thread.currentThread().interrupt(); throw new CancellationException("原 Worker 回调被停止"); }
-            catch (ExecutionException exception) {
-                if (exception.getCause() instanceof WorkerRpc.RemoteFailure remote) {
-                    if ("VALIDATION".equals(remote.category())) throw new IllegalArgumentException(remote.getMessage());
-                    if ("CANCELLED".equals(remote.category())) throw new CancellationException(remote.getMessage());
-                    if ("API".equals(remote.category())) throw new ApiException(remote.status(), remote.getMessage());
-                }
-                throw new IllegalStateException("核心回调未取得完整回执，不自动重试");
-            }
+            } finally { callbackLock.unlock(); }
         }
 
         private final class RemoteObserver implements ModelCallObserver {

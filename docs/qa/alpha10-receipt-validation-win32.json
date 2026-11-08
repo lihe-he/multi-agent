@@ -1,0 +1,132 @@
+{
+  "recordedAt": "2026-11-08T05:42:41.000Z",
+  "version": "0.2.0-alpha.10",
+  "sourceBase": "391d42e5052dc3f5d2cad5ee029fd8c04d08a55c",
+  "coreDiffSha256": "3101ba7d4b165a620cebdaf34139b9d7ccb44f43cb2605fc32536a3e6d5fdb42",
+  "core": {
+    "jar": "core/target/agent-workbench-core-0.2.0-alpha.10.jar",
+    "sha256": "c64d2d2c21b2647b3c0747f5d2292ab2db539aa2194e6095fff06f8786d6fea7",
+    "tests": {
+      "tests": 162,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "suites": 17,
+    "schedulerParallelism": 2,
+    "schedulerMaxPoolSize": 2
+  },
+  "protocol": {
+    "status": "passed",
+    "checks": 28
+  },
+  "standalone": {
+    "corePid": 6996,
+    "workerPid": 16044,
+    "workerDeployment": "LOCAL_PROCESS",
+    "originalRequestRetained": true,
+    "originalLeaseRetained": true,
+    "modelRequestsBeforeAndAfterReconnect": 1,
+    "workerReceiptsVerified": 13,
+    "teamRootCalls": 18,
+    "externalMcpCalls": 1,
+    "pageErrors": [],
+    "modelErrors": []
+  },
+  "packaged": {
+    "desktop": "PASS",
+    "api": 200,
+    "version": "0.2.0-alpha.10",
+    "application": {
+      "packaged": true,
+      "version": "0.2.0-alpha.10"
+    },
+    "externalJavaDisabled": true,
+    "pageErrors": [],
+    "jar": "release/win-unpacked/resources/core/core.jar",
+    "sha256": "c64d2d2c21b2647b3c0747f5d2292ab2db539aa2194e6095fff06f8786d6fea7",
+    "installer": "release/Agent Workbench Setup 0.2.0-alpha.10.exe",
+    "installerSha256": "95fa2e77f294f2731225a11c9c43e74268d8b2eaa1e19ab04437754e08e3fd85",
+    "fullInstallUninstallRetested": false
+  },
+  "reusedWebValidation": {
+    "uiChecks": 37,
+    "source": "Initial alpha.10 independent Worker validation; no Web source changes in this repair."
+  },
+  "reviewedScreenshots": [
+    "web/qa/worker-real-win32.png",
+    "web/qa/team-real-win32.png",
+    "docs/qa/desktop-home.png"
+  ],
+  "files": [
+    {
+      "path": "docs/qa/smoke-win32.json",
+      "sha256": "2bacab03f7cbe144826a6dd4fe40aa3691297b9eaf03bdf0ae33ce30e5f4f0e8",
+      "modifiedAt": "2026-11-08T05:38:04.206Z"
+    },
+    {
+      "path": "docs/qa/standalone-win32.json",
+      "sha256": "ba9ac0f750cba17aeee37da60f2dd5d54823a83208dfd292f9f087347b1105fd",
+      "modifiedAt": "2026-11-08T05:39:11.017Z"
+    },
+    {
+      "path": "docs/qa/desktop-packaged-win32.json",
+      "sha256": "e717d0a713aeae8089c900461ba7f69f3cdaaf891fea7a482e3ad0151cbfa549",
+      "modifiedAt": "2026-11-08T05:41:22.621Z"
+    },
+    {
+      "path": "docs/qa/desktop-home.png",
+      "sha256": "7039d3548e020f7ac8ffc16fafc557fef22564f5b33585efb5ddf54fce4135de",
+      "modifiedAt": "2026-11-08T05:41:22.620Z"
+    },
+    {
+      "path": "web/qa/worker-real-win32.png",
+      "sha256": "54dfc7cb2533f5b5dc16fe3dc31263596db318586fef8630a850bcdae29cfa6d",
+      "modifiedAt": "2026-11-08T05:39:10.600Z"
+    },
+    {
+      "path": "web/qa/team-real-win32.png",
+      "sha256": "c3fcc1455c2477c524af342b356110be6d11e6219e28529a49f0b0613b50f930",
+      "modifiedAt": "2026-11-08T05:39:10.297Z"
+    },
+    {
+      "path": ".runtime/alpha10-receipt-final-integration.log",
+      "sha256": "39c910a5bc394f5ed5dc64a85226e8009786dd18446b4e200a482cc747983aa4",
+      "modifiedAt": "2026-11-08T05:38:04.206Z"
+    },
+    {
+      "path": ".runtime/alpha10-receipt-final-standalone.log",
+      "sha256": "de987465008acd062450ace067beda5101fb108f3dadd33d6970fc981bab764a",
+      "modifiedAt": "2026-11-08T05:39:11.017Z"
+    },
+    {
+      "path": ".runtime/alpha10-receipt-final-package.log",
+      "sha256": "9b605a0cb51d3519928d650b1aa2df2ae776b5d6dde4eaaf2d04319f42282c78",
+      "modifiedAt": "2026-11-08T05:40:01.083Z"
+    },
+    {
+      "path": ".runtime/alpha10-receipt-final-packaged.log",
+      "sha256": "36b56c94de68f2765d6037aaf01b2afd31891c1d75475e372b4f0bad3e3b0b30",
+      "modifiedAt": "2026-11-08T05:41:22.622Z"
+    }
+  ],
+  "priorFailures": [
+    {
+      "type": "cross-platform-ci",
+      "commit": "391d42e5052dc3f5d2cad5ee029fd8c04d08a55c",
+      "run": "https://github.com/lihe-he/multi-agent/actions/runs/42447144181",
+      "windows": "failure",
+      "ubuntu": "failure",
+      "macos": "success",
+      "retainedAt": ".runtime/ci-alpha10-attempt1/"
+    },
+    {
+      "type": "jar-protocol",
+      "sha256": "860a5a620ffff6180450feba205476faa4b43223f9d28023340e42c3d6fecf41",
+      "attemptedChecks": 26,
+      "passed": 25,
+      "failed": 1,
+      "retainedAt": ".runtime/alpha10-carrier-integration-attempt1/"
+    }
+  ]
+}

@@ -183,31 +183,36 @@ class RuntimeIntegrationTest {
     @Test
     void naturallyExitingDescendantMustFinishBeforeVerificationReturnsSuccess() throws Exception {
         Path root = descendantFixture(true), receipts = root.getParent().resolve("receipts");
-        Map<String, Object> result = runtime().verify(root.toString(), "node parent.mjs", () -> false, ignored -> {});
-        long pid = Long.parseLong(Files.readString(receipts.resolve("child-pid")));
-        ProcessHandle child = originalFixtureChild(receipts.resolve("child-pid"), pid);
+        ProcessHandle child = null;
         try {
+            Map<String, Object> result = runtime().verify(root.toString(), "node parent.mjs", () -> false, ignored -> {});
+            long pid = Long.parseLong(Files.readString(receipts.resolve("child-pid")));
+            child = originalFixtureChild(receipts.resolve("child-pid"), pid);
             assertEquals("SUCCEEDED", result.get("status"), result.toString());
             assertFalse(child != null && child.isAlive(), "verification returned success while the original child " + pid + " was still alive");
             assertTrue(Files.exists(receipts.resolve("finished")), "the original child must finish before the command can be confirmed");
             assertTrue(Files.exists(receipts.resolve("parent-saw-exit")), "the parent receipt must follow the original child exit");
-        } finally { stopFixtureChild(child); }
+        } finally { stopFixtureChild(child == null ? recordedFixtureChild(receipts) : child); }
     }
 
     @Test
     void descendantWithoutExitConfirmationRemainsUnknownAfterParentSuccess() throws Exception {
         Path root = descendantFixture(false), receipts = root.getParent().resolve("receipts");
-        Map<String, Object> result = runtime().verify(root.toString(), "node parent.mjs", () -> false, ignored -> {});
-        long pid = Long.parseLong(Files.readString(receipts.resolve("child-pid")));
-        ProcessHandle child = originalFixtureChild(receipts.resolve("child-pid"), pid);
+        ProcessHandle child = null;
         try {
+            Map<String, Object> result = runtime().verify(root.toString(), "node parent.mjs", () -> false, ignored -> {});
+            long pid = Long.parseLong(Files.readString(receipts.resolve("child-pid")));
+            child = originalFixtureChild(receipts.resolve("child-pid"), pid);
             assertEquals("UNKNOWN", result.get("status"), "original child " + pid + " alive=" + (child != null && child.isAlive()));
             assertEquals(0, result.get("exitCode"));
             assertEquals(true, result.get("truncated"));
             assertTrue(result.get("output").toString().contains(Long.toString(pid)), "unknown command evidence must identify the original unconfirmed child");
             assertFalse(Files.exists(receipts.resolve("finished")));
-            if (child != null) child.onExit().get(5, java.util.concurrent.TimeUnit.SECONDS);
-        } finally { stopFixtureChild(child); }
+            if (child != null) {
+                child.onExit().get(5, java.util.concurrent.TimeUnit.SECONDS);
+                assertFalse(child.isAlive(), "the original child must stop before fixture cleanup");
+            }
+        } finally { stopFixtureChild(child == null ? recordedFixtureChild(receipts) : child); }
     }
 
     private Path descendantFixture(boolean naturalExit) throws Exception {
@@ -218,8 +223,8 @@ class RuntimeIntegrationTest {
             + "const receipts = " + receiptPath + "; writeFileSync(join(receipts, 'child-pid'), String(process.pid));\n"
             + "setTimeout(() => process.exit(2), 15000);\n"
             + "const poll = setInterval(() => { if (existsSync(join(receipts, 'release'))) { clearInterval(poll); setTimeout(() => { writeFileSync(join(receipts, 'finished'), 'original child exited'); process.exit(0); }, 300); } }, 10);\n");
-        Files.writeString(root.resolve("parent.mjs"), "import {spawn} from 'node:child_process'; import {writeFileSync} from 'node:fs'; import {join} from 'node:path';\n"
-            + "const receipts = " + receiptPath + "; const child = spawn(process.execPath, ['child.mjs'], {detached:true, windowsHide:true, stdio:'ignore'});\n"
+        Files.writeString(root.resolve("parent.mjs"), "import {spawn} from 'node:child_process'; import {writeFileSync} from 'node:fs'; import {join} from 'node:path'; import {fileURLToPath} from 'node:url';\n"
+            + "const receipts = " + receiptPath + "; const child = spawn(process.execPath, [fileURLToPath(new URL('child.mjs', import.meta.url))], {cwd:" + json.writeValueAsString(temporary.getParent().toString()) + ", detached:true, windowsHide:true, stdio:'ignore'});\n"
             + (naturalExit ? "child.on('exit', code => { writeFileSync(join(receipts, 'parent-saw-exit'), String(code)); process.exit(code ?? 1); }); setTimeout(() => writeFileSync(join(receipts, 'release'), 'child may finish'), 750);\n"
                 : "child.unref(); process.stdout.write('x'.repeat(600000)); setTimeout(() => process.exit(0), 750);\n"));
         return root;
@@ -228,6 +233,12 @@ class RuntimeIntegrationTest {
     private void stopFixtureChild(ProcessHandle child) throws Exception {
         if (child == null || !child.isAlive()) return;
         child.destroyForcibly(); child.onExit().get(5, java.util.concurrent.TimeUnit.SECONDS);
+        assertFalse(child.isAlive(), "fixture cleanup did not confirm the original child exit");
+    }
+
+    private ProcessHandle recordedFixtureChild(Path receipts) throws Exception {
+        Path receipt = receipts.resolve("child-pid");
+        return Files.exists(receipt) ? originalFixtureChild(receipt, Long.parseLong(Files.readString(receipt))) : null;
     }
 
     /**
@@ -238,6 +249,73 @@ class RuntimeIntegrationTest {
         if (child == null) return null;
         java.time.Instant recordedAt = Files.getLastModifiedTime(receipt).toInstant();
         return child.info().startInstant().filter(start -> !start.isAfter(recordedAt)).isPresent() ? child : null;
+    }
+
+    @Test
+    void transientWindowsReceiptLockDoesNotReplayCompletedFileTool() throws Exception {
+        exerciseWindowsReceiptLock(true);
+    }
+
+    @Test
+    void persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay() throws Exception {
+        exerciseWindowsReceiptLock(false);
+    }
+
+    /**
+     * 锁住已发送的回执文件，核对工具写入后的临时共享冲突与持续无法保存边界。
+     */
+    private void exerciseWindowsReceiptLock(boolean transientLock) throws Exception {
+        Assumptions.assumeTrue(System.getProperty("os.name").startsWith("Windows"));
+        Path root = Files.createDirectories(temporary.resolve("receipt-lock").resolve("work"));
+        Files.writeString(root.resolve("value.txt"), "before\n");
+        AtomicInteger requests = new AtomicInteger(), tools = new AtomicInteger();
+        AtomicReference<java.nio.channels.SeekableByteChannel> held = new AtomicReference<>();
+        java.util.concurrent.CompletableFuture<Void> released = new java.util.concurrent.CompletableFuture<>();
+        Map<String, Object> writeTool = tool("write_file", Map.of("path", "value.txt", "content", "after\n"));
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/", exchange -> {
+            try {
+                exchange.getRequestBody().readAllBytes();
+                Map<String, Object> message = requests.getAndIncrement() == 0
+                    ? Map.of("role", "assistant", "tool_calls", List.of(writeTool))
+                    : Map.of("role", "assistant", "content", "completed");
+                byte[] response = json.writeValueAsBytes(Map.of("choices", List.of(Map.of("message", message))));
+                exchange.sendResponseHeaders(200, response.length); exchange.getResponseBody().write(response);
+            } finally { exchange.close(); }
+        });
+        server.start();
+        Consumer<String> log = message -> {
+            if (!message.startsWith("工具 · write_file")) return;
+            tools.incrementAndGet();
+            try {
+                Path receipt;
+                try (var files = Files.list(root.getParent().resolve("operations"))) { receipt = files.filter(file -> file.toString().endsWith(".json")).findFirst().orElseThrow(); }
+                held.set(Files.newByteChannel(receipt, java.util.Set.of(java.nio.file.StandardOpenOption.READ, com.sun.nio.file.ExtendedOpenOption.NOSHARE_DELETE)));
+                if (transientLock) Thread.ofPlatform().daemon(true).start(() -> {
+                    try { Thread.sleep(250); held.get().close(); released.complete(null); }
+                    catch (Exception exception) { released.completeExceptionally(exception); }
+                });
+            } catch (Exception exception) { throw new IllegalStateException("无法创建真实 Windows 回执共享冲突夹具", exception); }
+        };
+        try {
+            long started = System.nanoTime();
+            Map<String, Object> result = runtime().run(route(server), "fixture", root.toString(), "Write the approved fixture once", false, List.of("**"), () -> false, log, () -> true);
+            assertEquals(transientLock ? "SUCCEEDED" : "UNKNOWN", result.get("status"), result.toString());
+            assertEquals("after\n", Files.readString(root.resolve("value.txt")), "the original file effect must remain intact");
+            assertEquals(1, tools.get(), "metadata recovery must not replay the completed file tool");
+            assertEquals(transientLock ? 2 : 1, requests.get(), "unknown receipt persistence must prevent a further model request");
+            assertTrue(System.nanoTime() - started < java.util.concurrent.TimeUnit.SECONDS.toNanos(5), "metadata replacement must remain bounded");
+            if (transientLock) released.get(2, java.util.concurrent.TimeUnit.SECONDS);
+            try (var files = Files.list(root.getParent().resolve("operations"))) {
+                List<Path> receipts = files.filter(file -> file.toString().endsWith(".json")).toList(); assertEquals(1, receipts.size());
+                String state = json.readTree(receipts.getFirst().toFile()).get("state").asText();
+                if (transientLock) assertEquals("CONFIRMED", state);
+                else assertTrue(java.util.Set.of("SENT", "UNKNOWN").contains(state), "a missing receipt cannot be claimed as confirmed");
+            }
+        } finally {
+            if (held.get() != null) held.get().close();
+            server.stop(0);
+        }
     }
 
     @Test

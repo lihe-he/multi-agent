@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -25,7 +26,7 @@ final class WorkerRpc implements AutoCloseable {
     private final BiConsumer<String, Map<String, Object>> events;
     private final Consumer<IOException> disconnected;
     private final Function<Throwable, String> safeError;
-    private final Object writes = new Object();
+    private final ReentrantLock writes = new ReentrantLock();
     private final Map<Long, CompletableFuture<Object>> pending = new ConcurrentHashMap<>();
     private final ExecutorService handlers = Executors.newVirtualThreadPerTaskExecutor();
     private final AtomicInteger incoming = new AtomicInteger();
@@ -46,13 +47,14 @@ final class WorkerRpc implements AutoCloseable {
         requireName(method);
         CompletableFuture<Object> result = new CompletableFuture<>();
         try {
-            synchronized (writes) {
+            writes.lock();
+            try {
                 if (closed.get()) throw lost();
                 if (pending.size() >= MAX_REQUESTS) throw new IOException("Worker 在途请求数量超过边界");
                 long sequence = ++sentSequence;
                 pending.put(sequence, result);
                 wire.write(obj("type", "REQUEST", "sequence", sequence, "method", method, "arguments", arguments));
-            }
+            } finally { writes.unlock(); }
         } catch (IOException exception) {
             result.completeExceptionally(lost()); fail();
         }
@@ -62,10 +64,11 @@ final class WorkerRpc implements AutoCloseable {
     void event(String name, Map<String, Object> arguments) throws IOException {
         requireName(name);
         try {
-            synchronized (writes) {
+            writes.lock();
+            try {
                 if (closed.get()) throw lost();
                 wire.write(obj("type", "EVENT", "name", name, "arguments", arguments));
-            }
+            } finally { writes.unlock(); }
         } catch (IOException exception) { fail(); throw lost(); }
     }
 
@@ -73,7 +76,7 @@ final class WorkerRpc implements AutoCloseable {
     int pendingRequests() { return pending.size(); }
     boolean awaitHandlers(long timeout, java.util.concurrent.TimeUnit unit) throws InterruptedException { return handlers.awaitTermination(timeout, unit); }
 
-    void closeOutput() throws IOException { synchronized (writes) { wire.closeOutput(); } }
+    void closeOutput() throws IOException { writes.lock(); try { wire.closeOutput(); } finally { writes.unlock(); } }
 
     private void read() {
         try {
@@ -109,7 +112,7 @@ final class WorkerRpc implements AutoCloseable {
                     response = obj("type", "REPLY", "sequence", sequence, "error", obj("category", category(exception), "status", status, "message", text.substring(0, Math.min(text.length(), 2000))));
                 }
                 try {
-                    synchronized (writes) { if (!closed.get()) wire.write(response); }
+                    writes.lock(); try { if (!closed.get()) wire.write(response); } finally { writes.unlock(); }
                 } catch (IOException exception) { fail(); }
                 finally { incoming.decrementAndGet(); }
             });
@@ -159,10 +162,11 @@ final class WorkerRpc implements AutoCloseable {
 
     private void fail() {
         java.util.List<CompletableFuture<Object>> aborted;
-        synchronized (writes) {
+        writes.lock();
+        try {
             if (!closed.compareAndSet(false, true)) return;
             aborted = java.util.List.copyOf(pending.values()); pending.clear();
-        }
+        } finally { writes.unlock(); }
         try { disconnected.accept(lost()); } catch (RuntimeException ignored) { }
         for (CompletableFuture<Object> future : aborted) future.completeExceptionally(lost());
         handlers.shutdownNow();
