@@ -76,8 +76,8 @@ export function Field({ label, hint, children, full = false }: { label: string; 
   return <label className={`field ${full ? 'full' : ''}`}><span id={`${id}-label`}>{label}</span>{Children.map(children, associate)}{hint && <small id={`${id}-hint`}>{hint}</small>}</label>;
 }
 
-export function SaveButton({ busy, children = '保存' }: { busy: boolean; children?: ReactNode }) {
-  return <button type="submit" className="button primary" disabled={busy}>{busy ? <LoaderCircle className="spin" size={16} /> : <Check size={16} />}{busy ? '正在保存…' : children}</button>;
+export function SaveButton({ busy, disabled, children = '保存' }: { busy: boolean; disabled?: boolean; children?: ReactNode }) {
+  return <button type="submit" className="button primary" disabled={busy || disabled}>{busy ? <LoaderCircle className="spin" size={16} /> : <Check size={16} />}{busy ? '正在保存…' : children}</button>;
 }
 
 export function SectionHeading({ title, subtitle, action }: { title: string; subtitle?: string; action?: ReactNode }) {

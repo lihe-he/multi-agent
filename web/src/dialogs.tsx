@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Bot, Check, FolderOpen, GitBranch, Layers3, LockKeyhole, Network, ShieldCheck, Sparkles, TriangleAlert } from 'lucide-react';
 import { api, currentConnection, post, setConnection } from './api';
-import type { AgentDefinition, Memory, Profile, Project, Route, Task } from './types';
+import type { AgentDefinition, ExecutionNode, Memory, Profile, Project, RepositoryBinding, Route, Task } from './types';
 import { Field, lines, Modal, SaveButton } from './ui';
 
 type DialogProps = { onClose: () => void; onSaved: () => void };
@@ -25,7 +25,7 @@ export function ProjectDialog({ onClose, onSaved }: DialogProps) {
   </form></Modal>;
 }
 
-export function TaskDialog({ projects, routes, selectedProject, sessionId, onClose, onCreated }: { projects: Project[]; routes: Route[]; selectedProject: string; sessionId?: string; onClose: () => void; onCreated: (task: Task) => void }) {
+export function TaskDialog({ projects, routes, bindings = [], nodes = [], selectedProject, sessionId, onClose, onCreated }: { projects: Project[]; routes: Route[]; bindings?: RepositoryBinding[]; nodes?: ExecutionNode[]; selectedProject: string; sessionId?: string; onClose: () => void; onCreated: (task: Task) => void }) {
   const [projectId, setProjectId] = useState(selectedProject || projects[0]?.id || '');
   const [title, setTitle] = useState(''); const [goal, setGoal] = useState('');
   const [mode, setMode] = useState('AUTO'); const [routeId, setRouteId] = useState(routes.find(r => r.enabled !== false)?.id || '');
@@ -43,6 +43,10 @@ export function TaskDialog({ projects, routes, selectedProject, sessionId, onClo
   const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
   const route = routes.find(r => r.id === routeId);
   const project = projects.find(p => p.id === projectId);
+  const [bindingId, setBindingId] = useState('');
+  const availableBindings = bindings.filter(binding => binding.projectId === projectId && binding.enabled);
+  const binding = availableBindings.find(binding => binding.id === bindingId) || availableBindings.find(binding => binding.id === project?.repositoryBindingId) || availableBindings[0];
+  const executionNode = nodes.find(node => node.id === binding?.executionNodeId);
   useEffect(() => {
     let active = true;
     api<AgentDefinition[]>(`/agent-definitions?projectId=${encodeURIComponent(projectId)}`).then(value => {
@@ -70,12 +74,13 @@ export function TaskDialog({ projects, routes, selectedProject, sessionId, onClo
       });
       if (mcpBindings.length && route?.engine !== 'API') throw new Error('MCP 固定动作目前只支持 API 运行路由。');
       const collaboration = { enabled: delegation && route?.engine === 'API' && selectedDefinitions.length > 0, definitionIds: selectedDefinitions, definitionVersions: Object.fromEntries(definitions.filter(definition => selectedDefinitions.includes(definition.id)).map(definition => [definition.id, definition.version])), maxActive, maxDepth, maxTotal, allowedRouteIds: definitions.filter(definition => selectedDefinitions.includes(definition.id) && definition.routeId).map(definition => definition.routeId!) };
-      const task = await post<Task>('/tasks', { projectId, ...(sessionId ? { sessionId } : {}), title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, collaboration, mcpBindings, mcpBudget: { maxCalls: mcpMaxCalls, maxDurationMs: mcpMaxDurationMs }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges });
+      const task = await post<Task>('/tasks', { projectId, ...(binding && executionNode ? { repositoryBindingId: binding.id, bindingVersion: binding.version, nodeVersion: executionNode.version } : {}), ...(sessionId ? { sessionId } : {}), title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, collaboration, mcpBindings, mcpBudget: { maxCalls: mcpMaxCalls, maxDurationMs: mcpMaxDurationMs }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges });
       onCreated(task); onClose();
     } catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   }
   return <Modal wide title="创建研发任务" description="先明确目标和完成约定，再确认平台生成的协作计划。" onClose={onClose}><form onSubmit={submit}><div className="form-body">
     <div className="form-grid"><Field label="所属项目"><select disabled={!!sessionId} value={projectId} onChange={e => setProjectId(e.target.value)} required>{projects.map(p => <option value={p.id} key={p.id}>{p.name}</option>)}</select></Field><Field label="任务名称"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="给这次工作一个清晰的名称" maxLength={180} /></Field></div>
+    {binding && <><Field label="执行仓库绑定"><select value={binding.id} onChange={event => setBindingId(event.target.value)}>{availableBindings.map(binding => <option key={binding.id} value={binding.id}>{binding.name} · v{binding.version}</option>)}</select></Field><p className="form-note execution-source">{executionNode?.name || binding.executionNodeId} · 节点 v{executionNode?.version} · <code>{binding.path}</code></p></>}
     <Field label="你希望完成什么？"><textarea className="goal-input" required rows={3} value={goal} onChange={e => setGoal(e.target.value)} placeholder="描述用户行为、现有问题、预期结果，以及需要遵守的约束…" /></Field>
     <Field label="协作方式"><div className="mode-picker">{[
       { id: 'AUTO', title: '自动选择', sub: '根据任务推荐', icon: Sparkles }, { id: 'LEAD', title: '主副协作', sub: '调查、拆分与实现', icon: Network },

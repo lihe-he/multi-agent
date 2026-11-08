@@ -111,8 +111,8 @@ export async function configureTeamMcp(api, projectId, url) {
 
 export async function verifyTeamResult(api, finished, protocol) {
   const taskId = finished.id;
-  const [team, trace, operations, mcp, messages] = await Promise.all([
-    api(`/tasks/${taskId}/team`), api(`/tasks/${taskId}/model-requests?limit=100`), api(`/tasks/${taskId}/operations`), api(`/tasks/${taskId}/mcp-operations`), api(`/tasks/${taskId}/team/messages`),
+  const [team, trace, operations, mcp, messages, workerPage, workers] = await Promise.all([
+    api(`/tasks/${taskId}/team`), api(`/tasks/${taskId}/model-requests?limit=100`), api(`/tasks/${taskId}/operations`), api(`/tasks/${taskId}/mcp-operations`), api(`/tasks/${taskId}/team/messages`), api(`/tasks/${taskId}/worker-leases?limit=100`), api('/workers'),
   ]);
   assert.equal(finished.state, 'AWAITING_ACCEPTANCE'); assert.equal(team.team.id, finished.teamId); assert.equal(team.agents.length, 2);
   const writer = team.agents.find(agent => agent.title === writerTitle), reader = team.agents.find(agent => agent.title === readerTitle);
@@ -142,7 +142,17 @@ export async function verifyTeamResult(api, finished, protocol) {
   assert.ok(user && sent); assert.equal(user.sender, 'USER'); assert.equal(user.requestId, ''); assert.equal(sent.sender, writer.parentRunId); assert.equal(sent.recipient, writer.agentRunId);
   assert.ok(trace.requests.some(request => request.id === sent.requestId && request.agentRunId === sent.sender)); assert.ok(sent.toolCallId);
   assert.equal(finished.review.version, finished.version); assert.ok(finished.evidence.some(evidence => evidence.kind === 'VERIFICATION' && evidence.status === 'PASSED'));
-  return { team, trace, operations, mcp, messages, writer, reader };
+  assert.equal(workerPage.hasMore, false); assert.ok(workerPage.leases.length > 0);
+  assert.ok(workerPage.leases.every(lease => lease.state === 'RELEASED' && lease.stopState === 'CONFIRMED' && lease.executionNodeId === finished.execution.executionNodeId && lease.repositoryBindingId === finished.execution.repositoryBindingId && lease.bindingVersion === finished.execution.bindingVersion));
+  assert.ok(workerPage.leases.every(lease => !Object.hasOwn(lease, 'claimDigest')));
+  for (const operation of operations) {
+    const lease = workerPage.leases.find(lease => lease.operationId === operation.id); assert.ok(lease); assert.equal(operation.dispatchCount, 1); assert.equal(operation.workerLeaseId, lease.id);
+  }
+  assert.equal(workerPage.leases.filter(lease => lease.kind === 'ADOPT_SUBAGENT' && lease.operationKind === 'teamOperation').length, 1);
+  assert.ok(trace.requests.every(request => workerPage.leases.some(lease => lease.id === request.workerLeaseId && lease.workerId === request.workerId && lease.agentRunId === request.agentRunId)));
+  assert.ok(finished.evidence.every(evidence => workerPage.leases.some(lease => lease.id === evidence.workerLeaseId && lease.workerId === evidence.workerId)));
+  assert.equal(mcp[0].workerId, workers.find(worker => worker.id === mcp[0].workerId)?.id); assert.equal(mcp[0].workerLeaseId, original.workerLeaseId);
+  return { team, trace, operations, mcp, messages, writer, reader, workerLeases: workerPage.leases, workers };
 }
 
 // Read central-directory sizes because Java ZIP streams use data descriptors.

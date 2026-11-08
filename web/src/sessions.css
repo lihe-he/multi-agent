@@ -120,3 +120,23 @@
   .team-filter { align-items: stretch; flex-direction: column; gap: 6px; }
   .team-filter select { width: 100%; }
 }
+
+.execution-group-title { margin: 28px 0 14px; font-size: 17px; }
+.execution-contract { margin-bottom: 18px; }
+.execution-contract > dl, .execution-metadata, .worker-lease dl { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 9px 14px; margin: 18px 0 0; font-size: 13px; line-height: 1.6; }
+.execution-contract dt, .execution-metadata dt, .worker-lease dt { color: var(--muted); }
+.execution-contract dd, .execution-metadata dd, .worker-lease dd { margin: 0; overflow-wrap: anywhere; }
+.execution-source { overflow-wrap: anywhere; }
+.execution-resources .definition-card dd { overflow-wrap: anywhere; }
+.worker-process-list, .worker-lease-list { display: grid; gap: 14px; }
+.worker-process-heading, .worker-lease > header { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.worker-process-list .mono { overflow-wrap: anywhere; }
+.worker-lease { padding: 22px; }
+.worker-lease h3 { font-size: 16px; margin: 0 0 6px; }
+.worker-lease header p { color: var(--muted); font-size: 13px; }
+.worker-activity .agent-run-heading .field { min-width: 180px; margin: 0; }
+@media (max-width: 700px) {
+  .execution-contract > dl, .execution-metadata, .worker-lease dl { grid-template-columns: 100px minmax(0, 1fr); gap: 8px 10px; }
+  .worker-lease { padding: 16px; }
+  .worker-activity .agent-run-heading { flex-direction: column; align-items: stretch; }
+}

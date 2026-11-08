@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-07T15:18:33.015Z",
-  "version": "0.2.0-alpha.8",
+  "date": "2026-11-08T01:44:48.322Z",
+  "version": "0.2.0-alpha.9",
   "platform": "win32",
   "coreIndependentOfWebAndNpm": true,
   "runtimeProxyConfiguration": true,
@@ -16,7 +16,13 @@
   "desktopExitPreservesCore": true,
   "clientExitPreservesRunningTask": true,
   "modelRequestsBeforeAndAfterReconnect": 1,
-  "childRequestPreservedOnReconnect": "4e5530e7-c169-4146-a676-0baf5811504f",
+  "childRequestPreservedOnReconnect": "c789d461-c67a-48a7-b51d-5d0afa1d23c2",
+  "workerLeasePreservedOnReconnect": "26326072-6869-424e-b8de-aeb9255d2634",
+  "workerId": "4611d4f7-19f5-4475-a724-bc7603f54a75",
+  "workerEpoch": 1,
+  "workerPid": 59360,
+  "repositoryBindingId": "33d0df38-f2d2-41f4-9ec2-74bbcccff72b",
+  "workerReceiptsVerified": 13,
   "parentWaitReleasesModelCapacity": true,
   "teamDependencyAdoptionThroughProxy": true,
   "teamMessagesSurviveReload": true,
@@ -24,14 +30,14 @@
   "teamRootCalls": 18,
   "teamChildRuns": [
     {
-      "id": "6a2115f5-d8b8-4083-9c51-c1b976b4cf1b",
-      "agentRunId": "f205d468-aa07-4be7-9e0f-f12d54f69d12",
+      "id": "6e34f717-b0bc-4873-9076-15bb8c69c608",
+      "agentRunId": "a0d77432-c9be-4a28-a986-82e4223a96ad",
       "state": "SUCCEEDED",
       "integrationState": "NOT_ADOPTED"
     },
     {
-      "id": "2b280eb7-4065-42b2-a3eb-8bcfc08b3500",
-      "agentRunId": "eef5b5c7-07c1-4046-a388-f44006fdd8a6",
+      "id": "1cf58934-4c9c-4bb4-95d1-dfe3cdcf7060",
+      "agentRunId": "5e0d2f7b-d580-4c68-bc7d-99ee9d0585f2",
       "state": "SUCCEEDED",
       "integrationState": "ADOPTED"
     }

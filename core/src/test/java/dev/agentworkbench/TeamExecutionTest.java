@@ -117,6 +117,71 @@ class TeamExecutionTest {
     private Map<String, Object> ordinary(String prompt) { return answer(stage(prompt, "REVIEW") ? "{\"approved\":true,\"issues\":[]}" : "phase evidence"); }
 
     @Test
+    void draftBindingSwitchReplacesRulesAndExecutesTheConfirmedSource() throws Exception {
+        Files.writeString(source.resolve("AGENTS.md"), "ORIGINAL_SOURCE_RULES\n"); git(source, "add", "AGENTS.md"); git(source, "commit", "-m", "original rules");
+        Map<String, Object> created = task("WORKER_DRAFT_SOURCE_SWITCH", 16); String taskId = str(created, "id");
+        Path alternative = directory.resolve("alternate source"); git(directory, "-c", "core.autocrlf=false", "clone", "--", source.toString(), alternative.toString()); git(alternative, "config", "core.autocrlf", "false");
+        Files.writeString(alternative.resolve("AGENTS.md"), "ALTERNATE_SOURCE_RULES\n"); git(alternative, "add", "AGENTS.md"); git(alternative, "-c", "user.name=fixture", "-c", "user.email=fixture@example.invalid", "commit", "-m", "alternate rules");
+        Map<String, Object> binding = catalog.nodes().saveBinding(obj("projectId", project.get("id"), "executionNodeId", engine.workerIdentity().get("executionNodeId"), "name", "alternate source", "path", alternative.toString()));
+        Map<String, Object> authorized = engine.action(taskId, "execution-authorization", obj("expectedVersion", 1, "repositoryBindingId", binding.get("id"), "bindingVersion", 1, "nodeVersion", 1));
+        assertTrue(objects(authorized.get("context")).stream().anyMatch(item -> str(item, "content").contains("ALTERNATE_SOURCE_RULES")));
+        assertFalse(objects(authorized.get("context")).stream().anyMatch(item -> str(item, "content").contains("ORIGINAL_SOURCE_RULES")));
+        assertTrue(objects(objects(authorized.get("executionRuleHistory")).getFirst().get("rules")).stream().anyMatch(item -> str(item, "content").contains("ORIGINAL_SOURCE_RULES")));
+        fixture.set((prompt, results, names) -> { assertTrue(prompt.contains("ALTERNATE_SOURCE_RULES")); assertFalse(prompt.contains("ORIGINAL_SOURCE_RULES")); return ordinary(prompt); });
+        engine.action(taskId, "approve", obj()); Map<String, Object> finished = awaitTask(taskId, Set.of("AWAITING_ACCEPTANCE"));
+        assertEquals("ALTERNATE_SOURCE_RULES\n", Files.readString(Path.of(str(finished, "workspace")).resolve("AGENTS.md")));
+        assertEquals("ORIGINAL_SOURCE_RULES\n", Files.readString(source.resolve("AGENTS.md"))); assertEquals(alternative.toRealPath().toString(), map(finished, "execution").get("sourcePath"));
+        assertTrue(errors.isEmpty(), errors.toString());
+    }
+
+    @Test
+    void realExecutionFreezesBindingVersionsAndRequiresExplicitReauthorization() throws Exception {
+        fixture.set((prompt, results, names) -> ordinary(prompt));
+        Map<String, Object> created = task("WORKER_FROZEN_BINDING", 16), original = map(created, "execution"); String taskId = str(created, "id");
+        Map<String, Object> binding = catalog.nodes().saveBinding(obj("id", original.get("repositoryBindingId"), "expectedVersion", 1, "projectId", project.get("id"),
+            "executionNodeId", original.get("executionNodeId"), "name", "confirmed checkout v2", "path", source.toString(), "enabled", true));
+        assertEquals(409, assertThrows(ApiException.class, () -> engine.action(taskId, "approve", obj())).status()); assertEquals(0, calls.get()); assertEquals(1, num(map(store.get("task", taskId), "execution"), "bindingVersion", 0));
+        engine.action(taskId, "execution-authorization", obj("expectedVersion", 1, "repositoryBindingId", binding.get("id"), "bindingVersion", 2, "nodeVersion", 1));
+        engine.action(taskId, "approve", obj()); Map<String, Object> finished = awaitTask(taskId, Set.of("AWAITING_ACCEPTANCE"));
+        assertEquals(2, num(map(finished, "execution"), "bindingVersion", 0)); assertEquals(1, objects(finished.get("executionHistory")).size());
+        List<Map<String, Object>> leases = store.workerLeases("", taskId, ""); assertFalse(leases.isEmpty()); assertTrue(leases.stream().allMatch(lease -> "RELEASED".equals(str(lease, "state")) && num(lease, "bindingVersion", 0) == 2));
+        assertTrue(leases.stream().allMatch(lease -> engine.workerIdentity().get("id").equals(lease.get("workerId")) && original.get("executionNodeId").equals(lease.get("executionNodeId"))));
+        assertTrue(objects(finished.get("evidence")).stream().allMatch(evidence -> !str(evidence, "workerLeaseId").isBlank() && !str(evidence, "workerId").isBlank()));
+        assertEquals("base\n", Files.readString(source.resolve("src/source.txt"))); assertTrue(store.list("operation").stream().allMatch(operation -> num(operation, "dispatchCount", 0) == 1));
+        Path other = Files.createDirectories(directory.resolve("other checkout")); git(directory, "clone", "--", source.toString(), other.toString());
+        Map<String, Object> alternative = catalog.nodes().saveBinding(obj("projectId", project.get("id"), "executionNodeId", original.get("executionNodeId"), "name", "another checkout", "path", other.toString()));
+        assertEquals(409, assertThrows(ApiException.class, () -> engine.action(taskId, "execution-authorization", obj("expectedVersion", 2, "repositoryBindingId", alternative.get("id"), "bindingVersion", 1, "nodeVersion", 1))).status());
+        assertEquals(original.get("sourcePath"), map(store.get("task", taskId), "execution").get("sourcePath")); assertTrue(errors.isEmpty(), errors.toString());
+    }
+
+    @Test
+    void nodeRevocationStopsTheActualChildRequestAndRestartPreservesUnknownLeases() throws Exception {
+        CountDownLatch entered = new CountDownLatch(1);
+        fixture.set((prompt, results, names) -> {
+            if (stage(prompt, "SUBAGENT")) { entered.countDown(); release.await(15, TimeUnit.SECONDS); return answer("held child returned"); }
+            if (stage(prompt, "INVESTIGATE")) {
+                if (results.isEmpty()) return call("delegate_agent", obj("definitionId", "agent-research", "title", "held worker child", "goal", "WORKER_HELD_CHILD", "scope", List.of("src/")));
+                if (results.size() == 1) return call("wait_agent", obj("subtaskId", map(result(results, 0), "agent").get("subtaskId")));
+            }
+            return ordinary(prompt);
+        });
+        Map<String, Object> created = task("WORKER_NODE_REVOKED", 24), identity = engine.workerIdentity(); String taskId = str(created, "id"); engine.action(taskId, "approve", obj());
+        assertTrue(entered.await(15, TimeUnit.SECONDS)); Map<String, Object> child = store.list("subtask").getFirst();
+        Map<String, Object> request = store.list("modelRequest").stream().filter(value -> child.get("agentRunId").equals(value.get("agentRunId"))).findFirst().orElseThrow();
+        assertEquals("DISPATCHING", request.get("state")); assertTrue(store.workerLeases("", taskId, "ACTIVE").stream().anyMatch(lease -> child.get("agentRunId").equals(lease.get("agentRunId"))));
+        Map<String, Object> node = catalog.nodes().localNode(); catalog.nodes().saveNode(obj("id", node.get("id"), "expectedVersion", node.get("version"), "name", node.get("name"), "enabled", false));
+        awaitTask(taskId, Set.of("UNKNOWN")); int before = calls.get(); release.countDown();
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(8); while (!store.workerLeases("", taskId, "ACTIVE").isEmpty() && System.nanoTime() < deadline) Thread.sleep(50);
+        assertTrue(store.workerLeases("", taskId, "ACTIVE").isEmpty()); assertEquals("UNKNOWN", store.get("modelRequest", str(request, "id")).get("state"));
+        assertTrue(store.workerLeases("", taskId, "UNKNOWN").stream().anyMatch(lease -> child.get("agentRunId").equals(lease.get("agentRunId")))); assertEquals(1, num(map(store.get("task", taskId), "execution"), "nodeVersion", 0));
+        engine.shutdown(); engine = null; store.close(); store = new ExecutionStore(mapper, directory.resolve("data").toString());
+        catalog = new WorkbenchCatalog(store, runtime, new PlanValidator()); engine = new WorkbenchEngine(store, catalog, runtime, new ResourceManager(), mapper); engine.recover();
+        assertEquals(before, calls.get()); assertEquals(identity.get("executionNodeId"), engine.workerIdentity().get("executionNodeId")); assertNotEquals(identity.get("id"), engine.workerIdentity().get("id"));
+        assertEquals(num(identity, "epoch", 0) + 1, num(engine.workerIdentity(), "epoch", 0)); assertEquals("UNKNOWN", store.get("task", taskId).get("state")); assertFalse(store.workerLeases("", taskId, "UNKNOWN").isEmpty());
+        assertEquals("base\n", Files.readString(source.resolve("src/source.txt"))); assertEquals(409, assertThrows(ApiException.class, () -> engine.action(taskId, "resume", obj())).status());
+    }
+
+    @Test
     void actualDelegationSharesRootBudgetAndDependencySnapshotBeforeGuardedAdoption() throws Exception {
         fixture.set((prompt, results, names) -> {
             if (stage(prompt, "SUBAGENT") && prompt.contains("委派目标：CHILD_WRITE")) {

@@ -8,6 +8,7 @@ import dev.agentworkbench.ExecutionStore;
 import dev.agentworkbench.WorkbenchCatalog;
 import dev.agentworkbench.ResourceManager;
 import dev.agentworkbench.WorkbenchEngine;
+import dev.agentworkbench.PlanValidator;
 import dev.agentworkbench.runtime.WorkspaceRuntime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -271,21 +272,25 @@ class McpIntegrationTest {
             assertEquals(1, resources.snapshot().get("process")); assertEquals(1, resources.snapshot().get("tool"));
             assertEquals(409, assertThrows(ApiException.class, () -> manager.probe(serverId)).status());
             store.editTask("retained", task -> task.put("state", "UNKNOWN"), "TEST", "Unknown stop");
-            WorkbenchEngine engine = new WorkbenchEngine(store, catalog, mock(WorkspaceRuntime.class), resources, mapper, manager);
-            var reconciliation = obj("processesStopped", true, "sideEffectsChecked", true, "note", "User assertion cannot override a live local transport");
-            assertEquals(409, assertThrows(ApiException.class, () -> engine.action("retained", "reconcile", reconciliation)).status());
-            assertEquals("UNKNOWN", str(store.get("task", "retained"), "state"));
-            assertEquals("UNKNOWN", str(manager.operations(serverId).getFirst(), "state"));
-            stopped.set(true);
-            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);
-            while (resources.snapshot().get("process") != 0 && System.nanoTime() < deadline) Thread.sleep(20);
-            assertEquals(0, resources.snapshot().get("process"), "Capacity must be released after observed exit without a new dispatch");
-            manager.requireTaskStopped("retained");
-            assertEquals(0, resources.snapshot().get("process")); assertEquals(0, resources.snapshot().get("tool"));
-            assertEquals("CONFIRMED", str(manager.operations(serverId).getFirst(), "stopState"));
-            assertEquals("PAUSED", str(engine.action("retained", "reconcile", reconciliation), "state"));
-            assertEquals(definitionChanged ? "REJECTED" : "UNKNOWN", str(manager.invokeFixedTool("retained", "IMPLEMENT", alias, () -> false), "state"));
-            assertEquals(definitionChanged ? 0 : 1, calls.get(), "Reconciliation must not replay the old action");
+            WorkspaceRuntime engineRuntime = mock(WorkspaceRuntime.class);
+            WorkbenchCatalog engineCatalog = new WorkbenchCatalog(store, engineRuntime, new PlanValidator());
+            WorkbenchEngine engine = new WorkbenchEngine(store, engineCatalog, engineRuntime, resources, mapper, manager);
+            try {
+                var reconciliation = obj("processesStopped", true, "sideEffectsChecked", true, "note", "User assertion cannot override a live local transport");
+                assertEquals(409, assertThrows(ApiException.class, () -> engine.action("retained", "reconcile", reconciliation)).status());
+                assertEquals("UNKNOWN", str(store.get("task", "retained"), "state"));
+                assertEquals("UNKNOWN", str(manager.operations(serverId).getFirst(), "state"));
+                stopped.set(true);
+                long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);
+                while (resources.snapshot().get("process") != 0 && System.nanoTime() < deadline) Thread.sleep(20);
+                assertEquals(0, resources.snapshot().get("process"), "Capacity must be released after observed exit without a new dispatch");
+                manager.requireTaskStopped("retained");
+                assertEquals(0, resources.snapshot().get("process")); assertEquals(0, resources.snapshot().get("tool"));
+                assertEquals("CONFIRMED", str(manager.operations(serverId).getFirst(), "stopState"));
+                assertEquals("PAUSED", str(engine.action("retained", "reconcile", reconciliation), "state"));
+                assertEquals(definitionChanged ? "REJECTED" : "UNKNOWN", str(manager.invokeFixedTool("retained", "IMPLEMENT", alias, () -> false), "state"));
+                assertEquals(definitionChanged ? 0 : 1, calls.get(), "Reconciliation must not replay the old action");
+            } finally { org.springframework.test.util.ReflectionTestUtils.invokeMethod(engine, "shutdown"); }
         } finally { stopped.set(true); manager.requireTaskStopped("retained"); }
     }
 

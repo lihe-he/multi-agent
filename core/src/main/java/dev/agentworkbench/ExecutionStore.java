@@ -62,7 +62,7 @@ public class ExecutionStore implements AutoCloseable {
                 int schemaVersion;
                 try (var version = statement.executeQuery("PRAGMA user_version")) {
                     schemaVersion = version.next() ? version.getInt(1) : 0;
-                    if (schemaVersion > 3) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
+                    if (schemaVersion > 4) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
                 }
                 statement.execute("PRAGMA journal_mode=WAL");
                 statement.execute("PRAGMA synchronous=FULL");
@@ -81,6 +81,9 @@ public class ExecutionStore implements AutoCloseable {
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_subtask_dispatch ON entities(json_extract(body,'$.parentRunId'),json_extract(body,'$.requestId'),json_extract(body,'$.toolCallId')) WHERE kind='subtask'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_team_message ON entities(json_extract(body,'$.teamId'),json_extract(body,'$.sequence')) WHERE kind='teamMessage'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_effect_state ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.state')) WHERE kind IN ('operation','mcpOperation','teamOperation')");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_worker_lease_operation ON entities(json_extract(body,'$.operationKind'),json_extract(body,'$.operationId')) WHERE kind='workerLease'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_worker_lease_owner ON entities(json_extract(body,'$.workerId'),json_extract(body,'$.state')) WHERE kind='workerLease'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_worker_lease_task ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.state')) WHERE kind='workerLease'");
                 boolean rebuildSearch;
                 try (var tables = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_search'")) { rebuildSearch = schemaVersion < 3 || !tables.next(); }
                 statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS session_search USING fts5(project_id UNINDEXED,session_id UNINDEXED,message_id UNINDEXED,sequence UNINDEXED,content,tokenize='trigram case_sensitive 1')");
@@ -91,7 +94,7 @@ public class ExecutionStore implements AutoCloseable {
                     statement.execute("DELETE FROM session_search");
                     statement.execute("INSERT INTO session_search(rowid,project_id,session_id,message_id,sequence,content) SELECT sequence,json_extract(body,'$.projectId'),session_id,id,sequence,session_search_fold(json_extract(body,'$.content')) FROM session_messages");
                 }
-                statement.execute("PRAGMA user_version=3");
+                statement.execute("PRAGMA user_version=4");
                 opened.commit(); opened.setAutoCommit(true);
             }
             connection = opened; ownershipChannel = channel; ownershipLock = lock;
@@ -135,6 +138,16 @@ public class ExecutionStore implements AutoCloseable {
     public synchronized Map<String, Object> put(String kind, Map<String, Object> entity) {
         transaction(() -> write(kind, entity));
         return entity;
+    }
+
+    /**
+     * 节点归属、租约和操作记录共用原事务，调用方在同一存储锁内完成版本预检。
+     */
+    synchronized void commitRecords(Map<String, List<Map<String, Object>>> records, String taskId, String eventType, String message) {
+        transaction(() -> {
+            for (var entry : records.entrySet()) for (Map<String, Object> record : entry.getValue()) write(entry.getKey(), record);
+            if (eventType != null) appendEvent(taskId, eventType, message);
+        });
     }
 
     public synchronized void delete(String kind, String id) {
@@ -484,7 +497,7 @@ public class ExecutionStore implements AutoCloseable {
             "sequence", num(run, "calls", 0) + 1, "state", "DISPATCHING", "createdAt", now(), "attempt", 1,
             "routeId", run.get("routeId"), "routeVersion", run.get("routeVersion"), "engine", run.get("engine"), "model", run.get("model"),
             "unit", run.get("callUnit"), "usage", obj("cost", "UNKNOWN"));
-        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth")) if (run.containsKey(key)) request.put(key, run.get(key));
+        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion")) if (run.containsKey(key)) request.put(key, run.get(key));
         for (String key : List.of("round", "messageCount", "inputBytes", "inputDigest", "toolCount", "inputPreview", "inputTruncated")) {
             if (metadata.containsKey(key)) request.put(key, metadata.get(key));
         }
@@ -605,7 +618,7 @@ public class ExecutionStore implements AutoCloseable {
         if (toolCallId.isBlank() || toolCallId.length() > 200 || !AgentPermissions.has(permissions, "mcp") || !AgentPermissions.has(permissions, "write")) throw new ApiException(403, "执行者没有固定 MCP 权限或原工具身份");
         if (!str(run, "subtaskId").isBlank() && (!AgentPermissions.unrestricted(permissions, "read") || !AgentPermissions.unrestricted(permissions, "write"))) throw new ApiException(403, "窄范围副任务不能证明外部 MCP 的文件访问边界，请交回根授权阶段");
         Map<String, Object> source = obj("agentRunId", runId, "modelRequestId", requestId, "toolCallId", toolCallId, "rootTaskId", run.get("rootTaskId"), "actorKind", run.get("kind"));
-        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "sessionId")) if (run.containsKey(key)) source.put(key, run.get(key));
+        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "sessionId", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion")) if (run.containsKey(key)) source.put(key, run.get(key));
         return source;
     }
 
@@ -720,7 +733,16 @@ public class ExecutionStore implements AutoCloseable {
     }
 
     public synchronized void finishTeamOperation(String operationId, String state, Map<String, Object> facts) {
+        finishTeamOperation(operationId, state, facts, null);
+    }
+
+    synchronized void finishWorkerTeamOperation(String operationId, String state, Map<String, Object> facts, Map<String, Object> lease) {
+        finishTeamOperation(operationId, state, facts, lease);
+    }
+
+    private void finishTeamOperation(String operationId, String state, Map<String, Object> facts, Map<String, Object> lease) {
         Map<String, Object> operation = get("teamOperation", operationId);
+        requireLeaseReceipt(operation, state, lease);
         if (!Set.of("PREPARED", "DISPATCHED").contains(str(operation, "state"))) throw new ApiException(409, "团队操作终态不可覆盖");
         if (!Set.of("DISPATCHED", "ACKNOWLEDGED", "REJECTED", "UNKNOWN", "CANCELLED").contains(state)
                 || (state.equals("DISPATCHED") && !"PREPARED".equals(str(operation, "state")))
@@ -736,7 +758,7 @@ public class ExecutionStore implements AutoCloseable {
         }
         operation.put("state", state); operation.put("observation", facts); operation.put("updatedAt", now());
         Map<String, Object> adopted = child;
-        transaction(() -> { write("teamOperation", operation); if (adopted != null) write("subtask", adopted); appendEvent(str(operation, "taskId"), "TEAM_OPERATION", str(operation, "kind") + "：" + state); });
+        transaction(() -> { write("teamOperation", operation); if (lease != null) write("workerLease", lease); if (adopted != null) write("subtask", adopted); appendEvent(str(operation, "taskId"), "TEAM_OPERATION", str(operation, "kind") + "：" + state); });
     }
 
     /**
@@ -790,32 +812,68 @@ public class ExecutionStore implements AutoCloseable {
     }
 
     public synchronized void markOperation(String operationId, String state, Map<String, Object> details) {
+        markOperation(operationId, state, details, null);
+    }
+
+    synchronized void markWorkerOperation(String operationId, String state, Map<String, Object> details, Map<String, Object> lease) {
+        markOperation(operationId, state, details, lease);
+    }
+
+    private void markOperation(String operationId, String state, Map<String, Object> details, Map<String, Object> lease) {
         Map<String, Object> operation = get("operation", operationId);
+        requireLeaseReceipt(operation, state, lease);
+        Map<String, Object> recoveryLease = lease;
+        if (lease == null && !str(operation, "workerLeaseId").isBlank()) {
+            recoveryLease = get("workerLease", str(operation, "workerLeaseId"));
+            if ("UNKNOWN".equals(state) && "ACTIVE".equals(str(recoveryLease, "state"))) recoveryLease.putAll(obj("state", "UNKNOWN", "stopState", "UNKNOWN", "endedAt", now()));
+            if ("RECONCILED".equals(state) && "UNKNOWN".equals(str(recoveryLease, "state"))) recoveryLease.putAll(obj("state", "RECONCILED", "stopState", "USER_CONFIRMED", "reconciliation", details));
+        }
         operation.put("state", state); operation.put("updatedAt", now());
         operation.putAll(details);
-        transaction(() -> write("operation", operation));
+        Map<String, Object> persistedLease = recoveryLease;
+        transaction(() -> { write("operation", operation); if (persistedLease != null) write("workerLease", persistedLease); });
+    }
+
+    private void requireLeaseReceipt(Map<String, Object> operation, String state, Map<String, Object> lease) {
+        if (str(operation, "workerLeaseId").isBlank()) return;
+        if (lease == null && !Set.of("UNKNOWN", "RECONCILED").contains(state)) throw new ApiException(403, "操作回执必须由原 Worker 租约确认");
+        if (lease != null && (!str(operation, "workerLeaseId").equals(str(lease, "id")) || !str(operation, "id").equals(str(lease, "operationId"))
+                || !str(operation, "workerId").equals(str(lease, "workerId")) || num(operation, "workerEpoch", -1) != num(lease, "epoch", -2))) throw new ApiException(403, "操作与 Worker 回执归属不匹配");
+        if (!Set.of("PREPARED", "DISPATCHED").contains(str(operation, "state")) && !("UNKNOWN".equals(str(operation, "state")) && Set.of("UNKNOWN", "RECONCILED").contains(state))) throw new ApiException(409, "已结束的 Worker 操作事实不可覆盖");
     }
 
     /**
      * 证据只允许追加，结果和任务状态在同一事务中保存。
      */
     public synchronized void recordEvidence(String taskId, String operationId, Map<String, Object> evidence) {
+        recordEvidence(taskId, operationId, evidence, null);
+    }
+
+    synchronized void recordWorkerEvidence(String taskId, String operationId, Map<String, Object> evidence, Map<String, Object> lease) {
+        recordEvidence(taskId, operationId, evidence, lease);
+    }
+
+    private void recordEvidence(String taskId, String operationId, Map<String, Object> evidence, Map<String, Object> lease) {
+        if (lease == null && !str(get("operation", operationId), "workerLeaseId").isBlank()) throw new ApiException(403, "证据必须来自该次 Worker 执行租约");
         Map<String, Object> task = get("task", taskId);
         List<Map<String, Object>> evidenceList = new ArrayList<>(objects(task.get("evidence")));
         evidenceList.add(evidence); task.put("evidence", evidenceList);
         if (operationId.equals(str(task, "activeOperation"))) task.remove("activeOperation"); task.put("updatedAt", now());
         Map<String, Object> operation = get("operation", operationId);
+        requireLeaseReceipt(operation, "UNKNOWN".equals(str(evidence, "status")) ? "UNKNOWN" : "ACKNOWLEDGED", lease);
         operation.put("state", "UNKNOWN".equals(str(evidence, "status")) ? "UNKNOWN" : "ACKNOWLEDGED");
         operation.put("evidenceId", evidence.get("id")); operation.put("updatedAt", now());
         Map<String, Object> run = str(operation, "agentRunId").isBlank() ? null : get("agentRun", str(operation, "agentRunId"));
         if (run != null) {
             evidence.put("agentRunId", run.get("id")); run.put("evidenceId", evidence.get("id"));
             for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth")) if (run.containsKey(key)) evidence.put(key, run.get(key));
+            if (lease != null) for (String key : List.of("workerLeaseId", "workerId", "executionNodeId", "repositoryBindingId", "bindingVersion", "workerEpoch")) run.put(key, evidence.get(key));
             run.put("resultVersion", evidence.getOrDefault("resultVersion", evidence.get("version"))); run.put("usage", evidence.getOrDefault("usage", obj("cost", "UNKNOWN")));
         }
         transaction(() -> {
             if (find("evidence", str(evidence, "id")) != null) { throw new IllegalStateException("证据不可覆盖"); }
             write("evidence", evidence); write("task", task); write("operation", operation);
+            if (lease != null) write("workerLease", lease);
             if (run != null) write("agentRun", run);
             appendEvent(taskId, "EVIDENCE", str(evidence, "stage") + "：" + str(evidence, "status"));
         });
@@ -823,6 +881,44 @@ public class ExecutionStore implements AutoCloseable {
 
     public synchronized void event(String taskId, String type, String message) {
         transaction(() -> appendEvent(taskId, type, message));
+    }
+
+    /**
+     * 心跳和根停止查询走租约索引，不扫描全部历史执行。
+     */
+    synchronized List<Map<String, Object>> workerLeases(String workerId, String taskId, String state) {
+        String owner = workerId.isBlank() ? "json_extract(body,'$.taskId')=?" : "json_extract(body,'$.workerId')=?";
+        boolean scopedTask = !workerId.isBlank() && !taskId.isBlank();
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='workerLease' AND " + owner + (scopedTask ? " AND json_extract(body,'$.taskId')=?" : "") + (state.isBlank() ? "" : " AND json_extract(body,'$.state')=?") + " ORDER BY rowid DESC")) {
+            int index = 1; query.setString(index++, workerId.isBlank() ? taskId : workerId); if (scopedTask) query.setString(index++, taskId); if (!state.isBlank()) query.setString(index, state);
+            try (var rows = query.executeQuery()) { List<Map<String, Object>> leases = new ArrayList<>(); while (rows.next()) leases.add(decode(rows.getString(1))); return leases; }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    synchronized Map<String, Object> workerLeaseForOperation(String kind, String operationId) {
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='workerLease' AND json_extract(body,'$.operationKind')=? AND json_extract(body,'$.operationId')=?")) {
+            query.setString(1, kind); query.setString(2, operationId); try (var rows = query.executeQuery()) { return rows.next() ? decode(rows.getString(1)) : null; }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    synchronized Map<String, Object> workerLeasePage(String taskId, long before, int requestedLimit, String state) {
+        get("task", taskId);
+        if (before < 0 || (!state.isBlank() && !Set.of("ACTIVE", "RELEASED", "UNKNOWN", "RECONCILED").contains(state))) throw new ApiException(400, "Worker 租约游标或状态无效");
+        int limit = Math.max(1, Math.min(100, requestedLimit));
+        try (var query = connection.prepareStatement("SELECT rowid,body FROM entities WHERE kind='workerLease' AND json_extract(body,'$.taskId')=?"
+                + (before > 0 ? " AND rowid<?" : "") + (state.isBlank() ? "" : " AND json_extract(body,'$.state')=?") + " ORDER BY rowid DESC LIMIT ?")) {
+            int index = 1; query.setString(index++, taskId); if (before > 0) query.setLong(index++, before); if (!state.isBlank()) query.setString(index++, state); query.setInt(index, limit + 1);
+            List<Map<String, Object>> leases = new ArrayList<>(); long cursor = before; boolean more = false;
+            try (var rows = query.executeQuery()) {
+                while (rows.next()) {
+                    if (leases.size() == limit) { more = true; break; }
+                    cursor = rows.getLong(1); Map<String, Object> lease = WorkerLedger.publicLease(decode(rows.getString(2))); lease.put("sequence", cursor);
+                    Map<String, Object> operation = get(str(lease, "operationKind"), str(lease, "operationId"));
+                    lease.put("kind", operation.get("kind")); lease.put("operationState", operation.get("state")); lease.put("evidenceId", operation.getOrDefault("evidenceId", "")); leases.add(lease);
+                }
+            }
+            return obj("leases", leases, "cursor", cursor, "hasMore", more);
+        } catch (Exception exception) { throw failure(exception); }
     }
 
     public synchronized Map<String, Object> events(String taskId, long after, int requestedLimit) {

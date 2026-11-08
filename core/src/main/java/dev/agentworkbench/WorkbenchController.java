@@ -41,7 +41,7 @@ public class WorkbenchController {
     }
 
     @GetMapping("/health")
-    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.8", "apiVersion", 1, "schemaVersion", 3); }
+    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.9", "apiVersion", 1, "schemaVersion", 4); }
 
     @PostMapping("/shutdown")
     public Map<String, Object> shutdown() {
@@ -62,13 +62,44 @@ public class WorkbenchController {
             value.put("evidenceCount", objects(task.get("evidence")).size()); return value;
         }).toList();
         return obj("projects", store.list("project"), "tasks", summaries, "routes", catalog.routes(), "memories", store.list("memory"), "profiles", store.list("profile"), "agentDefinitions", store.list("agentDefinition"),
-            "system", obj("version", "0.2.0-alpha.8", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
+            "executionNodes", executionNodes(), "repositoryBindings", store.list("repositoryBinding"), "workers", workers(),
+            "system", obj("version", "0.2.0-alpha.9", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
                 "eventCursor", store.latestEvent(), "credentialStorage", "SESSION_ONLY", "releaseStatus", "DEVELOPMENT_PREVIEW", "capabilities", List.of("Git 隔离工作目录", "三模式阶段编排", "根预算与验证预留", "独立审查与人工验收", "结果未知保护", "持久事件续读"),
                 "limitations", List.of("API 兼容性须按实际端点验证", "原生 CLI 费用与内部请求数为软预算", "本机工作目录隔离不等于操作系统安全隔离", "MCP、自动采纳、三端打包与长期性能尚待发布验收")));
     }
 
     @PostMapping("/projects")
     public Map<String, Object> project(@RequestBody Map<String, Object> body) { return catalog.importProject(body); }
+
+    @GetMapping("/execution-nodes")
+    public List<Map<String, Object>> executionNodes() {
+        catalog.nodes().localNode();
+        return store.list("executionNode").stream().map(node -> {
+            Map<String, Object> visible = new java.util.LinkedHashMap<>(node), worker = store.find("worker", str(node, "workerId"));
+            visible.put("state", !bool(node, "enabled", false) ? "DISABLED" : worker != null && "RUNNING".equals(str(worker, "state"))
+                && java.time.Instant.now().isBefore(java.time.Instant.parse(str(worker, "expiresAt"))) ? "ONLINE" : "OFFLINE");
+            return visible;
+        }).toList();
+    }
+
+    @PostMapping("/execution-nodes")
+    public Map<String, Object> saveExecutionNode(@RequestBody Map<String, Object> body) { return catalog.nodes().saveNode(body); }
+
+    @GetMapping("/repository-bindings")
+    public List<Map<String, Object>> repositoryBindings(@RequestParam(defaultValue = "") String projectId) {
+        if (!projectId.isBlank()) catalog.nodes().bindImportedProject(store.get("project", projectId));
+        return store.list("repositoryBinding").stream().filter(binding -> projectId.isBlank() || projectId.equals(str(binding, "projectId"))).toList();
+    }
+
+    @PostMapping("/repository-bindings")
+    public Map<String, Object> saveRepositoryBinding(@RequestBody Map<String, Object> body) { return catalog.nodes().saveBinding(body); }
+
+    @GetMapping("/workers")
+    public List<Map<String, Object>> workers() { return store.list("worker").stream().limit(30).toList(); }
+
+    @GetMapping("/tasks/{id}/worker-leases")
+    public Map<String, Object> workerLeases(@PathVariable String id, @RequestParam(defaultValue = "0") long before,
+            @RequestParam(defaultValue = "30") int limit, @RequestParam(defaultValue = "") String state) { return store.workerLeasePage(id, before, limit, state); }
 
     @PostMapping("/projects/{id}/scan")
     public Map<String, Object> scan(@PathVariable String id) { return catalog.scanProject(id); }
@@ -217,6 +248,10 @@ public class WorkbenchController {
             putZip(zip, "operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(operations(id)));
             putZip(zip, "agent-runs.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("agentRun").stream().filter(run -> id.equals(str(run, "taskId"))).toList()));
             putZip(zip, "model-requests.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("modelRequest").stream().filter(request -> id.equals(str(request, "taskId"))).toList()));
+            List<Map<String, Object>> taskLeases = store.workerLeases("", id, "");
+            putZip(zip, "worker-leases.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(taskLeases.stream().map(WorkerLedger::publicLease).toList()));
+            putZip(zip, "workers.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("worker").stream().filter(worker -> taskLeases.stream().anyMatch(lease -> str(worker, "id").equals(str(lease, "workerId")))).toList()));
+            putZip(zip, "execution.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(task.getOrDefault("execution", obj("historical", true))));
             putZip(zip, "mcp-operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(mcpOperations(id)));
             putZip(zip, "team.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.team(id)));
             putZip(zip, "team-messages.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("teamMessage").stream().filter(message -> id.equals(str(message, "taskId"))).toList()));

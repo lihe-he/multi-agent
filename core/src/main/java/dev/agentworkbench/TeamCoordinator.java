@@ -32,10 +32,12 @@ final class TeamCoordinator {
     private final ObjectMapper mapper;
     private final McpManager mcp;
     private final ExecutorService workers;
+    private final ExecutionWorker executionWorker;
     private final Map<String, CompletableFuture<Map<String, Object>>> executions = new ConcurrentHashMap<>();
 
-    TeamCoordinator(ExecutionStore store, WorkbenchCatalog catalog, WorkspaceRuntime runtime, ResourceManager resources, ObjectMapper mapper, McpManager mcp, ExecutorService workers) {
+    TeamCoordinator(ExecutionStore store, WorkbenchCatalog catalog, WorkspaceRuntime runtime, ResourceManager resources, ObjectMapper mapper, McpManager mcp, ExecutorService workers, ExecutionWorker executionWorker) {
         this.store = store; this.catalog = catalog; this.runtime = runtime; this.resources = resources; this.mapper = mapper; this.mcp = mcp; this.workers = workers;
+        this.executionWorker = executionWorker;
     }
 
     Session session(String taskId, String runId, String workspace, Map<String, Object> route, BooleanSupplier cancelled) {
@@ -91,7 +93,7 @@ final class TeamCoordinator {
 
         @Override public Map<String, Object> permissions() { return permissions; }
         boolean stopped() {
-            if (closing.get() || cancelled.getAsBoolean() || System.nanoTime() >= deadline || !store.healthy()) return true;
+            if (closing.get() || cancelled.getAsBoolean() || System.nanoTime() >= deadline || !store.healthy() || !executionWorker.current(taskId)) return true;
             Map<String, Object> current = store.find("route", str(route, "id"));
             if (current == null || !bool(current, "enabled", false)) return true;
             String definitionId = str(store.get("agentRun", runId), "definitionId");
@@ -200,16 +202,16 @@ final class TeamCoordinator {
                 store.agentRunWaiting(childRun, "WAITING_RESOURCE");
                 Map<String, Object> preparation = store.beginOperation(taskId, str(store.get("agentRun", childRun), "stage"), "SUBAGENT_SNAPSHOT", workspace, childRun);
                 try (AutoCloseable lease = acquireTool()) {
-                    store.markOperation(str(preparation, "id"), "DISPATCHED", obj("parentRunId", runId));
+                    executionWorker.dispatch(str(preparation, "id"), workspace, obj("parentRunId", runId));
                     String version = runtime.fingerprint(workspace);
                     child = store.updateSubtask(taskId, childId, runtime.delegationCopy(workspace, childId, version));
-                    store.markOperation(str(preparation, "id"), "ACKNOWLEDGED", obj("workspace", child.get("workspace"), "inputVersion", version));
+                    executionWorker.finish(str(preparation, "id"), "ACKNOWLEDGED", obj("workspace", child.get("workspace"), "inputVersion", version));
                     store.agentRunWaiting(childRun, objectsOrStringsEmpty(child.get("dependsOn")) ? "WAITING_RESOURCE" : "WAITING_DEPENDENCY");
                 } catch (Exception exception) {
                     if (store.healthy()) {
                         boolean dispatched = "DISPATCHED".equals(str(store.get("operation", str(preparation, "id")), "state"));
                         String state = dispatched ? "UNKNOWN" : exception instanceof CancellationException ? "CANCELLED" : "FAILED";
-                        store.markOperation(str(preparation, "id"), state.equals("FAILED") ? "REJECTED" : state, obj("error", safe(exception)));
+                        executionWorker.finish(str(preparation, "id"), state.equals("FAILED") ? "REJECTED" : state, obj("error", safe(exception)));
                         store.finishAgentRun(childRun, state, safe(exception)); store.finishSubtask(taskId, childId, state, safe(exception));
                     }
                     throw exception;
@@ -244,15 +246,15 @@ final class TeamCoordinator {
                 return observed;
             }
             try (AutoCloseable lease = acquireTool()) {
-                store.finishTeamOperation(str(operation, "id"), "DISPATCHED", obj());
+                executionWorker.dispatchTeam(str(operation, "id"), workspace);
                 Map<String, Object> result = runtime.integrateDelegation(str(child, "baseWorkspace"), str(child, "workspace"), workspace, str(child, "resultVersion"), map(child, "permissions"));
-                store.finishTeamOperation(str(operation, "id"), "ACKNOWLEDGED", result);
+                executionWorker.finishTeam(str(operation, "id"), "ACKNOWLEDGED", result);
                 return result;
             } catch (IllegalArgumentException exception) {
-                Map<String, Object> result = obj("state", "REJECTED", "error", safe(exception)); store.finishTeamOperation(str(operation, "id"), "REJECTED", result); return result;
+                Map<String, Object> result = obj("state", "REJECTED", "error", safe(exception)); executionWorker.finishTeam(str(operation, "id"), "REJECTED", result); return result;
             } catch (Exception exception) {
                 String state = exception instanceof CancellationException && store.healthy() && "PREPARED".equals(str(store.get("teamOperation", str(operation, "id")), "state")) ? "CANCELLED" : "UNKNOWN";
-                Map<String, Object> result = obj("state", state, "error", safe(exception)); if (store.healthy()) store.finishTeamOperation(str(operation, "id"), state, result); return result;
+                Map<String, Object> result = obj("state", state, "error", safe(exception)); if (store.healthy()) executionWorker.finishTeam(str(operation, "id"), state, result); return result;
             }
         }
 
@@ -297,7 +299,7 @@ final class TeamCoordinator {
                 store.agentRunWaiting(runId, "WAITING_RESOURCE");
                 Map<String, Object> preparation = store.beginOperation(taskId, str(store.get("agentRun", runId), "stage"), "SUBAGENT_DEPENDENCIES", str(child, "workspace"), runId); preparationId = str(preparation, "id");
                 try (AutoCloseable lease = session.acquireTool()) {
-                    store.markOperation(preparationId, "DISPATCHED", obj("dependencies", inputs));
+                    executionWorker.dispatch(preparationId, str(child, "workspace"), obj("dependencies", inputs));
                     Map<String, Object> preparationPolicy = new LinkedHashMap<>(session.permissions()); preparationPolicy.put("capabilities", List.of("write")); preparationPolicy.put("writeScopeLayers", AgentPermissions.layers(session.permissions(), "read"));
                     List<Map<String, Object>> receipts = new ArrayList<>();
                     for (Map<String, Object> dependency : dependencies) {
@@ -306,12 +308,12 @@ final class TeamCoordinator {
                     }
                     inputVersion = runtime.fingerprint(str(child, "workspace")); readyBaseline = runtime.reviewCopy(str(child, "workspace"), childId, inputVersion);
                     store.updateSubtask(taskId, childId, obj("baseWorkspace", readyBaseline, "inputVersion", inputVersion));
-                    store.markOperation(preparationId, "ACKNOWLEDGED", obj("inputVersion", inputVersion, "baseWorkspace", readyBaseline, "receipts", receipts)); preparationId = "";
+                    executionWorker.finish(preparationId, "ACKNOWLEDGED", obj("inputVersion", inputVersion, "baseWorkspace", readyBaseline, "receipts", receipts)); preparationId = "";
                 }
             }
             store.agentRunWaiting(runId, "WAITING_RESOURCE");
             Map<String, Object> operation = store.beginOperation(taskId, str(store.get("agentRun", runId), "stage"), "SUBAGENT_MODEL", str(child, "workspace"), runId); operationId = str(operation, "id");
-            store.markOperation(operationId, "DISPATCHED", obj("parentRunId", child.get("parentRunId"), "inputVersion", inputVersion));
+            executionWorker.dispatch(operationId, str(child, "workspace"), obj("parentRunId", child.get("parentRunId"), "inputVersion", inputVersion));
             AtomicBoolean denied = new AtomicBoolean(); Session activeSession = session;
             ModelCallObserver observer = new RequestObservation(store, catalog, taskId, runId, false, activeSession::stopped, denied, session::checkCurrent, session, num(child, "maxCalls", 8));
             String prompt = "你是动态副 Agent。阶段 kind=SUBAGENT，role=" + str(child, "role") + "。\n根任务：" + str(task, "goal")
@@ -328,16 +330,16 @@ final class TeamCoordinator {
             if (!AgentPermissions.has(session.permissions(), "write") && !inputVersion.equals(version)) throw new IllegalStateException("只读副 Agent 的输入现场发生变化，需核对");
             Map<String, Object> evidence = obj("id", id(), "stage", store.get("agentRun", runId).get("stage"), "kind", "SUBAGENT", "version", version, "inputVersion", inputVersion, "resultVersion", version,
                 "output", catalog.redact(str(result, "output")), "status", "SUCCEEDED".equals(str(result, "status")) ? "PASSED" : str(result, "status"), "usage", result.getOrDefault("usage", obj()), "createdAt", now(), "changedPaths", changes);
-            store.recordEvidence(taskId, operationId, evidence);
-            if ("SUCCEEDED".equals(str(result, "status"))) session.settle();
-            state = "UNKNOWN".equals(str(result, "status")) ? "UNKNOWN" : cancelled.getAsBoolean() || "CANCELLED".equals(str(result, "status")) ? "CANCELLED" : denied.get() ? "BUDGET_EXHAUSTED" : "WAITING_INPUT".equals(str(result, "status")) ? "WAITING_INPUT" : "SUCCEEDED".equals(str(result, "status")) ? "SUCCEEDED" : "FAILED";
+            executionWorker.evidence(taskId, operationId, evidence);
+            if ("PASSED".equals(str(evidence, "status"))) session.settle();
+            state = "UNKNOWN".equals(str(evidence, "status")) ? "UNKNOWN" : cancelled.getAsBoolean() || "CANCELLED".equals(str(result, "status")) ? "CANCELLED" : denied.get() ? "BUDGET_EXHAUSTED" : "WAITING_INPUT".equals(str(result, "status")) ? "WAITING_INPUT" : "SUCCEEDED".equals(str(result, "status")) ? "SUCCEEDED" : "FAILED";
             reason = state.equals("SUCCEEDED") ? "副任务已执行并核对范围；根验证、审查和人工验收仍需完成" : "副任务返回 " + state;
         } catch (Exception exception) {
             reason = safe(exception);
             boolean dispatchedPreparation = !preparationId.isBlank() && store.healthy() && "DISPATCHED".equals(str(store.get("operation", preparationId), "state"));
             state = dispatchedPreparation ? "UNKNOWN" : exception instanceof CancellationException ? "CANCELLED" : operationId.isBlank() ? "FAILED" : "UNKNOWN";
-            if (!preparationId.isBlank() && store.healthy()) store.markOperation(preparationId, state.equals("FAILED") ? "REJECTED" : state, obj("error", reason));
-            if (!operationId.isBlank() && store.healthy()) store.markOperation(operationId, state.equals("UNKNOWN") ? "UNKNOWN" : "ACKNOWLEDGED", obj("error", reason));
+            if (!preparationId.isBlank() && store.healthy()) executionWorker.finish(preparationId, state.equals("FAILED") ? "REJECTED" : state, obj("error", reason));
+            if (!operationId.isBlank() && store.healthy()) executionWorker.finish(operationId, state.equals("UNKNOWN") ? "UNKNOWN" : "ACKNOWLEDGED", obj("error", reason));
         } finally {
             if (session != null) {
                 session.stopChildren();
@@ -347,6 +349,7 @@ final class TeamCoordinator {
                 } catch (Exception exception) { state = "UNKNOWN"; reason = safe(exception); }
             }
             if (store.healthy()) {
+                executionWorker.settleRun(runId);
                 store.finishAgentRun(runId, state, reason); store.finishSubtask(taskId, childId, state, reason);
             }
         }

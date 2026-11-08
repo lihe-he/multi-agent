@@ -150,6 +150,18 @@ try {
     assert.equal(value.head, originalHead);
     return value;
   });
+  await check('Local execution node and repository binding are authoritative and versioned', async () => {
+    await request('/execution-nodes', undefined, { expected: 401, authorized: false });
+    await request(`/repository-bindings?projectId=${project.id}`, undefined, { expected: 401, authorized: false });
+    const nodes = (await request('/execution-nodes')).data, workers = (await request('/workers')).data, bindings = (await request(`/repository-bindings?projectId=${project.id}`)).data;
+    assert.equal(nodes.length, 1); assert.equal(nodes[0].deployment, 'CORE_PROCESS'); assert.equal(nodes[0].state, 'ONLINE');
+    assert.equal(workers[0].executionNodeId, nodes[0].id); assert.ok(Number.isInteger(workers[0].pid)); assert.equal(workers[0].state, 'RUNNING');
+    assert.equal(bindings.length, 1); assert.equal(bindings[0].id, project.repositoryBindingId); assert.equal(bindings[0].executionNodeId, nodes[0].id); assert.equal(bindings[0].projectId, project.id);
+    await request('/execution-nodes', { id: nodes[0].id, expectedVersion: nodes[0].version, name: 'bad input', enabled: 'true' }, { expected: 400 });
+    await request('/execution-nodes', { id: nodes[0].id, expectedVersion: nodes[0].version + 1, name: 'stale configuration', enabled: true }, { expected: 409 });
+    await request('/repository-bindings', { projectId: project.id, executionNodeId: nodes[0].id, name: 'relative input', path: 'relative' }, { expected: 400 });
+    return { executionNodeId: nodes[0].id, repositoryBindingId: bindings[0].id, workerId: workers[0].id, epoch: workers[0].epoch };
+  });
   await check('Search reports source locations and coverage', async () => {
     const value = (await request(`/projects/${project.id}/search?q=hello`)).data;
     assert.ok(value.results.some(result => result.path === 'src/greeting.txt' && result.line === 1));
@@ -157,7 +169,7 @@ try {
   });
   await check('Session routes require authentication and preserve server-owned message identity', async () => {
     const health = (await request('/health')).data;
-    assert.equal(health.schemaVersion, 3); assert.equal(health.apiVersion, 1);
+    assert.equal(health.schemaVersion, 4); assert.equal(health.apiVersion, 1);
     const base = `/projects/${project.id}/sessions`;
     await request(base, undefined, { expected: 401, authorized: false });
     await request(`${base}/search?q=background`, undefined, { expected: 401, authorized: false });
@@ -394,6 +406,8 @@ try {
     assert.equal(json('team.json').agents.length, 2); assert.equal(json('team-operations.json').length, 1); assert.equal(json('team-operations.json')[0].state, 'ACKNOWLEDGED');
     assert.equal(json('team-operations.json')[0].id, observed.writer.integrations[0].operationId);
     assert.equal(json('team-messages.json').length, 2); assert.equal(json('model-requests.json').length, result.budget.usedCalls);
+    assert.equal(json('worker-leases.json').length, observed.workerLeases.length); assert.ok(json('worker-leases.json').every(lease => !Object.hasOwn(lease, 'claimDigest')));
+    assert.equal(json('execution.json').repositoryBindingId, result.execution.repositoryBindingId); assert.equal(json('workers.json')[0].id, observed.workers[0].id);
     assert.equal(json('mcp-operations.json')[0].agentRunId, observed.writer.agentRunId); assert.equal(json('mcp-operations.json')[0].modelRequestId, observed.mcp[0].modelRequestId);
     assert.ok(json('agent-runs.json').some(run => run.id === observed.reader.agentRunId)); assert.match(zipEntry(archive, 'changes.patch').toString('utf8'), /parent change preserved/);
     await writeFile(path.join(fixture, 'team-delivery.zip'), archive);

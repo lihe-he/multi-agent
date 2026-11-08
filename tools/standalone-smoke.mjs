@@ -179,6 +179,13 @@ try {
   const requestTrace = (await api(`/tasks/${task.id}/model-requests`)).requests;
   const childRequest = requestTrace.find(request => request.agentRunId === pendingWriter.agentRunId);
   assert.ok(childRequest); assert.equal(childRequest.state, 'DISPATCHING'); assert.equal(childRequest.subtaskId, pendingWriter.id);
+  const pendingLeases = (await api(`/tasks/${task.id}/worker-leases?limit=100`)).leases;
+  const childLease = pendingLeases.find(lease => lease.agentRunId === pendingWriter.agentRunId && lease.kind === 'SUBAGENT_MODEL');
+  assert.ok(childLease); assert.equal(childLease.state, 'ACTIVE'); assert.equal(childLease.id, childRequest.workerLeaseId);
+  const actualWorker = (await api('/workers')).find(worker => worker.id === childLease.workerId);
+  assert.ok(actualWorker); assert.equal(actualWorker.pid, core.pid); assert.equal(childLease.executionNodeId, task.execution.executionNodeId);
+  await page.getByRole('button', { name: 'Worker 执行', exact: true }).click();
+  await page.getByRole('region', { name: 'Worker 实际执行记录' }).getByText(childLease.operationId, { exact: false }).waitFor();
   await page.getByRole('button', { name: '返回会话', exact: true }).click();
 
   await page.getByRole('button', { name: '关闭会话 独立浏览器持久会话', exact: true }).click();
@@ -205,6 +212,8 @@ try {
   assert.equal((await api(`/tasks/${task.id}`)).state, 'RUNNING', '退出附加模式桌面不能暂停或取消已有任务');
   assert.equal(pendingModelResponses.length, 1, '客户端重连不能重复派发模型请求');
   assert.equal(teamProtocol.calls.length, callsBeforeReconnect, '父执行者等待子任务时，客户端重连不能重放已有请求');
+  const reconnectedLease = (await api(`/tasks/${task.id}/worker-leases?limit=100`)).leases.find(lease => lease.id === childLease.id);
+  assert.ok(reconnectedLease); assert.equal(reconnectedLease.state, 'ACTIVE'); assert.equal(reconnectedLease.workerId, childLease.workerId); assert.equal(reconnectedLease.epoch, childLease.epoch); assert.equal(reconnectedLease.createdAt, childLease.createdAt);
   assert.equal(existsSync(join(dir, 'desktop/core')), false, '附加模式不创建嵌入核心');
   assert.deepEqual(errors, []);
   teamProtocol.releaseWriter();
@@ -232,12 +241,19 @@ try {
   await resultPage.locator('.toast').waitFor({ state: 'hidden' });
   await resultPage.evaluate(() => window.scrollTo(0, 0));
   await resultPage.screenshot({ path: join(root, `web/qa/team-real-${process.platform}.png`), fullPage: true });
+  await resultPage.getByRole('button', { name: 'Worker 执行', exact: true }).click();
+  const workerPanel = resultPage.getByRole('region', { name: 'Worker 实际执行记录' });
+  const writerLeaseCard = workerPanel.locator('.worker-lease').filter({ hasText: childLease.operationId });
+  await writerLeaseCard.getByText('本机执行已返回', { exact: true }).waitFor();
+  await writerLeaseCard.getByText(childLease.workerId, { exact: true }).waitFor();
+  await resultPage.evaluate(() => window.scrollTo(0, 0)); await resultPage.screenshot({ path: join(root, `web/qa/worker-real-${process.platform}.png`), fullPage: true });
+  await resultPage.getByRole('button', { name: '团队与副 Agent', exact: true }).click();
   const messagePanel = resultPanel.getByRole('region', { name: '团队消息' }); await messagePanel.getByLabel('团队消息', { exact: true }).fill('通过真实代理保存的用户团队资料'); await messagePanel.getByRole('button', { name: '发送团队消息', exact: true }).click(); await messagePanel.getByRole('status').getByText('消息已保存').waitFor();
   await resultPage.reload(); await resultPage.getByRole('button', { name: '研发任务', exact: true }).click(); await resultPage.getByRole('button', { name: /客户端退出不中断/ }).click(); await resultPage.getByRole('button', { name: '团队与副 Agent', exact: true }).click(); await resultPage.getByRole('region', { name: '团队消息' }).getByText('通过真实代理保存的用户团队资料', { exact: true }).waitFor();
   assert.equal((await api(`/tasks/${task.id}/team/messages`)).messages.filter(message => message.content === '通过真实代理保存的用户团队资料' && message.sender === 'USER').length, 1);
   await api(`/tasks/${task.id}/accept`, {}); assert.equal((await api(`/tasks/${task.id}`)).state, 'COMPLETED');
   assert.deepEqual(errors, []);
-  const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, sessionWorkflowThroughProxy: true, sessionSearchAndReopenThroughProxy: true, agentRunActivityThroughProxy: true, modelRequestTraceThroughProxy: true, savedNotesSurviveReload: true, sessionClosePreservesRunningTask: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, childRequestPreservedOnReconnect: childRequest.id, parentWaitReleasesModelCapacity: true, teamDependencyAdoptionThroughProxy: true, teamMessagesSurviveReload: true, mcpActualChildSourceThroughProxy: true, teamRootCalls: finished.budget.usedCalls, teamChildRuns: observed.team.agents.map(agent => ({ id: agent.id, agentRunId: agent.agentRunId, state: agent.state, integrationState: agent.integrationState })), externalMcpCalls: teamProtocol.mcpCalls.length, pageErrors: errors, modelErrors };
+  const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, sessionWorkflowThroughProxy: true, sessionSearchAndReopenThroughProxy: true, agentRunActivityThroughProxy: true, modelRequestTraceThroughProxy: true, savedNotesSurviveReload: true, sessionClosePreservesRunningTask: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, childRequestPreservedOnReconnect: childRequest.id, workerLeasePreservedOnReconnect: childLease.id, workerId: childLease.workerId, workerEpoch: childLease.epoch, workerPid: actualWorker.pid, repositoryBindingId: finished.execution.repositoryBindingId, workerReceiptsVerified: observed.workerLeases.length, parentWaitReleasesModelCapacity: true, teamDependencyAdoptionThroughProxy: true, teamMessagesSurviveReload: true, mcpActualChildSourceThroughProxy: true, teamRootCalls: finished.budget.usedCalls, teamChildRuns: observed.team.agents.map(agent => ({ id: agent.id, agentRunId: agent.agentRunId, state: agent.state, integrationState: agent.integrationState })), externalMcpCalls: teamProtocol.mcpCalls.length, pageErrors: errors, modelErrors };
   mkdirSync(join(root, 'docs/qa'), { recursive: true });
   writeFileSync(join(root, `docs/qa/standalone-${process.platform}.json`), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report, null, 2));

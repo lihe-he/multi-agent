@@ -38,6 +38,8 @@ class TeamRecordsTest {
 
     private Map<String, Object> request(String definition) { return obj("definitionId", definition, "title", "child", "goal", "inspect scope", "scope", List.of("**")); }
 
+    private ExecutionWorker recordWorker() { ExecutionWorker worker = mock(ExecutionWorker.class); when(worker.current(anyString())).thenReturn(true); return worker; }
+
     private Map<String, Object> completedChild(ExecutionStore store, Map<String, Object> root) {
         String taskId = str(map(root, "task"), "id");
         Map<String, Object> child = store.enqueueSubtask(taskId, str(map(root, "run"), "id"), str(root, "requestId"), "completed-child", request("agent-developer"));
@@ -129,7 +131,7 @@ class TeamRecordsTest {
             store.finishTeamOperation(str(operation, "id"), "DISPATCHED", obj());
             assertEquals(409, assertThrows(ApiException.class, () -> store.finishTeamOperation(str(operation, "id"), "DISPATCHED", obj())).status());
             WorkspaceRuntime integrator = mock(WorkspaceRuntime.class);
-            TeamCoordinator coordinator = new TeamCoordinator(store, catalog, integrator, new ResourceManager(), new ObjectMapper(), null, workers);
+            TeamCoordinator coordinator = new TeamCoordinator(store, catalog, integrator, new ResourceManager(), new ObjectMapper(), null, workers, recordWorker());
             var session = coordinator.session(taskId, parent, "workspace", map(store.get("task", taskId), "routeSnapshot"), () -> false);
             assertEquals("UNKNOWN", str(session.invoke("adopt_agent_changes", obj("subtaskId", childId), receipt, "adopt-1"), "state"));
             store.finishTeamOperation(str(operation, "id"), "UNKNOWN", obj("error", "lost receipt"));
@@ -167,11 +169,11 @@ class TeamRecordsTest {
             String receipt = store.beginModelRequest(taskId, runId, false, obj()); store.finishModelRequest(receipt, obj("state", "SUCCEEDED"));
             assertEquals(403, assertThrows(ApiException.class, () -> store.teamMessage(taskId, runId, "", "proposal-message", "secret proposal", receipt, "send")).status());
             assertTrue(store.teamInbox(taskId, 0, runId).isEmpty());
-            var session = new TeamCoordinator(store, catalog, mock(WorkspaceRuntime.class), new ResourceManager(), new ObjectMapper(), null, workers).session(taskId, runId, "workspace", map(store.get("task", taskId), "routeSnapshot"), () -> false);
+            var session = new TeamCoordinator(store, catalog, mock(WorkspaceRuntime.class), new ResourceManager(), new ObjectMapper(), null, workers, recordWorker()).session(taskId, runId, "workspace", map(store.get("task", taskId), "routeSnapshot"), () -> false);
             assertTrue(session.definitions().isEmpty()); assertTrue(session.inbox().isEmpty()); assertEquals("REJECTED", str(session.invoke("send_team_message", obj("content", "secret proposal"), receipt, "send"), "state"));
             Map<String, Object> other = root(store, catalog, 6, 24, 3);
             assertEquals(404, assertThrows(ApiException.class, () -> store.teamMessages(taskId, 0, 0, 40, str(map(other, "run"), "id"))).status()); assertTrue(store.healthy());
-            var parentSession = new TeamCoordinator(store, catalog, mock(WorkspaceRuntime.class), new ResourceManager(), new ObjectMapper(), null, workers).session(taskId, parent, "workspace", map(store.get("task", taskId), "routeSnapshot"), () -> false);
+            var parentSession = new TeamCoordinator(store, catalog, mock(WorkspaceRuntime.class), new ResourceManager(), new ObjectMapper(), null, workers, recordWorker()).session(taskId, parent, "workspace", map(store.get("task", taskId), "routeSnapshot"), () -> false);
             Map<String, Object> longIdMessage = parentSession.invoke("send_team_message", obj("content", "long tool identity"), str(root, "requestId"), "x".repeat(200));
             assertEquals("ACKNOWLEDGED", str(longIdMessage, "state")); assertEquals("x".repeat(200), map(longIdMessage, "message").get("toolCallId"));
             assertEquals(map(longIdMessage, "message").get("id"), map(parentSession.invoke("send_team_message", obj("content", "long tool identity"), str(root, "requestId"), "x".repeat(200)), "message").get("id"));

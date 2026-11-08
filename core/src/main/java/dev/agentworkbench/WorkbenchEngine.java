@@ -34,6 +34,7 @@ public class WorkbenchEngine {
     private final ObjectMapper mapper;
     private final McpManager mcp;
     private final TeamCoordinator teams;
+    private final LocalExecutionWorker executionWorker;
     private final ExecutorService workers = Executors.newVirtualThreadPerTaskExecutor();
     private final Map<String, Control> controls = new ConcurrentHashMap<>();
     private volatile boolean shuttingDown;
@@ -45,8 +46,11 @@ public class WorkbenchEngine {
     @org.springframework.beans.factory.annotation.Autowired
     public WorkbenchEngine(ExecutionStore store, WorkbenchCatalog catalog, WorkspaceRuntime runtime, ResourceManager resources, ObjectMapper mapper, McpManager mcp) {
         this.store = store; this.catalog = catalog; this.runtime = runtime; this.resources = resources; this.mapper = mapper; this.mcp = mcp;
-        this.teams = new TeamCoordinator(store, catalog, runtime, resources, mapper, mcp, workers);
+        this.executionWorker = new LocalExecutionWorker(store, catalog.nodes());
+        this.teams = new TeamCoordinator(store, catalog, runtime, resources, mapper, mcp, workers, executionWorker);
     }
+
+    Map<String, Object> workerIdentity() { return executionWorker.identity(); }
 
     @PostConstruct
     void recover() {
@@ -115,6 +119,7 @@ public class WorkbenchEngine {
                 }, "BUDGET_CHANGED", "用户显式调整了根预算；历史消耗与根计数保持不变");
             }
             case "mcp-authorization" -> reauthorizeMcp(taskId, task, body);
+            case "execution-authorization" -> reauthorizeExecution(taskId, task, body);
             case "revalidate" -> {
                 requireState(state, Set.of("PAUSED", "WAITING_INPUT", "FAILED", "AWAITING_ACCEPTANCE"));
                 if (hasUnknownOperation(taskId)) { throw new ApiException(409, "未知操作必须先核对"); }
@@ -137,6 +142,7 @@ public class WorkbenchEngine {
         }
         if (controls.containsKey(taskId)) throw new ApiException(409, "任务执行仍在停止或收尾中，请等待停止确认");
         teams.requireStopped(taskId);
+        executionWorker.requireStopped(taskId);
         if (mcp != null) mcp.requireTaskStopped(taskId);
         for (Map<String, Object> operation : store.list("operation")) {
             if (taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state"))) {
@@ -154,6 +160,7 @@ public class WorkbenchEngine {
         for (Map<String, Object> operation : store.list("teamOperation")) if (taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state"))) {
             operation.put("state", "RECONCILED"); operation.put("reconciliation", obj("actor", "USER", "note", str(body, "note"), "createdAt", now())); store.put("teamOperation", operation);
         }
+        executionWorker.reconcile(taskId, str(body, "note"));
         store.editTask(taskId, value -> {
             value.put("state", "PAUSED"); value.put("reconciliation", obj("processesStopped", true, "sideEffectsChecked", true, "note", str(body, "note"), "createdAt", now()));
             value.remove("activeOperation"); value.remove("error");
@@ -179,10 +186,34 @@ public class WorkbenchEngine {
         }, "MCP_AUTHORIZATION_CHANGED", "用户确认了新的 MCP 固定动作与保守工具预算；后续验证和审查需重新执行");
     }
 
+    /**
+     * 用户重新确认执行版本；已有成果只允许更新同节点、同源目录的授权。
+     */
+    private void reauthorizeExecution(String taskId, Map<String, Object> task, Map<String, Object> body) {
+        requireState(str(task, "state"), Set.of("DRAFT", "PAUSED", "WAITING_INPUT", "FAILED", "AWAITING_ACCEPTANCE"));
+        if (controls.containsKey(taskId) || hasUnknownOperation(taskId)) throw new ApiException(409, "先等待旧执行停止并核对未知效果");
+        Map<String, Object> previous = map(task, "execution");
+        if (!(body.get("expectedVersion") instanceof Number number) || number.doubleValue() != number.intValue() || number.intValue() != num(previous, "version", 0)) throw new ApiException(409, "任务执行授权版本已变化，请刷新后确认");
+        Map<String, Object> execution = catalog.nodes().snapshot(str(task, "projectId"), body, num(previous, "version", 0) + 1);
+        if (!str(task, "workspace").isBlank() && (!ExecutionNodes.samePath(str(previous, "sourcePath"), str(execution, "sourcePath")) || !str(previous, "executionNodeId").equals(str(execution, "executionNodeId")))) throw new ApiException(409, "已有成果绑定原节点和仓库，切换源目录请新建任务");
+        List<Map<String, Object>> rules = catalog.projectRules(str(execution, "sourcePath"));
+        store.editTask(taskId, value -> {
+            List<Map<String, Object>> history = new ArrayList<>(objects(value.get("executionHistory"))); if (!previous.isEmpty()) history.add(previous); value.put("executionHistory", history); value.put("execution", execution);
+            List<Map<String, Object>> context = new ArrayList<>(objects(value.get("context"))), oldRules = context.stream().filter(item -> "project-rules".equals(str(item, "id"))).toList();
+            List<Map<String, Object>> ruleHistory = new ArrayList<>(objects(value.get("executionRuleHistory"))); ruleHistory.add(obj("authorizationVersion", num(previous, "version", 0), "rules", oldRules, "createdAt", now())); value.put("executionRuleHistory", ruleHistory);
+            context.removeIf(item -> "project-rules".equals(str(item, "id"))); context.addAll(rules); value.put("context", context);
+            if (!"DRAFT".equals(str(value, "state"))) value.put("state", "PAUSED");
+            value.remove("error"); value.put("verification", obj("status", "NOT_RUN")); value.put("review", obj("status", "NOT_RUN"));
+            for (Map<String, Object> stage : objects(value.get("plan"))) if (Set.of("verify", "review", "delivery").contains(str(stage, "id"))) stage.put("state", "PENDING");
+        }, "EXECUTION_AUTHORIZATION_CHANGED", "用户核对节点与仓库绑定版本，后续必要验证和审查重新执行");
+    }
+
     private void launch(String taskId) {
         if (shuttingDown || !store.healthy()) { throw new ApiException(503, "核心当前不能开始执行"); }
         if (controls.containsKey(taskId)) { throw new ApiException(409, "任务仍在停止或执行中，请等待确认"); }
         Map<String, Object> task = store.get("task", taskId);
+        catalog.nodes().requireCurrent(task);
+        if (!executionWorker.current(taskId)) throw new ApiException(409, "本机 Worker 归属不可用或根效果尚未核对");
         Map<String, Object> route = map(task, "routeSnapshot");
         Map<String, Object> live = store.get("route", str(task, "routeId"));
         if (!bool(live, "enabled", false) || !BudgetPolicy.matchesLocks(route, map(task, "locks"))) {
@@ -208,12 +239,12 @@ public class WorkbenchEngine {
             checkStopped(control);
             Map<String, Object> task = store.get("task", taskId);
             if (str(task, "workspace").isBlank()) {
-                Map<String, Object> project = store.get("project", str(task, "projectId"));
-                Map<String, Object> operation = store.beginOperation(taskId, "prepare", "WORKSPACE", str(project, "path"));
-                store.markOperation(str(operation, "id"), "DISPATCHED", obj());
-                Map<String, Object> prepared = runtime.prepare(str(project, "path"), taskId, bool(task, "includeChanges", false));
+                String source = catalog.nodes().sourcePath(task);
+                Map<String, Object> operation = store.beginOperation(taskId, "prepare", "WORKSPACE", source);
+                executionWorker.dispatch(str(operation, "id"), source, obj());
+                Map<String, Object> prepared = runtime.prepare(source, taskId, bool(task, "includeChanges", false));
+                executionWorker.finish(str(operation, "id"), "ACKNOWLEDGED", prepared);
                 store.editTask(taskId, value -> { value.putAll(prepared); value.remove("activeOperation"); }, "WORKSPACE_READY", "独立任务目录已就绪，用户原目录保持原状");
-                store.markOperation(str(operation, "id"), "ACKNOWLEDGED", prepared);
             }
             store.editTask(taskId, value -> value.put("state", "RUNNING"), "RUNNING", "开始执行已确认的计划");
             while (true) {
@@ -274,7 +305,7 @@ public class WorkbenchEngine {
                     store.editTask(taskId, task -> { task.put("state", "FAILED"); task.put("outcome", "FAILED"); task.put("error", safeMessage(exception)); }, "FAILED", safeMessage(exception));
                 }
             } catch (RuntimeException ignored) { runtime.stop(taskId); }
-        } finally { controls.remove(taskId, control); }
+        } finally { try { executionWorker.settleTask(taskId); } finally { controls.remove(taskId, control); } }
     }
 
     private void modelStage(String taskId, Map<String, Object> stage, Control control, boolean reserved, String extra) throws Exception {
@@ -295,7 +326,7 @@ public class WorkbenchEngine {
                 checkStopped(control);
                 store.editTask(taskId, value -> value.put("state", "RUNNING"), "ROUTE_SELECTED", "使用已固定路由 " + str(route, "name") + "；遵守锁定、根预算与阶段权限");
                 Map<String, Object> operation = store.beginOperation(taskId, stageId, "MODEL", workspace, runId);
-                store.markOperation(str(operation, "id"), "DISPATCHED", obj("routeId", task.get("routeId"), "routeVersion", route.get("version")));
+                executionWorker.dispatch(str(operation, "id"), workspace, obj("routeId", task.get("routeId"), "routeVersion", route.get("version")));
                 AtomicBoolean denied = new AtomicBoolean();
                 List<Map<String, Object>> bindings = "IMPLEMENT".equals(str(stage, "kind")) || "REPAIR".equals(str(stage, "kind"))
                     ? objects(map(task, "mcpAuthorization").get("bindings")) : List.of();
@@ -321,7 +352,7 @@ public class WorkbenchEngine {
                 String version = runtime.fingerprint(workspace);
                 Map<String, Object> evidence = evidence(stageId, "AGENT", version, "", result);
                 evidence.put("role", stage.get("role")); evidence.put("inputVersion", before); evidence.put("independent", "PROPOSAL".equals(str(stage, "kind")));
-                store.recordEvidence(taskId, str(operation, "id"), evidence);
+                executionWorker.evidence(taskId, str(operation, "id"), evidence);
                 store.editTask(taskId, value -> { value.put("version", version); value.put("lastCheckpoint", obj("version", version, "stage", stageId, "createdAt", now(), "workspace", workspace)); }, "CHECKPOINT", "已保存阶段记录与内容标识");
                 checkResult(result, control, denied.get());
                 if (readOnly && !before.equals(version)) { throw new UnknownResult("只读阶段修改了交付目录，已停止并保留现场供核对"); }
@@ -334,7 +365,7 @@ public class WorkbenchEngine {
     private void collaborativeStage(String taskId, Map<String, Object> stage, Map<String, Object> route, String workspace, String prompt, String before, boolean reserved, Control control, String runId) throws Exception {
         Map<String, Object> task = store.get("task", taskId); String stageId = str(stage, "id");
         Map<String, Object> operation = store.beginOperation(taskId, stageId, "MODEL", workspace, runId);
-        store.markOperation(str(operation, "id"), "DISPATCHED", obj("routeId", route.get("id"), "routeVersion", route.get("version")));
+        executionWorker.dispatch(str(operation, "id"), workspace, obj("routeId", route.get("id"), "routeVersion", route.get("version")));
         TeamCoordinator.Session session = teams.session(taskId, runId, workspace, route, () -> cancelled(control)); AtomicBoolean denied = new AtomicBoolean();
         var observer = new RequestObservation(store, catalog, taskId, runId, reserved, session::stopped, denied, session::checkCurrent, session, 0);
         String definitionInfo = mapper.writeValueAsString(objects(map(task, "collaboration").get("definitions")).stream().map(definition -> obj("id", definition.get("id"), "name", definition.get("name"), "capabilities", definition.get("capabilities"), "scope", definition.get("scope"), "maxCalls", definition.get("maxCalls"))).toList());
@@ -348,7 +379,7 @@ public class WorkbenchEngine {
                     session::stopped, message -> log(taskId, stageId, message), observer, bindings,
                     teams.fixedTools(taskId, runId, str(stage, "kind"), session::stopped));
             String version = runtime.fingerprint(workspace); Map<String, Object> evidence = evidence(stageId, "AGENT", version, "", result);
-            evidence.put("role", stage.get("role")); evidence.put("inputVersion", before); evidence.put("independent", "PROPOSAL".equals(str(stage, "kind"))); store.recordEvidence(taskId, str(operation, "id"), evidence);
+            evidence.put("role", stage.get("role")); evidence.put("inputVersion", before); evidence.put("independent", "PROPOSAL".equals(str(stage, "kind"))); executionWorker.evidence(taskId, str(operation, "id"), evidence);
             store.editTask(taskId, value -> { value.put("version", version); value.put("lastCheckpoint", obj("version", version, "stage", stageId, "createdAt", now(), "workspace", workspace)); }, "CHECKPOINT", "已保存团队父运行记录与内容标识");
             checkResult(result, control, denied.get());
             try { session.settle(); } catch (IllegalStateException exception) { throw new UnknownResult(exception.getMessage()); }
@@ -367,7 +398,7 @@ public class WorkbenchEngine {
             checkStopped(control);
             try (var ignored = resources.acquire(Map.of("tool", 1, "process", 1), () -> cancelled(control))) {
                 Map<String, Object> operation = store.beginOperation(taskId, stageId, "VERIFICATION", command);
-                store.markOperation(str(operation, "id"), "DISPATCHED", obj("version", version));
+                executionWorker.dispatch(str(operation, "id"), workspace, obj("version", version));
                 Map<String, Object> result = runtime.verify(workspace, command, () -> cancelled(control), message -> log(taskId, stageId, message));
                 String after = runtime.fingerprint(workspace);
                 Map<String, Object> item = evidence(stageId, baseline ? "BASELINE" : "VERIFICATION", version, command, result);
@@ -375,7 +406,7 @@ public class WorkbenchEngine {
                 item.put("resultVersion", after);
                 if (!after.equals(version)) { item.put("status", "UNKNOWN"); item.put("attribution", "验证命令改变了源文件，证据不能绑定执行后的新版本"); }
                 else if (!baseline) { item.put("attribution", attribute(taskId, command, item)); }
-                store.recordEvidence(taskId, str(operation, "id"), item);
+                executionWorker.evidence(taskId, str(operation, "id"), item);
                 if ("UNKNOWN".equals(str(item, "status"))) { throw new UnknownResult("验证期间版本变化或结果未知，请核对验证命令与工作目录"); }
                 if ("CANCELLED".equals(str(item, "status"))) { checkStopped(control); throw new CancellationException(); }
                 if (!"PASSED".equals(str(item, "status"))) { passed = false; }
@@ -396,7 +427,10 @@ public class WorkbenchEngine {
         Map<String, Object> task = store.get("task", taskId);
         String workspace = str(task, "workspace"), version = runtime.fingerprint(workspace);
         if (!version.equals(str(map(task, "verification"), "version")) || !"PASSED".equals(str(map(task, "verification"), "status"))) { throw new ApiException(409, "审查前版本不再匹配必要验证，请重新验证"); }
+        Map<String, Object> preparation = store.beginOperation(taskId, stageId, "REVIEW_SNAPSHOT", workspace);
+        executionWorker.dispatch(str(preparation, "id"), workspace, obj("inputVersion", version));
         String copy = runtime.reviewCopy(workspace, taskId, version);
+        executionWorker.finish(str(preparation, "id"), "ACKNOWLEDGED", obj("reviewWorkspace", copy, "inputVersion", version));
         String reviewVersion = runtime.fingerprint(copy);
         if (!version.equals(reviewVersion)) { throw new ApiException(409, "独立审查目录与待验收内容不一致，不能执行审查"); }
         Map<String, Object> route = new LinkedHashMap<>(map(task, "routeSnapshot"));
@@ -409,7 +443,7 @@ public class WorkbenchEngine {
             try (var ignored = resources.acquire(Map.of("model", 1, "process", 1, "route:" + str(task, "routeId"), 1), () -> cancelled(control))) {
                 checkStopped(control);
                 Map<String, Object> operation = store.beginOperation(taskId, stageId, "REVIEW", copy, runId);
-                store.markOperation(str(operation, "id"), "DISPATCHED", obj("version", version));
+                executionWorker.dispatch(str(operation, "id"), copy, obj("version", version));
                 AtomicBoolean denied = new AtomicBoolean();
                 Map<String, Object> result = runtime.run(route, catalog.credential(str(task, "routeId"), num(route, "version", 1)), copy, prompt(task, stage, extra), true, List.of("**"),
                     () -> cancelled(control), message -> log(taskId, stageId, message), observedCalls(taskId, runId, true, control, denied, () -> {}));
@@ -418,7 +452,7 @@ public class WorkbenchEngine {
                 Map<String, Object> item = evidence(stageId, "REVIEW", version, "", result);
                 item.put("independent", true); item.put("reviewWorkspace", copy); item.put("inputVersion", reviewVersion); item.put("resultVersion", reviewedVersion);
                 if (copyChanged && !Set.of("UNKNOWN", "CANCELLED").contains(str(item, "status"))) { item.put("status", "FAILED"); item.put("integrity", "REVIEW_WORKSPACE_CHANGED"); }
-                store.recordEvidence(taskId, str(operation, "id"), item);
+                executionWorker.evidence(taskId, str(operation, "id"), item);
                 checkResult(result, control, denied.get());
                 if (copyChanged) {
                     store.editTask(taskId, value -> value.put("review", obj("status", "INVALIDATED", "output", catalog.redact(str(result, "output")), "version", version, "resultVersion", reviewedVersion, "workspace", copy, "createdAt", now())), "REVIEW_INVALIDATED", "只读审查目录发生变化，审查意见不具备验收效力");
@@ -614,6 +648,7 @@ public class WorkbenchEngine {
 
     private boolean cancelled(Control control) {
         if (!"NONE".equals(control.request) || shuttingDown || !store.healthy()) { return true; }
+        if (!executionWorker.current(control.taskId)) { control.request = "PAUSE"; control.reason = "执行节点、仓库授权或 Worker 归属变化，旧效果需要核对"; return true; }
         try {
             Map<String, Object> task = store.get("task", control.taskId);
             Map<String, Object> live = store.find("route", str(task, "routeId"));
@@ -682,6 +717,7 @@ public class WorkbenchEngine {
         workers.shutdown();
         try { if (!workers.awaitTermination(15, java.util.concurrent.TimeUnit.SECONDS)) { workers.shutdownNow(); } }
         catch (InterruptedException exception) { Thread.currentThread().interrupt(); }
+        executionWorker.close();
     }
 
     /**

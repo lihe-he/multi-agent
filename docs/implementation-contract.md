@@ -4,7 +4,7 @@
 
 ## JSON API
 
-- `GET /api/state` → `{projects:[],tasks:[],routes:[],memories:[],profiles:[],agentDefinitions:[],system:{version,modelCapacity,activeModels,storageHealthy,capabilities:[]}}`
+- `GET /api/state` → `{projects:[],tasks:[],routes:[],memories:[],profiles:[],agentDefinitions:[],executionNodes:[],repositoryBindings:[],workers:[],system:{version,modelCapacity,activeModels,storageHealthy,capabilities:[]}}`
 - `POST /api/projects` `{name,path}` → Project
 - `POST /api/projects/{id}/scan` → Project
 - `GET /api/projects/{id}/search?q=` → `{results:[{path,line,text}],coverage,version}`
@@ -14,6 +14,7 @@
 - 任务/会话的实际 Agent 运行查询、状态和证据关系：见[Agent 运行协议](./agent-run-contract.md)。
 - 每轮模型请求的身份、预算、回执、脱敏片段和用量查询：见[模型请求追踪协议](./model-request-contract.md)。
 - alpha.8 的版本化 Agent 定义、任务 collaboration、实际父子运行、团队消息/依赖/权限、受控采纳和固定 MCP 原来源：见[动态团队协议](./team-contract.md)。
+- alpha.9 的 execution 快照、本机节点/仓库版本、实际 Worker 进程与操作租约、执行授权更新和导出：见[本机 Worker 协议](./worker-contract.md)。API 仍为 1，SQLite schema 为 4。
 - `POST /api/tasks/{id}/{action}`，action 为 `approve`/`pause`/`resume`/`cancel`/`accept`（空对象）；`accept` 只记录人工验收，不写原项目。
 - `GET /api/tasks/{id}/diff` → `{diff,version,workspace}`
 - `GET /api/tasks/{id}/export` → 可下载 zip

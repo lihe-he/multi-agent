@@ -22,14 +22,31 @@ public class WorkbenchCatalog {
     private final ExecutionStore store;
     private final WorkspaceRuntime runtime;
     private final PlanValidator validator;
+    private final ExecutionNodes nodes;
     private final Map<String, String> credentials = new ConcurrentHashMap<>();
 
     public WorkbenchCatalog(ExecutionStore store, WorkspaceRuntime runtime, PlanValidator validator) {
-        this.store = store; this.runtime = runtime; this.validator = validator;
+        this.store = store; this.runtime = runtime; this.validator = validator; this.nodes = new ExecutionNodes(store, runtime);
+    }
+
+    ExecutionNodes nodes() { return nodes; }
+
+    /**
+     * 项目规则来源于当前确认的仓库绑定，切换草稿源目录时重新固定规则。
+     */
+    List<Map<String, Object>> projectRules(String sourcePath) {
+        try {
+            Path root = Path.of(sourcePath), rules = root.resolve("AGENTS.md");
+            if (!Files.isRegularFile(rules)) return List.of();
+            if (Files.isSymbolicLink(rules) || !rules.toRealPath().startsWith(root.toRealPath()) || Files.size(rules) > 128000) throw new ApiException(409, "项目规则越界或超过读取上限，请核对规则文件");
+            return List.of(obj("id", "project-rules", "kind", "RULE", "content", Files.readString(rules), "source", "AGENTS.md", "sourcePath", sourcePath, "version", runtime.fingerprint(sourcePath)));
+        } catch (ApiException exception) { throw exception; }
+        catch (Exception exception) { throw new ApiException(409, "项目规则无法读取，请检查权限"); }
     }
 
     @PostConstruct
     void defaults() {
+        nodes.localNode();
         defaultAgentDefinitions();
         if (!store.list("profile").isEmpty()) { return; }
         for (Map<String, Object> profile : List.of(
@@ -77,13 +94,13 @@ public class WorkbenchCatalog {
         Map<String, Object> inspected = runtime.inspect(path);
         String actualPath = str(inspected, "path").isBlank() ? Path.of(path).toAbsolutePath().normalize().toString() : str(inspected, "path");
         for (Map<String, Object> existing : store.list("project")) {
-            if (sameProjectPath(str(existing, "path"), actualPath, System.getProperty("os.name", "").startsWith("Windows"))) { return existing; }
+            if (sameProjectPath(str(existing, "path"), actualPath, System.getProperty("os.name", "").startsWith("Windows"))) { return nodes.bindImportedProject(existing); }
         }
         Map<String, Object> project = new java.util.LinkedHashMap<>(inspected);
         project.put("id", id()); project.put("path", actualPath);
         project.put("name", str(body, "name").isBlank() ? Path.of(actualPath).getFileName().toString() : required(body, "name", 160));
         project.put("indexedAt", now()); project.put("createdAt", now());
-        return store.put("project", project);
+        return nodes.bindImportedProject(project);
     }
 
     public Map<String, Object> scanProject(String id) {
@@ -210,6 +227,7 @@ public class WorkbenchCatalog {
     public synchronized Map<String, Object> createTask(Map<String, Object> body) {
         if (body.containsKey("collaboration") && !(body.get("collaboration") instanceof Map<?, ?>)) throw new ApiException(400, "collaboration 必须为对象");
         Map<String, Object> project = store.get("project", required(body, "projectId", 100));
+        Map<String, Object> execution = nodes.snapshot(str(project, "id"), body, 1);
         String goal = required(body, "goal", 40000), title = required(body, "title", 200);
         for (Map<String, Object> task : store.list("task")) {
             if (str(task, "projectId").equals(str(project, "id")) && goal.equals(str(task, "goal")) && !Set.of("CANCELLED", "FAILED").contains(str(task, "state"))) {
@@ -248,15 +266,12 @@ public class WorkbenchCatalog {
                 context.add(obj("id", memory.get("id"), "kind", memory.get("kind"), "content", memory.get("content"), "source", memory.get("source"), "version", memory.get("version")));
             }
         }
-        try {
-            Path rules = Path.of(str(project, "path")).resolve("AGENTS.md");
-            if (Files.isRegularFile(rules) && Files.size(rules) <= 128000) { context.add(obj("id", "project-rules", "kind", "RULE", "content", Files.readString(rules), "source", "AGENTS.md", "version", runtime.fingerprint(str(project, "path")))); }
-        } catch (Exception exception) { throw new ApiException(409, "项目规则无法读取，请检查权限"); }
+        context.addAll(projectRules(str(execution, "sourcePath")));
         Map<String, Object> task = obj("id", id(), "schemaVersion", 1, "projectId", project.get("id"), "title", title, "goal", goal,
             "mode", mode, "modeReason", reason, "state", "DRAFT", "outcome", "UNDETERMINED", "createdAt", now(), "updatedAt", now(),
             "contract", contract, "budget", obj("maxCalls", max, "reserveCalls", reserve, "usedCalls", 0, "usedDevelopmentCalls", 0, "usedReservedCalls", 0, "developmentAvailable", max - reserve, "type", route.get("budgetType")),
-            "locks", locks, "routeId", route.get("id"), "routeSnapshot", route, "profileSnapshot", store.list("profile"), "policyVersion", "1.1/0.2.0-alpha.8",
-            "includeChanges", bool(body, "includeChanges", false), "plan", plan, "context", context, "evidence", new ArrayList<>(), "issues", new ArrayList<>(),
+            "locks", locks, "routeId", route.get("id"), "routeSnapshot", route, "profileSnapshot", store.list("profile"), "policyVersion", "1.1/0.2.0-alpha.9",
+            "includeChanges", bool(body, "includeChanges", false), "execution", execution, "plan", plan, "context", context, "evidence", new ArrayList<>(), "issues", new ArrayList<>(),
             "review", obj("status", "NOT_RUN"), "planValidation", result, "workspace", "", "baseline", "", "version", "", "repairRounds", 0);
         task.put("mcpAuthorization", McpTaskPolicy.snapshot(store, str(project, "id"), route, body.get("mcpBindings"), 1));
         task.put("mcpBudget", McpTaskPolicy.budget(map(body, "mcpBudget"), Map.of()));

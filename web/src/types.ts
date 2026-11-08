@@ -1,6 +1,7 @@
 export interface Project {
   id: string; name: string; path: string; branch?: string; head?: string;
   dirty?: boolean; fileCount?: number; modules?: string[]; files?: string[]; indexedAt?: string;
+  repositoryBindingId?: string; executionNodeId?: string;
 }
 export interface Route {
   id: string; name: string; engine: 'CODEX' | 'CLAUDE' | 'API'; model?: string;
@@ -20,6 +21,7 @@ export interface Stage {
 export interface Evidence {
   id: string; kind?: string; stage?: string; version?: string; command?: string;
   exitCode?: number; output?: string; createdAt?: string; status?: string;
+  workerId?: string; workerLeaseId?: string; workerEpoch?: number; executionNodeId?: string; repositoryBindingId?: string; bindingVersion?: number; observedStatus?: string;
 }
 export interface Task {
   id: string; projectId: string; sessionId?: string; title: string; goal: string; mode: string; modeReason?: string;
@@ -36,10 +38,12 @@ export interface Task {
   issues?: (string | { message?: string; title?: string; severity?: string; [key: string]: unknown })[];
   error?: string;
   teamId?: string; collaboration?: { enabled: boolean; maxActive: number; maxDepth: number; maxTotal: number; spawned: number; definitions?: AgentDefinition[] };
+  execution?: ExecutionSnapshot;
 }
 export interface WorkbenchState {
   projects: Project[]; tasks: Task[]; routes: Route[]; memories: Memory[]; profiles: Profile[];
   agentDefinitions?: AgentDefinition[];
+  executionNodes?: ExecutionNode[]; repositoryBindings?: RepositoryBinding[]; workers?: Worker[];
   system: { version?: string; modelCapacity?: number; activeModels?: number; storageHealthy?: boolean; capabilities?: (string | { name?: string; available?: boolean; message?: string })[] };
 }
 export interface RunEvent { id: number; taskId?: string; type: string; message: string; createdAt?: string }
@@ -49,7 +53,13 @@ export interface AgentRun {
   routeName?: string; engine?: string; model?: string; readOnly: boolean; calls: number; callUnit: string;
   evidenceId?: string; reason?: string; inputVersion?: string; resultVersion?: string;
   parentRunId?: string; subtaskId?: string; teamId?: string; depth?: number; permissions?: AgentPermission;
+  workerId?: string; workerLeaseId?: string; workerEpoch?: number; executionNodeId?: string; repositoryBindingId?: string; bindingVersion?: number;
 }
+export interface ExecutionNode { id: string; name: string; version: number; protocolVersion: number; type: string; deployment: string; platform: string; architecture: string; enabled: boolean; epoch: number; state?: string; workerId?: string; lastSeenAt?: string }
+export interface RepositoryBinding { id: string; projectId: string; executionNodeId: string; name: string; path: string; version: number; enabled: boolean; head?: string; branch?: string }
+export interface Worker { id: string; executionNodeId: string; epoch: number; state: string; pid: number; processStartedAt: string; startedAt: string; heartbeatAt: string; expiresAt: string; stopState?: string; deployment: string; platform: string; reason?: string }
+export interface ExecutionSnapshot { version: number; protocolVersion: number; executionNodeId: string; nodeVersion: number; nodeName: string; repositoryBindingId: string; bindingVersion: number; bindingName: string; sourcePath: string; deployment: string }
+export interface WorkerLease { id: string; sequence: number; operationId: string; operationKind: string; kind: string; operationState: string; taskId: string; agentRunId?: string; workerId: string; executionNodeId: string; epoch: number; repositoryBindingId: string; bindingVersion: number; authorizationVersion: number; workingDirectory: string; state: string; stopState: string; createdAt: string; heartbeatAt: string; expiresAt: string; endedAt?: string; reason?: string; evidenceId?: string }
 export interface AgentPermission { capabilities: string[]; readScopeLayers: string[][]; writeScopeLayers: string[][] }
 export interface AgentDefinition {
   id: string; version: number; name: string; role: string; instructions: string; capabilities: string[];
@@ -72,6 +82,7 @@ export interface ModelRequest {
   inputPreview?: string; inputTruncated?: boolean;
   usage?: { inputTokens?: number | string; outputTokens?: number | string; cachedInputTokens?: number | string; reasoningTokens?: number | string };
   outputPreview?: string; outputTruncated?: boolean; errorType?: string; reason?: string; remoteOutcome?: string;
+  workerId?: string; workerLeaseId?: string; workerEpoch?: number; executionNodeId?: string; repositoryBindingId?: string; bindingVersion?: number;
 }
 export interface Connection { baseUrl: string; token: string }
 export interface Session { id: string; projectId: string; title: string; version: number; isOpen: boolean; createdAt: string; updatedAt: string }
