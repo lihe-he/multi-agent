@@ -36,4 +36,12 @@
 
 浏览器 1440px/430px 验证真实字段展示、配置版本冲突/输入保全、草稿任务固定绑定、执行授权刷新、租约 UNKNOWN 原因/来源/历史游标/证据定位与纯文本处理。截图经过实际查看，最终完整构建、Jar、打包与三端提交 CI 证据以实施记录为准。
 
+后续修订 `158fcda3868ae78c2640fc90f680c93dd287c483` 的 [run 42437567111](https://github.com/lihe-he/multi-agent/actions/runs/42437567111) 已结束：macOS/Ubuntu 成功，Windows 核心失败。第二父任务的基线操作在约 0.6 秒后保存 UNKNOWN，因此第二个子模型没有进入屏障；首个父任务的子模型等待随后超时。原失败缺少各根任务的命令输出和版本后值，不能据此认定资源死锁、版本变化或残留子进程中的某一种。Windows 日志与报告保存在 `.runtime/ci-alpha9-attempt2/`。同源本机单项及完整团队 11 / 11 均通过，32 次并发 PowerShell/Node 进程探针未复现；这些通过不能改写原 CI 失败。
+
+补充审查发现，已有运行器只将未确认子进程信息写入事件日志，任务证据可能只有命令输出。现将原 PID/开始时间同时保存在 UNKNOWN 命令结果中（最多列出 50 个），输出截断后仍保留身份，并在团队失败诊断中保留每个根任务的状态及原证据。新增真实独立 Node 子进程场景分别检查父进程等待原来的子进程退出后成功，以及父进程成功退出但原来的子进程未结束时 UNKNOWN/原 PID/请求停止；不放宽原停止判定，不自动重试命令。
+
+这组夹具最初仅设置 unref，在 Windows 随 Node 父进程一起关闭，不能证明仍有实际在途子进程。修订为 detached/windowsHide、原 PID 核对、有界退出及 finally 清理后，原停止边界通过；另加的原 PID 证据断言先在旧代码失败（`.runtime/alpha9-child-facts-before.log`），补全结果来源后两项定向通过（`.runtime/alpha9-child-facts-after.log`）。较早夹具失败保留在 `.runtime/alpha9-child-exit-before/` 及对应日志，不归因为产品停止故障。夹具的清理另核对进程开始时间不晚于原 PID 回执，拒绝清理后出生的同号进程。
+
+最后完整核心回归 142 项中 141 通过、1 项 Windows POSIX 跳过（`.runtime/alpha9-process-facts-final-core.log`）；上述夹具清理保护后两项再验通过（`.runtime/alpha9-process-facts-final-child-regression.log`）。最终 Jar 协议 28 / 28、独立浏览器/附加桌面生命周期、Windows 打包运行与 Jar 同一性均通过；当前三份 Java 文件的 14 条已有注释原文保留，新 Javadoc 为标准多行。修订提交的三端 CI 仍须单独核对，不能用这些本机通过替代原 Windows 失败。
+
 远程主机身份与配对、Worker 独立进程与持久队列、旧进程树跨重启核验、终端/PTY、任意 workflow/角色租约、完整备份、保留策略与长期验收仍继续实施。本轮基础不能替代 F01–F21 或 M0–M3 全部退出条件。

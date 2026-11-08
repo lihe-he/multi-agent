@@ -8,14 +8,14 @@
 
 | 检查 | 本轮证据 |
 | --- | --- |
-| 核心最终构建 | CI 修订后的 `npm run build` 最终 140 项中 139 通过、1 项 Windows POSIX 跳过，0 失败/错误；Jar、TypeScript 与生产 Web 构建成功。包括规则来源、两类时钟失效、错误保全、副任务 UNKNOWN、快速停止与交付收尾修正 |
+| 核心最终构建 | 补充进程事实后的 `npm run build` 及最后 `npm run build:core`，142 项中 141 通过、1 项 Windows POSIX 跳过，0 失败/错误；Jar、TypeScript 与生产 Web 构建成功。包含规则来源、时钟、错误保全、副任务 UNKNOWN、快速停止与交付收尾；新增子进程退出核验与大输出截断后的原 PID 证据。夹具增加 PID 复用清理保护后，两项定向再次通过 |
 | Worker/执行归属 | 最终完整回归中的 Worker 租约 9 / 9、实际团队 11 / 11；真实 Git/HTTP 覆盖绑定版本更新、草稿换仓库/规则历史、节点撤回/子请求 UNKNOWN 与重启不重放；定向修正后的 10 / 10 为补充证据 |
 | 浏览器 | 全量 35 / 35；6 项新增覆盖 1440px/430px 来源、未知停止事实、历史游标、配置冲突/输入保全、创建时固定绑定和授权版本刷新；截图已查看 |
 | Jar 集成 | 最终 Jar 的本机协议 28 / 28；实际两名副 Agent、依赖采纳、共享根预算、原模型/MCP/Worker 来源、一次派发和 ZIP 去除领取摘要均核对；[Windows 协议报告](./qa/smoke-win32.json) |
-| 独立运行 | 真实最终 Jar/生产 Web/同源代理核对实际 Worker PID；关闭会话、浏览器和附加桌面后，同一副请求与租约均保持原编号、不重放。随后 18 次根模型调用、两名副 Agent、13 条 Worker 回执及一次实际 MCP 派发完成；无页面或模型夹具异常。[Windows 独立报告](./qa/standalone-win32.json)及[真实 Worker 截图](../web/qa/worker-real-win32.png) |
+| 独立运行 | 真实最终 Jar/生产 Web/同源代理核对 Worker PID 48116；关闭会话、浏览器和附加桌面后，同一副请求与租约均保持原编号、不重放。随后 18 次根模型调用、两名副 Agent、13 条 Worker 回执及一次实际 MCP 派发完成；无页面或模型夹具异常。[Windows 独立报告](./qa/standalone-win32.json)及[真实 Worker 截图](../web/qa/worker-real-win32.png) |
 | Windows 打包运行 | `npm run package:prepared` / `npm run test:packaged` 均成功；NSIS 与 packaged=true 程序为 alpha.9，禁用外部 Java 后以内置 Java 启动，API 200、无页面异常、正常退出。打包核心 SHA-256 与最终验证 Jar 一致；[Windows 打包报告](./qa/desktop-packaged-win32.json)。本轮未重复完整安装/卸载验收 |
-| 代码及连接审查 | 首个提交 15 份受改 Java 文件的 29 条已有注释原文保留；CI 修订的三份 Java 文件六条基线注释也逐项保留，新 Javadoc 为标准多行；版本一致性、脚本语法、diff whitespace 通过；连接策略 3 / 3，API 兼容仍独立于数据库版本 |
-| 三端 CI | 首个提交 `8c37fb0` 的 [run 42435846414](https://github.com/lihe-he/multi-agent/actions/runs/42435846414) 为 Windows 成功、macOS/Ubuntu 核心失败；具体竞态与夹具修订见[审查记录](./research/worker-leases-2026-11-08.md)。修订本机验收已通过，推送后核对修订 SHA 的三端结果 |
+| 代码及连接审查 | 首个提交 15 份受改 Java 文件的 29 条已有注释原文保留；停止修订的三份 Java 文件六条基线注释及本次三份文件的 14 条基线注释逐项保留，新 Javadoc 为标准多行；版本一致性、脚本语法、diff whitespace 通过；连接策略 3 / 3，API 兼容仍独立于数据库版本 |
+| 三端 CI | 首个提交 `8c37fb0` 的 [run 42435846414](https://github.com/lihe-he/multi-agent/actions/runs/42435846414) 为 Windows 成功、macOS/Ubuntu 核心失败；修订 `158fcda` 的 [run 42437567111](https://github.com/lihe-he/multi-agent/actions/runs/42437567111) 为 macOS/Ubuntu 成功、Windows 核心失败。Windows 的第二父任务在基线验证进入 UNKNOWN，未到达子模型等待屏障；原输出不足以确定进程或版本原因。已保存两次失败；当前补充原子进程事实和根证据后，按后续提交重新核对 |
 
 SQLite schema 为 4，API 仍为 1。当前 Worker 的实际执行方式为 CORE_PROCESS，不代表独立远程执行进程或已交付的设备配对。原工具磁盘账本、模型预算和 MCP 停止明细保留；完整持久队列、独立 Worker、远程重连/旧进程核对、PTY、角色/写入租约、workflow 与其他 F01–F21/计划退出条件继续实施。
 

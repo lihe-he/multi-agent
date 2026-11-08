@@ -181,6 +181,66 @@ class RuntimeIntegrationTest {
     }
 
     @Test
+    void naturallyExitingDescendantMustFinishBeforeVerificationReturnsSuccess() throws Exception {
+        Path root = descendantFixture(true), receipts = root.getParent().resolve("receipts");
+        Map<String, Object> result = runtime().verify(root.toString(), "node parent.mjs", () -> false, ignored -> {});
+        long pid = Long.parseLong(Files.readString(receipts.resolve("child-pid")));
+        ProcessHandle child = originalFixtureChild(receipts.resolve("child-pid"), pid);
+        try {
+            assertEquals("SUCCEEDED", result.get("status"), result.toString());
+            assertFalse(child != null && child.isAlive(), "verification returned success while the original child " + pid + " was still alive");
+            assertTrue(Files.exists(receipts.resolve("finished")), "the original child must finish before the command can be confirmed");
+            assertTrue(Files.exists(receipts.resolve("parent-saw-exit")), "the parent receipt must follow the original child exit");
+        } finally { stopFixtureChild(child); }
+    }
+
+    @Test
+    void descendantWithoutExitConfirmationRemainsUnknownAfterParentSuccess() throws Exception {
+        Path root = descendantFixture(false), receipts = root.getParent().resolve("receipts");
+        Map<String, Object> result = runtime().verify(root.toString(), "node parent.mjs", () -> false, ignored -> {});
+        long pid = Long.parseLong(Files.readString(receipts.resolve("child-pid")));
+        ProcessHandle child = originalFixtureChild(receipts.resolve("child-pid"), pid);
+        try {
+            assertEquals("UNKNOWN", result.get("status"), "original child " + pid + " alive=" + (child != null && child.isAlive()));
+            assertEquals(0, result.get("exitCode"));
+            assertEquals(true, result.get("truncated"));
+            assertTrue(result.get("output").toString().contains(Long.toString(pid)), "unknown command evidence must identify the original unconfirmed child");
+            assertFalse(Files.exists(receipts.resolve("finished")));
+            if (child != null) child.onExit().get(5, java.util.concurrent.TimeUnit.SECONDS);
+        } finally { stopFixtureChild(child); }
+    }
+
+    private Path descendantFixture(boolean naturalExit) throws Exception {
+        Path root = Files.createDirectories(temporary.resolve("descendant command"));
+        Path receipts = Files.createDirectories(temporary.resolve("receipts"));
+        String receiptPath = json.writeValueAsString(receipts.toString());
+        Files.writeString(root.resolve("child.mjs"), "import {existsSync, writeFileSync} from 'node:fs'; import {join} from 'node:path';\n"
+            + "const receipts = " + receiptPath + "; writeFileSync(join(receipts, 'child-pid'), String(process.pid));\n"
+            + "setTimeout(() => process.exit(2), 15000);\n"
+            + "const poll = setInterval(() => { if (existsSync(join(receipts, 'release'))) { clearInterval(poll); setTimeout(() => { writeFileSync(join(receipts, 'finished'), 'original child exited'); process.exit(0); }, 300); } }, 10);\n");
+        Files.writeString(root.resolve("parent.mjs"), "import {spawn} from 'node:child_process'; import {writeFileSync} from 'node:fs'; import {join} from 'node:path';\n"
+            + "const receipts = " + receiptPath + "; const child = spawn(process.execPath, ['child.mjs'], {detached:true, windowsHide:true, stdio:'ignore'});\n"
+            + (naturalExit ? "child.on('exit', code => { writeFileSync(join(receipts, 'parent-saw-exit'), String(code)); process.exit(code ?? 1); }); setTimeout(() => writeFileSync(join(receipts, 'release'), 'child may finish'), 750);\n"
+                : "child.unref(); process.stdout.write('x'.repeat(600000)); setTimeout(() => process.exit(0), 750);\n"));
+        return root;
+    }
+
+    private void stopFixtureChild(ProcessHandle child) throws Exception {
+        if (child == null || !child.isAlive()) return;
+        child.destroyForcibly(); child.onExit().get(5, java.util.concurrent.TimeUnit.SECONDS);
+    }
+
+    /**
+     * 回执写入后出生的同号进程不属于夹具，避免清理误杀复用 PID 的进程。
+     */
+    private ProcessHandle originalFixtureChild(Path receipt, long pid) throws Exception {
+        ProcessHandle child = ProcessHandle.of(pid).orElse(null);
+        if (child == null) return null;
+        java.time.Instant recordedAt = Files.getLastModifiedTime(receipt).toInstant();
+        return child.info().startInstant().filter(start -> !start.isAfter(recordedAt)).isPresent() ? child : null;
+    }
+
+    @Test
     void prepareKeepsOriginalStagedAndUnstagedChanges() throws Exception {
         Path source = repository();
         Files.writeString(source.resolve("src/greeting.txt"), "staged\n");

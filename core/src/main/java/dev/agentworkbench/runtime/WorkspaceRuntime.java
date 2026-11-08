@@ -904,6 +904,7 @@ public class WorkspaceRuntime {
         Path receiptFile = null;
         StringBuilder output = new StringBuilder();
         StringBuilder errors = new StringBuilder();
+        String processFacts = "";
         AtomicBoolean truncated = new AtomicBoolean(false);
         Set<ProcessHandle> observedChildren = ConcurrentHashMap.newKeySet();
         try {
@@ -963,10 +964,20 @@ public class WorkspaceRuntime {
             reader.join(3000);
             errorReader.join(3000);
             int exit = process.isAlive() ? -1 : process.exitValue();
-            if (observedChildren.stream().anyMatch(ProcessHandle::isAlive)) {
-                observedChildren.stream().filter(ProcessHandle::isAlive).forEach(ProcessHandle::destroyForcibly);
+            List<ProcessHandle> unconfirmed = observedChildren.stream().filter(ProcessHandle::isAlive).toList();
+            if (!unconfirmed.isEmpty()) {
+                processFacts = "未确认子进程（共 " + unconfirmed.size() + " 个，最多列出 50 个）：" + unconfirmed.stream().limit(50)
+                    .map(child -> child.pid() + "@" + child.info().startInstant().map(Object::toString).orElse("UNKNOWN_START_TIME")).toList();
+                synchronized (errors) {
+                    int remaining = MAX_OUTPUT - errors.length();
+                    String diagnostic = "\n" + processFacts;
+                    if (diagnostic.length() > remaining) truncated.set(true);
+                    if (remaining > 0) errors.append(diagnostic, 0, Math.min(diagnostic.length(), remaining));
+                }
+                unconfirmed.stream().filter(ProcessHandle::isAlive).forEach(ProcessHandle::destroyForcibly);
                 state = "UNKNOWN";
                 log.accept("父进程退出后仍发现子进程，已请求停止；结果未知，不能自动重放。");
+                log.accept(processFacts);
             }
             if (state.equals("SUCCEEDED") && exit != 0) state = "FAILED";
             if (receiptFile != null) writeAtomic(receiptFile, json.writeValueAsBytes(object("pid", process.pid(), "workspace", cwd.toString(), "state", state, "exitCode", exit)));
@@ -974,7 +985,7 @@ public class WorkspaceRuntime {
                 Map<String, Object> outcome = result(exit, output + (errors.isEmpty() ? "" : "\n" + errors), state);
                 outcome.put("stdout", output.toString());
                 outcome.put("truncated", truncated.get());
-                if (truncated.get()) outcome.put("output", output + "\n[输出超过上限，已截断]");
+                if (truncated.get()) outcome.put("output", output + "\n[输出超过上限，已截断]" + (processFacts.isBlank() ? "" : "\n" + processFacts));
                 return outcome;
             }
         } catch (Exception e) {

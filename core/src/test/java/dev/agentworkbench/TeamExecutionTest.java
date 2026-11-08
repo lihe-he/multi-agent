@@ -101,7 +101,8 @@ class TeamExecutionTest {
         while (System.nanoTime() < timeout) {
             Map<String, Object> task = store.get("task", taskId);
             if (states.contains(str(task, "state"))) return task;
-            if (Set.of("UNKNOWN", "FAILED", "WAITING_INPUT").contains(str(task, "state"))) fail("Unexpected state: " + task.get("state") + " / " + task.get("error") + " / " + errors + " / children=" + store.list("subtask") + " / operations=" + store.list("operation"));
+            if (Set.of("UNKNOWN", "FAILED", "WAITING_INPUT").contains(str(task, "state"))) fail("Unexpected state: " + task.get("state") + " / " + task.get("error") + " / " + errors + " / children=" + store.list("subtask") + " / operations=" + store.list("operation")
+                + " / roots=" + store.list("task").stream().map(root -> obj("id", root.get("id"), "state", root.get("state"), "error", root.get("error"), "evidence", root.get("evidence"))).toList());
             Thread.sleep(50);
         }
         fail("Timed out: " + store.get("task", taskId) + " / " + errors); return obj();
