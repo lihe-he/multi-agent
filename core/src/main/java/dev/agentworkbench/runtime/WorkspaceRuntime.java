@@ -3,6 +3,7 @@ package dev.agentworkbench.runtime;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.agentworkbench.AgentPermissions;
+import dev.agentworkbench.ManagedProcessLedger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -1017,7 +1018,7 @@ public class WorkspaceRuntime {
     }
 
     private void observeChildren(Process process, Set<ProcessHandle> children, Map<Long, String> starts, String ownerStart) {
-        for (ProcessHandle child : process.descendants().toList()) if (children.add(child)) {
+        for (ProcessHandle child : ManagedProcessLedger.originalDescendants(process.toHandle(), ownerStart)) if (children.add(child)) {
             String birth = child.info().startInstant().map(Object::toString).orElse(""); starts.put(child.pid(), birth);
             processObserver.accept(object("pid", child.pid(), "processStartedAt", birth, "observedFromPid", process.pid(), "observedFromStartedAt", ownerStart));
         }
@@ -1027,15 +1028,28 @@ public class WorkspaceRuntime {
         return !startedAt.isBlank() && process.isAlive() && startedAt.equals(process.info().startInstant().map(Object::toString).orElse(""));
     }
 
+    /**
+     * 后代核验失败仍停止原父进程，缺失的停止事实保持未确认。
+     */
     private boolean terminate(Process process) {
-        List<ProcessHandle> children = process.descendants().toList();
-        for (ProcessHandle child : children.reversed()) child.destroy();
+        List<ProcessHandle> children = new ArrayList<>(); boolean observed = true;
+        try { children.addAll(ManagedProcessLedger.originalDescendants(process.toHandle(), process.info().startInstant().map(Object::toString).orElse(""))); }
+        catch (RuntimeException ignored) { observed = false; }
+        Map<Long, String> starts = new HashMap<>();
+        for (ProcessHandle child : children) {
+            try { starts.put(child.pid(), child.info().startInstant().map(Object::toString).orElse("")); }
+            catch (RuntimeException ignored) { starts.put(child.pid(), ""); observed = false; }
+        }
+        for (ProcessHandle child : children.reversed()) {
+            try { if (originalProcess(child, starts.get(child.pid()))) child.destroy(); }
+            catch (RuntimeException ignored) { observed = false; }
+        }
         process.destroy();
         try { process.waitFor(500, TimeUnit.MILLISECONDS); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
-        for (ProcessHandle child : children.reversed()) if (child.isAlive()) child.destroyForcibly();
+        for (ProcessHandle child : children.reversed()) ManagedProcessLedger.stopObservedProcess(child.pid(), starts.get(child.pid()));
         if (process.isAlive()) process.destroyForcibly();
         try { process.waitFor(2, TimeUnit.SECONDS); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
-        return !process.isAlive() && children.stream().noneMatch(ProcessHandle::isAlive);
+        return observed && !process.isAlive() && ManagedProcessLedger.inspectProcesses(() -> children.stream().allMatch(child -> ManagedProcessLedger.observedProcessStopped(child.pid(), starts.get(child.pid()))));
     }
 
     private String finalNativeOutput(String engine, String raw) {

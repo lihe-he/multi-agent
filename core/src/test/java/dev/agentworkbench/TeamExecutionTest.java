@@ -123,6 +123,22 @@ class TeamExecutionTest {
     private boolean stage(String prompt, String kind) { return prompt.contains("阶段 kind=" + kind); }
     private Map<String, Object> ordinary(String prompt) { return answer(stage(prompt, "REVIEW") ? "{\"approved\":true,\"issues\":[]}" : "phase evidence"); }
 
+    /**
+     * 容量等待失败时保存虚拟线程与原执行事实，保留原有界断言。
+     */
+    private String barrierFailure(long remaining) {
+        Path evidence = Path.of("target", "team-capacity-failure-" + System.nanoTime()).toAbsolutePath();
+        try {
+            Files.createDirectories(evidence);
+            java.lang.management.ManagementFactory.getPlatformMXBean(com.sun.management.HotSpotDiagnosticMXBean.class)
+                .dumpThreads(evidence.resolve("threads.json").toString(), com.sun.management.HotSpotDiagnosticMXBean.ThreadDumpFormat.JSON);
+            mapper.writeValue(evidence.resolve("facts.json").toFile(), obj("remainingChildren", remaining, "resources", resources.snapshot(), "worker", engine.workerIdentity(),
+                "tasks", store.list("task"), "agentRuns", store.list("agentRun"), "subtasks", store.list("subtask"), "modelRequests", store.list("modelRequest"),
+                "operations", store.list("operation"), "errors", errors, "prompts", prompts));
+            return "parents must release both model slots before children can proceed; evidence=" + evidence;
+        } catch (Exception error) { return "parents must release both model slots before children can proceed; diagnostic=" + error.getClass().getSimpleName(); }
+    }
+
     @Test
     void draftBindingSwitchReplacesRulesAndExecutesTheConfirmedSource() throws Exception {
         Files.writeString(source.resolve("AGENTS.md"), "ORIGINAL_SOURCE_RULES\n"); git(source, "add", "AGENTS.md"); git(source, "commit", "-m", "original rules");
@@ -235,7 +251,7 @@ class TeamExecutionTest {
     void twoParentsWaitingForChildrenMakeProgressAtCapacityTwo() throws Exception {
         CountDownLatch entered = new CountDownLatch(2);
         fixture.set((prompt, results, names) -> {
-            if (stage(prompt, "SUBAGENT")) { entered.countDown(); assertTrue(entered.await(8, TimeUnit.SECONDS), "parents must release both model slots before children can proceed"); return answer("child observation"); }
+            if (stage(prompt, "SUBAGENT")) { entered.countDown(); assertTrue(entered.await(8, TimeUnit.SECONDS), () -> barrierFailure(entered.getCount())); return answer("child observation"); }
             if (stage(prompt, "INVESTIGATE")) {
                 if (results.isEmpty()) return call("delegate_agent", obj("definitionId", "agent-research", "title", "barrier child", "goal", "BARRIER", "scope", List.of("src/")));
                 if (results.size() == 1) return call("wait_agent", obj("subtaskId", map(result(results, 0), "agent").get("subtaskId")));

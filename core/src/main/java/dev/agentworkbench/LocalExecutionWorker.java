@@ -55,7 +55,7 @@ final class LocalExecutionWorker implements ExecutionWorker {
     @Override public Map<String, Object> identity() { return new java.util.LinkedHashMap<>(identity); }
     @Override public boolean current(String taskId) {
         if (closed.get() || !store.healthy() || (processRuntime != null && !processRuntime.available())) return false;
-        try { requireContinuity(clock.instant()); ledger.requireOwner(identity, clock.instant()); nodes.requireCurrent(store.get("task", taskId)); return !store.hasUnknownEffects(taskId); }
+        try { if (processRuntime != null) processRuntime.requireDispatch(); requireContinuity(clock.instant()); ledger.requireOwner(identity, clock.instant()); nodes.requireCurrent(store.get("task", taskId)); return !store.hasUnknownEffects(taskId); }
         catch (RuntimeException exception) { return false; }
     }
 
@@ -100,6 +100,7 @@ final class LocalExecutionWorker implements ExecutionWorker {
     @Override public void dispatchTeam(String operationId, String workspace) { dispatch("teamOperation", operationId, workspace, obj()); }
     private void dispatch(String kind, String operationId, String workspace, Map<String, Object> details) {
         if (closed.get()) throw new ApiException(409, "本机 Worker 已停止");
+        if (processRuntime != null) processRuntime.requireDispatch();
         if (processRuntime != null) processRuntime.requireAvailable();
         String token = id();
         synchronized (store) {
@@ -171,6 +172,7 @@ final class LocalExecutionWorker implements ExecutionWorker {
             evidence.putAll(obj("operationId", operationId, "workerLeaseId", lease.get("id"), "workerId", identity.get("id"), "executionNodeId", lease.get("executionNodeId"), "workerEpoch", lease.get("epoch"),
                 "repositoryBindingId", lease.get("repositoryBindingId"), "bindingVersion", lease.get("bindingVersion"), "deployment", identity.get("deployment"), "executorPid", identity.get("pid"), "processStartedAt", identity.get("processStartedAt")));
             if (identity.containsKey("corePid")) evidence.put("corePid", identity.get("corePid"));
+            if (identity.containsKey("processSessionId")) evidence.put("processSessionId", identity.get("processSessionId"));
             store.recordWorkerEvidence(taskId, operationId, evidence, lease); claims.remove(operationId);
         }
     }

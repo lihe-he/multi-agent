@@ -45,6 +45,7 @@ export interface WorkbenchState {
   projects: Project[]; tasks: Task[]; routes: Route[]; memories: Memory[]; profiles: Profile[];
   agentDefinitions?: AgentDefinition[];
   executionNodes?: ExecutionNode[]; repositoryBindings?: RepositoryBinding[]; workers?: Worker[];
+  processRecovery?: ProcessRecovery;
   system: { version?: string; modelCapacity?: number; activeModels?: number; storageHealthy?: boolean; capabilities?: (string | { name?: string; available?: boolean; message?: string })[] };
 }
 export interface RunEvent { id: number; taskId?: string; type: string; message: string; createdAt?: string }
@@ -61,6 +62,9 @@ export interface ExecutionNode { id: string; name: string; version: number; prot
 export interface RepositoryBinding { id: string; projectId: string; executionNodeId: string; name: string; path: string; version: number; enabled: boolean; head?: string; branch?: string }
 export interface Worker { id: string; executionNodeId: string; epoch: number; state: string; pid: number; corePid?: number; parentPid?: number; processStartedAt: string; startedAt: string; heartbeatAt: string; heartbeatSource?: string; lastHeartbeatSequence?: number; expiresAt: string; stopState?: string; deployment: string; platform: string; reason?: string }
 export interface ExecutionSnapshot { version: number; protocolVersion: number; executionNodeId: string; nodeVersion: number; nodeName: string; repositoryBindingId: string; bindingVersion: number; bindingName: string; sourcePath: string; deployment: string }
+export interface ProcessObservation { id: string; pid: number; processStartedAt: string; origin: string; role?: string; observation: string; currentProcessStartedAt?: string; observedFromPid?: number; observedFromStartedAt?: string }
+export interface ProcessSession { id: string; type: string; state: string; pid?: number; processStartedAt?: string; ownerCorePid?: number; ownerCoreStartedAt?: string; workerId?: string; serverId?: string; taskId?: string; coverage: string; launchReceiptMissing: boolean; observedProcessesStopped: boolean; observedProcessCount: number; unconfirmedProcessCount: number; processes: ProcessObservation[]; recordedProcesses: ProcessObservation[]; processesTruncated: boolean }
+export interface ProcessRecovery { dispatchAllowed: boolean; pendingCount: number; sessions: ProcessSession[]; hasMore: boolean; coverage?: string; corePid?: number; coreStartedAt?: string }
 export interface WorkerLease { id: string; sequence: number; operationId: string; operationKind: string; kind: string; operationState: string; taskId: string; agentRunId?: string; workerId: string; executionNodeId: string; epoch: number; repositoryBindingId: string; bindingVersion: number; authorizationVersion: number; workingDirectory: string; deployment?: string; executorPid?: number; corePid?: number; processStartedAt?: string; state: string; stopState: string; createdAt: string; heartbeatAt: string; expiresAt: string; endedAt?: string; reason?: string; evidenceId?: string }
 export interface AgentPermission { capabilities: string[]; readScopeLayers: string[][]; writeScopeLayers: string[][] }
 export interface AgentDefinition {

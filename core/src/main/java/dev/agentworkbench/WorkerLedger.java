@@ -41,7 +41,7 @@ final class WorkerLedger {
             Map<String, Object> worker = obj("id", id(), "executionNodeId", node.get("id"), "epoch", node.get("epoch"), "protocolVersion", 1,
                 "deployment", process.get("deployment"), "pid", pid, "processStartedAt", processStart, "startedAt", time.toString(), "heartbeatAt", time.toString(),
                 "expiresAt", time.plusMillis(LEASE_MILLIS).toString(), "state", "RUNNING", "platform", System.getProperty("os.name"), "architecture", System.getProperty("os.arch"));
-            for (String field : List.of("parentPid", "corePid", "coreStartedAt", "controlEnvironmentPresent", "jvmOptionsEnvironmentPresent", "controlPropertiesPresent")) if (process.containsKey(field)) worker.put(field, process.get(field));
+            for (String field : List.of("parentPid", "corePid", "coreStartedAt", "processSessionId", "controlEnvironmentPresent", "jvmOptionsEnvironmentPresent", "controlPropertiesPresent")) if (process.containsKey(field)) worker.put(field, process.get(field));
             worker.put("heartbeatSource", "LOCAL_PROCESS".equals(str(process, "deployment")) ? "STARTUP_HANDSHAKE" : "CORE_TIMER"); worker.put("lastHeartbeatSequence", 0L);
             node.put("workerId", worker.get("id")); node.put("lastSeenAt", time.toString()); node.put("deployment", worker.get("deployment"));
             for (Map<String, Object> old : oldWorkers) old.putAll(obj("state", "LOST", "endedAt", time.toString(), "stopState", "UNKNOWN", "reason", "核心会话更换，旧执行不自动重放"));
@@ -80,6 +80,7 @@ final class WorkerLedger {
                 "createdAt", time.toString(), "heartbeatAt", time.toString(), "expiresAt", time.plusMillis(LEASE_MILLIS).toString());
             lease.putAll(obj("operationType", operation.get("kind"), "subjectId", subject(operation, task), "deployment", worker.get("deployment"), "executorPid", worker.get("pid"), "processStartedAt", worker.get("processStartedAt")));
             if (worker.containsKey("corePid")) lease.put("corePid", worker.get("corePid"));
+            if (worker.containsKey("processSessionId")) lease.put("processSessionId", worker.get("processSessionId"));
             if ("LOCAL_PROCESS".equals(str(worker, "deployment"))) {
                 try { lease.put("realWorkingDirectory", Path.of(workspace).toRealPath().toString()); }
                 catch (java.io.IOException exception) { throw new ApiException(409, "无法固定 Worker 领取的实际目录"); }
@@ -87,11 +88,11 @@ final class WorkerLedger {
             operation.putAll(details);
             operation.putAll(obj("state", "DISPATCHED", "updatedAt", time.toString(), "workerLeaseId", leaseId, "workerId", worker.get("id"), "executionNodeId", worker.get("executionNodeId"),
                 "workerEpoch", worker.get("epoch"), "repositoryBindingId", execution.getOrDefault("repositoryBindingId", ""), "bindingVersion", execution.getOrDefault("bindingVersion", 0), "workingDirectory", lease.get("workingDirectory"), "dispatchCount", 1));
-            for (String key : List.of("deployment", "executorPid", "processStartedAt", "corePid")) if (lease.containsKey(key)) operation.put(key, lease.get(key));
+            for (String key : List.of("deployment", "executorPid", "processStartedAt", "corePid", "processSessionId")) if (lease.containsKey(key)) operation.put(key, lease.get(key));
             Map<String, List<Map<String, Object>>> records = new LinkedHashMap<>(); records.put(kind, List.of(operation)); records.put("workerLease", List.of(lease));
             if (!str(operation, "agentRunId").isBlank()) {
                 Map<String, Object> run = store.get("agentRun", str(operation, "agentRunId"));
-                for (String key : List.of("workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid")) if (operation.containsKey(key)) run.put(key, operation.get(key));
+                for (String key : List.of("workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid", "processSessionId")) if (operation.containsKey(key)) run.put(key, operation.get(key));
                 records.put("agentRun", List.of(run));
             }
             store.commitRecords(records, str(task, "id"), "WORKER_DISPATCHED", str(operation, "stage") + " · 操作 " + operationId + " · Worker " + str(worker, "id"));

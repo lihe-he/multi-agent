@@ -2,6 +2,7 @@ package dev.agentworkbench.mcp;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.agentworkbench.ManagedProcessLedger;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -42,7 +43,11 @@ interface McpTransport extends AutoCloseable {
     }
 
     static McpTransport open(Map<String, Object> server, String token, ObjectMapper mapper, BooleanSupplier cancelled, Duration timeout) throws Exception {
-        return "STDIO".equals(str(server, "transport")) ? new Stdio(server, mapper, cancelled, timeout) : new Http(server, token, mapper, cancelled, timeout);
+        return open(server, token, mapper, cancelled, timeout, null);
+    }
+
+    static McpTransport open(Map<String, Object> server, String token, ObjectMapper mapper, BooleanSupplier cancelled, Duration timeout, ManagedProcessLedger.Tracking tracking) throws Exception {
+        return "STDIO".equals(str(server, "transport")) ? new Stdio(server, mapper, cancelled, timeout, tracking) : new Http(server, token, mapper, cancelled, timeout);
     }
 
     abstract class Base implements McpTransport {
@@ -102,6 +107,7 @@ interface McpTransport extends AutoCloseable {
 
     final class Stdio extends Base {
         private final Process process;
+        private final String startedAt;
         private final BufferedWriter input;
         private final BufferedReader output;
         /**
@@ -109,23 +115,36 @@ interface McpTransport extends AutoCloseable {
          */
         private final java.util.concurrent.ExecutorService reader = Executors.newSingleThreadExecutor(Thread.ofPlatform().daemon(true).name("workbench-mcp-stdout-", 0).factory());
         private final ReentrantLock requests = new ReentrantLock();
-        private final Map<Long, ProcessHandle> descendants = new java.util.concurrent.ConcurrentHashMap<>();
+        private final Map<String, CapturedProcess> descendants = new java.util.concurrent.ConcurrentHashMap<>();
+        private final ManagedProcessLedger.Tracking tracking;
         private volatile boolean stopped;
         private volatile boolean closed;
 
         Stdio(Map<String, Object> server, ObjectMapper mapper, BooleanSupplier cancelled, Duration timeout) throws Exception {
+            this(server, mapper, cancelled, timeout, null);
+        }
+
+        Stdio(Map<String, Object> server, ObjectMapper mapper, BooleanSupplier cancelled, Duration timeout, ManagedProcessLedger.Tracking tracking) throws Exception {
             super(mapper, cancelled, timeout);
+            this.tracking = tracking;
             check();
             String command = str(server, "command");
             if (command.toLowerCase().matches(".*\\.(cmd|bat)$")) { throw new McpFailure("stdio 请配置可执行文件及参数，例如 node + server.js；不直接解释批处理脚本", false); }
             List<String> args = new ArrayList<>(); args.add(command); args.addAll(strings(server.get("args")));
             ProcessBuilder builder = new ProcessBuilder(args);
             builder.environment().keySet().removeIf(name -> name.toUpperCase(java.util.Locale.ROOT).startsWith("WORKBENCH_") || name.toUpperCase(java.util.Locale.ROOT).matches(".*(API_KEY|TOKEN|PASSWORD|SECRET).*"));
+            if (tracking != null) tracking.starting();
             process = builder.start();
-            descendants.put(process.pid(), process.toHandle());
+            CapturedProcess root = CapturedProcess.capture(process.toHandle()); startedAt = root.startedAt(); descendants.put(root.key(), root);
             input = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8));
             output = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
-            Thread.ofPlatform().daemon(true).name("workbench-mcp-stderr-" + process.pid()).start(() -> { try (InputStream stream = process.getErrorStream()) { stream.transferTo(java.io.OutputStream.nullOutputStream()); } catch (Exception ignored) { } });
+            try {
+                if (tracking != null) tracking.launched(process.toHandle());
+                Thread.ofPlatform().daemon(true).name("workbench-mcp-stderr-" + process.pid()).start(() -> { try (InputStream stream = process.getErrorStream()) { stream.transferTo(java.io.OutputStream.nullOutputStream()); } catch (Exception ignored) { } });
+            } catch (Exception exception) {
+                try { close(); } catch (RuntimeException cleanup) { exception.addSuppressed(cleanup); }
+                throw new LaunchFailure(this, exception);
+            }
         }
 
         @Override
@@ -155,7 +174,7 @@ interface McpTransport extends AutoCloseable {
         }
 
         @Override void check() {
-            if (process != null) { process.descendants().forEach(child -> descendants.put(child.pid(), child)); }
+            if (process != null) captureChildren();
             super.check();
         }
 
@@ -175,28 +194,68 @@ interface McpTransport extends AutoCloseable {
             requests.lock();
             try {
                 if (closed) { return; } closed = true;
-                process.descendants().forEach(child -> descendants.put(child.pid(), child));
+                RuntimeException observationFailure = captureForStop();
                 long stopDeadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(1000);
-                descendants.values().stream().filter(child -> child.pid() != process.pid()).forEach(child -> { if (child.isAlive()) child.destroyForcibly(); });
+                descendants.values().stream().filter(child -> child.pid() != process.pid()).forEach(CapturedProcess::kill);
                 long childDeadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(200);
-                while (descendants.values().stream().anyMatch(child -> child.pid() != process.pid() && child.isAlive()) && System.nanoTime() < childDeadline) {
+                while (childrenRunning() && System.nanoTime() < childDeadline) {
                     try { Thread.sleep(20); } catch (InterruptedException error) { Thread.currentThread().interrupt(); break; }
                 }
-                process.descendants().forEach(child -> descendants.put(child.pid(), child));
-                descendants.values().forEach(child -> { if (child.isAlive()) child.destroyForcibly(); });
-                while (descendants.values().stream().anyMatch(ProcessHandle::isAlive) && System.nanoTime() < stopDeadline) {
+                RuntimeException secondFailure = captureForStop();
+                if (observationFailure == null) observationFailure = secondFailure;
+                descendants.values().forEach(CapturedProcess::kill);
+                while (!processesStopped() && System.nanoTime() < stopDeadline) {
                     try { Thread.sleep(20); } catch (InterruptedException error) { Thread.currentThread().interrupt(); break; }
                 }
-                stopped = descendants.values().stream().noneMatch(ProcessHandle::isAlive);
-                try { process.getOutputStream().close(); } catch (Exception ignored) { }
-                try { process.getInputStream().close(); } catch (Exception ignored) { }
+                stopped = processesStopped();
+                if (!process.isAlive()) {
+                    try { process.getOutputStream().close(); } catch (Exception ignored) { }
+                    try { process.getInputStream().close(); } catch (Exception ignored) { }
+                }
                 reader.shutdownNow();
+                if (tracking != null) tracking.finished(observationFailure == null);
+                if (observationFailure != null) throw observationFailure;
             } finally { requests.unlock(); }
         }
         @Override public boolean stopConfirmed() {
-            if (closed && !stopped) stopped = descendants.values().stream().noneMatch(ProcessHandle::isAlive);
-            return stopped;
+            if (closed && !stopped) stopped = processesStopped();
+            try { return stopped && (tracking == null || tracking.observedStopped()); } catch (RuntimeException exception) { return false; }
         }
+
+        private void captureChildren() {
+            List<CapturedProcess> captured = ManagedProcessLedger.originalDescendants(process.toHandle(), startedAt).stream().map(CapturedProcess::capture).toList();
+            for (CapturedProcess child : captured) descendants.putIfAbsent(child.key(), child);
+            if (tracking != null) for (CapturedProcess child : captured) {
+                tracking.observed(obj("pid", child.pid(), "processStartedAt", child.startedAt(), "observedFromPid", process.pid(),
+                    "observedFromStartedAt", startedAt), "MCP_SNAPSHOT");
+            }
+        }
+
+        private RuntimeException captureForStop() {
+            try { captureChildren(); return null; } catch (RuntimeException exception) { return exception; }
+        }
+
+        private boolean childrenRunning() { return ManagedProcessLedger.inspectProcesses(() -> descendants.values().stream().anyMatch(child -> child.pid() != process.pid() && child.running())); }
+        private boolean processesStopped() { return ManagedProcessLedger.inspectProcesses(() -> !process.isAlive() && descendants.values().stream().noneMatch(CapturedProcess::running)); }
+
+        private record CapturedProcess(long pid, String startedAt) {
+            static CapturedProcess capture(ProcessHandle handle) {
+                String birth;
+                try { birth = handle.info().startInstant().map(Object::toString).orElse(""); } catch (RuntimeException exception) { birth = ""; }
+                return new CapturedProcess(handle.pid(), birth);
+            }
+            String key() { return pid + "@" + startedAt; }
+            boolean running() { return !ManagedProcessLedger.observedProcessStopped(pid, startedAt); }
+            void kill() { ManagedProcessLedger.stopObservedProcess(pid, startedAt); }
+        }
+    }
+
+    /**
+     * PID 回执保存失败也交还原传输，让管理器在未确认停止时继续持有容量。
+     */
+    final class LaunchFailure extends Exception {
+        final McpTransport transport;
+        LaunchFailure(McpTransport transport, Exception cause) { super("MCP 进程启动回执未保存，原进程停止与清单覆盖仍须核对", cause); this.transport = transport; }
     }
 
     final class Http extends Base {

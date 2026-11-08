@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { FolderGit2, Server, Plus } from 'lucide-react';
 import { post } from './api';
-import type { ExecutionNode, Project, RepositoryBinding, Worker } from './types';
+import type { ExecutionNode, ProcessRecovery, Project, RepositoryBinding, Worker } from './types';
+import { ProcessRecoveryPanel } from './ProcessRecovery';
 import { executionSource } from './execution-source';
 import { Badge, Field, formatTime, Modal, SaveButton } from './ui';
 
-export function ExecutionResources({ nodes, bindings, workers, projects, onRefresh }: { nodes: ExecutionNode[]; bindings: RepositoryBinding[]; workers: Worker[]; projects: Project[]; onRefresh: () => Promise<void> }) {
+export function ExecutionResources({ nodes, bindings, workers, projects, recovery, onRefresh }: { nodes: ExecutionNode[]; bindings: RepositoryBinding[]; workers: Worker[]; projects: Project[]; recovery?: ProcessRecovery; onRefresh: () => Promise<void> }) {
   const [nodeEdit, setNodeEdit] = useState<ExecutionNode | null>(null);
   const [bindingEdit, setBindingEdit] = useState<RepositoryBinding | null | undefined>(undefined);
   return <section className="execution-resources" aria-label="执行节点与仓库绑定">
     <div className="agent-run-heading"><div><h2>执行节点与仓库</h2><p className="form-note">任务固定执行节点和仓库版本。目录属于节点，关闭工作台页面后后台执行继续保留。</p></div><button className="button primary small" disabled={!projects.length || !nodes.length} onClick={() => setBindingEdit(null)}><Plus size={15} />添加仓库绑定</button></div>
+    <ProcessRecoveryPanel recovery={recovery} onRefresh={onRefresh} />
     <div className="definition-grid">{nodes.map(node => <article className="card definition-card" key={node.id}><header><Server size={22} /><div><h3>{node.name}</h3><p>{node.platform} · {node.architecture} · v{node.version}</p></div><Badge state={node.state === 'ONLINE' ? 'ACTIVE' : node.enabled ? 'FAILED' : 'DISABLED'}>{node.state === 'ONLINE' ? '在线' : node.enabled ? '离线' : '已停用'}</Badge></header><dl><dt>节点身份</dt><dd className="mono">{node.id}</dd><dt>执行方式</dt><dd>{executionSource(node.deployment)}</dd><dt>执行代次</dt><dd>{node.epoch}</dd><dt>最近心跳</dt><dd>{formatTime(node.lastSeenAt)}</dd></dl><button className="button secondary small" onClick={() => setNodeEdit(node)}>编辑节点授权</button></article>)}</div>
     <h3 className="execution-group-title">仓库绑定</h3><div className="definition-grid">{bindings.map(binding => <article className="card definition-card" key={binding.id}><header><FolderGit2 size={21} /><div><h3>{binding.name}</h3><p>{projects.find(project => project.id === binding.projectId)?.name || binding.projectId} · v{binding.version}</p></div><Badge state={binding.enabled ? 'ACTIVE' : 'DISABLED'} /></header><dl><dt>节点</dt><dd>{nodes.find(node => node.id === binding.executionNodeId)?.name || binding.executionNodeId}</dd><dt>仓库目录</dt><dd className="mono">{binding.path}</dd><dt>绑定身份</dt><dd className="mono">{binding.id}</dd></dl><button className="button secondary small" onClick={() => setBindingEdit(binding)}>编辑仓库绑定</button></article>)}</div>
     {!bindings.length && <p className="muted-text">导入项目后建立本机仓库绑定，也可为已有项目添加另一个本机目录。</p>}

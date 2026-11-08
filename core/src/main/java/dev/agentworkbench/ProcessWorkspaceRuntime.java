@@ -36,6 +36,7 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
     private volatile WorkerProcess process;
     private volatile LocalExecutionWorker worker;
     private ExecutionStore store;
+    private ManagedProcessLedger processLedger;
     private boolean started;
 
     public ProcessWorkspaceRuntime(ObjectMapper mapper, @Value("${workbench.data-dir:./data}") String dataDirectory) {
@@ -45,7 +46,8 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
     synchronized LocalExecutionWorker startWorker(ExecutionStore store, ExecutionNodes nodes) {
         if (started) throw new ApiException(409, "原 Worker 会话只能启动一次，失效后不自动创建替代执行者");
         started = true; this.store = store;
-        process = new WorkerProcess(mapper, dataDirectory, this::callback);
+        processLedger = new ManagedProcessLedger(store); processLedger.recoverWorkers();
+        process = new WorkerProcess(mapper, dataDirectory, this::callback, processLedger.begin("WORKER", obj()));
         try { worker = new LocalExecutionWorker(store, nodes, this); return worker; }
         catch (RuntimeException exception) { process.close(); throw exception; }
     }
@@ -53,6 +55,8 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
     Map<String, Object> processIdentity() { return process.processIdentity(); }
     Map<String, Object> stopFacts() { return process.stopFacts(); }
     boolean available() { return process != null && process.available(); }
+    ManagedProcessLedger managedProcesses() { return processLedger; }
+    void requireDispatch() { processLedger.requireDispatch(); }
     void requireAvailable() { if (process == null) throw new ApiException(409, "独立 Worker 尚未启动"); process.requireAvailable(); }
     void bind(Map<String, Object> identity, Consumer<Map<String, Object>> pulses, Consumer<String> lost) { process.bind(identity, pulses, lost); }
     void fence(String reason) { if (process != null) process.fence(reason); }
@@ -83,6 +87,7 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
     void requireTaskStopped(String taskId) {
         if (invocations.values().stream().anyMatch(call -> taskId.equals(str(call.claim.lease, "taskId")))) throw new ApiException(409, "独立 Worker 仍有原任务的在途调用或收尾");
         if (process != null && !available() && !process.treeStopped()) throw new ApiException(409, "原 Worker 进程树停止尚未确认，资源与未知结果继续保留");
+        processLedger.requireTaskStopped(taskId);
     }
 
     @Override public Map<String, Object> prepare(String source, String taskId, boolean includeChanges) {
@@ -185,6 +190,7 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
     }
 
     private void requireCurrent(Claim claim, BooleanSupplier cancelled) {
+        requireDispatch();
         requireAvailable();
         Map<String, Object> lease = store.get("workerLease", str(claim.lease, "id"));
         if (!"ACTIVE".equals(str(lease, "state")) || !str(claim.lease, "workerId").equals(str(lease, "workerId")) || integer(claim.lease, "epoch") != integer(lease, "epoch")

@@ -40,6 +40,10 @@ public class ExecutionStore implements AutoCloseable {
     private final FileChannel ownershipChannel;
     private final FileLock ownershipLock;
     private volatile boolean healthy = true;
+    /**
+     * 持锁开库的本次身份，同一 JVM 重开数据目录也不能沿用旧核心会话。
+     */
+    private final String coreSessionId = java.util.UUID.randomUUID().toString();
 
     public ExecutionStore(ObjectMapper mapper, @Value("${workbench.data-dir:./data}") String dataDir) throws Exception {
         this.mapper = mapper;
@@ -62,7 +66,7 @@ public class ExecutionStore implements AutoCloseable {
                 int schemaVersion;
                 try (var version = statement.executeQuery("PRAGMA user_version")) {
                     schemaVersion = version.next() ? version.getInt(1) : 0;
-                    if (schemaVersion > 4) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
+                    if (schemaVersion > 5) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
                 }
                 statement.execute("PRAGMA journal_mode=WAL");
                 statement.execute("PRAGMA synchronous=FULL");
@@ -84,6 +88,8 @@ public class ExecutionStore implements AutoCloseable {
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_worker_lease_operation ON entities(json_extract(body,'$.operationKind'),json_extract(body,'$.operationId')) WHERE kind='workerLease'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_worker_lease_owner ON entities(json_extract(body,'$.workerId'),json_extract(body,'$.state')) WHERE kind='workerLease'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_worker_lease_task ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.state')) WHERE kind='workerLease'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_process_session_owner ON entities(json_extract(body,'$.ownerCorePid'),json_extract(body,'$.ownerCoreStartedAt'),json_extract(body,'$.state')) WHERE kind='processSession'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_process_observation_session ON entities(json_extract(body,'$.sessionId')) WHERE kind='processObservation'");
                 boolean rebuildSearch;
                 try (var tables = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_search'")) { rebuildSearch = schemaVersion < 3 || !tables.next(); }
                 statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS session_search USING fts5(project_id UNINDEXED,session_id UNINDEXED,message_id UNINDEXED,sequence UNINDEXED,content,tokenize='trigram case_sensitive 1')");
@@ -94,7 +100,7 @@ public class ExecutionStore implements AutoCloseable {
                     statement.execute("DELETE FROM session_search");
                     statement.execute("INSERT INTO session_search(rowid,project_id,session_id,message_id,sequence,content) SELECT sequence,json_extract(body,'$.projectId'),session_id,id,sequence,session_search_fold(json_extract(body,'$.content')) FROM session_messages");
                 }
-                statement.execute("PRAGMA user_version=4");
+                statement.execute("PRAGMA user_version=5");
                 opened.commit(); opened.setAutoCommit(true);
             }
             connection = opened; ownershipChannel = channel; ownershipLock = lock;
@@ -109,6 +115,7 @@ public class ExecutionStore implements AutoCloseable {
 
     public Path directory() { return directory; }
     public boolean healthy() { return healthy; }
+    String coreSessionId() { return coreSessionId; }
 
     public synchronized List<Map<String, Object>> list(String kind) {
         try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind=? ORDER BY rowid DESC")) {
@@ -498,7 +505,7 @@ public class ExecutionStore implements AutoCloseable {
             "sequence", num(run, "calls", 0) + 1, "state", "DISPATCHING", "createdAt", now(), "attempt", 1,
             "routeId", run.get("routeId"), "routeVersion", run.get("routeVersion"), "engine", run.get("engine"), "model", run.get("model"),
             "unit", run.get("callUnit"), "usage", obj("cost", "UNKNOWN"));
-        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid")) if (run.containsKey(key)) request.put(key, run.get(key));
+        for (String key : List.of("teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid", "processSessionId")) if (run.containsKey(key)) request.put(key, run.get(key));
         for (String key : List.of("round", "messageCount", "inputBytes", "inputDigest", "toolCount", "inputPreview", "inputTruncated")) {
             if (metadata.containsKey(key)) request.put(key, metadata.get(key));
         }
@@ -889,6 +896,16 @@ public class ExecutionStore implements AutoCloseable {
 
     public synchronized void event(String taskId, String type, String message) {
         transaction(() -> appendEvent(taskId, type, message));
+    }
+
+    /**
+     * 按原会话查询完整进程清单；显示截断不能减少停止门禁检查的记录。
+     */
+    synchronized List<Map<String, Object>> processObservations(String sessionId) {
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='processObservation' AND json_extract(body,'$.sessionId')=? ORDER BY rowid DESC")) {
+            query.setString(1, sessionId);
+            try (var rows = query.executeQuery()) { List<Map<String, Object>> result = new ArrayList<>(); while (rows.next()) result.add(decode(rows.getString(1))); return result; }
+        } catch (Exception exception) { throw failure(exception); }
     }
 
     /**

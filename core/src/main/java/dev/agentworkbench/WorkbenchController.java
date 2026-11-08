@@ -41,7 +41,7 @@ public class WorkbenchController {
     }
 
     @GetMapping("/health")
-    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.10", "apiVersion", 1, "schemaVersion", 4, "corePid", ProcessHandle.current().pid()); }
+    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.11", "apiVersion", 1, "schemaVersion", 5, "corePid", ProcessHandle.current().pid()); }
 
     @PostMapping("/shutdown")
     public Map<String, Object> shutdown() {
@@ -62,8 +62,8 @@ public class WorkbenchController {
             value.put("evidenceCount", objects(task.get("evidence")).size()); return value;
         }).toList();
         return obj("projects", store.list("project"), "tasks", summaries, "routes", catalog.routes(), "memories", store.list("memory"), "profiles", store.list("profile"), "agentDefinitions", store.list("agentDefinition"),
-            "executionNodes", executionNodes(), "repositoryBindings", store.list("repositoryBinding"), "workers", workers(),
-            "system", obj("version", "0.2.0-alpha.10", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
+            "executionNodes", executionNodes(), "repositoryBindings", store.list("repositoryBinding"), "workers", workers(), "processRecovery", engine.processRecovery(),
+            "system", obj("version", "0.2.0-alpha.11", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
                 "eventCursor", store.latestEvent(), "credentialStorage", "SESSION_ONLY", "releaseStatus", "DEVELOPMENT_PREVIEW", "capabilities", List.of("Git 隔离工作目录", "三模式阶段编排", "根预算与验证预留", "独立审查与人工验收", "结果未知保护", "持久事件续读"),
                 "limitations", List.of("API 兼容性须按实际端点验证", "原生 CLI 费用与内部请求数为软预算", "本机工作目录隔离不等于操作系统安全隔离", "MCP、自动采纳、三端打包与长期性能尚待发布验收")));
     }
@@ -96,6 +96,18 @@ public class WorkbenchController {
 
     @GetMapping("/workers")
     public List<Map<String, Object>> workers() { return store.list("worker").stream().limit(30).toList(); }
+
+    @GetMapping("/process-recovery")
+    public Map<String, Object> processRecovery() { return engine.processRecovery(); }
+
+    @GetMapping("/process-recovery/{id}")
+    public Map<String, Object> processSession(@PathVariable String id) { return engine.processSession(id); }
+
+    @PostMapping("/process-recovery/{id}/{action}")
+    public Map<String, Object> processRecoveryAction(@PathVariable String id, @PathVariable String action, @RequestBody Map<String, Object> body) { return engine.processRecoveryAction(id, action, body); }
+
+    @GetMapping("/tasks/{id}/process-sessions")
+    public List<Map<String, Object>> taskProcessSessions(@PathVariable String id) { return engine.taskProcessSessions(id); }
 
     @GetMapping("/tasks/{id}/worker-leases")
     public Map<String, Object> workerLeases(@PathVariable String id, @RequestParam(defaultValue = "0") long before,
@@ -251,6 +263,8 @@ public class WorkbenchController {
             List<Map<String, Object>> taskLeases = store.workerLeases("", id, "");
             putZip(zip, "worker-leases.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(taskLeases.stream().map(WorkerLedger::publicLease).toList()));
             putZip(zip, "workers.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("worker").stream().filter(worker -> taskLeases.stream().anyMatch(lease -> str(worker, "id").equals(str(lease, "workerId")))).toList()));
+            putZip(zip, "process-sessions.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(engine.taskProcessSessions(id)));
+            putZip(zip, "process-observations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(engine.taskProcessObservations(id)));
             putZip(zip, "execution.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(task.getOrDefault("execution", obj("historical", true))));
             putZip(zip, "mcp-operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(mcpOperations(id)));
             putZip(zip, "team.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.team(id)));

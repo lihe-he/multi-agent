@@ -30,6 +30,7 @@ final class WorkerProcess implements AutoCloseable {
     private final Process process;
     private final String startedAt;
     private final WorkerRpc rpc;
+    private final ManagedProcessLedger.Tracking tracking;
     private final CompletableFuture<Map<String, Object>> hello = new CompletableFuture<>();
     private final AtomicBoolean lost = new AtomicBoolean();
     private final AtomicBoolean closing = new AtomicBoolean();
@@ -42,13 +43,20 @@ final class WorkerProcess implements AutoCloseable {
     private long pulseSequence;
 
     WorkerProcess(ObjectMapper mapper, String dataDirectory, WorkerRpc.Handler callbacks) {
+        this(mapper, dataDirectory, callbacks, null);
+    }
+
+    WorkerProcess(ObjectMapper mapper, String dataDirectory, WorkerRpc.Handler callbacks, ManagedProcessLedger.Tracking tracking) {
         this.dataDirectory = Path.of(dataDirectory).toAbsolutePath().normalize();
+        this.tracking = tracking;
         Process launched = null; WorkerRpc channel = null;
         try {
             Files.createDirectories(this.dataDirectory); Path nio = nioDirectory();
             ProcessBuilder builder = new ProcessBuilder(command(nio)).directory(this.dataDirectory.toFile());
             builder.environment().keySet().removeIf(key -> key.toUpperCase(Locale.ROOT).startsWith("WORKBENCH_") || Set.of("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS").contains(key.toUpperCase(Locale.ROOT)));
+            if (tracking != null) tracking.starting();
             process = builder.start(); launched = process; startedAt = process.info().startInstant().map(Object::toString).orElse("");
+            if (tracking != null) tracking.launched(process.toHandle());
             Thread.ofPlatform().daemon(true).name("workbench-worker-stderr").start(() -> {
                 try (var errors = process.getErrorStream()) { byte[] buffer = new byte[4096]; while (errors.read(buffer) != -1) { } }
                 catch (IOException ignored) { }
@@ -63,23 +71,32 @@ final class WorkerProcess implements AutoCloseable {
         } catch (Exception exception) {
             monitor.shutdownNow();
             if (launched != null) {
-                launched.descendants().map(CapturedProcess::capture).forEach(CapturedProcess::kill);
+                try { ManagedProcessLedger.originalDescendants(launched.toHandle(), launched.info().startInstant().map(Object::toString).orElse("")).stream().map(CapturedProcess::capture).forEach(CapturedProcess::kill); }
+                catch (RuntimeException ignored) { }
                 if (launched.isAlive()) launched.destroyForcibly();
                 try { launched.waitFor(3, TimeUnit.SECONDS); } catch (InterruptedException interrupted) { Thread.currentThread().interrupt(); }
                 if (!launched.isAlive() && channel != null) channel.close();
             }
+            if (tracking != null) { try { tracking.failed(); } catch (RuntimeException ignored) { } }
             throw new ApiException(503, "无法启动或核验独立 Worker，私有启动信息不会写入日志");
         }
     }
 
-    Map<String, Object> processIdentity() { return obj("pid", process.pid(), "processStartedAt", startedAt, "deployment", "LOCAL_PROCESS", "parentPid", ProcessHandle.current().pid(),
+    Map<String, Object> processIdentity() { Map<String, Object> identity = obj("pid", process.pid(), "processStartedAt", startedAt, "deployment", "LOCAL_PROCESS", "parentPid", ProcessHandle.current().pid(),
         "corePid", ProcessHandle.current().pid(), "coreStartedAt", ProcessHandle.current().info().startInstant().map(Object::toString).orElse(""), "protocolVersion", WorkerWire.PROTOCOL_VERSION,
-        "controlEnvironmentPresent", false, "jvmOptionsEnvironmentPresent", false, "controlPropertiesPresent", false); }
+        "controlEnvironmentPresent", false, "jvmOptionsEnvironmentPresent", false, "controlPropertiesPresent", false);
+        if (tracking != null) identity.put("processSessionId", tracking.id()); return identity;
+    }
     long pid() { return process.pid(); }
     boolean available() { return ready && !closing.get() && !lost.get() && process.isAlive() && rpc.open(); }
     boolean alive() { return process.isAlive(); }
-    boolean treeStopped() { return !process.isAlive() && descendants.values().stream().noneMatch(CapturedProcess::running); }
-    boolean childrenRunning() { return descendants.values().stream().anyMatch(CapturedProcess::running); }
+    boolean treeStopped() {
+        return ManagedProcessLedger.inspectProcesses(() -> {
+            if (process.isAlive() || descendants.values().stream().anyMatch(CapturedProcess::running)) return false;
+            try { return tracking == null || tracking.observedStopped(); } catch (RuntimeException exception) { return false; }
+        });
+    }
+    boolean childrenRunning() { return ManagedProcessLedger.inspectProcesses(() -> descendants.values().stream().anyMatch(CapturedProcess::running)); }
 
     /**
      * 原调用失联后继续持有资源，直到实际进程及已观察子进程停止；中断不能伪造停止。
@@ -90,15 +107,17 @@ final class WorkerProcess implements AutoCloseable {
             stopTree(); LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(100));
             if (Thread.interrupted()) interrupted = true;
         }
+        if (tracking != null) { try { tracking.finished(false); } catch (RuntimeException ignored) { } }
         if (interrupted) Thread.currentThread().interrupt();
     }
 
     void fence(String reason) { signalLoss(reason); }
-    Map<String, Object> stopFacts() { return obj("executorPid", process.pid(), "processStartedAt", startedAt, "processStopped", !process.isAlive(), "observedProcessCount", descendants.size(),
-        "unconfirmedProcesses", descendants.values().stream().filter(CapturedProcess::running).limit(50).map(CapturedProcess::facts).toList(), "treeStopped", treeStopped()); }
+    Map<String, Object> stopFacts() { return ManagedProcessLedger.inspectProcesses(() -> obj("executorPid", process.pid(), "processStartedAt", startedAt, "processStopped", !process.isAlive(), "observedProcessCount", descendants.size(),
+        "unconfirmedProcesses", descendants.values().stream().filter(CapturedProcess::running).limit(50).map(CapturedProcess::facts).toList(), "treeStopped", treeStopped(), "coverage", "OBSERVED_ONLY")); }
 
     void bind(Map<String, Object> worker, Consumer<Map<String, Object>> heartbeats, Consumer<String> disconnected) {
         assignment = new LinkedHashMap<>(worker); pulses = heartbeats; failure = disconnected;
+        if (tracking != null) tracking.bind(obj("workerId", worker.get("id"), "workerEpoch", worker.get("epoch"), "executionNodeId", worker.get("executionNodeId")));
         if (lost.get()) { disconnected.accept("WORKER_STARTUP_LOST"); throw new ApiException(503, "Worker 启动会话已失效"); }
         try {
             Map<String, Object> response = objectResult(rpc.request("BIND", obj("worker", worker, "dataDirectory", dataDirectory.toString())).get(10, TimeUnit.SECONDS));
@@ -146,7 +165,8 @@ final class WorkerProcess implements AutoCloseable {
                 if (!(owner == process.pid() && startedAt.equals(ownerStart)) && !descendants.containsKey(owner + "@" + ownerStart)) throw new IOException("子进程事实缺少原启动来源");
                 long child = number(facts, "pid"); String birth = str(facts, "processStartedAt");
                 if (child < 1 || child == process.pid() || child == ProcessHandle.current().pid() || descendants.size() >= 32_768) throw new IOException("子进程事实越过原会话边界");
-                descendants.putIfAbsent(child + "@" + birth, new CapturedProcess(child, birth, ProcessHandle.of(child).orElse(null))); return;
+                descendants.putIfAbsent(child + "@" + birth, new CapturedProcess(child, birth, ProcessHandle.of(child).orElse(null)));
+                if (tracking != null) tracking.observed(facts, "WORKER_PIPE"); return;
             }
             if (!"HEARTBEAT".equals(name) || number(arguments, "sequence") != pulseSequence + 1) throw new IOException("Worker 心跳顺序无效");
             pulseSequence++; pulses.accept(new LinkedHashMap<>(arguments));
@@ -162,13 +182,15 @@ final class WorkerProcess implements AutoCloseable {
     private void signalLoss(String reason) {
         if (closing.get() || !lost.compareAndSet(false, true)) return;
         ready = false; hello.completeExceptionally(new IOException("Worker 启动或管道失效"));
+        if (tracking != null) { try { tracking.failed(); } catch (RuntimeException ignored) { } }
         try { failure.accept(reason); } catch (RuntimeException ignored) { }
         stopTree();
     }
 
     private void captureTree() {
-        for (ProcessHandle child : process.descendants().toList()) {
-            CapturedProcess captured = CapturedProcess.capture(child); descendants.putIfAbsent(captured.key(), captured);
+        for (ProcessHandle child : ManagedProcessLedger.originalDescendants(process.toHandle(), startedAt)) {
+            CapturedProcess captured = CapturedProcess.capture(child);
+            if (descendants.putIfAbsent(captured.key(), captured) == null && tracking != null) tracking.observed(child, process.toHandle(), "CORE_SNAPSHOT");
         }
     }
 
@@ -191,18 +213,15 @@ final class WorkerProcess implements AutoCloseable {
         descendants.values().forEach(CapturedProcess::kill);
         try { process.waitFor(3, TimeUnit.SECONDS); } catch (InterruptedException exception) { Thread.currentThread().interrupt(); }
         if (!process.isAlive()) rpc.close();
+        if (tracking != null) { try { tracking.finished(!lost.get()); } catch (RuntimeException ignored) { } }
     }
 
     private record CapturedProcess(long pid, String startedAt, ProcessHandle handle) {
         static CapturedProcess capture(ProcessHandle handle) { return new CapturedProcess(handle.pid(), handle.info().startInstant().map(Object::toString).orElse(""), handle); }
         String key() { return pid + "@" + startedAt; }
-        boolean running() {
-            if (handle == null || !handle.isAlive()) return false;
-            ProcessHandle actual = ProcessHandle.of(pid).orElse(null);
-            return actual != null && actual.isAlive() && (startedAt.isBlank() || startedAt.equals(actual.info().startInstant().map(Object::toString).orElse("")));
-        }
+        boolean running() { return !ManagedProcessLedger.observedProcessStopped(pid, startedAt); }
         void kill() {
-            if (handle != null && !startedAt.isBlank() && running()) { try { handle.destroyForcibly(); } catch (RuntimeException ignored) { } }
+            ManagedProcessLedger.stopObservedProcess(pid, startedAt);
         }
         Map<String, Object> facts() { return obj("pid", pid, "processStartedAt", startedAt); }
     }

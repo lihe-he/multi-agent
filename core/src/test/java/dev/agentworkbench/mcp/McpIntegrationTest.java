@@ -9,11 +9,14 @@ import dev.agentworkbench.WorkbenchCatalog;
 import dev.agentworkbench.ResourceManager;
 import dev.agentworkbench.WorkbenchEngine;
 import dev.agentworkbench.PlanValidator;
+import dev.agentworkbench.ManagedProcessLedger;
 import dev.agentworkbench.runtime.WorkspaceRuntime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -421,6 +424,101 @@ class McpIntegrationTest {
         String id = str(server, "id"); var discovery = manager.probe(id);
         assertTrue(bool(discovery, "available", false), discovery::toString);
         assertEquals("ACKNOWLEDGED", str(manager.call(id, callBody(discovery, "stdio-1")), "state"));
+    }
+
+    @Test
+    void failedLaunchRetainsCapacityUntilTheOriginalTransportActuallyStops() throws Exception {
+        ResourceManager resources = new ResourceManager(); AtomicBoolean stopped = new AtomicBoolean();
+        McpTransport pending = new McpTransport() {
+            @Override public Map<String, Object> request(String method, Map<String, Object> params) { fail("Failed launch must not dispatch initialize or a tool"); return obj(); }
+            @Override public void notify(String method, Map<String, Object> params) { fail("Failed launch must not dispatch notifications"); }
+            @Override public void close() { }
+            @Override public boolean stopConfirmed() { return stopped.get(); }
+        };
+        manager.stopObservers(); manager = new McpManager(store, mapper, catalog, resources, (server, token, json, cancelled, timeout) -> {
+            throw new McpTransport.LaunchFailure(pending, new IllegalStateException("injected missing PID receipt"));
+        });
+        String serverId = str(manager.save(obj("name", "failed launch", "transport", "STDIO", "command", "node", "enabled", true, "projectIds", List.of("p"))), "id");
+        try {
+            assertFalse(bool(manager.probe(serverId), "available", true));
+            assertEquals(1, resources.snapshot().get("process")); assertEquals(1, resources.snapshot().get("tool"));
+            assertEquals(409, assertThrows(ApiException.class, () -> manager.probe(serverId)).status()); assertTrue(store.list("mcpOperation").isEmpty());
+            stopped.set(true); manager.requireTaskStopped("unrelated");
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(3);
+            while (resources.snapshot().get("process") != 0 && System.nanoTime() < deadline) Thread.sleep(20);
+            assertEquals(0, resources.snapshot().get("process")); assertEquals(0, resources.snapshot().get("tool"));
+        } finally { stopped.set(true); }
+    }
+
+    @Test
+    void unresolvedOldLaunchReturnsConflictBeforeProbingAnUnrelatedServer() {
+        AtomicInteger opened = new AtomicInteger(); ResourceManager resources = new ResourceManager();
+        manager.stopObservers(); manager = new McpManager(store, mapper, catalog, resources, (server, token, json, cancelled, timeout) -> {
+            opened.incrementAndGet(); throw new IllegalStateException("Recovery must reject before opening a transport");
+        });
+        String serverId = str(manager.save(httpConfiguration()), "id");
+        store.put("processSession", obj("id", "old-unreceipted-launch", "type", "WORKER", "ownerCoreSessionId", "previous-core",
+            "state", "UNKNOWN", "launchPhase", "START_REQUESTED", "launchReceipt", "MISSING", "coverage", "OBSERVED_ONLY"));
+        assertEquals(409, assertThrows(ApiException.class, () -> manager.probe(serverId)).status());
+        assertEquals(0, opened.get()); assertTrue(resources.snapshot().isEmpty()); assertTrue(store.list("mcpOperation").isEmpty());
+        assertFalse(store.get("mcpServer", serverId).containsKey("health"), "A recovery gate must not be rewritten as ordinary server unavailability");
+    }
+
+    @ParameterizedTest(name = "storageFault={0}")
+    @ValueSource(booleans = {true, false})
+    void descendantPersistenceFailureStillStopsTheActualStdioTree(boolean storageFault) throws Exception {
+        Path script = directory.resolve("late-child.mjs"), pids = directory.resolve("late-child-pids.json"), spawnSignal = directory.resolve("spawn-late-child");
+        Files.writeString(script, """
+            import {spawn} from 'node:child_process';
+            import {existsSync,writeFileSync} from 'node:fs';
+            import {createInterface} from 'node:readline';
+            const io=createInterface({input:process.stdin});
+            io.on('line', line=>{
+              const req=JSON.parse(line); if(req.id===undefined)return;
+              process.stdout.write(JSON.stringify({jsonrpc:'2.0',id:req.id,result:{protocolVersion:'2025-06-18'}})+'\\n');
+            });
+            let child;
+            setInterval(()=>{
+              if(child||!existsSync(process.argv[3]))return;
+              child=spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'ignore'});
+              writeFileSync(process.argv[2],JSON.stringify({root:process.pid,child:child.pid}));
+            },20);
+            """);
+        var ledger = new ManagedProcessLedger(store); var tracking = spy(ledger.begin("MCP_STDIO", obj("serverId", "late-child")));
+        McpTransport transport = McpTransport.open(obj("transport", "STDIO", "command", "node", "args", List.of(script.toString(), pids.toString(), spawnSignal.toString())), "", mapper, () -> false, java.time.Duration.ofSeconds(10), tracking);
+        ProcessHandle root = null, child = null; String rootBirth = "", childBirth = "";
+        try {
+            assertEquals("2025-06-18", transport.request("initialize", obj()).get("protocolVersion"));
+            var originalObservations = store.list("processObservation");
+            if (storageFault) {
+                try (var db = java.sql.DriverManager.getConnection("jdbc:sqlite:" + store.directory().resolve("workbench.sqlite")); var sql = db.createStatement()) {
+                    sql.execute("CREATE TRIGGER reject_late_child BEFORE INSERT ON entities WHEN new.kind='processObservation' AND json_extract(new.body,'$.role')='DESCENDANT' BEGIN SELECT RAISE(ABORT,'injected descendant persistence failure'); END");
+                }
+            } else doThrow(new IllegalStateException("injected observation failure")).when(tracking).observed(anyMap(), eq("MCP_SNAPSHOT"));
+            Files.writeString(spawnSignal, "launch only after the persistence fault is installed");
+            long launchDeadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+            while (!Files.exists(pids) && System.nanoTime() < launchDeadline) Thread.sleep(20);
+            assertTrue(Files.exists(pids)); Map<String, Object> identities = mapper.readValue(Files.readString(pids), new TypeReference<>() { });
+            root = ProcessHandle.of(((Number) identities.get("root")).longValue()).orElseThrow(); child = ProcessHandle.of(((Number) identities.get("child")).longValue()).orElseThrow();
+            rootBirth = root.info().startInstant().orElseThrow().toString(); childBirth = child.info().startInstant().orElseThrow().toString();
+            assertThrows(RuntimeException.class, transport::close); assertEquals(!storageFault, store.healthy());
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+            while ((!ManagedProcessLedger.observedProcessStopped(root.pid(), rootBirth) || !ManagedProcessLedger.observedProcessStopped(child.pid(), childBirth)) && System.nanoTime() < deadline) Thread.sleep(20);
+            assertTrue(ManagedProcessLedger.observedProcessStopped(root.pid(), rootBirth), "Actual root must stop even when observation persistence fails");
+            assertTrue(ManagedProcessLedger.observedProcessStopped(child.pid(), childBirth), "Captured actual child must stop even when observation persistence fails");
+            assertEquals("RECORDED", store.get("processSession", tracking.id()).get("launchReceipt"));
+            assertEquals(originalObservations, store.list("processObservation"), "Failed descendant transaction must not replace the original recorded receipts");
+            if (!storageFault) {
+                assertEquals("UNKNOWN", store.get("processSession", tracking.id()).get("state"), "Failed coverage observation cannot become a normal closed session");
+                assertEquals(409, assertThrows(ApiException.class, ledger::requireDispatch).status());
+                ledger.reconcile(tracking.id(), obj("processesStopped", true, "coverageChecked", true, "note", "Original root and unrecorded child checked separately after observation failure"));
+                ledger.requireDispatch();
+            }
+        } finally {
+            transport.close();
+            if (child != null) ManagedProcessLedger.stopObservedProcess(child.pid(), childBirth);
+            if (root != null) ManagedProcessLedger.stopObservedProcess(root.pid(), rootBirth);
+        }
     }
 
     @Test

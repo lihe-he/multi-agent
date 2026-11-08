@@ -1,0 +1,328 @@
+{
+  "recordedAt": "2026-11-08T08:48:49.931Z",
+  "version": "0.2.0-alpha.11",
+  "status": "passed",
+  "sourceBase": "c4a7558f56f65336f05c236c717e271cdd243b74",
+  "branch": "main",
+  "core": {
+    "jar": "core/target/agent-workbench-core-0.2.0-alpha.11.jar",
+    "sha256": "2232e0b6db7c61de9695702ba802fa5c29b3bcc27c290517ca2383294804a261",
+    "tests": {
+      "tests": 181,
+      "passed": 180,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "suites": 18,
+    "schedulerParallelism": 2,
+    "schedulerMaxPoolSize": 2,
+    "sourceSha256": "499e5e30198bb919b97ea74e6084ea297901b6c6ceacefac75b3bd9ca7206efb"
+  },
+  "recovery": {
+    "checks": 11,
+    "originalCorePid": 42768,
+    "restartedCorePids": [
+      45480,
+      51488
+    ],
+    "originalWorkerPid": 46652,
+    "originalMcpPid": 17148,
+    "originalModelRequestId": "5bebe7a1-571a-4d22-a3cb-8997ece978b2",
+    "originalMcpOperationId": "5238aaf14ad118c8939cd1d39180bf5189f9bdc30549ae0ef9e15afbcaa33afd",
+    "originalModelCalls": 3,
+    "originalExternalCalls": 1,
+    "newTaskCalls": 3,
+    "processCoverage": "OBSERVED_ONLY",
+    "processesAndEffectsReconciledSeparately": true,
+    "automaticReplay": false,
+    "stopObservations": {
+      "worker": {
+        "observations": 1,
+        "recordedProcesses": 47,
+        "stopped": true
+      },
+      "mcp": {
+        "observations": 2,
+        "recordedProcesses": 2,
+        "stopped": true
+      }
+    },
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\process-recovery-ZEGkdV"
+  },
+  "protocol": {
+    "status": "passed",
+    "checks": 28
+  },
+  "standalone": {
+    "corePid": 54008,
+    "workerPid": 54444,
+    "workerDeployment": "LOCAL_PROCESS",
+    "originalRequestId": "62a51e3f-cc97-41c7-94c1-95dfc2f79f96",
+    "originalLeaseId": "e1b7e67c-c2ab-46ad-8270-ab3eca4b3542",
+    "retainedOnReconnect": true,
+    "modelRequestsBeforeAndAfterReconnect": 1,
+    "teamRootCalls": 18,
+    "workerReceiptsVerified": 13,
+    "externalMcpCalls": 1,
+    "pageErrors": [],
+    "modelErrors": []
+  },
+  "packaged": {
+    "desktop": "PASS",
+    "api": 200,
+    "version": "0.2.0-alpha.11",
+    "application": {
+      "packaged": true,
+      "version": "0.2.0-alpha.11"
+    },
+    "externalJavaDisabled": true,
+    "pageErrors": [],
+    "jar": "release/win-unpacked/resources/core/core.jar",
+    "sha256": "2232e0b6db7c61de9695702ba802fa5c29b3bcc27c290517ca2383294804a261",
+    "installer": "release/Agent Workbench Setup 0.2.0-alpha.11.exe",
+    "installerSha256": "470cd910de3bd790210122d0b254eecda156a23ee7c4f458e469791f18bc45e4",
+    "fullInstallUninstallRetested": false
+  },
+  "web": {
+    "uiChecks": 43,
+    "sourceSha256": "58b135763e2ac6c951653e19241a737959543d931babd97027737beecc524347",
+    "sources": [
+      {
+        "file": "web/package.json",
+        "sha256": "2aae6a65da4a213b6c241ae1fe326f241976ca3fd1b1f4873784dbdd35a2942d"
+      },
+      {
+        "file": "web/src/AgentDefinitions.tsx",
+        "sha256": "658e38bf0807042048e58c5653e977a881489d180b0e01f3df215aa1c338db9a"
+      },
+      {
+        "file": "web/src/AgentRuns.tsx",
+        "sha256": "adddb9b9cde07f4be1902df480336445b47c1fc37b860c98fbee7f28975707b1"
+      },
+      {
+        "file": "web/src/App.tsx",
+        "sha256": "57214568ee7fea8d96caa5fc3a3948d863e1024ed47a8168199171e2b0bf2597"
+      },
+      {
+        "file": "web/src/DelegationContract.tsx",
+        "sha256": "33fb06c2e86c42bdfcefb76c300855162bdab7fef1b6d31ad8e4e2d3290735e5"
+      },
+      {
+        "file": "web/src/ExecutionResources.tsx",
+        "sha256": "1d04e36f9f4ac321bcb623b5eda34b25a2b7a4e4b789261fa61719b275e46c0d"
+      },
+      {
+        "file": "web/src/McpPanel.tsx",
+        "sha256": "094f658e7aa03bfc3dcfb77ebc551dd3f87782ecc6e3dc0b64e5191a3cd86610"
+      },
+      {
+        "file": "web/src/McpProjectAccess.tsx",
+        "sha256": "0eedfa6a9753669e823de42e6023d7a518148e382bd18236c8ee91db7dc529a0"
+      },
+      {
+        "file": "web/src/ModelRequests.tsx",
+        "sha256": "adde12a410a4143c3c276b85f247f15275feaf54c6d3a0a7d63f099b2daf7dbd"
+      },
+      {
+        "file": "web/src/ProcessRecovery.tsx",
+        "sha256": "38497fefc7879ea44524d60e4f77398344b1758b04d9f683df474fdc8a17aab9"
+      },
+      {
+        "file": "web/src/ProfileImport.tsx",
+        "sha256": "ba911330410870ce2e570ac520c53fba29145ebed3677eb3db7f2b6892a16f2a"
+      },
+      {
+        "file": "web/src/SessionWorkspace.tsx",
+        "sha256": "08aabfb92d70f46b756cb26856c230c8d8b538479497f756598b70d7c10404da"
+      },
+      {
+        "file": "web/src/TaskDetail.tsx",
+        "sha256": "2005dc9ad9a4b5c799f14060724df7400e19c3515bab77001e66da393e634f1d"
+      },
+      {
+        "file": "web/src/TeamPanel.tsx",
+        "sha256": "c5d0eef183ba9b17f964e23b2e1725e10f1f5306f48f2ca24e31ff967b6871ec"
+      },
+      {
+        "file": "web/src/WorkerActivity.tsx",
+        "sha256": "9a3d2b639e9f108270bb22e4e1ec972c7cd083152ea261013b8fd44e22151c2b"
+      },
+      {
+        "file": "web/src/api.ts",
+        "sha256": "cec04a4e3cf8e0264711b5ed35ba9eb6f278eb2046feab6e366766385b7585f4"
+      },
+      {
+        "file": "web/src/dialogs.tsx",
+        "sha256": "71d1785f51e61aabeb26624b6b844a91daa65caa35febd3cff4360f0b5504064"
+      },
+      {
+        "file": "web/src/execution-source.ts",
+        "sha256": "2e2ed802c3b8707a799bd4893e407844356b02daaf61d07d15c04dfe92fe1e38"
+      },
+      {
+        "file": "web/src/main.tsx",
+        "sha256": "e9333bad6b4bed217f50653fe8d0c1107a4925ec8d9f0e5b89d7207b2c1d2711"
+      },
+      {
+        "file": "web/src/process-recovery.css",
+        "sha256": "f333d8047077f4105a9684f757ce65da0e664715f21f9f21cd061c7b190b7533"
+      },
+      {
+        "file": "web/src/readability.css",
+        "sha256": "82d1f9a2b649c0d21c8cebe5e9ffef78c470208d9c4b96d3bb37562bcf9c1e66"
+      },
+      {
+        "file": "web/src/sessions.css",
+        "sha256": "33625f853934db44aaf102124371c90c013127b503e6e4fe31332f9b0fe27cfb"
+      },
+      {
+        "file": "web/src/styles.css",
+        "sha256": "00418121637ad58e3a3a73e6dd38132ed3ca9f248a1b7a9a4e9bb591897d3ef9"
+      },
+      {
+        "file": "web/src/types.ts",
+        "sha256": "72151331e20ae2b6465e4dee8bba10faf3fe7a96f615f98da8adb80a79eb6ee2"
+      },
+      {
+        "file": "web/src/ui.tsx",
+        "sha256": "9e4c0231c783e2c72bdd6582ea391709a661d4fef9a94c24b7dfbe48cef1937a"
+      }
+    ],
+    "build": [
+      {
+        "file": "web/dist/assets/index-6axRJZ06.css",
+        "sha256": "34fd09d7068aa87d2a325fb1f98f7f15d3dde774f51c170c048f3440b3c410d6"
+      },
+      {
+        "file": "web/dist/assets/index-DDkVxW1G.js",
+        "sha256": "bc14384dfadcc69dd98b423f8ba86eeb2431f0f267e9ce1d5a15e014ac58f882"
+      },
+      {
+        "file": "web/dist/index.html",
+        "sha256": "73f4a7fdebcb9ef2addada34eaacf2493e645a24d4bf9f5fb8506b49597b264d"
+      },
+      {
+        "file": "web/dist/workbench-config.json",
+        "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+      }
+    ]
+  },
+  "sourceAudit": {
+    "javaFiles": 17,
+    "preservedComments": 59,
+    "newJavadocsMultiline": true,
+    "versionsConsistent": true
+  },
+  "reviewedScreenshots": [
+    "web/qa/process-recovery-real-win32.png",
+    "web/qa/process-recovery-real-narrow-win32.png",
+    "web/qa/worker-real-win32.png",
+    "web/qa/team-real-win32.png",
+    "docs/qa/desktop-home.png"
+  ],
+  "files": [
+    {
+      "path": "docs/qa/process-recovery-win32.json",
+      "sha256": "2efcf53c1209d4cb9ca31ba5d65e4ad41c28f7a9f2c479f8b35b681399a0ccd8",
+      "modifiedAt": "2026-11-08T08:41:41.401Z"
+    },
+    {
+      "path": "docs/qa/smoke-win32.json",
+      "sha256": "a58175f4223cef490f3045f174f8d95ff7c782e19f5ded592e5bc8c4dd33a47c",
+      "modifiedAt": "2026-11-08T08:43:31.330Z"
+    },
+    {
+      "path": "docs/qa/standalone-win32.json",
+      "sha256": "950b58efe82e2d63a1ce06e9b5d557ccaaf50377674590712520acc6911bda8c",
+      "modifiedAt": "2026-11-08T08:45:01.601Z"
+    },
+    {
+      "path": "docs/qa/desktop-packaged-win32.json",
+      "sha256": "31404f8f166222501e3b04804446697fc9f847ebfa8f4565e719e8ed92bda6fe",
+      "modifiedAt": "2026-11-08T08:47:19.245Z"
+    },
+    {
+      "path": ".runtime/alpha11-core-stop-history-package.log",
+      "sha256": "2839a2f57479616532357b2b985baac1b895cfc13616292d2a9d882a745c1cf0",
+      "modifiedAt": "2026-11-08T08:40:11.035Z"
+    },
+    {
+      "path": ".runtime/alpha11-recovery-final.log",
+      "sha256": "0dca4e529e85ec041cbcba20783cf26f2690f971688bd9182beb6dd2a16079c9",
+      "modifiedAt": "2026-11-08T08:41:41.450Z"
+    },
+    {
+      "path": ".runtime/alpha11-integration-final.log",
+      "sha256": "eab82f06e81bc329574a115e58ac5a87fd2b63b9223487db7a1a45c16d0052a8",
+      "modifiedAt": "2026-11-08T08:43:31.330Z"
+    },
+    {
+      "path": ".runtime/alpha11-standalone-final.log",
+      "sha256": "b5d7b3a465c2656d8d43259f1e25e554f75280313c9ce6cd0288589cba22bb0b",
+      "modifiedAt": "2026-11-08T08:45:01.658Z"
+    },
+    {
+      "path": ".runtime/alpha11-package-final.log",
+      "sha256": "26df39f60344c478fe31b0bbe99968fc3f86ae27e6ad1c7187c91f556f487c43",
+      "modifiedAt": "2026-11-08T08:46:34.025Z"
+    },
+    {
+      "path": ".runtime/alpha11-packaged-final.log",
+      "sha256": "0af4cb6e9de173cc645f141bc381080c0b273c31f84b9431d53fe9a8f4b127f2",
+      "modifiedAt": "2026-11-08T08:47:19.246Z"
+    },
+    {
+      "path": ".runtime/alpha11-ui-full-final.log",
+      "sha256": "9d7fcc76513459c4ff78fb9751376669b4fbb52d1f58235c27f3e34745da0c12",
+      "modifiedAt": "2026-11-08T07:25:39.860Z"
+    },
+    {
+      "path": ".runtime/alpha11-web-build-final.log",
+      "sha256": "3e0ed22de997e17d890f29e254b75e188ca013c1f04a2fde675f3d79f9f37841",
+      "modifiedAt": "2026-11-08T07:24:57.267Z"
+    },
+    {
+      "path": ".runtime/alpha11-process-source-audit.json",
+      "sha256": "4e9eb35abaf0f48decddb8966a78e22632a8b3f87aca6fb5bd37b27e13792c66",
+      "modifiedAt": "2026-11-08T08:48:49.724Z"
+    },
+    {
+      "path": "web/qa/process-recovery-real-win32.png",
+      "sha256": "05ac1171c4039244311b0dd29c934931f19d1dcf2e20ec5e054b11fdc452311d",
+      "modifiedAt": "2026-11-08T08:41:05.753Z"
+    },
+    {
+      "path": "web/qa/process-recovery-real-narrow-win32.png",
+      "sha256": "8f09e9979aa5e9d4d4e162c7dce9c941eaf681e278dc3d20e68346f7ef60dab8",
+      "modifiedAt": "2026-11-08T08:41:06.008Z"
+    },
+    {
+      "path": "web/qa/worker-real-win32.png",
+      "sha256": "3e126adef68d78fad5c5c6c1f4c8df10417c27e8299f3e07bdd8c24958991342",
+      "modifiedAt": "2026-11-08T08:45:00.387Z"
+    },
+    {
+      "path": "web/qa/team-real-win32.png",
+      "sha256": "8eaa61ad93f7d634af8136aeae37f0c1e6bb3f6f5c476c26211710e870263027",
+      "modifiedAt": "2026-11-08T08:44:59.153Z"
+    },
+    {
+      "path": "docs/qa/desktop-home.png",
+      "sha256": "9ac563276b21242a6c7cb8c0dc6c4b9606afdd1dd6e5c45bfde11d1d0f76928e",
+      "modifiedAt": "2026-11-08T08:47:19.241Z"
+    }
+  ],
+  "priorFailures": [
+    ".runtime/alpha11-process-self-review-failed/",
+    ".runtime/alpha11-process-loss-diagnosis-failed/",
+    ".runtime/process-recovery-Kbev6C/",
+    ".runtime/alpha11-core-gate409-team-failed/",
+    ".runtime/alpha11-mcp-coverage-observation-failed/",
+    ".runtime/process-recovery-0y1oOP/",
+    ".runtime/process-recovery-l6pQWm/",
+    ".runtime/process-recovery-glLUQY/",
+    ".runtime/alpha11-stop-history-failed/"
+  ],
+  "crossPlatformCi": "Recorded separately for the pushed commit; local success does not substitute for platform results."
+}

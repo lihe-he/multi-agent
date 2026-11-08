@@ -2,6 +2,8 @@
 
 Web 静态产物、Java 核心和 Electron 可以独立启动。alpha.10 起核心用同一 Jar/JRE 启动独立本机 Worker，实际现场、模型、文件工具和验证在子 JVM，SQLite、预算与调度由核心持有，详见[独立 Worker 约定](./worker-process-contract.md)。现阶段仍是单用户、本机执行；远程设备配对、Worker 网络重连、PostgreSQL 和移动审批继续实施。
 
+alpha.11 在 schema 5 保存原 Worker/MCP stdio 进程清单。重启同一目录会保留 UNKNOWN 与预算，在资源设置核对原 PID/出生及清单覆盖后，仍需到原任务分别核对文件和外部效果；新空闲 Worker 不自动重放旧任务。旧核心不能打开 schema 5，接口兼容版本仍为 1，详见[恢复协议](./process-recovery-contract.md)。
+
 ## 单独构建和运行
 
 ```powershell

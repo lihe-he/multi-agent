@@ -1,0 +1,32 @@
+{
+  "run": 42451935456,
+  "sha": "c4a7558f56f65336f05c236c717e271cdd243b74",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 128642824785,
+      "name": "verify (macos-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "current": [],
+      "failed": []
+    },
+    {
+      "id": 128642824940,
+      "name": "verify (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "current": [],
+      "failed": []
+    },
+    {
+      "id": 128642825028,
+      "name": "verify (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "current": [],
+      "failed": []
+    }
+  ]
+}

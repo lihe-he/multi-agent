@@ -35,6 +35,7 @@ public class WorkbenchEngine {
     private final McpManager mcp;
     private final TeamCoordinator teams;
     private final LocalExecutionWorker executionWorker;
+    private final ManagedProcessLedger processLedger;
     private final ExecutorService workers = Executors.newVirtualThreadPerTaskExecutor();
     private final Map<String, Control> controls = new ConcurrentHashMap<>();
     private volatile boolean shuttingDown;
@@ -47,10 +48,22 @@ public class WorkbenchEngine {
     public WorkbenchEngine(ExecutionStore store, WorkbenchCatalog catalog, WorkspaceRuntime runtime, ResourceManager resources, ObjectMapper mapper, McpManager mcp) {
         this.store = store; this.catalog = catalog; this.runtime = runtime; this.resources = resources; this.mapper = mapper; this.mcp = mcp;
         this.executionWorker = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.startWorker(store, catalog.nodes()) : new LocalExecutionWorker(store, catalog.nodes());
+        this.processLedger = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.managedProcesses() : new ManagedProcessLedger(store);
         this.teams = new TeamCoordinator(store, catalog, runtime, resources, mapper, mcp, workers, executionWorker);
     }
 
     Map<String, Object> workerIdentity() { return executionWorker.identity(); }
+    public Map<String, Object> processRecovery() { return processLedger.snapshot(); }
+    public Map<String, Object> processSession(String id) { return processLedger.detail(id); }
+    public List<Map<String, Object>> taskProcessSessions(String taskId) { store.get("task", taskId); return processLedger.taskSessions(taskId); }
+    public List<Map<String, Object>> taskProcessObservations(String taskId) { store.get("task", taskId); return processLedger.taskObservations(taskId); }
+    public Map<String, Object> processRecoveryAction(String id, String action, Map<String, Object> body) {
+        return switch (action) {
+            case "stop" -> processLedger.stop(id);
+            case "reconcile" -> processLedger.reconcile(id, body);
+            default -> throw new ApiException(404, "不支持的旧进程核验操作");
+        };
+    }
 
     @PostConstruct
     void recover() {
@@ -80,6 +93,7 @@ public class WorkbenchEngine {
     public synchronized Map<String, Object> action(String taskId, String action, Map<String, Object> body) {
         Map<String, Object> task = store.get("task", taskId);
         String state = str(task, "state");
+        if (Set.of("approve", "resume").contains(action)) processLedger.requireDispatch();
         switch (action) {
             case "approve" -> {
                 requireState(state, Set.of("DRAFT", "WAITING_INPUT"));
@@ -150,6 +164,7 @@ public class WorkbenchEngine {
         }
         if (controls.containsKey(taskId)) throw new ApiException(409, "任务执行仍在停止或收尾中，请等待停止确认");
         teams.requireStopped(taskId);
+        processLedger.requireTaskStopped(taskId);
         executionWorker.requireStopped(taskId);
         if (mcp != null) mcp.requireTaskStopped(taskId);
         for (Map<String, Object> operation : store.list("operation")) {
@@ -218,6 +233,7 @@ public class WorkbenchEngine {
 
     private void launch(String taskId) {
         if (shuttingDown || !store.healthy()) { throw new ApiException(503, "核心当前不能开始执行"); }
+        processLedger.requireDispatch();
         if (controls.containsKey(taskId)) { throw new ApiException(409, "任务仍在停止或执行中，请等待确认"); }
         Map<String, Object> task = store.get("task", taskId);
         catalog.nodes().requireCurrent(task);

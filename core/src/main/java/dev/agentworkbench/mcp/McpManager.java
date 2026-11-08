@@ -5,6 +5,7 @@ import dev.agentworkbench.ApiException;
 import dev.agentworkbench.ExecutionStore;
 import dev.agentworkbench.WorkbenchCatalog;
 import dev.agentworkbench.ResourceManager;
+import dev.agentworkbench.ManagedProcessLedger;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,8 @@ public class McpManager {
     private final WorkbenchCatalog catalog;
     private final ResourceManager resources;
     private final TransportFactory transportFactory;
+    private final ManagedProcessLedger processLedger;
+    private final boolean trackNativeProcesses;
     private final Map<String, ManagedTransport> transports = new ConcurrentHashMap<>();
     private volatile boolean observing = true;
     private final Map<String, String> tokens = new ConcurrentHashMap<>();
@@ -43,10 +46,15 @@ public class McpManager {
     public McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog) { this(store, mapper, catalog, new ResourceManager()); }
 
     @Autowired
-    public McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog, ResourceManager resources) { this(store, mapper, catalog, resources, McpTransport::open); }
+    public McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog, ResourceManager resources) { this(store, mapper, catalog, resources, McpTransport::open, true); }
 
     McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog, ResourceManager resources, TransportFactory transportFactory) {
+        this(store, mapper, catalog, resources, transportFactory, false);
+    }
+
+    private McpManager(ExecutionStore store, ObjectMapper mapper, WorkbenchCatalog catalog, ResourceManager resources, TransportFactory transportFactory, boolean trackNativeProcesses) {
         this.store = store; this.mapper = mapper; this.catalog = catalog; this.resources = resources; this.transportFactory = transportFactory;
+        this.processLedger = new ManagedProcessLedger(store); this.trackNativeProcesses = trackNativeProcesses;
     }
 
     @PostConstruct
@@ -59,6 +67,7 @@ public class McpManager {
                 operation.put("error", "核心退出前未完成操作或停止确认，禁止自动重放"); store.put("mcpOperation", operation);
             }
         }
+        processLedger.recoverMcp();
     }
 
     @jakarta.annotation.PreDestroy
@@ -277,12 +286,32 @@ public class McpManager {
     }
 
     private ManagedTransport openTransport(Map<String, Object> server, BooleanSupplier cancelled, Duration timeout, Map<String, Object> operation) throws Exception {
+        processLedger.requireDispatch();
         var lease = resources.acquire(resourceRequest(server), cancelled);
+        ManagedProcessLedger.Tracking tracking = null;
         try {
-            var managed = new ManagedTransport(str(server, "id"), transportFactory.open(server, tokens.getOrDefault(str(server, "id"), ""), mapper, cancelled, timeout), lease, operation);
+            processLedger.requireDispatch();
+            if (operation != null) { operation.put("transport", server.get("transport")); store.put("mcpOperation", operation); }
+            McpTransport delegate;
+            if (trackNativeProcesses && "STDIO".equals(str(server, "transport"))) {
+                Map<String, Object> source = obj("serverId", server.get("id"), "serverIdentity", server.get("identity"));
+                if (operation != null) source.putAll(obj("operationId", operation.get("id"), "taskId", str(operation, "taskId"), "projectId", str(operation, "projectId")));
+                tracking = processLedger.begin("MCP_STDIO", source);
+                if (operation != null) { operation.put("processSessionId", tracking.id()); store.put("mcpOperation", operation); }
+                delegate = McpTransport.open(server, tokens.getOrDefault(str(server, "id"), ""), mapper, cancelled, timeout, tracking);
+            } else delegate = transportFactory.open(server, tokens.getOrDefault(str(server, "id"), ""), mapper, cancelled, timeout);
+            var managed = new ManagedTransport(str(server, "id"), delegate, lease, operation);
             transports.put(str(server, "id"), managed);
             return managed;
-        } catch (Exception exception) { lease.close(); throw exception; }
+        } catch (Exception exception) {
+            if (tracking != null) { try { tracking.failed(); } catch (RuntimeException ignored) { } }
+            if (exception instanceof McpTransport.LaunchFailure failure) {
+                var managed = new ManagedTransport(str(server, "id"), failure.transport, lease, operation);
+                transports.put(str(server, "id"), managed);
+                try { managed.close(); } catch (RuntimeException cleanup) { exception.addSuppressed(cleanup); }
+            } else lease.close();
+            throw exception;
+        }
     }
 
     /**
@@ -301,8 +330,8 @@ public class McpManager {
             this.serverId = serverId; this.delegate = delegate; this.lease = lease; this.operationId = operation == null ? "" : str(operation, "id");
         }
 
-        @Override public Map<String, Object> request(String method, Map<String, Object> params) throws Exception { return delegate.request(method, params); }
-        @Override public void notify(String method, Map<String, Object> params) throws Exception { delegate.notify(method, params); }
+        @Override public Map<String, Object> request(String method, Map<String, Object> params) throws Exception { processLedger.requireDispatch(); return delegate.request(method, params); }
+        @Override public void notify(String method, Map<String, Object> params) throws Exception { processLedger.requireDispatch(); delegate.notify(method, params); }
         @Override public boolean definitionsChanged() { return delegate.definitionsChanged(); }
         @Override public boolean stopConfirmed() { stopLock.lock(); try { return closed && delegate.stopConfirmed(); } finally { stopLock.unlock(); } }
 
@@ -337,6 +366,7 @@ public class McpManager {
                             while (observing && transports.get(serverId) == this) {
                                 try { Thread.sleep(100); if (releaseIfStopped()) return; }
                                 catch (InterruptedException exception) { Thread.currentThread().interrupt(); return; }
+                                catch (RuntimeException ignored) { }
                             }
                         });
                         throw new McpTransport.McpFailure("MCP 本地进程或传输未确认停止，容量继续保留；请核对实际进程", true);
@@ -352,6 +382,7 @@ public class McpManager {
     }
 
     public void requireTaskStopped(String taskId) {
+        processLedger.requireTaskStopped(taskId);
         for (Map<String, Object> operation : store.list("mcpOperation")) {
             if (taskId.equals(str(operation, "taskId")) && !localStopConfirmed(str(operation, "serverId"))) {
                 throw new ApiException(409, "MCP 本地进程或传输仍未停止，不能记录人工核对");
@@ -360,6 +391,7 @@ public class McpManager {
     }
 
     public List<Map<String, Object>> operations(String serverId) { store.get("mcpServer", serverId); return store.list("mcpOperation").stream().filter(operation -> serverId.equals(str(operation, "serverId"))).toList(); }
+    public List<Map<String, Object>> processSessions(String serverId) { store.get("mcpServer", serverId); return processLedger.serverSessions(serverId); }
 
     synchronized void persistDiscovery(Map<String, Object> observed, Map<String, Object> discovery) {
         Map<String, Object> current = store.get("mcpServer", str(observed, "id"));
@@ -368,7 +400,7 @@ public class McpManager {
     }
 
     Map<String, Object> discover(Map<String, Object> server, McpTransport transport) throws Exception {
-        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.10")));
+        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.11")));
         String protocol = str(initialized, "protocolVersion");
         if (!Set.of("2025-06-18", "2025-03-26").contains(protocol)) { throw new ApiException(409, "此客户端尚未验证服务协商的 MCP 版本：" + protocol); }
         transport.notify("notifications/initialized", obj());
@@ -405,6 +437,7 @@ public class McpManager {
     String token(String serverId) { return tokens.getOrDefault(serverId, ""); }
     static Map<String, Integer> resourceRequest(Map<String, Object> server) { Map<String, Integer> result = new LinkedHashMap<>(Map.of("tool", 1, "mcp:" + str(server, "id"), 1)); if ("STDIO".equals(str(server, "transport"))) { result.put("process", 1); } return result; }
     void requireServerResolved(String serverId) {
+        processLedger.requireDispatch();
         if (!localStopConfirmed(serverId)) throw new ApiException(409, "MCP 本地进程或传输仍未停止，暂不开放新派发");
         if (store.list("mcpOperation").stream().anyMatch(operation -> serverId.equals(str(operation, "serverId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")))) { throw new ApiException(409, "该 MCP 服务存在未核对动作，暂不开放新派发"); }
     }
