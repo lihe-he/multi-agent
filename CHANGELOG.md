@@ -8,6 +8,7 @@
 - 证据、操作 ACK、租约结束及副成果采纳回执共用事务，事务失败封闭新增派发。根人工核对同时检查 Worker 在途领取，旧记录保持原样。
 - 设置提供节点/仓库版本编辑，创建与执行计划展示固定来源，任务 Worker 页支持状态筛选、历史分页、实际来源和证据定位；新授权显式核对版本并保留原成果。草稿切换绑定时固定新源目录的项目规则，原规则进入历史；未知租约收尾保留最初的执行错误。
 - 模型请求与固定 MCP 来源包含实际 Worker/租约；ZIP 增加 execution.json、workers.json 和去除领取摘要的 worker-leases.json。SQLite schema 升为 4，API 仍为 1。
+- 修复快速取消回执被迟写的 CANCELLING 覆盖：停止请求与状态原子发布，执行收尾处理最后的停止请求，交付门禁不能覆盖待停止状态。独立运行验收按真实任务状态有界等待，并在夹具清理前保留失败现场。
 
 协议见 `docs/worker-contract.md`；固定提交的 Kubernetes、Temporal 和 VS Code 源码及失败记录见 `docs/research/worker-leases-2026-11-08.md`。当前 Worker 在本机核心进程中运行，独立进程、远程配对/重连、PTY、workflow 与完整发布验收继续实施。
 

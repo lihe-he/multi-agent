@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-08T01:44:48.322Z",
+  "date": "2026-11-08T02:08:13.788Z",
   "version": "0.2.0-alpha.9",
   "platform": "win32",
   "coreIndependentOfWebAndNpm": true,
@@ -16,12 +16,12 @@
   "desktopExitPreservesCore": true,
   "clientExitPreservesRunningTask": true,
   "modelRequestsBeforeAndAfterReconnect": 1,
-  "childRequestPreservedOnReconnect": "c789d461-c67a-48a7-b51d-5d0afa1d23c2",
-  "workerLeasePreservedOnReconnect": "26326072-6869-424e-b8de-aeb9255d2634",
-  "workerId": "4611d4f7-19f5-4475-a724-bc7603f54a75",
+  "childRequestPreservedOnReconnect": "2b233823-55b6-48a8-b1a3-7e3e16bfa1f0",
+  "workerLeasePreservedOnReconnect": "ac82a731-f8bf-4149-bd51-cc20837cfbf3",
+  "workerId": "30513f25-c456-46ae-b052-f32c525a1e8a",
   "workerEpoch": 1,
-  "workerPid": 59360,
-  "repositoryBindingId": "33d0df38-f2d2-41f4-9ec2-74bbcccff72b",
+  "workerPid": 38840,
+  "repositoryBindingId": "9da8bac8-bc8a-4dfa-b01a-8e0c4d9df8aa",
   "workerReceiptsVerified": 13,
   "parentWaitReleasesModelCapacity": true,
   "teamDependencyAdoptionThroughProxy": true,
@@ -30,14 +30,14 @@
   "teamRootCalls": 18,
   "teamChildRuns": [
     {
-      "id": "6e34f717-b0bc-4873-9076-15bb8c69c608",
-      "agentRunId": "a0d77432-c9be-4a28-a986-82e4223a96ad",
+      "id": "31e329b8-faac-4b43-b441-fc11ebc018e1",
+      "agentRunId": "3e71f2fb-a7a7-4d07-b31c-350a6b770223",
       "state": "SUCCEEDED",
       "integrationState": "NOT_ADOPTED"
     },
     {
-      "id": "1cf58934-4c9c-4bb4-95d1-dfe3cdcf7060",
-      "agentRunId": "5e0d2f7b-d580-4c68-bc7d-99ee9d0585f2",
+      "id": "0d2ee2dd-3f15-465a-9578-73766424c42c",
+      "agentRunId": "2e3552ba-50c0-49f4-9e4c-7625c4ff56df",
       "state": "SUCCEEDED",
       "integrationState": "ADOPTED"
     }

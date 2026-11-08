@@ -152,14 +152,25 @@ try {
   const task = await api('/tasks', { projectId: project.id, sessionId: session.id, routeId: route.id, title: '客户端退出不中断', goal: teamGoal, mode: 'LEAD', locks: { engine: 'API', model: 'fixture' }, contract: { scope: ['**'], acceptance: ['核心继续处理在途副请求，按依赖采纳并保留原始来源'], commands: ['node verify.mjs'] }, budget: { maxCalls: 40, reserveCalls: 6 }, collaboration: { enabled: true, definitionIds: definitions.map(definition => definition.id), definitionVersions: Object.fromEntries(definitions.map(definition => [definition.id, definition.version])), allowedRouteIds: [childRoute.id], maxActive: 3, maxDepth: 2, maxTotal: 2 }, mcpBindings: [mcp.binding], mcpBudget: { maxCalls: 2, maxDurationMs: 10000 } });
   await api(`/tasks/${task.id}/team/messages`, { requestId: 'standalone_team_note', content: userNote });
   await api(`/tasks/${task.id}/approve`, {});
-  for (let attempt = 0; attempt < 100 && !pendingModelResponses.length; attempt++) await new Promise(resolveWait => setTimeout(resolveWait, 100));
+  const observeTask = async (phase, condition, timeoutMs = 60000) => {
+    const deadline = Date.now() + timeoutMs; let current;
+    while (Date.now() < deadline) {
+      current = await api(`/tasks/${task.id}`);
+      if (['FAILED', 'UNKNOWN', 'WAITING_INPUT', 'CANCELLED'].includes(current.state)) break;
+      if (await condition(current)) return current;
+      await new Promise(resolveWait => setTimeout(resolveWait, 100));
+    }
+    const failure = { phase, recordedAt: new Date().toISOString(), taskId: task.id, state: current?.state, stage: current?.currentStage, error: current?.error, rootCalls: current?.budget?.usedCalls, pendingModelResponses: pendingModelResponses.length, modelCalls: teamProtocol.calls };
+    writeFileSync(join(dir, 'failure-before-cleanup.json'), JSON.stringify(failure, null, 2));
+    throw new Error(`${phase} 未达到预期：${failure.state} / ${failure.stage} / ${failure.error || '有界等待结束'}；清理前记录已保留。`);
+  };
+  await observeTask('实际副请求派发', () => pendingModelResponses.length > 0);
   assert.equal(pendingModelResponses.length, 1, '副任务必须实际进入模型请求，不能只验证空闲核心');
   let pendingTeam;
-  for (let attempt = 0; attempt < 150; attempt++) {
+  await observeTask('父等待及副任务依赖', async () => {
     pendingTeam = await api(`/tasks/${task.id}/team`);
-    if (pendingTeam.agents.length === 2 && pendingTeam.runs.some(run => run.kind === 'IMPLEMENT' && run.state === 'WAITING_CHILDREN')) break;
-    await new Promise(resolveWait => setTimeout(resolveWait, 100));
-  }
+    return pendingTeam.agents.length === 2 && pendingTeam.runs.some(run => run.kind === 'IMPLEMENT' && run.state === 'WAITING_CHILDREN');
+  });
   const pendingWriter = pendingTeam.agents.find(agent => agent.title === writerTitle), pendingReader = pendingTeam.agents.find(agent => agent.title === readerTitle);
   assert.ok(pendingWriter && pendingReader); assert.equal(pendingWriter.state, 'RUNNING'); assert.equal(pendingReader.state, 'WAITING_DEPENDENCY');
   assert.ok(pendingTeam.runs.some(run => run.kind === 'IMPLEMENT' && run.state === 'WAITING_CHILDREN'));

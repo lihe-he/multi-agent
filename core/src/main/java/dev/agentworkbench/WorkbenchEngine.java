@@ -93,19 +93,7 @@ public class WorkbenchEngine {
                 refreshContext(taskId);
                 launch(taskId);
             }
-            case "pause", "cancel" -> {
-                if (Set.of("COMPLETED", "CANCELLED").contains(state)) { throw new ApiException(409, "任务已经结束"); }
-                if ("UNKNOWN".equals(state)) { throw new ApiException(409, "执行结果未知，请先核对停止状态；取消请求不能证明外部效果已撤销"); }
-                Control control = controls.get(taskId);
-                if (control == null) {
-                    store.editTask(taskId, value -> { value.put("state", "cancel".equals(action) ? "CANCELLED" : "PAUSED"); if ("cancel".equals(action)) { value.put("outcome", "CANCELLED"); } }, "CONTROL", "任务已" + ("cancel".equals(action) ? "取消" : "暂停"));
-                } else {
-                    control.request = "cancel".equals(action) ? "CANCEL" : "PAUSE";
-                    control.reason = "用户请求" + ("cancel".equals(action) ? "取消" : "暂停");
-                    store.editTask(taskId, value -> { value.put("state", "cancel".equals(action) ? "CANCELLING" : "PAUSING"); value.put("stopRequestedAt", now()); }, "STOP_REQUESTED", control.reason + "，等待运行器确认停止");
-                    workers.submit(() -> runtime.stop(taskId));
-                }
-            }
+            case "pause", "cancel" -> requestStop(taskId, action);
             case "accept" -> accept(taskId, task);
             case "reconcile" -> reconcile(taskId, task, body);
             case "budget" -> {
@@ -133,6 +121,26 @@ public class WorkbenchEngine {
             default -> throw new ApiException(404, "不支持的任务操作");
         }
         return store.get("task", taskId);
+    }
+
+    /**
+     * 同一锁内发布停止请求与状态，快速回执不能被迟写的待停止状态覆盖。
+     */
+    private void requestStop(String taskId, String action) {
+        synchronized (store) {
+            String state = str(store.get("task", taskId), "state");
+            if (Set.of("COMPLETED", "CANCELLED").contains(state)) throw new ApiException(409, "任务已经结束");
+            if ("UNKNOWN".equals(state)) throw new ApiException(409, "执行结果未知，请先核对停止状态；取消请求不能证明外部效果已撤销");
+            Control control = controls.get(taskId);
+            if (control == null) {
+                store.editTask(taskId, value -> { value.put("state", "cancel".equals(action) ? "CANCELLED" : "PAUSED"); if ("cancel".equals(action)) value.put("outcome", "CANCELLED"); }, "CONTROL", "任务已" + ("cancel".equals(action) ? "取消" : "暂停"));
+            } else {
+                control.reason = "用户请求" + ("cancel".equals(action) ? "取消" : "暂停");
+                control.request = "cancel".equals(action) ? "CANCEL" : "PAUSE";
+                store.editTask(taskId, value -> { value.put("state", "cancel".equals(action) ? "CANCELLING" : "PAUSING"); value.put("stopRequestedAt", now()); }, "STOP_REQUESTED", control.reason + "，等待运行器确认停止");
+                workers.submit(() -> runtime.stop(taskId));
+            }
+        }
     }
 
     private void reconcile(String taskId, Map<String, Object> task, Map<String, Object> body) {
@@ -305,7 +313,16 @@ public class WorkbenchEngine {
                     store.editTask(taskId, task -> { task.put("state", "FAILED"); task.put("outcome", "FAILED"); task.put("error", safeMessage(exception)); }, "FAILED", safeMessage(exception));
                 }
             } catch (RuntimeException ignored) { runtime.stop(taskId); }
-        } finally { try { executionWorker.settleTask(taskId); } finally { controls.remove(taskId, control); } }
+        } finally {
+            try { executionWorker.settleTask(taskId); }
+            finally {
+                synchronized (store) {
+                    try {
+                        if (store.healthy() && !"NONE".equals(control.request) && !Set.of("UNKNOWN", "PAUSED", "CANCELLED", "COMPLETED").contains(str(store.get("task", taskId), "state"))) stopped(control);
+                    } finally { controls.remove(taskId, control); }
+                }
+            }
+        }
     }
 
     private void modelStage(String taskId, Map<String, Object> stage, Control control, boolean reserved, String extra) throws Exception {
@@ -493,7 +510,10 @@ public class WorkbenchEngine {
     private void finish(String taskId) {
         Map<String, Object> task = store.get("task", taskId);
         enforceGates(task);
-        store.editTask(taskId, value -> { enforceContextCurrent(value); value.put("state", "AWAITING_ACCEPTANCE"); value.put("outcome", "UNDETERMINED"); value.put("readyAt", now()); }, "READY_FOR_ACCEPTANCE", "必要验证和独立审查通过，等待用户验收；尚未写入原项目");
+        store.editTask(taskId, value -> {
+            if (Set.of("PAUSING", "CANCELLING", "UNKNOWN").contains(str(value, "state"))) throw new CancellationException();
+            enforceContextCurrent(value); value.put("state", "AWAITING_ACCEPTANCE"); value.put("outcome", "UNDETERMINED"); value.put("readyAt", now());
+        }, "READY_FOR_ACCEPTANCE", "必要验证和独立审查通过，等待用户验收；尚未写入原项目");
     }
 
     private void accept(String taskId, Map<String, Object> task) {

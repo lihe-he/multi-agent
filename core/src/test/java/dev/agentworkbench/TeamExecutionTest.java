@@ -170,9 +170,11 @@ class TeamExecutionTest {
         Map<String, Object> request = store.list("modelRequest").stream().filter(value -> child.get("agentRunId").equals(value.get("agentRunId"))).findFirst().orElseThrow();
         assertEquals("DISPATCHING", request.get("state")); assertTrue(store.workerLeases("", taskId, "ACTIVE").stream().anyMatch(lease -> child.get("agentRunId").equals(lease.get("agentRunId"))));
         Map<String, Object> node = catalog.nodes().localNode(); catalog.nodes().saveNode(obj("id", node.get("id"), "expectedVersion", node.get("version"), "name", node.get("name"), "enabled", false));
-        awaitTask(taskId, Set.of("UNKNOWN")); int before = calls.get(); release.countDown();
-        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(8); while (!store.workerLeases("", taskId, "ACTIVE").isEmpty() && System.nanoTime() < deadline) Thread.sleep(50);
+        awaitTask(taskId, Set.of("UNKNOWN")); int before = calls.get();
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(8);
+        while (("DISPATCHING".equals(str(store.get("modelRequest", str(request, "id")), "state")) || !store.workerLeases("", taskId, "ACTIVE").isEmpty()) && System.nanoTime() < deadline) Thread.sleep(50);
         assertTrue(store.workerLeases("", taskId, "ACTIVE").isEmpty()); assertEquals("UNKNOWN", store.get("modelRequest", str(request, "id")).get("state"));
+        release.countDown();
         assertTrue(store.workerLeases("", taskId, "UNKNOWN").stream().anyMatch(lease -> child.get("agentRunId").equals(lease.get("agentRunId")))); assertEquals(1, num(map(store.get("task", taskId), "execution"), "nodeVersion", 0));
         engine.shutdown(); engine = null; store.close(); store = new ExecutionStore(mapper, directory.resolve("data").toString());
         catalog = new WorkbenchCatalog(store, runtime, new PlanValidator()); engine = new WorkbenchEngine(store, catalog, runtime, new ResourceManager(), mapper); engine.recover();

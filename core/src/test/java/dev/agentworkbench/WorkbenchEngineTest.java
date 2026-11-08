@@ -377,6 +377,36 @@ class WorkbenchEngineTest {
     }
 
     @Test
+    void stopRequestPublicationCannotOverwriteAFastCancellationReceipt() throws Exception {
+        engine.shutdown(); store.close();
+        ObjectMapper mapper = new ObjectMapper(); CountDownLatch stoppedReceipt = new CountDownLatch(1);
+        java.util.concurrent.atomic.AtomicBoolean receivedBeforePublication = new java.util.concurrent.atomic.AtomicBoolean();
+        store = new ExecutionStore(mapper, directory.resolve("cancel-race").toString()) {
+            @Override public Map<String, Object> editTask(String id, java.util.function.Consumer<Map<String, Object>> edit, String type, String message) {
+                if ("STOP_REQUESTED".equals(type)) {
+                    try { receivedBeforePublication.set(stoppedReceipt.await(500, TimeUnit.MILLISECONDS)); }
+                    catch (InterruptedException exception) { Thread.currentThread().interrupt(); throw new IllegalStateException(exception); }
+                }
+                Map<String, Object> value = super.editTask(id, edit, type, message);
+                if ("STOPPED".equals(type)) stoppedReceipt.countDown();
+                return value;
+            }
+        };
+        catalog = new WorkbenchCatalog(store, runtime, new PlanValidator()); catalog.defaults();
+        project = catalog.importProject(obj("name", "cancel race", "path", directory.resolve("source").toString()));
+        route = catalog.saveRoute(obj("name", "local race endpoint", "engine", "API", "model", "fixture", "baseUrl", "http://127.0.0.1:18901/v1", "enabled", true));
+        ResourceManager resources = new ResourceManager(); engine = new WorkbenchEngine(store, catalog, runtime, resources, mapper);
+        try (var held = resources.acquire(Map.of("model", 2), () -> false)) {
+            String taskId = str(task(16, 5), "id"); engine.action(taskId, "approve", obj()); await(taskId, Set.of("WAITING_RESOURCE"));
+            engine.action(taskId, "cancel", obj()); Map<String, Object> result = await(taskId, Set.of("CANCELLED"));
+            assertFalse(receivedBeforePublication.get());
+            assertFalse(java.time.Instant.parse(str(result, "stoppedAt")).isBefore(java.time.Instant.parse(str(result, "stopRequestedAt"))));
+            assertEquals(0, num(map(result, "budget"), "usedCalls", -1)); assertEquals("CANCELLED", store.list("agentRun").getFirst().get("state"));
+            verify(runtime, never()).run(anyMap(), anyString(), anyString(), anyString(), anyBoolean(), anyList(), any(), any(), any());
+        }
+    }
+
+    @Test
     void repeatReviewKeepsEarlierRunIdentityAndIncrementsAttempt() throws Exception {
         String taskId = str(task(16, 5), "id"); engine.action(taskId, "approve", obj());
         await(taskId, Set.of("AWAITING_ACCEPTANCE"));
