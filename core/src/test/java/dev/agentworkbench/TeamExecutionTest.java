@@ -139,6 +139,23 @@ class TeamExecutionTest {
         } catch (Exception error) { return "parents must release both model slots before children can proceed; diagnostic=" + error.getClass().getSimpleName(); }
     }
 
+    /**
+     * 子请求未按时到达时保留原派发、进程与线程事实，不放宽启动期限。
+     */
+    private String childStartFailure(String taskId) {
+        Path evidence = Path.of("target", "team-child-start-failure-" + System.nanoTime()).toAbsolutePath();
+        try {
+            Files.createDirectories(evidence);
+            java.lang.management.ManagementFactory.getPlatformMXBean(com.sun.management.HotSpotDiagnosticMXBean.class)
+                .dumpThreads(evidence.resolve("threads.json").toString(), com.sun.management.HotSpotDiagnosticMXBean.ThreadDumpFormat.JSON);
+            mapper.writeValue(evidence.resolve("facts.json").toFile(), obj("task", store.get("task", taskId), "resources", resources.snapshot(), "worker", engine.workerIdentity(),
+                "executions", store.taskDispatchRecords("taskExecution", taskId), "actions", store.taskDispatchRecords("dispatchAction", taskId),
+                "agentRuns", store.list("agentRun"), "subtasks", store.list("subtask"), "modelRequests", store.list("modelRequest"),
+                "operations", store.list("operation"), "leases", store.workerLeases("", taskId, ""), "errors", errors, "prompts", prompts));
+            return "child request must reach the fixture before node revocation; evidence=" + evidence;
+        } catch (Exception error) { return "child request did not reach the fixture; diagnostic=" + error.getClass().getSimpleName(); }
+    }
+
     @Test
     void draftBindingSwitchReplacesRulesAndExecutesTheConfirmedSource() throws Exception {
         Files.writeString(source.resolve("AGENTS.md"), "ORIGINAL_SOURCE_RULES\n"); git(source, "add", "AGENTS.md"); git(source, "commit", "-m", "original rules");
@@ -189,7 +206,7 @@ class TeamExecutionTest {
             return ordinary(prompt);
         });
         Map<String, Object> created = task("WORKER_NODE_REVOKED", 24), identity = engine.workerIdentity(); String taskId = str(created, "id"); engine.action(taskId, "approve", obj());
-        assertTrue(entered.await(15, TimeUnit.SECONDS)); Map<String, Object> child = store.list("subtask").getFirst();
+        assertTrue(entered.await(15, TimeUnit.SECONDS), () -> childStartFailure(taskId)); Map<String, Object> child = store.list("subtask").getFirst();
         Map<String, Object> request = store.list("modelRequest").stream().filter(value -> child.get("agentRunId").equals(value.get("agentRunId"))).findFirst().orElseThrow();
         assertEquals("DISPATCHING", request.get("state")); assertTrue(store.workerLeases("", taskId, "ACTIVE").stream().anyMatch(lease -> child.get("agentRunId").equals(lease.get("agentRunId"))));
         Map<String, Object> node = catalog.nodes().localNode(); catalog.nodes().saveNode(obj("id", node.get("id"), "expectedVersion", node.get("version"), "name", node.get("name"), "enabled", false));

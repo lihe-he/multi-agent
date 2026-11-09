@@ -51,11 +51,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Desktop dependency download guards
-        run: node --test tools/install-desktop-deps.test.mjs
+        run: node --test tools/install-desktop-deps.test.mjs tools/package-desktop.test.mjs
       - name: Desktop connection policy
         run: node --test tools/connection.test.cjs
       - name: Actual core crash and original process recovery
         run: npm run test:recovery
+        env:
+          PLAYWRIGHT_CHANNEL: chromium
+      - name: Actual durable root queue and explicit recovery
+        run: npm run test:dispatch
         env:
           PLAYWRIGHT_CHANNEL: chromium
       - name: Standalone browser and attached desktop lifecycle
@@ -72,6 +76,7 @@ jobs:
         run: npm run package:prepared
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Packaged application lifecycle
         run: npm run test:packaged
       - name: Preserve desktop distributions
@@ -92,13 +97,21 @@ jobs:
           path: |
             core/target/surefire-reports/
             core/target/team-capacity-failure-*/
+            core/target/team-child-start-failure-*/
             docs/qa/smoke-*.json
             docs/qa/desktop-*.json
             docs/qa/standalone-*.json
             docs/qa/process-recovery-*.json
+            docs/qa/dispatch-queue-*.json
             .runtime/process-recovery-*/
+            .runtime/dispatch-queue-*/reports/
+            .runtime/dispatch-queue-*/queue-data/workbench.sqlite*
+            .runtime/dispatch-queue-*/fault-data/workbench.sqlite*
             .runtime/desktop-deps-*.log
             .runtime/desktop-deps-verified.json
+            .runtime/desktop-package-*.log
+            .runtime/desktop-package-verified.json
+            .runtime/builder-verified-*/.official-*/verified.json
             docs/qa/desktop-home.png
             web/test-results/
             web/qa/

@@ -16,6 +16,7 @@
 | --- | --- |
 | `id`, `schemaVersion` | 核心生成的不可复用身份、实体版本 1 |
 | `taskId`, `rootTaskId`, `projectId`, `sessionId`, `agentRunId`, `stage` | 从实际运行派生的归属；客户端不能指定或改写 |
+| `taskExecutionId`, `dispatchActionId` | alpha.12 原 AgentRun 所属根尝试与动作；请求终态和来源不因根核对或新尝试改变，历史缺失来源不补造 |
 | `teamId`, `subtaskId`, `parentRunId`, `definitionId`, `definitionVersion`, `depth` | alpha.8 动态运行存在时从实际 AgentRun 派生的团队、父子与固定定义来源；没有该关系的旧请求不补造 |
 | `sequence`, `round`, `attempt` | 运行内已承诺调用的序号、运行器协议轮次、请求尝试号；当前不自动重试，attempt 固定为 1 |
 | `routeId`, `routeVersion`, `engine`, `model`, `unit` | 运行的固定路由和调用单位；unit 为 API_REQUEST 或 CLI_SESSION，不复制密钥和整个路由配置 |
@@ -30,6 +31,8 @@
 ## 生命周期与事务
 
 构造可发送请求后，核心在同一事务写入根预算、AgentRun 调用数、请求身份及事件，然后才允许派发。预算拒绝不创建请求；存储失败全部回滚，并封闭新增派发。已经承诺但未成功发送的额度不退款，调用数字不能当作供应商计费凭证。
+
+alpha.12 根恢复见[根派发协议](./task-dispatch-contract.md)。原已领取尝试缺少回执时，原请求和累计预算不重放；核对后新尝试使用新的根身份。数据库 schema 为 6，请求实体版本与 API 仍为 1。
 
 | 状态 | 可证明的事实 |
 | --- | --- |

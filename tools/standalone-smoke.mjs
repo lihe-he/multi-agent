@@ -234,7 +234,7 @@ try {
   let finished;
   for (let attempt = 0; attempt < 600; attempt++) {
     finished = await api(`/tasks/${task.id}`);
-    if (finished.state === 'AWAITING_ACCEPTANCE') break;
+    if (finished.state === 'AWAITING_ACCEPTANCE' && finished.taskExecution?.state === 'SUCCEEDED') break;
     assert.ok(!['FAILED', 'UNKNOWN', 'WAITING_INPUT'].includes(finished.state), `${finished.state}: ${finished.error}`);
     await new Promise(resolveWait => setTimeout(resolveWait, 100));
   }

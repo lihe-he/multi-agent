@@ -95,6 +95,8 @@ dependsOn 最多 12 项，只能引用同一父运行中已经创建的副任务
 
 所有端点受本机管理令牌鉴权，项目 MCP 只读令牌不能调用。实际子运行的请求可通过[模型请求协议](./model-request-contract.md)按 runId 查询。子执行固定 MCP 动作时保存实际 agentRunId、modelRequestId、toolCallId、rootTaskId、teamId、subtaskId 和定义来源；父运行引用已确认动作返回原来源，并不重复派发或扣预算。
 
+alpha.12 新建副任务、父子运行、团队操作、模型/MCP 来源和 Worker 租约继承原 `taskExecutionId`、`dispatchActionId`。根尝试在核对后显式继续时更换身份，历史运行和工具原来源保持原样；见[根派发协议](./task-dispatch-contract.md)。本机根队列不替代动态副任务自己的依赖、预算和停止边界。
+
 交付 ZIP 增加 team.json、team-messages.json、team-operations.json、mcp-operations.json，保留已有 agent-runs.json、model-requests.json、operations.json、task.json、补丁及事件。未知状态、原证据和原来源随交付保留。
 
 ## 停止、重启与范围

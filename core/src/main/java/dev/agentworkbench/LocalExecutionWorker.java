@@ -59,6 +59,15 @@ final class LocalExecutionWorker implements ExecutionWorker {
         catch (RuntimeException exception) { return false; }
     }
 
+    /**
+     * 根领取事务复查当前心跳、节点及未知效果；旧进程核验在进入事务前完成。
+     */
+    void requireQueueOwner(String taskId) {
+        if (closed.get() || !store.healthy() || (processRuntime != null && !processRuntime.available())) throw new ApiException(409, "本机 Worker 当前不能领取根任务");
+        Instant time = clock.instant(); requireContinuity(time); ledger.requireOwner(identity, time); nodes.requireCurrent(store.get("task", taskId));
+        if (store.hasUnknownEffects(taskId) || store.hasUnknownTaskExecution(taskId)) throw new ApiException(409, "根执行或外部效果尚未核对");
+    }
+
     void heartbeat() {
         if (processRuntime != null || closed.get() || !store.healthy()) return;
         try {

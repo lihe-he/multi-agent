@@ -2,6 +2,8 @@
 
 从 `0.2.0-alpha.11` 起，SQLite schema 为 **5**，公开 API 与私有 Worker 协议仍为 **1**。schema 4 原记录保留，新建进程清单与索引；只支持 schema 4 的旧核心必须拒绝打开新库，避免旧入口忽略恢复门禁。实现边界及固定 OpenJDK 来源见[研究记录](./research/process-recovery-2026-11-08.md)。
 
+`0.2.0-alpha.12` 使用 schema **6** 增加[根持久派发](./task-dispatch-contract.md)，原进程核验门禁继续生效。原未领取动作可以保持 PENDING 等待核验，已领取后缺少回执的原根尝试、动作和请求保持 UNKNOWN。进程覆盖核对不会自动核对任务效果，也不会重放原已领取动作。
+
 ## 持久来源
 
 核心在启动实际 Worker 或 MCP stdio 前保存 `processSession`。会话保存类型、原核心 PID/出生时间、持锁开库的 `ownerCoreSessionId` 和执行来源。每次重新开库生成新的核心会话；同一 JVM 重开目录也不沿用旧身份。Worker 会话绑定原 Worker/epoch/节点，任务通过原操作租约关联它；MCP 会话绑定原服务身份及存在时的原操作/任务/项目。

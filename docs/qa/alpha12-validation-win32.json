@@ -1,0 +1,297 @@
+{
+  "recordedAt": "2026-11-09T12:38:19.2779665Z",
+  "version": "0.2.0-alpha.12",
+  "platform": "win32",
+  "status": "passed",
+  "sourceBaseCommit": "0bb421f82b5e888136881cef2199464313de1db8",
+  "schemaVersion": 6,
+  "apiVersion": 1,
+  "workerFrameVersion": 1,
+  "core": {
+    "recordedAt": "2026-11-09T12:02:36.7815705Z",
+    "version": "0.2.0-alpha.12",
+    "command": "mvn -B -ntp -f core/pom.xml clean verify",
+    "platform": "win32",
+    "suites": 20,
+    "tests": 212.0,
+    "failures": 0.0,
+    "errors": 0.0,
+    "skipped": 1.0,
+    "jarSha256": "d8a3a837a377dd7cfe1f7b4f635c20dab73c569d3743d91ecfe77cd8a923060f",
+    "reports": [
+      {
+        "name": "dev.agentworkbench.AgentRunStoreTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.ExecutionStoreTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.LocalAccessFilterTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.ManagedProcessLedgerTest",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.mcp.McpIntegrationTest",
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.ModelRequestStoreTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.PlanAndPolicyTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.RootDispatchEngineTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.RuntimeDelegationTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.RuntimeIntegrationTest",
+        "tests": 27,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.SessionStoreTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.TaskDispatchQueueTest",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.TeamExecutionTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.TeamRecordsTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.WorkbenchEngineTest",
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.WorkerLeaseTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.WorkerProcessTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.WorkerRpcTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      },
+      {
+        "name": "dev.agentworkbench.WorkerWireTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2"
+      }
+    ],
+    "evidence": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha12-final-core-evidence-212"
+  },
+  "bundledCoreSha256": "d8a3a837a377dd7cfe1f7b4f635c20dab73c569d3743d91ecfe77cd8a923060f",
+  "web": {
+    "recordedAt": "2026-11-09T12:19:04.3241914Z",
+    "version": "0.2.0-alpha.12",
+    "before": [
+      {
+        "path": "assets\\index-BBQntPSC.js",
+        "sha256": "914974afc04437ef5f654a3f11d9aac5c2979e6f3fe6e823d4281fd7c0cdbdf5"
+      },
+      {
+        "path": "assets\\index-DhXfDZr2.css",
+        "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+      },
+      {
+        "path": "index.html",
+        "sha256": "3d09f1654939d06dc642eb39fc15d66c7417d6b2155a75593258c09122dbe2fd"
+      },
+      {
+        "path": "workbench-config.json",
+        "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+      }
+    ],
+    "after": [
+      {
+        "path": "assets\\index-BBQntPSC.js",
+        "sha256": "914974afc04437ef5f654a3f11d9aac5c2979e6f3fe6e823d4281fd7c0cdbdf5"
+      },
+      {
+        "path": "assets\\index-DhXfDZr2.css",
+        "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+      },
+      {
+        "path": "index.html",
+        "sha256": "3d09f1654939d06dc642eb39fc15d66c7417d6b2155a75593258c09122dbe2fd"
+      },
+      {
+        "path": "workbench-config.json",
+        "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+      }
+    ],
+    "productionAssetsUnchanged": true
+  },
+  "ui": {
+    "tests": 48,
+    "passed": 48,
+    "command": "PLAYWRIGHT_CHANNEL=msedge npm run test:ui --prefix web",
+    "log": ".runtime/alpha12-ui-final.log"
+  },
+  "dispatch": {
+    "tests": 13,
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\dispatch-queue-dlI22Q\\reports",
+    "sha256": "d8a3a837a377dd7cfe1f7b4f635c20dab73c569d3743d91ecfe77cd8a923060f"
+  },
+  "recovery": {
+    "tests": 11,
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\process-recovery-W3Du0d",
+    "sha256": "d8a3a837a377dd7cfe1f7b4f635c20dab73c569d3743d91ecfe77cd8a923060f"
+  },
+  "protocol": {
+    "tests": 29,
+    "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-7zvtev",
+    "log": ".runtime/alpha12-integration-final.log"
+  },
+  "standalone": {
+    "rootCalls": 18,
+    "childRuns": 2,
+    "workerReceipts": 13,
+    "externalMcpCalls": 1,
+    "corePid": 21296,
+    "workerPid": 23484,
+    "log": ".runtime/alpha12-standalone-final.log"
+  },
+  "desktop": {
+    "desktop": "PASS",
+    "api": 200,
+    "version": "0.2.0-alpha.12",
+    "application": {
+      "packaged": true,
+      "version": "0.2.0-alpha.12"
+    },
+    "externalJavaDisabled": true,
+    "pageErrors": []
+  },
+  "installer": {
+    "path": "release\\Agent Workbench Setup 0.2.0-alpha.12.exe",
+    "size": 149444501,
+    "sha256": "9d744f178b7174e04b01d8c66563314b6489e73f929d22a06f1ee17e191c09b9",
+    "authenticodeStatus": "NotSigned",
+    "fullInstallUninstallRepeated": false
+  },
+  "ci": "pending for the forthcoming alpha.12 main commit",
+  "completeProjectGoal": false
+}

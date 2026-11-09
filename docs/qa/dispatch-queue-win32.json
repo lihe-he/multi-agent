@@ -1,0 +1,146 @@
+{
+  "recordedAt": "2026-11-09T12:15:10.630Z",
+  "version": "0.2.0-alpha.12",
+  "platform": "win32",
+  "status": "passed",
+  "jarSha256": "d8a3a837a377dd7cfe1f7b4f635c20dab73c569d3743d91ecfe77cd8a923060f",
+  "fixture": "ACTUAL_JAR_WITH_EXTERNAL_CONTROLLED_EXECUTOR",
+  "checks": [
+    {
+      "name": "Exact final Jar supplied production classes and the original Worker executable",
+      "status": "passed",
+      "at": "2026-11-09T12:12:53.738Z"
+    },
+    {
+      "name": "Actual approval transaction failure rolled back confirmation and ran no Worker operation",
+      "status": "passed",
+      "at": "2026-11-09T12:13:17.979Z"
+    },
+    {
+      "name": "Unclaimed pause and cancellation withdrew original actions without task execution",
+      "status": "passed",
+      "at": "2026-11-09T12:13:23.699Z"
+    },
+    {
+      "name": "Core exited with the original PENDING action and unchanged budget durably saved",
+      "status": "passed",
+      "at": "2026-11-09T12:13:25.133Z"
+    },
+    {
+      "name": "Original unclaimed identity survived reopening and waited for old process coverage",
+      "status": "passed",
+      "at": "2026-11-09T12:13:29.364Z"
+    },
+    {
+      "name": "Production browser showed the real unclaimed identity on desktop and narrow screens",
+      "status": "passed",
+      "at": "2026-11-09T12:13:30.775Z"
+    },
+    {
+      "name": "New core executed the original pending action once with original root sources",
+      "status": "passed",
+      "at": "2026-11-09T12:13:42.099Z"
+    },
+    {
+      "name": "Full task ZIP kept execution completion separate from human acceptance",
+      "status": "passed",
+      "at": "2026-11-09T12:13:42.747Z"
+    },
+    {
+      "name": "Core exited after real claim and in-flight HTTP dispatch",
+      "status": "passed",
+      "at": "2026-11-09T12:13:47.369Z"
+    },
+    {
+      "name": "Claimed root stayed UNKNOWN with original request and budget, without replay",
+      "status": "passed",
+      "at": "2026-11-09T12:13:52.247Z"
+    },
+    {
+      "name": "Human reconciliation kept original UNKNOWN history and cumulative budget",
+      "status": "passed",
+      "at": "2026-11-09T12:13:52.376Z"
+    },
+    {
+      "name": "Explicit resume created a fresh attempt and exported both histories without budget reset",
+      "status": "passed",
+      "at": "2026-11-09T12:13:58.353Z"
+    },
+    {
+      "name": "All launched cores exited and original Worker identities independently confirmed stop",
+      "status": "passed",
+      "at": "2026-11-09T12:15:10.606Z"
+    }
+  ],
+  "pendingTaskId": "02991731-caec-4ebc-b67e-6e117fe268be",
+  "originalPendingTaskExecutionId": "a79203fc-bd1a-4ea7-963e-fc74c60a77a1",
+  "originalPendingDispatchActionId": "bc777638-4582-4577-aee2-14224f034f5c",
+  "pendingDispatchCount": 1,
+  "heldTaskId": "038a56ae-f896-4b68-a111-d29eadaa345c",
+  "originalClaimedTaskExecutionId": "84b7ecad-4b3c-45b7-9daa-d4ce5c00360c",
+  "originalClaimedDispatchActionId": "86b05b21-5796-4829-a0ba-9aa220562911",
+  "originalModelRequestId": "6f4e87ab-313c-44b7-86e0-190250b64a80",
+  "resumedTaskExecutionId": "d2593d2c-ab97-4466-aebe-0b24f0de2235",
+  "originalBudget": 1,
+  "finalBudget": 4,
+  "automaticReplay": false,
+  "originalUnknownPreserved": true,
+  "corePids": [
+    35340,
+    11120,
+    11664,
+    16564
+  ],
+  "workerPids": [
+    17176,
+    23076,
+    47204,
+    17768
+  ],
+  "pageErrors": [],
+  "modelCalls": [
+    {
+      "number": 1,
+      "goal": "pending",
+      "stage": "INVESTIGATE",
+      "at": "2026-11-09T12:13:39.157Z"
+    },
+    {
+      "number": 2,
+      "goal": "pending",
+      "stage": "IMPLEMENT",
+      "at": "2026-11-09T12:13:39.478Z"
+    },
+    {
+      "number": 3,
+      "goal": "pending",
+      "stage": "REVIEW",
+      "at": "2026-11-09T12:13:41.544Z"
+    },
+    {
+      "number": 4,
+      "goal": "held",
+      "stage": "INVESTIGATE",
+      "at": "2026-11-09T12:13:45.682Z"
+    },
+    {
+      "number": 5,
+      "goal": "held",
+      "stage": "INVESTIGATE",
+      "at": "2026-11-09T12:13:52.645Z"
+    },
+    {
+      "number": 6,
+      "goal": "held",
+      "stage": "IMPLEMENT",
+      "at": "2026-11-09T12:13:52.945Z"
+    },
+    {
+      "number": 7,
+      "goal": "held",
+      "stage": "REVIEW",
+      "at": "2026-11-09T12:13:56.973Z"
+    }
+  ],
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\dispatch-queue-dlI22Q\\reports"
+}

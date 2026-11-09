@@ -4,6 +4,8 @@ Web 静态产物、Java 核心和 Electron 可以独立启动。alpha.10 起核�
 
 alpha.11 在 schema 5 保存原 Worker/MCP stdio 进程清单。重启同一目录会保留 UNKNOWN 与预算，在资源设置核对原 PID/出生及清单覆盖后，仍需到原任务分别核对文件和外部效果；新空闲 Worker 不自动重放旧任务。旧核心不能打开 schema 5，接口兼容版本仍为 1，详见[恢复协议](./process-recovery-contract.md)。
 
+alpha.12 使用 schema 6 保存独立根尝试与待派发动作。未领取的 PENDING 在重开后保留原编号，旧进程门禁及授权条件满足后由新核心领取一次；已领取后缺少根结束回执保持 UNKNOWN，人工核对后显式继续建立新尝试，预算不清零。普通浏览器可以查看与导出完整历史，接口兼容版本仍为 1，旧核心不能打开新库；见[根派发协议](./task-dispatch-contract.md)。
+
 ## 单独构建和运行
 
 ```powershell

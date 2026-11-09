@@ -103,7 +103,7 @@ async function startCore() {
     const port = instance.logs.match(/Tomcat started on port (\d+)/)?.[1];
     if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; }
   });
-  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 5); assert.equal(health.corePid, core.pid);
+  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 6); assert.equal(health.corePid, core.pid);
   return instance;
 }
 
@@ -143,7 +143,9 @@ function cleanupFixture(suffix = '') {
 
 async function taskFacts(taskId) {
   const task = await api(`/tasks/${taskId}`);
-  return { taskId, state: task.state, budget: task.budget, mcpBudget: task.mcpBudget, requests: (await api(`/tasks/${taskId}/model-requests?limit=100`)).requests,
+  return { taskId, state: task.state, budget: task.budget, mcpBudget: task.mcpBudget, taskExecutionId: task.taskExecutionId, dispatchActionId: task.dispatchActionId,
+    taskExecutions: (await api(`/tasks/${taskId}/task-executions?limit=100`)).executions, dispatchActions: (await api(`/tasks/${taskId}/dispatch-actions?limit=100`)).actions,
+    requests: (await api(`/tasks/${taskId}/model-requests?limit=100`)).requests,
     leases: (await api(`/tasks/${taskId}/worker-leases?limit=100`)).leases, operations: await api(`/tasks/${taskId}/operations`), sessions: await api(`/tasks/${taskId}/process-sessions`) };
 }
 
@@ -198,6 +200,13 @@ try {
   assert.equal(after.mcp.state, 'UNKNOWN'); assert.equal(after.model.state, 'UNKNOWN');
   assert.deepEqual(after.mcp.budget, before.mcp.budget); assert.deepEqual(after.mcp.mcpBudget, before.mcp.mcpBudget); assert.deepEqual(after.model.budget, before.model.budget);
   assert.equal(after.model.requests.length, before.model.requests.length); assert.equal(after.model.requests[0].id, before.model.requests[0].id); assert.equal(after.model.requests[0].state, 'UNKNOWN');
+  for (const name of ['mcp', 'model']) {
+    assert.equal(after[name].taskExecutionId, before[name].taskExecutionId); assert.equal(after[name].dispatchActionId, before[name].dispatchActionId);
+    assert.equal(after[name].taskExecutions.length, 1); assert.equal(after[name].taskExecutions[0].state, 'UNKNOWN');
+    assert.equal(after[name].dispatchActions[0].state, 'UNKNOWN'); assert.equal(after[name].dispatchActions[0].dispatchCount, 1);
+    assert.equal(after[name].dispatchActions[0].ownerCorePid, first.core.pid);
+    assert.ok(after[name].requests.every(request => request.taskExecutionId === before[name].taskExecutionId && request.dispatchActionId === before[name].dispatchActionId));
+  }
   assert.equal(after.model.requests[0].workerLeaseId, before.model.requests[0].workerLeaseId); assert.equal(after.model.requests[0].executorPid, oldWorker.pid);
   assert.ok(after.model.leases.some(lease => lease.id === before.model.requests[0].workerLeaseId && lease.state === 'UNKNOWN'));
   assert.equal(after.mcpOperations[0].id, before.mcpOperations[0].id); assert.equal(after.mcpOperations[0].state, 'UNKNOWN'); assert.equal(after.mcpOperations[0].dispatchState, 'UNKNOWN');
@@ -256,6 +265,10 @@ try {
   const reconciled = { mcp: await taskFacts(mcpTask.id), model: await taskFacts(heldTask.id), mcpOperations: await api(`/mcp/servers/${server.id}/operations`), mcpSession: await api(`/process-recovery/${mcpSession.id}`) };
   assert.deepEqual(reconciled.mcp.budget, before.mcp.budget); assert.deepEqual(reconciled.mcp.mcpBudget, before.mcp.mcpBudget); assert.deepEqual(reconciled.model.budget, before.model.budget);
   assert.equal(reconciled.model.requests[0].state, 'UNKNOWN'); assert.equal(reconciled.model.requests[0].id, before.model.requests[0].id);
+  for (const name of ['mcp', 'model']) {
+    assert.equal(reconciled[name].taskExecutions[0].state, 'UNKNOWN'); assert.ok(reconciled[name].taskExecutions[0].reconciliation);
+    assert.equal(reconciled[name].dispatchActions[0].state, 'UNKNOWN'); assert.ok(reconciled[name].dispatchActions[0].reconciliation);
+  }
   assert.equal(reconciled.mcpOperations[0].state, 'RECONCILED'); assert.equal(reconciled.mcpOperations[0].dispatchState, 'UNKNOWN');
   assert.equal(modelCalls.length, before.modelCalls.length); assert.equal(lines(paths.calls).length, 1); save('after-separate-reconciliation.json', reconciled);
   assert.deepEqual(pageErrors, []); await browser.close(); browser = undefined; await stopCore(second);
@@ -267,7 +280,7 @@ try {
   assert.equal(modelCalls.length, before.modelCalls.length); assert.equal(lines(paths.calls).length, 1); pass('Saved reconciliation survived another complete core restart');
 
   phase = 'new execution after recovery'; writeFileSync(paths.mode, 'normal'); await api(`/tasks/${newTask.id}/approve`, {});
-  const finished = await until('新任务实际完成', async () => { const task = await api(`/tasks/${newTask.id}`); assert.ok(!['FAILED', 'UNKNOWN', 'WAITING_INPUT'].includes(task.state), `${task.state}: ${task.error}`); return task.state === 'AWAITING_ACCEPTANCE' && task; });
+  const finished = await until('新任务实际完成', async () => { const task = await api(`/tasks/${newTask.id}`); assert.ok(!['FAILED', 'UNKNOWN', 'WAITING_INPUT'].includes(task.state), `${task.state}: ${task.error}`); return task.state === 'AWAITING_ACCEPTANCE' && task.taskExecution?.state === 'SUCCEEDED' && task; });
   await api(`/tasks/${newTask.id}/accept`, {}); assert.equal(modelCalls.filter(call => call.goal === 'RECOVERY_NEW_TASK').length, finished.budget.usedCalls);
   assert.equal(modelCalls.filter(call => call.goal !== 'RECOVERY_NEW_TASK').length, before.modelCalls.length); assert.equal(lines(paths.calls).length, 1);
   const archiveResponse = await fetch(`${baseUrl}/api/tasks/${mcpTask.id}/export`, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(15000) }); assert.equal(archiveResponse.status, 200);
@@ -275,6 +288,9 @@ try {
   const exportedSessions = JSON.parse(zipEntry(archive, 'process-sessions.json')); assert.ok(exportedSessions.some(session => session.id === mcpSession.id && session.processStartedAt === mcpSession.processStartedAt && session.reconciliations.length === 1));
   const exportedObservations = JSON.parse(zipEntry(archive, 'process-observations.json')); assert.ok(exportedObservations.some(observation => observation.sessionId === mcpSession.id && observation.pid === mcpSession.pid && observation.processStartedAt === mcpSession.processStartedAt && observation.role === 'ROOT'));
   const exportedRequests = JSON.parse(zipEntry(archive, 'model-requests.json')); assert.deepEqual(exportedRequests.map(request => [request.id, request.state]), before.mcp.requests.map(request => [request.id, request.state]));
+  const exportedExecutions = JSON.parse(zipEntry(archive, 'task-executions.json')), exportedActions = JSON.parse(zipEntry(archive, 'dispatch-actions.json'));
+  assert.equal(exportedExecutions[0].id, before.mcp.taskExecutionId); assert.equal(exportedExecutions[0].state, 'UNKNOWN'); assert.ok(exportedExecutions[0].reconciliation);
+  assert.equal(exportedActions[0].id, before.mcp.dispatchActionId); assert.equal(exportedActions[0].state, 'UNKNOWN'); assert.equal(exportedActions[0].dispatchCount, 1);
   pass('New work completed while original process and request evidence remained exportable');
   assert.deepEqual(modelErrors, []);
   await stopCore(third);
@@ -285,6 +301,7 @@ try {
     originalCorePid: first.core.pid, restartedCorePids: [second.core.pid, third.core.pid], originalWorkerId: oldWorker.id, originalWorkerPid: oldWorker.pid, originalWorkerStartedAt: oldWorker.processStartedAt,
     originalWorkerSessionId: oldWorker.processSessionId, originalMcpPid: mcpSession.pid, originalMcpStartedAt: mcpSession.processStartedAt, originalMcpSessionId: mcpSession.id,
     originalModelRequestId: before.model.requests[0].id, originalMcpOperationId: before.mcpOperations[0].id, originalModelCalls: before.modelCalls.length, originalExternalCalls: lines(paths.calls).length,
+    originalModelTaskExecutionId: before.model.taskExecutionId, originalModelDispatchActionId: before.model.dispatchActionId, originalMcpTaskExecutionId: before.mcp.taskExecutionId, originalMcpDispatchActionId: before.mcp.dispatchActionId,
     newTaskId: newTask.id, newTaskCalls: finished.budget.usedCalls, processCoverage: 'OBSERVED_ONLY', processesAndEffectsReconciledSeparately: true, automaticReplay: false, pageErrors, modelErrors, evidenceDirectory: dir };
   save('report.json', report); mkdirSync(join(root, 'docs/qa'), { recursive: true }); writeFileSync(join(root, `docs/qa/process-recovery-${process.platform}.json`), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report, null, 2));

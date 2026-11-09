@@ -2,6 +2,8 @@
 
 适用版本：0.2.0-alpha.10。API 协议仍为 1；SQLite schema 为 4，保留租约唯一约束与节点/任务查询索引。结构升级与版本更新共用数据库事务，未来版本拒绝打开。历史操作保留原来源，不推测补造租约。私有帧、进程边界和回调见[独立 Worker 进程约定](./worker-process-contract.md)。
 
+alpha.11 增加原进程跨核心核验；alpha.12 使用 schema 6 保存[根执行尝试与派发动作](./task-dispatch-contract.md)，API 与 Worker 帧协议仍为 1。新操作和租约必须属于当前核心已领取的根，保留 `taskExecutionId` 与 `dispatchActionId`；未领取、已结束或旧根来源不能取得新租约。
+
 ## 身份和目录
 
 ExecutionNode 是实际执行主机的稳定身份，RepositoryBinding 是项目在该节点上的 Git 仓库目录，Worker 是一次实际 Java 执行会话，WorkerLease 是一次操作的执行归属。项目编号、节点编号和仓库绑定编号彼此独立；绝对路径只在所在节点解释。
@@ -51,6 +53,6 @@ RELEASED/CONFIRMED 表示本机执行路径返回并收到回执，不证明远�
 
 用户停止请求与 PAUSING/CANCELLING 在同一存储锁内发布，停止回执随后保存。快速返回和交付收尾均不能以迟写的等待状态覆盖已停止事实，待停止期间不能进入等待验收。
 
-数据库故障立即封闭新派发，无法保存的回执不计为成功。本机进程停止事实不能改写原远端效果 UNKNOWN。任务持久队列拉取、跨重启旧进程树完整核验、远程配对及网络重连、角色/写入租约、PTY、动态 workflow、完整备份与长期故障矩阵仍继续实施。
+数据库故障立即封闭新派发，无法保存的回执不计为成功。本机进程停止事实不能改写原远端效果 UNKNOWN。远程队列拉取、跨重启旧进程树完整核验、远程配对及网络重连、角色/写入租约、PTY、动态 workflow、完整备份与长期故障矩阵仍继续实施。
 
 证据与实际来源见[实施记录](./implementation-status.md)、[租约来源与审查](./research/worker-leases-2026-11-08.md)和[独立进程来源与审查](./research/worker-processes-2026-11-08.md)。

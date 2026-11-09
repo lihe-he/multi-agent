@@ -18,7 +18,11 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
 import static dev.agentworkbench.Json.*;
 
@@ -36,7 +40,13 @@ public class WorkbenchEngine {
     private final TeamCoordinator teams;
     private final LocalExecutionWorker executionWorker;
     private final ManagedProcessLedger processLedger;
-    private final ExecutorService workers = Executors.newVirtualThreadPerTaskExecutor();
+    private final TaskDispatchQueue dispatchQueue;
+    private final ExecutorService workers;
+    private final ScheduledExecutorService dispatcher = Executors.newSingleThreadScheduledExecutor(runnable -> Thread.ofPlatform().daemon(true).name("workbench-root-dispatch").unstarted(runnable));
+    private final ReentrantLock dispatchGate = new ReentrantLock();
+    private final AtomicBoolean dispatcherStarted = new AtomicBoolean();
+    private final Set<String> scheduledActions = ConcurrentHashMap.newKeySet();
+    private long dispatchCursor;
     private final Map<String, Control> controls = new ConcurrentHashMap<>();
     private volatile boolean shuttingDown;
 
@@ -46,7 +56,12 @@ public class WorkbenchEngine {
 
     @org.springframework.beans.factory.annotation.Autowired
     public WorkbenchEngine(ExecutionStore store, WorkbenchCatalog catalog, WorkspaceRuntime runtime, ResourceManager resources, ObjectMapper mapper, McpManager mcp) {
+        this(store, catalog, runtime, resources, mapper, mcp, Executors.newVirtualThreadPerTaskExecutor());
+    }
+
+    WorkbenchEngine(ExecutionStore store, WorkbenchCatalog catalog, WorkspaceRuntime runtime, ResourceManager resources, ObjectMapper mapper, McpManager mcp, ExecutorService workers) {
         this.store = store; this.catalog = catalog; this.runtime = runtime; this.resources = resources; this.mapper = mapper; this.mcp = mcp;
+        this.workers = workers; this.dispatchQueue = new TaskDispatchQueue(store);
         this.executionWorker = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.startWorker(store, catalog.nodes()) : new LocalExecutionWorker(store, catalog.nodes());
         this.processLedger = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.managedProcesses() : new ManagedProcessLedger(store);
         this.teams = new TeamCoordinator(store, catalog, runtime, resources, mapper, mcp, workers, executionWorker);
@@ -67,6 +82,7 @@ public class WorkbenchEngine {
 
     @PostConstruct
     void recover() {
+        dispatchQueue.recover();
         for (Map<String, Object> run : store.list("agentRun")) {
             if (Set.of("WAITING_RESOURCE", "WAITING_TOOL", "WAITING_CHILDREN", "WAITING_DEPENDENCY", "RUNNING").contains(str(run, "state"))) {
                 store.finishAgentRun(str(run, "id"), "UNKNOWN", "核心重启，旧运行的进程及外部效果需随根任务核对；不自动重放");
@@ -80,6 +96,7 @@ public class WorkbenchEngine {
         for (Map<String, Object> operation : store.list("teamOperation")) if (Set.of("PREPARED", "DISPATCHED").contains(str(operation, "state"))) store.finishTeamOperation(str(operation, "id"), "UNKNOWN", obj("reason", "核心重启，团队操作不自动重放"));
         for (Map<String, Object> task : store.list("task")) {
             if (Set.of("QUEUED", "RUNNING", "PAUSING", "CANCELLING", "WAITING_RESOURCE").contains(str(task, "state"))) {
+                if (dispatchQueue.unclaimed(task)) continue;
                 String id = str(task, "id");
                 String operation = str(task, "activeOperation");
                 if (!operation.isBlank()) { store.markOperation(operation, "UNKNOWN", obj("reason", "核心重启，需核对外部执行")); }
@@ -88,24 +105,26 @@ public class WorkbenchEngine {
                 }, "RECOVERY_REQUIRED", "检测到未完成执行，保持结果未知并禁止重复派发");
             }
         }
+        startDispatcher();
     }
 
-    public synchronized Map<String, Object> action(String taskId, String action, Map<String, Object> body) {
+    public Map<String, Object> action(String taskId, String action, Map<String, Object> body) {
+        dispatchGate.lock();
+        try {
         Map<String, Object> task = store.get("task", taskId);
         String state = str(task, "state");
         if (Set.of("approve", "resume").contains(action)) processLedger.requireDispatch();
+        if (Set.of("accept", "revalidate", "budget", "mcp-authorization").contains(action)) requireExecutionSettled(taskId);
         switch (action) {
             case "approve" -> {
                 requireState(state, Set.of("DRAFT", "WAITING_INPUT"));
-                store.editTask(taskId, value -> { map(value, "contract").put("confirmed", true); value.put("confirmedAt", now()); }, "PLAN_APPROVED", "用户确认了完成约定、范围、路由与预算");
-                launch(taskId);
+                launch(taskId, "USER_APPROVAL");
             }
             case "resume" -> {
                 requireState(state, Set.of("PAUSED", "WAITING_INPUT", "FAILED"));
                 if (!bool(map(task, "contract"), "confirmed", false)) { throw new ApiException(409, "请先确认计划"); }
                 if (hasUnknownOperation(taskId)) { throw new ApiException(409, "存在结果未知操作，核对前不能继续"); }
-                refreshContext(taskId);
-                launch(taskId);
+                launch(taskId, "USER_RESUME");
             }
             case "pause", "cancel" -> requestStop(taskId, action);
             case "accept" -> accept(taskId, task);
@@ -135,6 +154,20 @@ public class WorkbenchEngine {
             default -> throw new ApiException(404, "不支持的任务操作");
         }
         return store.get("task", taskId);
+        } finally { dispatchGate.unlock(); }
+    }
+
+    /**
+     * 任务文字终态不能代替根结束回执；验收、配置修改和导出等待实际收尾。
+     */
+    void requireExecutionSettled(String taskId) {
+        dispatchGate.lock();
+        try {
+            Map<String, Object> task = store.get("task", taskId);
+            Map<String, Object> execution = store.find("taskExecution", str(task, "taskExecutionId")), action = store.find("dispatchAction", str(task, "dispatchActionId"));
+            if (controls.containsKey(taskId) || (execution != null && Set.of("QUEUED", "RUNNING").contains(str(execution, "state")))
+                    || (action != null && Set.of("PENDING", "CLAIMED").contains(str(action, "state")))) throw new ApiException(409, "根执行尚未结束，请等待执行结束回执后继续");
+        } finally { dispatchGate.unlock(); }
     }
 
     /**
@@ -147,6 +180,7 @@ public class WorkbenchEngine {
             if ("UNKNOWN".equals(state)) throw new ApiException(409, "执行结果未知，请先核对停止状态；取消请求不能证明外部效果已撤销");
             Control control = controls.get(taskId);
             if (control == null) {
+                if (dispatchQueue.withdraw(taskId, "cancel".equals(action) ? "CANCELLED" : "PAUSED", "任务已" + ("cancel".equals(action) ? "取消" : "暂停"))) return;
                 store.editTask(taskId, value -> { value.put("state", "cancel".equals(action) ? "CANCELLED" : "PAUSED"); if ("cancel".equals(action)) value.put("outcome", "CANCELLED"); }, "CONTROL", "任务已" + ("cancel".equals(action) ? "取消" : "暂停"));
             } else {
                 control.reason = "用户请求" + ("cancel".equals(action) ? "取消" : "暂停");
@@ -184,11 +218,11 @@ public class WorkbenchEngine {
             operation.put("state", "RECONCILED"); operation.put("reconciliation", obj("actor", "USER", "note", str(body, "note"), "createdAt", now())); store.put("teamOperation", operation);
         }
         executionWorker.reconcile(taskId, str(body, "note"));
-        store.editTask(taskId, value -> {
+        dispatchQueue.reconcile(taskId, body, value -> {
             value.put("state", "PAUSED"); value.put("reconciliation", obj("processesStopped", true, "sideEffectsChecked", true, "note", str(body, "note"), "createdAt", now()));
             value.remove("activeOperation"); value.remove("error");
             resetRunningStages(value);
-        }, "RECONCILED", "用户记录了人工核对结果；继续执行仍需手动恢复");
+        });
     }
 
     private void reauthorizeMcp(String taskId, Map<String, Object> task, Map<String, Object> body) {
@@ -231,31 +265,93 @@ public class WorkbenchEngine {
         }, "EXECUTION_AUTHORIZATION_CHANGED", "用户核对节点与仓库绑定版本，后续必要验证和审查重新执行");
     }
 
-    private void launch(String taskId) {
+    private void launch(String taskId, String trigger) {
         if (shuttingDown || !store.healthy()) { throw new ApiException(503, "核心当前不能开始执行"); }
         processLedger.requireDispatch();
         if (controls.containsKey(taskId)) { throw new ApiException(409, "任务仍在停止或执行中，请等待确认"); }
         Map<String, Object> task = store.get("task", taskId);
         catalog.nodes().requireCurrent(task);
         if (!executionWorker.current(taskId)) throw new ApiException(409, "本机 Worker 归属不可用或根效果尚未核对");
+        if (hasUnknownOperation(taskId)) throw new ApiException(409, "存在未确认操作或根执行，核对前不能建立新尝试");
+        dispatchQueue.enqueue(taskId, trigger, value -> {
+            if ("USER_APPROVAL".equals(trigger)) { map(value, "contract").put("confirmed", true); value.put("confirmedAt", now()); }
+            else refreshContext(value);
+            resetRunningStages(value);
+        });
+        startDispatcher();
+    }
+
+    /**
+     * 定时扫描只安排候选；实际线程进入后才领取，关闭或执行器拒绝时仍保留 PENDING。
+     */
+    private void startDispatcher() {
+        if (shuttingDown || !store.healthy()) return;
+        if (dispatcherStarted.compareAndSet(false, true)) dispatcher.scheduleWithFixedDelay(this::pollDispatchQueue, 500, 500, TimeUnit.MILLISECONDS);
+        try { dispatcher.execute(this::pollDispatchQueue); } catch (RejectedExecutionException ignored) { }
+    }
+
+    private void pollDispatchQueue() {
+        if (shuttingDown || !store.healthy()) return;
+        List<Map<String, Object>> actions;
+        try { actions = store.pendingDispatchActions(dispatchCursor, 64); }
+        catch (RuntimeException exception) { return; }
+        if (actions.isEmpty()) { dispatchCursor = 0; return; }
+        dispatchCursor = ((Number) actions.getLast().get("sequence")).longValue();
+        for (Map<String, Object> action : actions) {
+            String actionId = str(action, "id");
+            if (shuttingDown || !scheduledActions.add(actionId)) continue;
+            try { workers.submit(() -> dispatch(actionId, num(action, "version", 0))); }
+            catch (RejectedExecutionException exception) {
+                scheduledActions.remove(actionId);
+                if (!shuttingDown && store.healthy()) dispatchQueue.waiting(actionId, "本机执行器暂不能接收任务；原动作尚未领取");
+            }
+        }
+    }
+
+    private void dispatch(String actionId, int expectedVersion) {
+        Control control = null;
+        try {
+            dispatchGate.lock();
+            try {
+                if (shuttingDown || !store.healthy()) return;
+                Map<String, Object> action = store.get("dispatchAction", actionId);
+                if (!"PENDING".equals(str(action, "state"))) return;
+                String taskId = str(action, "taskId");
+                if (controls.containsKey(taskId)) return;
+                processLedger.requireDispatch();
+                Map<String, Object> task = store.get("task", taskId);
+                String reason = dispatchWaitReason(task);
+                if (!reason.isBlank()) { dispatchQueue.waiting(actionId, reason); return; }
+                Map<String, Object> execution = dispatchQueue.claim(actionId, expectedVersion, value -> {
+                    executionWorker.requireQueueOwner(str(value, "id"));
+                    String changed = dispatchWaitReason(value);
+                    if (!changed.isBlank()) throw new ApiException(409, changed);
+                });
+                if (execution.isEmpty()) return;
+                control = new Control(taskId, str(execution, "id")); controls.put(taskId, control);
+            } finally { dispatchGate.unlock(); }
+            execute(control.taskId, control);
+        } catch (RuntimeException exception) {
+            if (control == null && !shuttingDown && store.healthy()) dispatchQueue.waiting(actionId, cap(catalog.redact(exception.getMessage() == null ? exception.getClass().getSimpleName() : exception.getMessage()), 3000));
+        } finally { scheduledActions.remove(actionId); }
+    }
+
+    private String dispatchWaitReason(Map<String, Object> task) {
         Map<String, Object> route = map(task, "routeSnapshot");
         Map<String, Object> live = store.get("route", str(task, "routeId"));
         if (!bool(live, "enabled", false) || !BudgetPolicy.matchesLocks(route, map(task, "locks"))) {
-            waitInput(taskId, "运行器已停用或不满足硬锁定，请修正资源配置后恢复"); return;
+            return "运行器已停用或不满足硬锁定，请修正资源配置；当前动作尚未领取";
         }
         if (requiresCredential(route) && catalog.credential(str(task, "routeId"), num(route, "version", 1)).isBlank()) {
-            waitInput(taskId, "API 凭据尚未配置或会话已结束，请在资源设置重新输入密钥"); return;
+            return "API 凭据尚未配置或会话已结束，请在资源设置重新输入密钥";
         }
         try {
             var disk = Files.getFileStore(store.directory());
             if (disk.getUsableSpace() < 2L * 1024 * 1024 * 1024 || disk.getUsableSpace() < disk.getTotalSpace() / 20) {
-                waitInput(taskId, "可用空间低于 2 GB 或磁盘容量 5%，已停止新任务"); return;
+                return "可用空间低于 2 GB 或磁盘容量 5%，已停止新任务";
             }
         } catch (Exception exception) { throw new ApiException(503, "无法核验存储空间"); }
-        Control control = new Control(taskId);
-        controls.put(taskId, control);
-        store.editTask(taskId, value -> { value.put("state", "QUEUED"); value.remove("error"); resetRunningStages(value); }, "QUEUED", "任务已进入全局队列");
-        workers.submit(() -> execute(taskId, control));
+        return "";
     }
 
     private void execute(String taskId, Control control) {
@@ -335,7 +431,10 @@ public class WorkbenchEngine {
                 synchronized (store) {
                     try {
                         if (store.healthy() && !"NONE".equals(control.request) && !Set.of("UNKNOWN", "PAUSED", "CANCELLED", "COMPLETED").contains(str(store.get("task", taskId), "state"))) stopped(control);
-                    } finally { controls.remove(taskId, control); }
+                    } finally {
+                        try { if (store.healthy()) dispatchQueue.finish(control.taskExecutionId); }
+                        finally { controls.remove(taskId, control); }
+                    }
                 }
             }
         }
@@ -657,13 +756,17 @@ public class WorkbenchEngine {
     }
 
     private boolean hasUnknownOperation(String taskId) {
-        return store.list("operation").stream().anyMatch(operation -> taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")))
+        return store.hasUnknownTaskExecution(taskId)
+            || store.list("operation").stream().anyMatch(operation -> taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")))
             || store.list("mcpOperation").stream().anyMatch(operation -> taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")))
             || store.list("teamOperation").stream().anyMatch(operation -> taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")));
     }
 
     private void refreshContext(String taskId) {
-        store.editTask(taskId, task -> {
+        store.editTask(taskId, this::refreshContext, "CONTEXT_REFRESHED", "按当前有效记忆重新组装上下文，旧证据保留");
+    }
+
+    private void refreshContext(Map<String, Object> task) {
             List<Map<String, Object>> refreshed = new ArrayList<>();
             boolean changed = false;
             for (Map<String, Object> item : objects(task.get("context"))) {
@@ -681,7 +784,6 @@ public class WorkbenchEngine {
                 task.put("verification", obj("status", "NOT_RUN")); task.put("review", obj("status", "NOT_RUN"));
                 task.put("contextGeneration", num(task, "contextGeneration", 1) + 1);
             }
-        }, "CONTEXT_REFRESHED", "按当前有效记忆重新组装上下文，旧证据保留");
     }
 
     private boolean cancelled(Control control) {
@@ -750,7 +852,9 @@ public class WorkbenchEngine {
 
     @PreDestroy
     void shutdown() {
-        shuttingDown = true;
+        dispatchGate.lock();
+        try { shuttingDown = true; dispatcher.shutdownNow(); }
+        finally { dispatchGate.unlock(); }
         for (Control control : controls.values()) { control.request = "PAUSE"; control.reason = "核心正常退出"; runtime.stop(control.taskId); }
         workers.shutdown();
         try { if (!workers.awaitTermination(15, java.util.concurrent.TimeUnit.SECONDS)) { workers.shutdownNow(); } }
@@ -790,9 +894,10 @@ public class WorkbenchEngine {
 
     private static final class Control {
         private final String taskId;
+        private final String taskExecutionId;
         private volatile String request = "NONE";
         private volatile String reason = "执行已停止";
-        private Control(String taskId) { this.taskId = taskId; }
+        private Control(String taskId, String taskExecutionId) { this.taskId = taskId; this.taskExecutionId = taskExecutionId; }
     }
 
     private static class UnknownResult extends RuntimeException { UnknownResult(String message) { super(message); } }

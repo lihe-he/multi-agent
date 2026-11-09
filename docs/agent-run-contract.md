@@ -15,6 +15,7 @@
 | --- | --- |
 | `id`, `schemaVersion` | 不可复用的运行身份、实体版本 1 |
 | `taskId`, `rootTaskId`, `projectId`, `sessionId` | 服务端从真实任务派生的归属；当前 rootTaskId=taskId |
+| `taskExecutionId`, `dispatchActionId` | alpha.12 当前已领取的根尝试与原动作；副运行继承父运行来源，历史无来源记录不补造 |
 | `teamId`, `subtaskId`, `parentRunId`, `definitionId`, `definitionVersion`, `depth` | alpha.8 动态团队的真实关系与创建时固定的定义；后代 taskId/rootTaskId 仍指向同一根任务 |
 | `stage`, `kind`, `title`, `role`, `profileVersions` | 调度阶段、角色及创建任务时固定的职责模板版本 |
 | `attempt` | 同一任务/阶段的第几次运行；重跑不覆盖旧记录 |
@@ -40,3 +41,5 @@
 复用 SQLite `entities` 并新增局部索引，schema 3 和 API 1 不变。写证据与运行证据关联在同一事务，结束状态在执行后的内容核验完成时另行保存；两者之间崩溃会保守留下 UNKNOWN，已有证据继续保留。交付包新增 `agent-runs.json`。
 
 alpha.7 在每次模型请求前把请求身份、运行 calls 和根预算同事务保存，AgentRun 结束时把缺少回执的请求记 UNKNOWN，已有请求终态保持原样；交付包另含 `model-requests.json`。alpha.8 增加父子运行、定义版本、Team 消息和受控文件采纳，交付包保留对应来源与操作。Token 趋势、远程 Worker 和完整 workflow 继续实施；运行列表状态不能替代根验证、独立审查和人工验收。
+
+alpha.12 在 schema 6 增加独立根执行尝试与派发动作，AgentRun 实体版本和 API 仍为 1。根队列的未领取恢复、领取后 UNKNOWN、核对后新尝试和完整 ZIP 见[根派发协议](./task-dispatch-contract.md)；AgentRun 成功不能替代根结束回执。

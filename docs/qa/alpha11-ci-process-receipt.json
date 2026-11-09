@@ -198,6 +198,119 @@
     "downloadGuardTests": 6,
     "localOfficialPrefetch": "passed",
     "localOriginalInstall": "passed",
-    "repairCommitCi": "pending; must validate its own exact commit"
+    "repairCommitCi": {
+      "checkedAt": "2026-11-09T12:17:08.9326788Z",
+      "commit": "0bb421f82b5e888136881cef2199464313de1db8",
+      "run": 42468924458,
+      "conclusion": "failure",
+      "macos": "success",
+      "windows": "Original Electron installation passed; NSIS resources download HTTP 504; packaged lifecycle not run",
+      "linux": "Original Electron installation passed; AppImage download HTTP 504; packaged lifecycle not run",
+      "evidence": [
+        {
+          "name": "evidence-windows-latest",
+          "artifactId": 13613180763,
+          "sha256": "8037a8eb65e39ffc97caa3be3ebe468286ad9ad893ea14c23815e321b2019cb3",
+          "digestVerified": true,
+          "suites": 18,
+          "tests": 181.0,
+          "failures": 0.0,
+          "errors": 0.0,
+          "skipped": 1.0,
+          "runtimeReports": [
+            {
+              "kind": "smoke",
+              "versionField": null,
+              "status": "passed",
+              "checks": 28,
+              "identitySource": "Exact commit artifact and matching platform; original alpha.11 Maven job log; report has no version field"
+            },
+            {
+              "kind": "process-recovery",
+              "versionField": "0.2.0-alpha.11",
+              "status": "passed",
+              "checks": 11,
+              "identitySource": "Original version and platform fields in exact commit artifact"
+            },
+            {
+              "kind": "standalone",
+              "versionField": "0.2.0-alpha.11",
+              "status": "passed",
+              "checks": null,
+              "identitySource": "Original version and platform fields in exact commit artifact"
+            }
+          ]
+        },
+        {
+          "name": "evidence-ubuntu-latest",
+          "artifactId": 13613140889,
+          "sha256": "d12ff590cfadc2379a6b4e483d0e8e8ee237d2a14d235004d93761246fcb617e",
+          "digestVerified": true,
+          "suites": 18,
+          "tests": 181.0,
+          "failures": 0.0,
+          "errors": 0.0,
+          "skipped": 2.0,
+          "runtimeReports": [
+            {
+              "kind": "smoke",
+              "versionField": null,
+              "status": "passed",
+              "checks": 28,
+              "identitySource": "Exact commit artifact and matching platform; original alpha.11 Maven job log; report has no version field"
+            },
+            {
+              "kind": "process-recovery",
+              "versionField": "0.2.0-alpha.11",
+              "status": "passed",
+              "checks": 11,
+              "identitySource": "Original version and platform fields in exact commit artifact"
+            },
+            {
+              "kind": "standalone",
+              "versionField": "0.2.0-alpha.11",
+              "status": "passed",
+              "checks": null,
+              "identitySource": "Original version and platform fields in exact commit artifact"
+            }
+          ]
+        },
+        {
+          "name": "evidence-macos-latest",
+          "artifactId": 13612867825,
+          "sha256": "f954678cff206acfaa40273bec8e32f1e7dbe1c0dd7cf8459fe51bfdb8d9072b",
+          "digestVerified": true,
+          "suites": 18,
+          "tests": 181.0,
+          "failures": 0.0,
+          "errors": 0.0,
+          "skipped": 2.0,
+          "runtimeReports": [
+            {
+              "kind": "smoke",
+              "versionField": null,
+              "status": "passed",
+              "checks": 28,
+              "identitySource": "Exact commit artifact and matching platform; original alpha.11 Maven job log; report has no version field"
+            },
+            {
+              "kind": "process-recovery",
+              "versionField": "0.2.0-alpha.11",
+              "status": "passed",
+              "checks": 11,
+              "identitySource": "Original version and platform fields in exact commit artifact"
+            },
+            {
+              "kind": "standalone",
+              "versionField": "0.2.0-alpha.11",
+              "status": "passed",
+              "checks": null,
+              "identitySource": "Original version and platform fields in exact commit artifact"
+            }
+          ]
+        }
+      ],
+      "followUp": "alpha.12 adds an original-checksum-verified builder asset cache fallback; see alpha12-desktop-assets-win32.json and research/electron-builder-assets-2026-11-09.md"
+    }
   }
 }

@@ -1,0 +1,68 @@
+{
+  "recordedAt": "2026-11-09T12:00:57.7791409Z",
+  "version": "0.2.0-alpha.12",
+  "platform": "win32",
+  "windowsAssets": {
+    "cacheRoot": "D:\\Projects\\多Agent研发工作台\\.runtime\\builder-verified-e38b6469-a681-414c-871c-0d11da1eb1f9",
+    "platform": "win32",
+    "assets": [
+      {
+        "tag": "nsis-3.0.4.1",
+        "assetId": 16428442,
+        "size": 1287512,
+        "sha512": "VKMiizYdmNdJOWpRGz4trl4lD++BvYP2irAXpMilheUP0pc93iKlWAoP843Vlraj8YG19CVn0j+dCo/hURz9+Q==",
+        "sha256": "9877df902530f96357d13a7a31ae2b9df67f48b11ffc9a1700a7c961574ec5fa",
+        "originalChecksumVerified": true,
+        "metadataDigestProvided": false,
+        "metadataDigestVerified": false,
+        "cachePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\builder-verified-e38b6469-a681-414c-871c-0d11da1eb1f9\\nsis\\nsis-3.0.4.1"
+      },
+      {
+        "tag": "nsis-resources-3.4.1",
+        "assetId": 13752602,
+        "size": 730800,
+        "sha512": "Dqd6g+2buwwvoG1Vyf6BHR1b+25QMmPcwZx40atOT57gH27rkjOei1L0JTldxZu4NFoEmW4kJgZ3DlSWVON3+Q==",
+        "sha256": "593a9a92ef958321293ac6a2ee61e64bf1bd543142a5bd6b3d310709cc924103",
+        "originalChecksumVerified": true,
+        "metadataDigestProvided": false,
+        "metadataDigestVerified": false,
+        "cachePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\builder-verified-e38b6469-a681-414c-871c-0d11da1eb1f9\\nsis\\nsis-resources-3.4.1"
+      }
+    ],
+    "freshCache": true
+  },
+  "cacheConsumerChecks": [
+    {
+      "tag": "nsis-3.0.4.1",
+      "originalConsumer": "app-builder-bin 5.0.0-alpha.12 download-artifact",
+      "resolvedCachePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\builder-verified-e38b6469-a681-414c-871c-0d11da1eb1f9\\nsis\\nsis-3.0.4.1",
+      "networkProxyUnavailable": true,
+      "status": "passed"
+    },
+    {
+      "tag": "nsis-resources-3.4.1",
+      "originalConsumer": "app-builder-bin 5.0.0-alpha.12 download-artifact",
+      "resolvedCachePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\builder-verified-e38b6469-a681-414c-871c-0d11da1eb1f9\\nsis\\nsis-resources-3.4.1",
+      "networkProxyUnavailable": true,
+      "status": "passed"
+    }
+  ],
+  "linuxArchive": {
+    "assetId": 13613639,
+    "size": 1573447,
+    "sha256": "d12ff7eb8f1d1ec4652ca5237a7fbdca33acc0c758045636feca62dc6ecb8ec4",
+    "sha512": "3el6RUh6XoYJCI/ZOApyb0LLU/gSxDntVZ46R6+JNEANzfSo7/TfrzCRp5KlDo35c24r3ZOP7nnw4RqHwkMRLw==",
+    "originalChecksumVerified": true,
+    "extractionStatus": "failed",
+    "extractionEnvironment": "Windows, missing symbolic-link privilege",
+    "originalFailureLog": ".runtime/alpha12-builder-official-prefetch-linux.log",
+    "nativeLinuxExtractionVerified": false
+  },
+  "source": {
+    "electronBuilderVersion": "26.0.12",
+    "electronBuilderCommit": "44c5265a9260ca6f319f111b5a2ca7e50b0a7cd6",
+    "appBuilderToolBlob": "0e5c5c88df183f7a5d29d73b8e0224dbba069d94",
+    "appBuilderDownloaderBlob": "bf1e82bf3ae043c8d384984b55eab45dfc301b69"
+  },
+  "originalBuilderUsed": true
+}

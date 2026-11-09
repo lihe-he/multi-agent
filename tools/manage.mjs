@@ -70,7 +70,7 @@ async function main() {
     const env = environment();
     const jre = path.join(runtime, 'jre');
     if (!fs.existsSync(jre)) await run(path.join(env.JAVA_HOME, 'bin', windows ? 'jlink.exe' : 'jlink'), ['--add-modules', 'java.se,jdk.unsupported,jdk.crypto.ec,jdk.charsets', '--strip-debug', '--no-header-files', '--no-man-pages', '--output', jre], root, env);
-    await run(path.join(root, 'node_modules', '.bin', windows ? 'electron-builder.cmd' : 'electron-builder'), ['--publish', 'never'], root, env);
+    await run(process.execPath, [path.join(root, 'tools/package-desktop.mjs')], root, env);
   } else throw new Error(`未知操作：${command}`);
 }
 

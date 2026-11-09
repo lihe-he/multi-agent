@@ -1,10 +1,10 @@
 {
   "desktop": "PASS",
   "api": 200,
-  "version": "0.2.0-alpha.11",
+  "version": "0.2.0-alpha.12",
   "application": {
     "packaged": true,
-    "version": "0.2.0-alpha.11"
+    "version": "0.2.0-alpha.12"
   },
   "externalJavaDisabled": true,
   "pageErrors": []

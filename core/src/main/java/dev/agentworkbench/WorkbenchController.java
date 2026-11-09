@@ -41,7 +41,7 @@ public class WorkbenchController {
     }
 
     @GetMapping("/health")
-    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.11", "apiVersion", 1, "schemaVersion", 5, "corePid", ProcessHandle.current().pid()); }
+    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.12", "apiVersion", 1, "schemaVersion", 6, "corePid", ProcessHandle.current().pid()); }
 
     @PostMapping("/shutdown")
     public Map<String, Object> shutdown() {
@@ -63,7 +63,7 @@ public class WorkbenchController {
         }).toList();
         return obj("projects", store.list("project"), "tasks", summaries, "routes", catalog.routes(), "memories", store.list("memory"), "profiles", store.list("profile"), "agentDefinitions", store.list("agentDefinition"),
             "executionNodes", executionNodes(), "repositoryBindings", store.list("repositoryBinding"), "workers", workers(), "processRecovery", engine.processRecovery(),
-            "system", obj("version", "0.2.0-alpha.11", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
+            "system", obj("version", "0.2.0-alpha.12", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
                 "eventCursor", store.latestEvent(), "credentialStorage", "SESSION_ONLY", "releaseStatus", "DEVELOPMENT_PREVIEW", "capabilities", List.of("Git 隔离工作目录", "三模式阶段编排", "根预算与验证预留", "独立审查与人工验收", "结果未知保护", "持久事件续读"),
                 "limitations", List.of("API 兼容性须按实际端点验证", "原生 CLI 费用与内部请求数为软预算", "本机工作目录隔离不等于操作系统安全隔离", "MCP、自动采纳、三端打包与长期性能尚待发布验收")));
     }
@@ -133,6 +133,18 @@ public class WorkbenchController {
             @RequestParam(defaultValue = "30") int limit, @RequestParam(defaultValue = "") String state) {
         Map<String, Object> task = store.get("task", id);
         return store.agentRunPage(str(task, "projectId"), "", id, before, limit, state);
+    }
+
+    @GetMapping("/tasks/{id}/task-executions")
+    public Map<String, Object> taskExecutions(@PathVariable String id, @RequestParam(defaultValue = "0") long before,
+            @RequestParam(defaultValue = "30") int limit, @RequestParam(defaultValue = "") String state) {
+        return store.taskExecutionPage(id, before, limit, state);
+    }
+
+    @GetMapping("/tasks/{id}/dispatch-actions")
+    public Map<String, Object> dispatchActions(@PathVariable String id, @RequestParam(defaultValue = "0") long before,
+            @RequestParam(defaultValue = "30") int limit, @RequestParam(defaultValue = "") String state) {
+        return store.dispatchActionPage(id, before, limit, state);
     }
 
     @GetMapping("/tasks/{id}/model-requests")
@@ -246,6 +258,7 @@ public class WorkbenchController {
 
     @GetMapping("/tasks/{id}/export")
     public ResponseEntity<byte[]> export(@PathVariable String id) throws IOException {
+        engine.requireExecutionSettled(id);
         Map<String, Object> task = store.get("task", id);
         String workspace = str(task, "workspace");
         if (List.of("RUNNING", "QUEUED", "WAITING_RESOURCE", "PAUSING", "CANCELLING").contains(str(task, "state"))) { throw new ApiException(409, "请先暂停任务并等待停止确认后导出一致成果"); }
@@ -259,6 +272,8 @@ public class WorkbenchController {
             putZip(zip, "changes.patch", patch.getBytes(StandardCharsets.UTF_8));
             putZip(zip, "operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(operations(id)));
             putZip(zip, "agent-runs.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("agentRun").stream().filter(run -> id.equals(str(run, "taskId"))).toList()));
+            putZip(zip, "task-executions.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.taskDispatchRecords("taskExecution", id)));
+            putZip(zip, "dispatch-actions.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.taskDispatchRecords("dispatchAction", id)));
             putZip(zip, "model-requests.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("modelRequest").stream().filter(request -> id.equals(str(request, "taskId"))).toList()));
             List<Map<String, Object>> taskLeases = store.workerLeases("", id, "");
             putZip(zip, "worker-leases.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(taskLeases.stream().map(WorkerLedger::publicLease).toList()));
@@ -280,6 +295,8 @@ public class WorkbenchController {
             putZip(zip, "events.jsonl", lines.toString().getBytes(StandardCharsets.UTF_8));
             putZip(zip, "README.md", ("# 任务交付包\n\n本包保存需求、固定计划、证据、原始事件和代码补丁。\n\n状态：" + task.get("state") + "\n代码版本：" + task.get("version") + "\n\n验收只记录用户决定，不自动写入原项目。应用补丁前请检查目标版本和未提交修改，并重新运行必要验证。未知操作、失败和未验证项以 task.json 及 operations.json 为准。凭据不包含在本包中。\n").getBytes(StandardCharsets.UTF_8));
         }
+        engine.requireExecutionSettled(id);
+        if (!task.equals(store.get("task", id))) throw new ApiException(409, "导出期间任务记录发生变化，请读取当前状态后重试");
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=task-" + id + ".zip").contentType(MediaType.parseMediaType("application/zip")).body(bytes.toByteArray());
     }
 

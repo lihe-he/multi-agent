@@ -40,6 +40,9 @@ export interface Task {
   error?: string;
   teamId?: string; collaboration?: { enabled: boolean; maxActive: number; maxDepth: number; maxTotal: number; spawned: number; definitions?: AgentDefinition[] };
   execution?: ExecutionSnapshot;
+  taskExecutionId?: string; dispatchActionId?: string;
+  taskExecution?: { id: string; attempt: number; state: string; createdAt: string; endedAt?: string; reconciled?: boolean };
+  dispatch?: { id: string; state: string; dispatchCount: number; createdAt: string; claimedAt?: string; waitReason?: string };
 }
 export interface WorkbenchState {
   projects: Project[]; tasks: Task[]; routes: Route[]; memories: Memory[]; profiles: Profile[];
@@ -57,6 +60,19 @@ export interface AgentRun {
   parentRunId?: string; subtaskId?: string; teamId?: string; depth?: number; permissions?: AgentPermission;
   workerId?: string; workerLeaseId?: string; workerEpoch?: number; executionNodeId?: string; repositoryBindingId?: string; bindingVersion?: number;
   deployment?: string; executorPid?: number; corePid?: number; processStartedAt?: string;
+  taskExecutionId?: string; dispatchActionId?: string;
+}
+export interface DispatchAction {
+  id: string; taskId: string; taskExecutionId: string; attempt: number; state: string; version: number; dispatchCount: number;
+  createdAt: string; claimedAt?: string; endedAt?: string; ownerCoreSessionId?: string; ownerCorePid?: number; ownerCoreStartedAt?: string;
+  waitReason?: string; reason?: string; reconciliation?: { note: string; createdAt: string };
+}
+export interface TaskExecution {
+  id: string; taskId: string; dispatchActionId: string; attempt: number; trigger: string; state: string;
+  createdAt: string; startedAt?: string; endedAt?: string; elapsedMs?: number; reason?: string;
+  taskStateAtEnd?: string; taskOutcomeAtEnd?: string; contractVersion: number; authorizationVersion: number;
+  budgetAtEnqueue?: { usedCalls?: number }; budgetAtStart?: { usedCalls?: number }; budgetAtEnd?: { usedCalls?: number };
+  reconciliation?: { note: string; createdAt: string }; dispatchAction: DispatchAction;
 }
 export interface ExecutionNode { id: string; name: string; version: number; protocolVersion: number; type: string; deployment: string; platform: string; architecture: string; enabled: boolean; epoch: number; state?: string; workerId?: string; lastSeenAt?: string }
 export interface RepositoryBinding { id: string; projectId: string; executionNodeId: string; name: string; path: string; version: number; enabled: boolean; head?: string; branch?: string }
@@ -65,7 +81,7 @@ export interface ExecutionSnapshot { version: number; protocolVersion: number; e
 export interface ProcessObservation { id: string; pid: number; processStartedAt: string; origin: string; role?: string; observation: string; currentProcessStartedAt?: string; observedFromPid?: number; observedFromStartedAt?: string }
 export interface ProcessSession { id: string; type: string; state: string; pid?: number; processStartedAt?: string; ownerCorePid?: number; ownerCoreStartedAt?: string; workerId?: string; serverId?: string; taskId?: string; coverage: string; launchReceiptMissing: boolean; observedProcessesStopped: boolean; observedProcessCount: number; unconfirmedProcessCount: number; processes: ProcessObservation[]; recordedProcesses: ProcessObservation[]; processesTruncated: boolean }
 export interface ProcessRecovery { dispatchAllowed: boolean; pendingCount: number; sessions: ProcessSession[]; hasMore: boolean; coverage?: string; corePid?: number; coreStartedAt?: string }
-export interface WorkerLease { id: string; sequence: number; operationId: string; operationKind: string; kind: string; operationState: string; taskId: string; agentRunId?: string; workerId: string; executionNodeId: string; epoch: number; repositoryBindingId: string; bindingVersion: number; authorizationVersion: number; workingDirectory: string; deployment?: string; executorPid?: number; corePid?: number; processStartedAt?: string; state: string; stopState: string; createdAt: string; heartbeatAt: string; expiresAt: string; endedAt?: string; reason?: string; evidenceId?: string }
+export interface WorkerLease { id: string; sequence: number; operationId: string; operationKind: string; kind: string; operationState: string; taskId: string; agentRunId?: string; taskExecutionId?: string; dispatchActionId?: string; workerId: string; executionNodeId: string; epoch: number; repositoryBindingId: string; bindingVersion: number; authorizationVersion: number; workingDirectory: string; deployment?: string; executorPid?: number; corePid?: number; processStartedAt?: string; state: string; stopState: string; createdAt: string; heartbeatAt: string; expiresAt: string; endedAt?: string; reason?: string; evidenceId?: string }
 export interface AgentPermission { capabilities: string[]; readScopeLayers: string[][]; writeScopeLayers: string[][] }
 export interface AgentDefinition {
   id: string; version: number; name: string; role: string; instructions: string; capabilities: string[];
@@ -90,6 +106,7 @@ export interface ModelRequest {
   outputPreview?: string; outputTruncated?: boolean; errorType?: string; reason?: string; remoteOutcome?: string;
   workerId?: string; workerLeaseId?: string; workerEpoch?: number; executionNodeId?: string; repositoryBindingId?: string; bindingVersion?: number;
   deployment?: string; executorPid?: number; corePid?: number; processStartedAt?: string;
+  taskExecutionId?: string; dispatchActionId?: string;
 }
 export interface Connection { baseUrl: string; token: string }
 export interface Session { id: string; projectId: string; title: string; version: number; isOpen: boolean; createdAt: string; updatedAt: string }

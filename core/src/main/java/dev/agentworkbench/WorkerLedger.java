@@ -66,8 +66,9 @@ final class WorkerLedger {
             requireOwner(worker, time);
             Map<String, Object> operation = store.get(kind, operationId), task = store.get("task", str(operation, "taskId"));
             if (!"PREPARED".equals(str(operation, "state"))) throw new ApiException(409, "操作已领取或结束，不能再次派发");
+            store.requireActiveTaskExecution(task, operation);
             nodes.requireCurrent(task);
-            if (store.hasUnknownEffects(str(task, "id"))) throw new ApiException(409, "根任务有未核对效果，新租约不能绕过");
+            if (store.hasUnknownEffects(str(task, "id")) || store.hasUnknownTaskExecution(str(task, "id"))) throw new ApiException(409, "根任务有未核对效果，新租约不能绕过");
             if (store.workerLeaseForOperation(kind, operationId) != null) throw new ApiException(409, "同一操作只能有一次执行租约");
             Map<String, Object> execution = map(task, "execution");
             if (!execution.isEmpty() && !str(worker, "executionNodeId").equals(str(execution, "executionNodeId"))) throw new ApiException(403, "Worker 不属于任务固定节点");
@@ -79,6 +80,7 @@ final class WorkerLedger {
                 "claimDigest", digest, "state", "ACTIVE", "stopState", "RUNNING", "workingDirectory", Path.of(workspace).toAbsolutePath().normalize().toString(),
                 "createdAt", time.toString(), "heartbeatAt", time.toString(), "expiresAt", time.plusMillis(LEASE_MILLIS).toString());
             lease.putAll(obj("operationType", operation.get("kind"), "subjectId", subject(operation, task), "deployment", worker.get("deployment"), "executorPid", worker.get("pid"), "processStartedAt", worker.get("processStartedAt")));
+            ExecutionStore.copyTaskExecutionSource(lease, operation);
             if (worker.containsKey("corePid")) lease.put("corePid", worker.get("corePid"));
             if (worker.containsKey("processSessionId")) lease.put("processSessionId", worker.get("processSessionId"));
             if ("LOCAL_PROCESS".equals(str(worker, "deployment"))) {

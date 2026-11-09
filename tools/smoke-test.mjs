@@ -115,7 +115,7 @@ async function untilTask(id, states, timeout = 120_000) {
   let task;
   while (Date.now() < deadline) {
     task = (await request(`/tasks/${id}`)).data;
-    if (states.includes(task.state)) return task;
+    if (states.includes(task.state) && (task.state !== 'AWAITING_ACCEPTANCE' || task.taskExecution?.state === 'SUCCEEDED')) return task;
     if (['FAILED', 'UNKNOWN', 'WAITING_INPUT'].includes(task.state)) {
       throw new Error(`Task ${id} stopped in ${task.state}: ${task.error || JSON.stringify(task.issues || [])}`);
     }
@@ -172,7 +172,7 @@ try {
   });
   await check('Session routes require authentication and preserve server-owned message identity', async () => {
     const health = (await request('/health')).data;
-    assert.equal(health.schemaVersion, 5); assert.equal(health.apiVersion, 1);
+    assert.equal(health.schemaVersion, 6); assert.equal(health.apiVersion, 1);
     const base = `/projects/${project.id}/sessions`;
     await request(base, undefined, { expected: 401, authorized: false });
     await request(`${base}/search?q=background`, undefined, { expected: 401, authorized: false });
@@ -287,6 +287,26 @@ try {
     const second = (await request(`${base}?limit=1&before=${first.cursor}`)).data;
     assert.notEqual(first.runs[0].id, second.runs[0].id);
     assert.equal((await request(`${base}?state=FAILED`)).data.runs.length, 0);
+  });
+  await check('Durable root attempt keeps its original action, owner and execution receipt', async () => {
+    for (const endpoint of ['task-executions', 'dispatch-actions']) {
+      await request(`/tasks/${task.id}/${endpoint}`, undefined, { expected: 401, authorized: false });
+      await request(`/tasks/${task.id}/${endpoint}?state=FORGED`, undefined, { expected: 400 });
+      await request(`/tasks/${task.id}/${endpoint}?before=-1`, undefined, { expected: 400 });
+    }
+    const executions = (await request(`/tasks/${task.id}/task-executions?limit=1`)).data;
+    const actions = (await request(`/tasks/${task.id}/dispatch-actions?limit=1`)).data;
+    assert.equal(executions.executions.length, 1); assert.equal(actions.actions.length, 1); assert.equal(executions.hasMore, false);
+    const original = executions.executions[0], action = actions.actions[0];
+    assert.equal(original.id, finished.taskExecutionId); assert.equal(original.dispatchActionId, finished.dispatchActionId);
+    assert.equal(original.state, 'SUCCEEDED'); assert.equal(original.taskStateAtEnd, 'AWAITING_ACCEPTANCE'); assert.equal(original.attempt, 1);
+    assert.equal(action.id, original.dispatchActionId); assert.equal(action.taskExecutionId, original.id); assert.equal(action.state, 'SETTLED'); assert.equal(action.dispatchCount, 1);
+    assert.equal(action.ownerCorePid, (await request('/health')).data.corePid); assert.ok(action.ownerCoreSessionId); assert.ok(action.ownerCoreStartedAt);
+    assert.equal(original.budgetAtEnqueue.usedCalls, 0); assert.equal(original.budgetAtStart.usedCalls, 0); assert.equal(original.budgetAtEnd.usedCalls, finished.budget.usedCalls);
+    for (const records of [(await request(`/tasks/${task.id}/agent-runs`)).data.runs, (await request(`/tasks/${task.id}/model-requests`)).data.requests,
+      (await request(`/tasks/${task.id}/worker-leases?limit=100`)).data.leases, (await request(`/tasks/${task.id}/operations`)).data, finished.evidence]) {
+      assert.ok(records.length); assert.ok(records.every(record => record.taskExecutionId === original.id && record.dispatchActionId === action.id));
+    }
   });
   await check('Model request trace binds each API round to budget, usage and provider receipt', async () => {
     const endpoint = `/tasks/${task.id}/model-requests`;

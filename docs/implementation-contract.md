@@ -16,6 +16,7 @@
 - alpha.8 的版本化 Agent 定义、任务 collaboration、实际父子运行、团队消息/依赖/权限、受控采纳和固定 MCP 原来源：见[动态团队协议](./team-contract.md)。
 - alpha.9 的 execution 快照、本机节点/仓库版本、实际 Worker 进程与操作租约、执行授权更新和导出：见[本机 Worker 协议](./worker-contract.md)。API 仍为 1，SQLite schema 为 4。
 - alpha.11 的原 Worker/MCP 进程清单、核心重启门禁、出生核验与覆盖/外部效果分别核对：见[进程恢复协议](./process-recovery-contract.md)。API 仍为 1，SQLite schema 为 5；ZIP 保留完整原观察记录。
+- alpha.12 的独立根执行尝试、待派发动作、原编号未领取恢复、领取后 UNKNOWN 和核对后的新尝试：见[根派发协议](./task-dispatch-contract.md)。SQLite schema 为 6，API 与 Worker 帧协议仍为 1；ZIP 保留完整尝试和动作，验收与导出等待根结束回执。
 - `POST /api/tasks/{id}/{action}`，action 为 `approve`/`pause`/`resume`/`cancel`/`accept`（空对象）；`accept` 只记录人工验收，不写原项目。
 - `GET /api/tasks/{id}/diff` → `{diff,version,workspace}`
 - `GET /api/tasks/{id}/export` → 可下载 zip

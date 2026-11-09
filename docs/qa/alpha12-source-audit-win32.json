@@ -1,0 +1,292 @@
+{
+  "recordedAt": "2026-11-09T12:40:23.731Z",
+  "version": "0.2.0-alpha.12",
+  "sourceBaseCommit": "0bb421f82b5e888136881cef2199464313de1db8",
+  "jarSha256": "d8a3a837a377dd7cfe1f7b4f635c20dab73c569d3743d91ecfe77cd8a923060f",
+  "javaFilesChecked": 16,
+  "originalJavaCommentsPreserved": 50,
+  "java": [
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+      "sha256": "221d8e7a728a6dbbc541b325a883adf311c8c60e0aa6bd43083f6f13911b7ce0",
+      "originalComments": 20,
+      "originalCommentsPreserved": true,
+      "addedComments": 7,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+      "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998",
+      "originalComments": 3,
+      "originalCommentsPreserved": true,
+      "addedComments": 1,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+      "sha256": "7883856ef7ae23bdd90e3bb674cb10a0a2f6bec6345fa10a1cb351555ffd8fb3",
+      "originalComments": 9,
+      "originalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+      "sha256": "1a80be6b5f1178a8ce38cb6b7041c0ba0be9638f08334616b074fae9036bb9e3",
+      "originalComments": 2,
+      "originalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+      "sha256": "800d163ba20fa1a7ddcd5e84359e9067efce13ad01b1a99ceedc0a1474c1281b",
+      "originalComments": 1,
+      "originalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+      "sha256": "c6e91b8dee875bc88c4ef72345933e16ec63347ad2f45a381689c7c0cc71be04",
+      "originalComments": 6,
+      "originalCommentsPreserved": true,
+      "addedComments": 2,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+      "sha256": "7184ff959f0ae7dac0afc0e6a4f607abde9e6a920f6429233123c34d2fe32e8e",
+      "originalComments": 2,
+      "originalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+      "sha256": "9d413f21780ace16ae51cfd7265d30a165e2d7893cac45d4b3d3bf405ec5b545",
+      "originalComments": 1,
+      "originalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+      "sha256": "ddbbec3c3ac83bda36e4ef6b8f85ef6ea15ded12b199af2c47d065554fc37673",
+      "originalComments": 4,
+      "originalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
+      "sha256": "67441fd0d4c9de442884a324a2dee067b63b35d86d7800f8ba061490b6dfefa1",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+      "sha256": "733a11559f77c79af62e8f8a3a658a914817c1372b06769cba0a6db41f840332",
+      "originalComments": 2,
+      "originalCommentsPreserved": true,
+      "addedComments": 1,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+      "sha256": "75f6d63a54ab3a109b23a4224fc9bc40554644f107ad08778c22925bbf303a39",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "addedComments": 4,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/RootDispatchEngineTest.java",
+      "sha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TaskDispatchQueueTest.java",
+      "sha256": "32550d9a4b44162b5dae9638df0e57967a3ee4a480f2ddeeda9ba7c8f5a45499",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "tools/ControlledDispatchLauncher.java",
+      "sha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "addedComments": 1,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "tools/DispatchDatabaseFixture.java",
+      "sha256": "4645272377fe08207278c8cce13b8f696fff26d435c04950defff4fa47fd4625",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "addedComments": 1,
+      "addedJavadocMultiline": true
+    }
+  ],
+  "versionAgreement": true,
+  "schemaVersion": 6,
+  "apiVersion": 1,
+  "workerFrameVersion": 1,
+  "sourceHashes": [
+    {
+      "file": ".github/workflows/verify.yml",
+      "sha256": "f0b826b3aafe3da5e44d454ee734d84ce3896f85e80d81847650ed5736729c64"
+    },
+    {
+      "file": "core/pom.xml",
+      "sha256": "cafb51a6a95f8345d70b5c4c5162364141486cebfbf7948dcbaac3e6e4c5bb86"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+      "sha256": "221d8e7a728a6dbbc541b325a883adf311c8c60e0aa6bd43083f6f13911b7ce0"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+      "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+      "sha256": "7883856ef7ae23bdd90e3bb674cb10a0a2f6bec6345fa10a1cb351555ffd8fb3"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+      "sha256": "1a80be6b5f1178a8ce38cb6b7041c0ba0be9638f08334616b074fae9036bb9e3"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+      "sha256": "800d163ba20fa1a7ddcd5e84359e9067efce13ad01b1a99ceedc0a1474c1281b"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+      "sha256": "c6e91b8dee875bc88c4ef72345933e16ec63347ad2f45a381689c7c0cc71be04"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+      "sha256": "7184ff959f0ae7dac0afc0e6a4f607abde9e6a920f6429233123c34d2fe32e8e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+      "sha256": "9d413f21780ace16ae51cfd7265d30a165e2d7893cac45d4b3d3bf405ec5b545"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+      "sha256": "ddbbec3c3ac83bda36e4ef6b8f85ef6ea15ded12b199af2c47d065554fc37673"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
+      "sha256": "67441fd0d4c9de442884a324a2dee067b63b35d86d7800f8ba061490b6dfefa1"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+      "sha256": "733a11559f77c79af62e8f8a3a658a914817c1372b06769cba0a6db41f840332"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "ca69f7293449fa9b36a465321b81fcb7205ecf6ad5fd90dd0ed33bccd3da766f"
+    },
+    {
+      "file": "package.json",
+      "sha256": "5c549da966d71e7c59d743901ea6c77cf2acda3bed17a9237678600d3cb1df74"
+    },
+    {
+      "file": "tools/manage.mjs",
+      "sha256": "cadc15ff78b71d83d02eeb6f078adc91848fd030010e3a80f6980cce7e911627"
+    },
+    {
+      "file": "tools/process-recovery-smoke.mjs",
+      "sha256": "364eabceef69798c89b18614f93bbd9969e6689744ba8c430aa2b069ad82a575"
+    },
+    {
+      "file": "tools/smoke-test.mjs",
+      "sha256": "ee823c3a1bb2a596285b2614a36b71a6dc8ab139c17852881597c445f6b771d9"
+    },
+    {
+      "file": "tools/standalone-smoke.mjs",
+      "sha256": "6b9bb76261886d7c4d8a9616eaf60a49454f7b9318b0a9ef5fcd708039095c06"
+    },
+    {
+      "file": "web/package-lock.json",
+      "sha256": "d4d25b8b8075e165aa9628c2cdf7bf724744a6edcd6518b8c60c27d4de82149b"
+    },
+    {
+      "file": "web/package.json",
+      "sha256": "24423bb92d73b2057c69b5cc0685a4e654379beb4e9cba2e2060fc3803fd5718"
+    },
+    {
+      "file": "web/src/AgentRuns.tsx",
+      "sha256": "0fd76803cdc260de0df4223f5cb4ac8baa67fb94dec6393198153489c9ad502c"
+    },
+    {
+      "file": "web/src/ModelRequests.tsx",
+      "sha256": "f165da91da7529b3b61b488bfa978aab8e79be1fb0bd0379258651177d5641dd"
+    },
+    {
+      "file": "web/src/TaskDetail.tsx",
+      "sha256": "27ce87e7d1553e6e7fb7408e48ad65d05f79e70133bec223a7818c582f6d96f0"
+    },
+    {
+      "file": "web/src/WorkerActivity.tsx",
+      "sha256": "12c4bb915a6b3d996f0b63be0fb51ed930f58968ac24424b4790df5436d58e0f"
+    },
+    {
+      "file": "web/src/sessions.css",
+      "sha256": "9265e69b2639288997534eb2dc0c26cc7d908e94735501e5221d364922c9bba6"
+    },
+    {
+      "file": "web/src/types.ts",
+      "sha256": "41642e0a80754e4292b1af62a54f3ff85b0ca06b3a7198d2c9662a97bd7f4db3"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+      "sha256": "75f6d63a54ab3a109b23a4224fc9bc40554644f107ad08778c22925bbf303a39"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/RootDispatchEngineTest.java",
+      "sha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TaskDispatchQueueTest.java",
+      "sha256": "32550d9a4b44162b5dae9638df0e57967a3ee4a480f2ddeeda9ba7c8f5a45499"
+    },
+    {
+      "file": "tools/ControlledDispatchLauncher.java",
+      "sha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09"
+    },
+    {
+      "file": "tools/DispatchDatabaseFixture.java",
+      "sha256": "4645272377fe08207278c8cce13b8f696fff26d435c04950defff4fa47fd4625"
+    },
+    {
+      "file": "tools/dispatch-queue-smoke.mjs",
+      "sha256": "71d52baca92b4bae982ec6b432a8165c761ee5e784c4f0de9140cfce966d6231"
+    },
+    {
+      "file": "tools/package-desktop.mjs",
+      "sha256": "8599281b3f6ba9469aaa4d5935b1842ce9b48afd1c2c6dd0ef3026c8e3bb6c0e"
+    },
+    {
+      "file": "tools/package-desktop.test.mjs",
+      "sha256": "0c05a29beafd67df9fbb7737f99760755d033f44bf13865257d3669cbc67e219"
+    },
+    {
+      "file": "web/src/TaskExecutions.tsx",
+      "sha256": "899f7f2456bb9033a645659d9272d8c9baf28226bf4e35d32ee375dbbafd6094"
+    },
+    {
+      "file": "web/tests/dispatch.spec.ts",
+      "sha256": "195479e179691b57bc67f5f2855d7ed73fe1346bd3d659697b3343284615bbfe"
+    }
+  ]
+}

@@ -16,7 +16,7 @@ import static dev.agentworkbench.Json.*;
  * 原启动意图、PID 与观察来源持久保存；旧进程停止和历史覆盖核对分别约束新派发。
  */
 public final class ManagedProcessLedger {
-    private static final Set<String> SOURCE_FIELDS = Set.of("workerId", "workerEpoch", "executionNodeId", "taskId", "projectId", "operationId", "serverId", "serverIdentity");
+    private static final Set<String> SOURCE_FIELDS = Set.of("workerId", "workerEpoch", "executionNodeId", "taskId", "projectId", "operationId", "serverId", "serverIdentity", "taskExecutionId", "dispatchActionId");
     private static final NativeProcessAccess NATIVE_PROCESSES = new NativeProcessAccess();
     private final ExecutionStore store;
     private final long corePid;
