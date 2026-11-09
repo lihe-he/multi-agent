@@ -1,0 +1,172 @@
+{
+  "recordedAt": "2026-11-09T13:13:30.8088598Z",
+  "version": "0.2.0-alpha.12",
+  "commit": "43da58f9975d58e68e74220a711a61300e6bc565",
+  "run": 42619100655,
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/42619100655",
+  "status": "completed",
+  "conclusion": "failure",
+  "platforms": [
+    {
+      "platform": "windows-latest",
+      "jobId": 129166325780,
+      "startedAt": "2026-11-09T12:41:26Z",
+      "completedAt": "2026-11-09T12:54:12Z",
+      "conclusion": "failure",
+      "failedStep": "Actual durable root queue and explicit recovery",
+      "failure": "Queue fixture loaded root Playwright 1.56.1; CI installed the Web 1.64.1 Chromium revision, so chromium-1194 did not exist.",
+      "log": ".runtime/alpha12-ci-attempt1/job-129166325780.log",
+      "logSha256": "f4f89fb0f07bc707aea16d81f4818c97ae9f36be01b06fc492b672d687ce4062",
+      "artifact": {
+        "id": 13676151509,
+        "sha256": "4c3ed6309532bf54c9139100506b9e0d17b5d28ce7773d21bc1a0cf44723bdb9",
+        "digestVerified": true,
+        "sourceCommitVerified": true
+      },
+      "core": {
+        "suites": 20,
+        "tests": 212,
+        "passed": 211,
+        "skipped": 1,
+        "failures": 0,
+        "errors": 0,
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2
+      },
+      "prerequisiteStepsPassed": true,
+      "recoveryChecks": 11,
+      "recoveryJarSha256": "7ee417d654060192aff9c00acf38aa05fb05d7b260d620dc051344e2d7165292",
+      "staleCheckedInReportsIgnored": [
+        "docs/qa/dispatch-queue-win32.json"
+      ],
+      "runtimeEntries": 0,
+      "queueFailureEvidencePresent": false,
+      "subsequentSteps": [
+        {
+          "name": "Standalone browser and attached desktop lifecycle",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Standalone lifecycle with virtual display",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build desktop distribution with bundled Java",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Packaged application lifecycle",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "platform": "macos-latest",
+      "jobId": 129166325713,
+      "startedAt": "2026-11-09T12:41:24Z",
+      "completedAt": "2026-11-09T12:45:34Z",
+      "conclusion": "failure",
+      "failedStep": "Actual durable root queue and explicit recovery",
+      "failure": "Queue fixture loaded root Playwright 1.56.1; CI installed the Web 1.64.1 Chromium revision, so chromium-1194 did not exist.",
+      "log": ".runtime/alpha12-ci-attempt1/job-129166325713.log",
+      "logSha256": "d232b2ca99b4ee349159d7ff60518fa55745442c72afae393bcdee0fd2b1dc1d",
+      "artifact": {
+        "id": 13674745801,
+        "sha256": "85d2ee363812c6bc5b5c32288a5be7921aff3b770169dde86fa2b9a305fb6870",
+        "digestVerified": true,
+        "sourceCommitVerified": true
+      },
+      "core": {
+        "suites": 20,
+        "tests": 212,
+        "passed": 210,
+        "skipped": 2,
+        "failures": 0,
+        "errors": 0,
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2
+      },
+      "prerequisiteStepsPassed": true,
+      "recoveryChecks": 11,
+      "recoveryJarSha256": "f8efe329e14365fb933a307f8dfc29f0bd73064b15fe0230831d0a9b9a0b9317",
+      "staleCheckedInReportsIgnored": [
+        "docs/qa/dispatch-queue-win32.json",
+        "docs/qa/process-recovery-win32.json"
+      ],
+      "runtimeEntries": 0,
+      "queueFailureEvidencePresent": false,
+      "subsequentSteps": [
+        {
+          "name": "Standalone browser and attached desktop lifecycle",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Standalone lifecycle with virtual display",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build desktop distribution with bundled Java",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Packaged application lifecycle",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "platform": "ubuntu-latest",
+      "jobId": 129166325556,
+      "startedAt": "2026-11-09T12:41:24Z",
+      "completedAt": "2026-11-09T12:46:22Z",
+      "conclusion": "failure",
+      "failedStep": "Actual durable root queue and explicit recovery",
+      "failure": "Queue fixture loaded root Playwright 1.56.1; CI installed the Web 1.64.1 Chromium revision, so chromium-1194 did not exist.",
+      "log": ".runtime/alpha12-ci-attempt1/job-129166325556.log",
+      "logSha256": "84e16d223ad65de42287b69b3d891ab816687df22cc18c9082399820aded689b",
+      "artifact": {
+        "id": 13674151941,
+        "sha256": "85de1801d04bb3dc71971401d558b491fbacdd5b629ec7d0fe2b4c84aac40cbe",
+        "digestVerified": true,
+        "sourceCommitVerified": true
+      },
+      "core": {
+        "suites": 20,
+        "tests": 212,
+        "passed": 210,
+        "skipped": 2,
+        "failures": 0,
+        "errors": 0,
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2
+      },
+      "prerequisiteStepsPassed": true,
+      "recoveryChecks": 11,
+      "recoveryJarSha256": "383e77ad31f60b4aac78330db2c3d6c7ca4b154275431bf9c5e50f5a378b7ac8",
+      "staleCheckedInReportsIgnored": [
+        "docs/qa/dispatch-queue-win32.json",
+        "docs/qa/process-recovery-win32.json"
+      ],
+      "runtimeEntries": 0,
+      "queueFailureEvidencePresent": false,
+      "subsequentSteps": [
+        {
+          "name": "Standalone browser and attached desktop lifecycle",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Standalone lifecycle with virtual display",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build desktop distribution with bundled Java",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Packaged application lifecycle",
+          "conclusion": "skipped"
+        }
+      ]
+    }
+  ]
+}

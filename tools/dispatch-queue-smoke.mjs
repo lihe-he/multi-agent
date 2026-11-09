@@ -3,12 +3,16 @@ import { spawn, execFileSync } from 'node:child_process';
 import { createHash, randomBytes } from 'node:crypto';
 import { createServer } from 'node:http';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { delimiter, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { javaHome } from './java-runtime.mjs';
 import { zipEntry } from './team-smoke-fixture.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const browserModules = createRequire(join(root, 'web/package.json'));
+const { chromium } = browserModules('@playwright/test');
+const browserVersion = browserModules('@playwright/test/package.json').version;
 const version = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version;
 const javaRoot = javaHome(root), windows = process.platform === 'win32';
 const java = join(javaRoot, 'bin', windows ? 'java.exe' : 'java');
@@ -152,7 +156,8 @@ try {
   const fixtureSources = ['ControlledDispatchLauncher.java', 'DispatchDatabaseFixture.java'].map(file => join(root, 'tools', file));
   execFileSync(join(javaRoot, 'bin', windows ? 'javac.exe' : 'javac'), ['-encoding', 'UTF-8', '-cp', classpath, '-d', classes, ...fixtureSources], { encoding: 'utf8', windowsHide: true, timeout: 30000 });
   save('fixture.json', { version, jar, jarSha256, fixture: 'ACTUAL_JAR_WITH_EXTERNAL_CONTROLLED_EXECUTOR', productionEntry: 'JarLauncher', controlledEntry: 'PropertiesLauncher',
-    productionClassesFromTargetDirectory: false, fixtureSources: fixtureSources.map(path => ({ path, sha256: createHash('sha256').update(readFileSync(path)).digest('hex') })) });
+    productionClassesFromTargetDirectory: false, browserModule: '@playwright/test from web/package.json', browserVersion,
+    fixtureSources: fixtureSources.map(path => ({ path, sha256: createHash('sha256').update(readFileSync(path)).digest('hex') })) });
   pass('Exact final Jar supplied production classes and the original Worker executable');
   await new Promise(done => model.listen(0, '127.0.0.1', done));
   const source = join(dir, '中文 空格 queue project'); mkdirSync(source);
@@ -194,7 +199,7 @@ try {
 
   phase = 'production browser pending queue';
   await new Promise(done => web.listen(0, '127.0.0.1', done));
-  const { chromium } = await import('playwright'); browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : windows ? { channel: 'msedge' } : {}) });
+  browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : windows ? { channel: 'msedge' } : {}) });
   page = await browser.newPage({ viewport: { width: 1440, height: 1000 } }); page.on('pageerror', error => pageErrors.push(error.message));
   await page.goto(`http://127.0.0.1:${web.address().port}`); await page.getByRole('button', { name: '连接设置', exact: true }).click();
   assert.equal(await page.getByLabel('本机核心地址', { exact: true }).inputValue(), '/service');
@@ -242,7 +247,8 @@ try {
   const cleanup = [...identities.values()].map(fact => inspectProcess(fact.pid, fact.processStartedAt, 'stop')); save('independent-fixture-process-stop.json', cleanup); assert.ok(cleanup.every(fact => fact.originalStopped));
   pass('All launched cores exited and original Worker identities independently confirmed stop');
   assert.equal(createHash('sha256').update(readFileSync(jar)).digest('hex'), jarSha256);
-  report = { recordedAt: new Date().toISOString(), version, platform: process.platform, status: 'passed', jarSha256, fixture: 'ACTUAL_JAR_WITH_EXTERNAL_CONTROLLED_EXECUTOR', checks,
+  report = { recordedAt: new Date().toISOString(), version, platform: process.platform, status: 'passed', jarSha256, fixture: 'ACTUAL_JAR_WITH_EXTERNAL_CONTROLLED_EXECUTOR',
+    browserModule: '@playwright/test from web/package.json', browserVersion, checks,
     pendingTaskId: pending.id, originalPendingTaskExecutionId: original.task.taskExecutionId, originalPendingDispatchActionId: original.actions[0].id, pendingDispatchCount: 1,
     heldTaskId: heldTask.id, originalClaimedTaskExecutionId: claimed.executions[0].id, originalClaimedDispatchActionId: claimed.actions[0].id, originalModelRequestId: claimed.requests[0].id,
     resumedTaskExecutionId: final.executions[0].id, originalBudget: claimed.task.budget.usedCalls, finalBudget: resumed.budget.usedCalls, automaticReplay: false, originalUnknownPreserved: true,

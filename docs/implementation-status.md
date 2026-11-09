@@ -17,7 +17,7 @@
 | 打包资产 | 原 Electron 安装守卫 6、打包守卫 8、连接策略 3 共 17 / 17。Windows 两个官方资产实际下载/原 SHA-512/7zip/原 app-builder 缓存消费通过；Linux 资产实际字节核验通过，本机 Windows 解压符号链接权限失败保留，不计作 Linux 原生通过。原失败 run 已终态，原打包器一次回退及固定来源见[打包研究](./research/electron-builder-assets-2026-11-09.md)和[资产报告](./qa/alpha12-desktop-assets-win32.json) |
 | Windows 发行物 | 最终 Jar/Web 使用已核验的 NSIS 资产缓存，由原 electron-builder 26.0.12 生成 alpha.12 安装包；149444501 字节，SHA-256 `9d744f178b7174e04b01d8c66563314b6489e73f929d22a06f1ee17e191c09b9`。打包程序 version/application.version 均为 alpha.12、packaged=true，禁用外部 Java 后以内置运行时启动，API 200、无页面异常；内置核心 SHA 与最终 Jar 一致，见[产物核对](./qa/alpha12-validation-win32.json)和[打包报告](./qa/desktop-packaged-win32.json)。本轮未重复完整安装/卸载，安装包未签名 |
 | 源码审查 | 16 份新增/受改 Java 的 50 条原注释逐项保留，新 Javadoc 为标准多行；根/Web/锁文件/POM 版本一致，diff whitespace 通过，原源码与准确 Jar 哈希见[源码核对](./qa/alpha12-source-audit-win32.json) |
-| 三端 CI | 本轮本机检查完成，随 main 提交推送后按该准确提交的 Windows/macOS/Ubuntu 结果和产物验收；旧 run 的成功不代替 alpha.12 |
+| 三端 CI | 原提交 `43da58f9975d58e68e74220a711a61300e6bc565` 的 [run 42619100655](https://github.com/lihe-he/multi-agent/actions/runs/42619100655) 已终态 failure，三平台均在实际队列浏览器启动处失败：脚本加载根 Playwright 1.56.1，而 CI 安装 Web 1.64.1 的 Chromium，旧 revision 不存在。修订按 Web package.json 解析浏览器模块并保存版本，本机同一最终 Jar/Web 通过 1.64.1 + Edge 的队列 13 / 13；本机 Chromium 另报 spawn UNKNOWN，尚未进入浏览器断言。原日志、ZIP digest、已完成与未执行步骤见[准确提交记录](./qa/alpha12-ci-dispatch-receipt.json)；修订提交的三端 Chromium/打包结果继续独立验收 |
 
 本轮 SQLite schema 为 6，API、实体及 Worker 帧协议仍为 1；旧记录不补造根尝试。执行结束、未知核对和人工验收分别保存，验收/导出等待根结束回执；并发任务变化会拒绝混合导出。旧核心不能打开新库。原 15 秒子请求等待超时尚无足够证据确定原因，相同期限定向与最后完整回归通过，新增失败线程/派发快照进入 CI 证据；不以重跑通过改写旧失败。
 

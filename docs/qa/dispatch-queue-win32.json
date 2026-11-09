@@ -1,101 +1,103 @@
 {
-  "recordedAt": "2026-11-09T12:15:10.630Z",
+  "recordedAt": "2026-11-09T12:58:24.079Z",
   "version": "0.2.0-alpha.12",
   "platform": "win32",
   "status": "passed",
   "jarSha256": "d8a3a837a377dd7cfe1f7b4f635c20dab73c569d3743d91ecfe77cd8a923060f",
   "fixture": "ACTUAL_JAR_WITH_EXTERNAL_CONTROLLED_EXECUTOR",
+  "browserModule": "@playwright/test from web/package.json",
+  "browserVersion": "1.64.1",
   "checks": [
     {
       "name": "Exact final Jar supplied production classes and the original Worker executable",
       "status": "passed",
-      "at": "2026-11-09T12:12:53.738Z"
+      "at": "2026-11-09T12:55:37.817Z"
     },
     {
       "name": "Actual approval transaction failure rolled back confirmation and ran no Worker operation",
       "status": "passed",
-      "at": "2026-11-09T12:13:17.979Z"
+      "at": "2026-11-09T12:56:04.447Z"
     },
     {
       "name": "Unclaimed pause and cancellation withdrew original actions without task execution",
       "status": "passed",
-      "at": "2026-11-09T12:13:23.699Z"
+      "at": "2026-11-09T12:56:13.703Z"
     },
     {
       "name": "Core exited with the original PENDING action and unchanged budget durably saved",
       "status": "passed",
-      "at": "2026-11-09T12:13:25.133Z"
+      "at": "2026-11-09T12:56:15.290Z"
     },
     {
       "name": "Original unclaimed identity survived reopening and waited for old process coverage",
       "status": "passed",
-      "at": "2026-11-09T12:13:29.364Z"
+      "at": "2026-11-09T12:56:22.153Z"
     },
     {
       "name": "Production browser showed the real unclaimed identity on desktop and narrow screens",
       "status": "passed",
-      "at": "2026-11-09T12:13:30.775Z"
+      "at": "2026-11-09T12:56:23.619Z"
     },
     {
       "name": "New core executed the original pending action once with original root sources",
       "status": "passed",
-      "at": "2026-11-09T12:13:42.099Z"
+      "at": "2026-11-09T12:56:40.385Z"
     },
     {
       "name": "Full task ZIP kept execution completion separate from human acceptance",
       "status": "passed",
-      "at": "2026-11-09T12:13:42.747Z"
+      "at": "2026-11-09T12:56:41.670Z"
     },
     {
       "name": "Core exited after real claim and in-flight HTTP dispatch",
       "status": "passed",
-      "at": "2026-11-09T12:13:47.369Z"
+      "at": "2026-11-09T12:56:47.926Z"
     },
     {
       "name": "Claimed root stayed UNKNOWN with original request and budget, without replay",
       "status": "passed",
-      "at": "2026-11-09T12:13:52.247Z"
+      "at": "2026-11-09T12:56:55.705Z"
     },
     {
       "name": "Human reconciliation kept original UNKNOWN history and cumulative budget",
       "status": "passed",
-      "at": "2026-11-09T12:13:52.376Z"
+      "at": "2026-11-09T12:56:55.868Z"
     },
     {
       "name": "Explicit resume created a fresh attempt and exported both histories without budget reset",
       "status": "passed",
-      "at": "2026-11-09T12:13:58.353Z"
+      "at": "2026-11-09T12:57:08.574Z"
     },
     {
       "name": "All launched cores exited and original Worker identities independently confirmed stop",
       "status": "passed",
-      "at": "2026-11-09T12:15:10.606Z"
+      "at": "2026-11-09T12:58:23.983Z"
     }
   ],
-  "pendingTaskId": "02991731-caec-4ebc-b67e-6e117fe268be",
-  "originalPendingTaskExecutionId": "a79203fc-bd1a-4ea7-963e-fc74c60a77a1",
-  "originalPendingDispatchActionId": "bc777638-4582-4577-aee2-14224f034f5c",
+  "pendingTaskId": "1dcdd25b-4f3a-44a1-ab76-b00fbf8bc7a7",
+  "originalPendingTaskExecutionId": "a90c1a0b-0847-4d7b-b0e8-1fb8740331d2",
+  "originalPendingDispatchActionId": "c033edef-ef45-4ba5-ad3b-93bf4e95468c",
   "pendingDispatchCount": 1,
-  "heldTaskId": "038a56ae-f896-4b68-a111-d29eadaa345c",
-  "originalClaimedTaskExecutionId": "84b7ecad-4b3c-45b7-9daa-d4ce5c00360c",
-  "originalClaimedDispatchActionId": "86b05b21-5796-4829-a0ba-9aa220562911",
-  "originalModelRequestId": "6f4e87ab-313c-44b7-86e0-190250b64a80",
-  "resumedTaskExecutionId": "d2593d2c-ab97-4466-aebe-0b24f0de2235",
+  "heldTaskId": "1ead3ccc-ce07-4453-ae77-7d2bc9b346a7",
+  "originalClaimedTaskExecutionId": "094d0288-0b83-4dd0-a12a-03d12f93780a",
+  "originalClaimedDispatchActionId": "d07255a4-f646-4b1a-9f8e-8a2d8d0a12ec",
+  "originalModelRequestId": "07c87048-5f15-4d9d-af8d-312c4585b4b2",
+  "resumedTaskExecutionId": "8b66e93c-779b-4466-84a2-8ab60622be33",
   "originalBudget": 1,
   "finalBudget": 4,
   "automaticReplay": false,
   "originalUnknownPreserved": true,
   "corePids": [
-    35340,
-    11120,
-    11664,
-    16564
+    26936,
+    11628,
+    43488,
+    47352
   ],
   "workerPids": [
-    17176,
-    23076,
-    47204,
-    17768
+    13356,
+    47260,
+    13216,
+    15032
   ],
   "pageErrors": [],
   "modelCalls": [
@@ -103,44 +105,44 @@
       "number": 1,
       "goal": "pending",
       "stage": "INVESTIGATE",
-      "at": "2026-11-09T12:13:39.157Z"
+      "at": "2026-11-09T12:56:34.576Z"
     },
     {
       "number": 2,
       "goal": "pending",
       "stage": "IMPLEMENT",
-      "at": "2026-11-09T12:13:39.478Z"
+      "at": "2026-11-09T12:56:35.374Z"
     },
     {
       "number": 3,
       "goal": "pending",
       "stage": "REVIEW",
-      "at": "2026-11-09T12:13:41.544Z"
+      "at": "2026-11-09T12:56:39.312Z"
     },
     {
       "number": 4,
       "goal": "held",
       "stage": "INVESTIGATE",
-      "at": "2026-11-09T12:13:45.682Z"
+      "at": "2026-11-09T12:56:46.229Z"
     },
     {
       "number": 5,
       "goal": "held",
       "stage": "INVESTIGATE",
-      "at": "2026-11-09T12:13:52.645Z"
+      "at": "2026-11-09T12:56:56.844Z"
     },
     {
       "number": 6,
       "goal": "held",
       "stage": "IMPLEMENT",
-      "at": "2026-11-09T12:13:52.945Z"
+      "at": "2026-11-09T12:56:57.679Z"
     },
     {
       "number": 7,
       "goal": "held",
       "stage": "REVIEW",
-      "at": "2026-11-09T12:13:56.973Z"
+      "at": "2026-11-09T12:57:06.511Z"
     }
   ],
-  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\dispatch-queue-dlI22Q\\reports"
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\dispatch-queue-TC2TbT\\reports"
 }

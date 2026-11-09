@@ -55,4 +55,8 @@ PENDING 表示从未领取的动作。它可跨核心重开保留原编号，门
 
 失败不改写：首轮 UI 五项停在错误的任务按钮精确定位，修正夹具后通过；首次完整核心在子请求到达前的原 15 秒等待失败，相同期限定向与最后完整回归均未复现，新增失败快照保留派发/线程/进程事实，不能据此声称已找到该次超时原因。Jar 夹具前三次分别因重复目标、缺少打开连接设置和误用不存在的恢复字段失败，均未放宽生产去重、连接或旧进程门禁；失败/清理记录在 `.runtime/dispatch-queue-ca7J7T/`、`dispatch-queue-pdr7CX/`、`dispatch-queue-0pbJuL/`，最后一轮才计为通过。
 
-本轮实际进程恢复、完整协议、独立客户端、发行物与准确提交的三端结果见[实施记录](../implementation-status.md)。这些检查的覆盖范围不替代完整 F01–F21、长期负载、远程 Worker 或首版里程碑验收。
+原提交 `43da58f9975d58e68e74220a711a61300e6bc565` 的三端 [CI run 42619100655](https://github.com/lihe-he/multi-agent/actions/runs/42619100655) 均在队列浏览器启动处失败。根依赖 Playwright 为 1.56.1，CI 的 Web 安装和 UI 使用 1.64.1；队列脚本错误要求旧 Chromium revision 1194，三端日志均证明该文件不存在。此前核心、协议、UI 和原进程恢复步骤成功，后续独立客户端与打包步骤未执行；已归档的旧 Windows QA 不作为该次未执行检查的证明。
+
+修订用 `createRequire(web/package.json)` 解析 `@playwright/test`，与原恢复和独立客户端脚本一致，在夹具和报告中保存实际模块与版本。准确最终 Jar 和生产 Web 哈希均复核未变，修订脚本使用本机 Edge、Web Playwright 1.64.1 再次完成 13 / 13：原 PENDING 尝试 `a90c1a0b-0847-4d7b-b0e8-1fb8740331d2` 领取一次，原已领取尝试 `094d0288-0b83-4dd0-a12a-03d12f93780a` 保持 UNKNOWN，新尝试 `8b66e93c-779b-4466-84a2-8ab60622be33` 完成，原预算 1→4。最新[实际报告](../qa/dispatch-queue-win32.json)与 `.runtime/dispatch-queue-TC2TbT/reports/` 对应本次运行；上段首次成功的原编号和现场继续保留。本机 Chromium 尝试在启动时报 `spawn UNKNOWN`，未进入浏览器断言，失败与原进程停止事实在 `.runtime/dispatch-queue-SuAEI5/reports/`，不计为 Chromium 通过。
+
+原 Windows ZIP 实际只有 79 个条目，没有 `.runtime` 现场或失败快照：upload-artifact v4 默认排除隐藏目录，原路径清单本身不足以保全它们。修订在原明确限定的报告路径中启用 `include-hidden-files`，新 CI 另检查实际 ZIP 的根队列现场。原 CI 的准确元数据、日志、实际下载 ZIP digest 和阶段边界见[CI 记录](../qa/alpha12-ci-dispatch-receipt.json)。修订提交继续在 CI 使用 Chromium，三端真实结果按该提交核验。本轮实际进程恢复、完整协议、独立客户端与发行物见[实施记录](../implementation-status.md)。这些检查的覆盖范围不替代完整 F01–F21、长期负载、远程 Worker 或首版里程碑验收。
