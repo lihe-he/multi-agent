@@ -963,8 +963,48 @@
   ],
   "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha13-final-local-qa",
   "ci": {
-    "status": "AWAITING_EXACT_COMMIT_PUSH",
-    "receipt": "docs/qa/alpha13-ci-workspaces-receipt.json"
+    "verifiedAt": "2026-11-10T03:41:08.910Z",
+    "status": "passed",
+    "headSha": "33863a42c5e2e84a6072daa78d24428c77aed5c5",
+    "runId": 42741955481,
+    "runAttempt": 1,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/42741955481",
+    "receipt": "docs/qa/alpha13-ci-workspaces-receipt.json",
+    "platforms": [
+      {
+        "platform": "win32",
+        "artifactSha256": "8627cc6e60d04f56bc016763c7eecac1f68d95de4b20c1aa84f56df9097b26af",
+        "coreTests": 246,
+        "corePassed": 245,
+        "coreSkipped": 1,
+        "uiTests": 62,
+        "workspaceChecks": 15,
+        "originalIdentitiesIndependentlyStopped": 52,
+        "freshRuntimeEvidenceVerified": true
+      },
+      {
+        "platform": "darwin",
+        "artifactSha256": "96dd3060081660b3420afb6dc8052e5ae172b1aed06a50d725e523102b8674f3",
+        "coreTests": 246,
+        "corePassed": 243,
+        "coreSkipped": 3,
+        "uiTests": 62,
+        "workspaceChecks": 15,
+        "originalIdentitiesIndependentlyStopped": 51,
+        "freshRuntimeEvidenceVerified": true
+      },
+      {
+        "platform": "linux",
+        "artifactSha256": "dfbdf0b8efa1b7e78961521451464d5ced898527eb9961e6536cfc90dbb56a64",
+        "coreTests": 246,
+        "corePassed": 243,
+        "coreSkipped": 3,
+        "uiTests": 62,
+        "workspaceChecks": 15,
+        "originalIdentitiesIndependentlyStopped": 52,
+        "freshRuntimeEvidenceVerified": true
+      }
+    ]
   },
   "retainedFailures": [
     {

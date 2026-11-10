@@ -17,11 +17,11 @@
 | 独立客户端 | 核心 PID 38724、Worker PID 43160，真实生产 Web/同源代理核对客户端和附加 Electron 退出与重连保留原请求/租约且在途请求仍为 1；随后 18 次根调用、两名副 Agent、13 条 Worker 回执及一次 MCP 派发完成。无页面/模型异常；[报告](./qa/standalone-win32.json)与实际 Worker/团队截图已查看，日志 `.runtime/alpha13-standalone-final.log` |
 | Windows 打包 | 原依赖/打包/连接守卫 17 / 17；原 electron-builder 26.0.12 一次生成 alpha.13 NSIS，安装器 149461427 字节，SHA-256 `3163ec3b58641b96b48c2dd94b76ffb957fcf2184b6fa19328138ee19db3a177`。打包程序 API 200、version/application.version=alpha.13、packaged=true，外部 Java 禁用后以内置 Java 21.0.13 启动，无页面异常且正常退出；包内核心、全部 Web 文件（含 config）、桌面脚本和 Java 来源逐项哈希核对。[打包报告](./qa/desktop-packaged-win32.json)及[产物汇总](./qa/alpha13-validation-win32.json)保存实际事实，本轮未重复完整安装/卸载，安装器签名状态为 NotSigned |
 | 源码审查 | 22 份新增/受改 Java 中 71 条原注释逐项保留，新增 Javadoc 为标准多行；根/Web/锁文件/POM 版本一致，diff whitespace 与脚本语法通过，最终 Jar 全部 class 与原编译输出相同。[源码审查](./qa/alpha13-source-audit-win32.json)保存准确源码与类哈希 |
-| 证据归档与 CI | 六条最终顺序验证的命令、脚本 SHA、退出码及前后 Jar/Web/config 哈希均为 passed，完整本机证据在 `.runtime/alpha13-final-local-qa/`，正式汇总为[alpha.13 本机验证](./qa/alpha13-validation-win32.json)。CI 新增实际工作区步骤与最终 Jar/Web、打包内置核心、夹具原类和隐藏现场归档；本轮准确提交的三端结果将在提交推送后单独核验并追加 |
+| 证据归档与 CI | `33863a42c5e2e84a6072daa78d24428c77aed5c5` 的 [run 42741955481](https://github.com/lihe-he/multi-agent/actions/runs/42741955481) 三端终态 success，三份实际证据 ZIP 的大小与 GitHub digest 均逐字节核对。各端核心 22 套 / 246 项、载体 2 / 2，Windows 245 通过 + 1 跳过，macOS/Linux 243 通过 + 3 跳过；实际 UI 62、工作区 15、协议 29、恢复 11、队列 13、独立客户端及打包启动均通过。原 READY owner、两次根尝试、隐藏现场、一次编译夹具、准确 Jar/Web/config 与包内核心分别核对；Windows/macOS/Linux 分别独立确认 52/51/52 个原 PID/出生身份停止。[准确提交记录](./qa/alpha13-ci-workspaces-receipt.json)保留全部 SHA、原跳过原因、下载失败与核验来源，发行包 artifact 仅记元数据 |
 
 SQLite schema 为 7，API 与 Worker 帧协议仍为 1。`workspacePreparationPresent` 只表示读取时已有准备记录/目录，不作为 READY 成功事实持久化；实际恢复仍核对原回执和 Git 关联。READY 回执保存故障来自真实 Worker 完成及 ACK 后的 SQLite 触发器；人工 PREPARED 故障窗口另行标记，不能互相替代。选择历史保存原规则全文，源变化后同源更新授权保留原规则。
 
-原 junction 辅助进程超时、旧 JDK 在测试前中止、UI 请求数量假设和前两轮 Jar 脚本等待/名称定位失败均保留。第三轮工作区成功与一次编译探针修订后的第四轮成功分别保存；本机 QA 首次 ASAR 路径分隔符读取失败及修正也记录于汇总，未改变生产源码或原验证结果。后续 Java/Web 源码未再修改，全部最终检查使用上述准确产物。
+原 junction 辅助进程超时、旧 JDK 在测试前中止、UI 请求数量假设和前两轮 Jar 脚本等待/名称定位失败均保留。第三轮工作区成功与一次编译探针修订后的第四轮成功分别保存；本机 QA 首次 ASAR 路径分隔符读取失败及修正也记录于汇总，未改变生产源码或原验证结果。alpha.13 最终生产源码以 `33863a42c5e2e84a6072daa78d24428c77aed5c5` 固定，本次 CI 核验只读取该提交的实际归档及上述保留产物；alpha.14 的后续源码与验证另行记录。
 
 本轮完成 F03 的所选提交 clone/worktree 与上述恢复边界；当前目录执行、排他写入租约、完整工作区归档恢复、远程配对/队列、完整历史进程树及其他 F01–F21/M0–M3 退出条件继续实施。完整项目目标仍未完成。
 
