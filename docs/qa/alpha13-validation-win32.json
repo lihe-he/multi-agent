@@ -1,0 +1,1011 @@
+{
+  "recordedAt": "2026-11-10T02:16:38.772Z",
+  "version": "0.2.0-alpha.13",
+  "platform": "win32",
+  "status": "passed",
+  "sourceBaseCommit": "835d27c450f16b3c0e562e374301c76cb1ccb950",
+  "implementedScope": [
+    "F03 selected commit CLONE/WORKTREE",
+    "F03 frozen source and READY reuse",
+    "F12 original selections and ownership history"
+  ],
+  "core": {
+    "jar": {
+      "path": "D:\\Projects\\多Agent研发工作台\\core\\target\\agent-workbench-core-0.2.0-alpha.13.jar",
+      "sha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+      "size": 35793599
+    },
+    "suiteCount": 22,
+    "tests": 246,
+    "passed": 244,
+    "skipped": 2,
+    "failures": 0,
+    "errors": 0,
+    "parallelism": 2,
+    "maxPoolSize": 2,
+    "suites": [
+      {
+        "name": "dev.agentworkbench.AgentRunStoreTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "aa1cd76199cc3257cfa804b71b406af964775dc1aeeaa422ea8b0e1892112f65"
+      },
+      {
+        "name": "dev.agentworkbench.ExecutionStoreTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "73e9f5c7016e3f7d5c64a240a91a8839b6ebd230e83484b41996eaa51b7ec7f2"
+      },
+      {
+        "name": "dev.agentworkbench.GitWorkspaceTest",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "b1ccce366ca658a960f264d0dcb9b55c9203f9163f19b93f02d1621f5b789da0"
+      },
+      {
+        "name": "dev.agentworkbench.LocalAccessFilterTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "a40e5261bfe00bfd6dc8eb36efa095cbf7bf4a435a3d397073e578a7383fdeee"
+      },
+      {
+        "name": "dev.agentworkbench.ManagedProcessLedgerTest",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "406e188124ec90a760c17cedf158522a3911bfb88696dc5feee458d2505d1b7a"
+      },
+      {
+        "name": "dev.agentworkbench.mcp.McpIntegrationTest",
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "5d1f50d6b3c4ad1233f845a156abf86ddeb0d584b9a8a8ed1f29c73ea65ca631"
+      },
+      {
+        "name": "dev.agentworkbench.ModelRequestStoreTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "8904f9820771e4f42c73b30c9ffd0e606d72d976c360395bc4ad96d82ffa4cb7"
+      },
+      {
+        "name": "dev.agentworkbench.PlanAndPolicyTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "37fb2029212f2490d62b522c7dfb8ca9fa025148f186a187dd508fcd21dd8fac"
+      },
+      {
+        "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "221c2895f484dc248b4e615e2b22a420c763c9a4a67e999147c82f5658d0e0c3"
+      },
+      {
+        "name": "dev.agentworkbench.RootDispatchEngineTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "77f4a82e2bddc53cd420ed263ecd6094b13efd51a07169a8b0f4c6113aa6375e"
+      },
+      {
+        "name": "dev.agentworkbench.RuntimeDelegationTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "57fa70e7d9ff8ec2579e7f5b3b60ef3b77f4b4a5a71fea6be72693b3496efe89"
+      },
+      {
+        "name": "dev.agentworkbench.RuntimeIntegrationTest",
+        "tests": 27,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "3f52559fe34af45eea09c14c1e5a995a6583c5dcd23b9101d4894e9bd3009894"
+      },
+      {
+        "name": "dev.agentworkbench.SessionStoreTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "3c167fe5250d86b3e852327f8f7b68e62ab56f8250887c46cf9ff711b5b3e5c5"
+      },
+      {
+        "name": "dev.agentworkbench.TaskDispatchQueueTest",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "3538c5e04dd801edbed49dc28962b3c00703fa4f5ed795c346e424802d87d30f"
+      },
+      {
+        "name": "dev.agentworkbench.TeamExecutionTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "f3a4c51d522a5f583abd1a161c227afd293ff171d0343cc93e08a11fa2542819"
+      },
+      {
+        "name": "dev.agentworkbench.TeamRecordsTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "b2c47e917063f40288b2c389bbbf502614668db2d583e0860a60bc1711eb6cb1"
+      },
+      {
+        "name": "dev.agentworkbench.WorkbenchEngineTest",
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "63c8b37e8f6e9776465c9533fd771366af46c2bd86dd19c889aeff5bd7f1e4f3"
+      },
+      {
+        "name": "dev.agentworkbench.WorkerLeaseTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "f8d4e5e7390f7ca364a89ffc84c61a5e089285de85f5b0ab85916697b497c21e"
+      },
+      {
+        "name": "dev.agentworkbench.WorkerProcessTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "7449a78577a2e7a1a5e2b8bd69eed38569c1eda410e80e0bc265998de221e0da"
+      },
+      {
+        "name": "dev.agentworkbench.WorkerRpcTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "284a8929bdf06b1b82e693e249577eb6cefe6fc41fcbec6242479cf5553e7c92"
+      },
+      {
+        "name": "dev.agentworkbench.WorkerWireTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "74b5f788797bce16b03b74726a7e7b2ccd74e2c75eeb7e9e6897534323c8af4a"
+      },
+      {
+        "name": "dev.agentworkbench.WorkspaceSelectionEngineTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "parallelism": "2",
+        "maxPoolSize": "2",
+        "javaVersion": "21.0.13",
+        "sha256": "2dd6fa50051e8e457cebc6cc51bb5de37cdab3e0a7772e179173f08f9ff38dfc"
+      }
+    ],
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha13-final-core-evidence"
+  },
+  "ui": {
+    "status": "passed",
+    "tests": 62,
+    "evidenceDirectory": ".runtime/alpha13-ui-full-evidence2",
+    "assets": [
+      {
+        "file": "web/dist/index.html",
+        "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+      },
+      {
+        "file": "web/dist/workbench-config.json",
+        "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+      },
+      {
+        "file": "web/dist/assets/index-Bzs5cPX3.js",
+        "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+      },
+      {
+        "file": "web/dist/assets/index-DhXfDZr2.css",
+        "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+      }
+    ]
+  },
+  "workspace": {
+    "tests": 15,
+    "report": "docs/qa/workspace-selection-win32.json",
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\workspace-selection-kYJdBk\\reports",
+    "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+    "scriptSha256": "abee69dba171fe98fff4011d0567fc6dc28e69c805d5730fd8b597e02f625a03",
+    "corePids": [
+      54680,
+      23916
+    ],
+    "workerPids": [
+      17828,
+      55044
+    ],
+    "modelCalls": 12,
+    "originalReadyOwner": "1700378c-8e5a-4223-a928-cf9b84cca69e",
+    "recoveredReadyOwner": "1700378c-8e5a-4223-a928-cf9b84cca69e",
+    "originalAttempt": "6ba77a87-d9dd-4b8d-80e5-6f2a3a634622",
+    "recoveredAttempt": "58a72384-7e88-441d-9b78-4e8da486c73e",
+    "originalIdentitiesIndependentlyStopped": 52,
+    "processProbe": "ONCE_COMPILED_ORIGINAL_PID_AND_BIRTH_PROBE",
+    "automaticReplay": false
+  },
+  "protocol": {
+    "tests": 29,
+    "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-UICxck"
+  },
+  "recovery": {
+    "tests": 11,
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\process-recovery-Sgdz69",
+    "automaticReplay": false,
+    "processCoverage": "OBSERVED_ONLY",
+    "originalFixtureIdentitiesIndependentlyStopped": 2
+  },
+  "dispatch": {
+    "tests": 13,
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\dispatch-queue-ZGGjg9\\reports",
+    "originalUnknownPreserved": true,
+    "originalBudget": 1,
+    "finalBudget": 4,
+    "originalIdentitiesIndependentlyStopped": 54
+  },
+  "standalone": {
+    "corePid": 38724,
+    "workerPid": 43160,
+    "workerReceipts": 13,
+    "rootCalls": 18,
+    "childRuns": 2,
+    "externalMcpCalls": 1,
+    "originalRequest": "23c4a8b8-01f4-4d0d-bcc7-9fd7f21ce00c",
+    "originalLease": "697dba81-d399-4602-a018-45ff7f06010e"
+  },
+  "guards": {
+    "tests": 17,
+    "passed": 17
+  },
+  "desktop": {
+    "desktop": "PASS",
+    "api": 200,
+    "version": "0.2.0-alpha.13",
+    "application": {
+      "packaged": true,
+      "version": "0.2.0-alpha.13"
+    },
+    "externalJavaDisabled": true,
+    "pageErrors": []
+  },
+  "packagedJar": {
+    "file": "release/win-unpacked/resources/core/core.jar",
+    "sha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8"
+  },
+  "installer": {
+    "recordedAt": "2026-11-10T02:14:49.6830398Z",
+    "version": "0.2.0-alpha.13",
+    "file": "release/Agent Workbench Setup 0.2.0-alpha.13.exe",
+    "sha256": "3163ec3b58641b96b48c2dd94b76ffb957fcf2184b6fa19328138ee19db3a177",
+    "size": 149461427,
+    "authenticodeStatus": "NotSigned",
+    "authenticodeMessage": "The file D:\\Projects\\多Agent研发工作台\\release\\Agent Workbench Setup 0.2.0-alpha.13.exe is not digitally signed. You cannot run this script on the current system. For more information about running scripts and setting execution policy, see about_Execution_Policies at https://go.microsoft.com/fwlink/?LinkID=135170",
+    "fullInstallUninstallRetested": false
+  },
+  "packagedAssets": {
+    "asar": {
+      "file": "release/win-unpacked/resources/app.asar",
+      "sha256": "faf6938924d3ec30c7736c83115051411e00b89e40a6c143cc35ae6e1495c1f0"
+    },
+    "web": [
+      {
+        "file": "web/dist/index.html",
+        "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981",
+        "matchesFinalProductionWeb": true
+      },
+      {
+        "file": "web/dist/workbench-config.json",
+        "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874",
+        "matchesFinalProductionWeb": true
+      },
+      {
+        "file": "web/dist/assets/index-Bzs5cPX3.js",
+        "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164",
+        "matchesFinalProductionWeb": true
+      },
+      {
+        "file": "web/dist/assets/index-DhXfDZr2.css",
+        "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4",
+        "matchesFinalProductionWeb": true
+      }
+    ],
+    "desktop": [
+      {
+        "file": "desktop/connection.cjs",
+        "sha256": "00fde4930d4d17854b0aa06967c6a4bb73814fee8e47f3a136d975957de5677d",
+        "matchesSource": true
+      },
+      {
+        "file": "desktop/icon.ico",
+        "sha256": "008d29fb170499e344a9356830eb38357c0d0e161c443c18af60eb68597c1007",
+        "matchesSource": true
+      },
+      {
+        "file": "desktop/icon.png",
+        "sha256": "f93908cae6990902bb7eead381f7330a47ee30c4b4ce497fa367fc78c830c4d6",
+        "matchesSource": true
+      },
+      {
+        "file": "desktop/main.cjs",
+        "sha256": "5c7211fb26a11a39762baf799b43143764515f4153d743a22dec92eac79e9a84",
+        "matchesSource": true
+      },
+      {
+        "file": "desktop/preload.cjs",
+        "sha256": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98",
+        "matchesSource": true
+      }
+    ],
+    "javaVersion": "21.0.13",
+    "javaReleaseSha256": "b3f0f2c915151893f679218e30bf445ee6b489681e06457f466744fe89e50e8c",
+    "javaExecutableSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
+    "matchesPreparedRuntime": true
+  },
+  "sourceAudit": {
+    "file": "docs/qa/alpha13-source-audit-win32.json",
+    "javaFiles": 22,
+    "preservedOriginalComments": 71,
+    "jarMatchesCompiledClasses": true,
+    "classes": 94
+  },
+  "runtimeConfig": {
+    "file": "web/dist/workbench-config.json",
+    "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874",
+    "matchesPublicSource": true,
+    "matchesSourceBaseContent": true
+  },
+  "steps": {
+    "integration": {
+      "version": "0.2.0-alpha.13",
+      "npmScript": "test:integration",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/ci-smoke.mjs"
+      ],
+      "sourceSha256": "a8834ed829edfc24d3dfe6ccc99af480b07a3cae94b3faaf40fcf66ef0608c1a",
+      "childPid": 22612,
+      "startedAt": "2026-11-10T02:00:56.139Z",
+      "endedAt": "2026-11-10T02:02:14.493Z",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "before": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ]
+      },
+      "after": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ]
+      },
+      "productionAssetsUnchanged": true,
+      "log": ".runtime/alpha13-integration-final.log"
+    },
+    "recovery": {
+      "version": "0.2.0-alpha.13",
+      "npmScript": "test:recovery",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/process-recovery-smoke.mjs"
+      ],
+      "sourceSha256": "b1ed1a6ec1d9bc448d71b2cfb00cec997dd14e60a507de4994bd8cd2b612ff24",
+      "childPid": 44892,
+      "startedAt": "2026-11-10T02:03:12.576Z",
+      "endedAt": "2026-11-10T02:04:14.876Z",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "before": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ],
+        "runtimeConfig": {
+          "file": "web/dist/workbench-config.json",
+          "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+        }
+      },
+      "after": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ],
+        "runtimeConfig": {
+          "file": "web/dist/workbench-config.json",
+          "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+        }
+      },
+      "productionAssetsUnchanged": true,
+      "log": ".runtime/alpha13-recovery-final.log"
+    },
+    "dispatch": {
+      "version": "0.2.0-alpha.13",
+      "npmScript": "test:dispatch",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/dispatch-queue-smoke.mjs"
+      ],
+      "sourceSha256": "7d70380b2ee1fd3f4a7d5ea45b2ca361858f318fca5ade7507032c9a4b15d50b",
+      "childPid": 20692,
+      "startedAt": "2026-11-10T02:06:56.458Z",
+      "endedAt": "2026-11-10T02:10:32.449Z",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "before": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ],
+        "runtimeConfig": {
+          "file": "web/dist/workbench-config.json",
+          "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+        }
+      },
+      "after": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ],
+        "runtimeConfig": {
+          "file": "web/dist/workbench-config.json",
+          "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+        }
+      },
+      "productionAssetsUnchanged": true,
+      "log": ".runtime/alpha13-dispatch-final.log"
+    },
+    "standalone": {
+      "version": "0.2.0-alpha.13",
+      "npmScript": "test:standalone",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/standalone-smoke.mjs"
+      ],
+      "sourceSha256": "6b9bb76261886d7c4d8a9616eaf60a49454f7b9318b0a9ef5fcd708039095c06",
+      "childPid": 11196,
+      "startedAt": "2026-11-10T02:10:57.241Z",
+      "endedAt": "2026-11-10T02:11:48.921Z",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "before": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ],
+        "runtimeConfig": {
+          "file": "web/dist/workbench-config.json",
+          "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+        }
+      },
+      "after": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ],
+        "runtimeConfig": {
+          "file": "web/dist/workbench-config.json",
+          "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+        }
+      },
+      "productionAssetsUnchanged": true,
+      "log": ".runtime/alpha13-standalone-final.log"
+    },
+    "package": {
+      "version": "0.2.0-alpha.13",
+      "npmScript": "package:prepared",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/manage.mjs",
+        "package:prepared"
+      ],
+      "sourceSha256": "cadc15ff78b71d83d02eeb6f078adc91848fd030010e3a80f6980cce7e911627",
+      "childPid": 13412,
+      "startedAt": "2026-11-10T02:12:54.776Z",
+      "endedAt": "2026-11-10T02:13:22.857Z",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "before": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ],
+        "runtimeConfig": {
+          "file": "web/dist/workbench-config.json",
+          "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+        }
+      },
+      "after": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ],
+        "runtimeConfig": {
+          "file": "web/dist/workbench-config.json",
+          "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+        }
+      },
+      "productionAssetsUnchanged": true,
+      "log": ".runtime/alpha13-package-final.log"
+    },
+    "packaged": {
+      "version": "0.2.0-alpha.13",
+      "npmScript": "test:packaged",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/ci-desktop.mjs"
+      ],
+      "sourceSha256": "f26df059c64e79a6c572dc240d72543b2366e80356c587753c2177b1f42dd5a9",
+      "childPid": 27032,
+      "startedAt": "2026-11-10T02:14:17.100Z",
+      "endedAt": "2026-11-10T02:14:29.026Z",
+      "exitCode": 0,
+      "signal": null,
+      "status": "passed",
+      "before": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ],
+        "runtimeConfig": {
+          "file": "web/dist/workbench-config.json",
+          "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+        }
+      },
+      "after": {
+        "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
+        "web": [
+          {
+            "file": "web/dist/index.html",
+            "sha256": "10691f7ff06268dcb93cdee14f0ff98a4e662a064f18a84db6806181dcfa8981"
+          },
+          {
+            "file": "web/dist/assets/index-Bzs5cPX3.js",
+            "sha256": "a59546f23051aecc6c6e4ebf6c65a082816efef4ca53ff06637506123587e164"
+          },
+          {
+            "file": "web/dist/assets/index-DhXfDZr2.css",
+            "sha256": "868e4ff69781972c75a8f7fd03f9f729381285cd5efe225b3fe3b7598dc663a4"
+          }
+        ],
+        "runtimeConfig": {
+          "file": "web/dist/workbench-config.json",
+          "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+        }
+      },
+      "productionAssetsUnchanged": true,
+      "log": ".runtime/alpha13-packaged-final.log"
+    }
+  },
+  "copied": [
+    {
+      "file": ".runtime/alpha13-integration-final.log",
+      "sha256": "b428b7a7595c735d3320ce08a58d30e608c2c01d64b3f9bd85a920034aa6dbfe",
+      "size": 2050
+    },
+    {
+      "file": ".runtime/alpha13-integration-artifact-usage.json",
+      "sha256": "22f80277cae253fce5b95762a2b8b12d1ac4ebdf5e6e22770b78c434c2b64ad5",
+      "size": 1640
+    },
+    {
+      "file": ".runtime/alpha13-recovery-final.log",
+      "sha256": "be0e75e134ac8210b18b01a2c6a7d98f711762c24679a96e745da07161ff215c",
+      "size": 4069
+    },
+    {
+      "file": ".runtime/alpha13-recovery-artifact-usage.json",
+      "sha256": "ac41e90b4a09127956345b2e7db16dc5de64907a3490d7d076b89511c9fa8e7a",
+      "size": 1970
+    },
+    {
+      "file": ".runtime/alpha13-dispatch-final.log",
+      "sha256": "c703651c554c0ba8886fb5fccebeecc99dc189c5db8b1b5213957df0a0a0f2c6",
+      "size": 5558
+    },
+    {
+      "file": ".runtime/alpha13-dispatch-artifact-usage.json",
+      "sha256": "d0e06292847c932dcc1d859e9074b2e2ed4040b343660c1d2ad10799e37bc586",
+      "size": 1968
+    },
+    {
+      "file": ".runtime/alpha13-standalone-final.log",
+      "sha256": "958026200a465df28ac3832839a43f1d4b4874047c4e51d0dc8a6ef0b4ca5f17",
+      "size": 1874
+    },
+    {
+      "file": ".runtime/alpha13-standalone-artifact-usage.json",
+      "sha256": "23ac4fded028fbd2df1d6cb64cda9d071d50722cd30eb87d424d08e325d04c4d",
+      "size": 1968
+    },
+    {
+      "file": ".runtime/alpha13-package-final.log",
+      "sha256": "f1d8ca80180317574433c5670f0fa90fc3e58683a8dee5c2a9bf88e8ac3dcf42",
+      "size": 1634
+    },
+    {
+      "file": ".runtime/alpha13-package-artifact-usage.json",
+      "sha256": "f2a99d678070d117c829b776779ba3d0c77349b67249f799f1797e877dc13306",
+      "size": 1980
+    },
+    {
+      "file": ".runtime/alpha13-packaged-final.log",
+      "sha256": "0791576f6382b2e6a523dcfd6f79883730e1deccdd8b24ac5613ef7a02ecc0bd",
+      "size": 423
+    },
+    {
+      "file": ".runtime/alpha13-packaged-artifact-usage.json",
+      "sha256": "341068ef7402b2812774dfd57efbbbf0ee5cfaed25cba72869aa2ed62ce10877",
+      "size": 1958
+    },
+    {
+      "file": ".runtime/alpha13-workspaces-jar-attempt4.log",
+      "sha256": "866709485f94bee4ccc6b2c1c27b6c114fa3c723f542b68ba1b8f94b861b6722",
+      "size": 11362
+    },
+    {
+      "file": ".runtime/alpha13-desktop-guards.log",
+      "sha256": "4b1e4bd9149f0b908cbe8521e5cb4dfb65f933d9ab673a7a3b938ed12406adf2",
+      "size": 1875
+    },
+    {
+      "file": ".runtime/alpha13-installer-identity.json",
+      "sha256": "d5a28d8015fc8121047eaf71aee8706fe000129d725754a8cabe0b2286d6c989",
+      "size": 726
+    },
+    {
+      "file": "docs/qa/smoke-win32.json",
+      "sha256": "35cf2648fd359230136c46ac4378169d5ceed409dd040178c0b3837ea31095bc",
+      "size": 36043
+    },
+    {
+      "file": "docs/qa/process-recovery-win32.json",
+      "sha256": "748d18668680241898f83b9dc087fc3d8bde91715036eac570953771544441f1",
+      "size": 3284
+    },
+    {
+      "file": "docs/qa/dispatch-queue-win32.json",
+      "sha256": "2b1419dca29fa011902390ddf310c86c9d1dc6ee4c646589fb1f0ed6fde693f0",
+      "size": 4465
+    },
+    {
+      "file": "docs/qa/workspace-selection-win32.json",
+      "sha256": "2aa11f21e0da11b94debf1e18e70845383929c1f9da9b48292eaf339a8a2d8d5",
+      "size": 9140
+    },
+    {
+      "file": "docs/qa/standalone-win32.json",
+      "sha256": "958026200a465df28ac3832839a43f1d4b4874047c4e51d0dc8a6ef0b4ca5f17",
+      "size": 1874
+    },
+    {
+      "file": "docs/qa/desktop-packaged-win32.json",
+      "sha256": "990a0ac3477c2e6cfb7e6061b90f85e0a5b5c61e9b83e8fb9e7ef562b482f245",
+      "size": 199
+    },
+    {
+      "file": "docs/qa/alpha13-source-audit-win32.json",
+      "sha256": "47f9ec87bf0def0c1355f361a2c7809d19c7ece080a34fe045b3124398641452",
+      "size": 31141
+    },
+    {
+      "file": "docs/qa/desktop-home.png",
+      "sha256": "574068833574b85911ed0a7ce8f36e5f62f4b35fc2837f1341ead19f32ccd44f",
+      "size": 238300
+    },
+    {
+      "file": "web/qa/worker-real-win32.png",
+      "sha256": "ffe1f05fb5691369f866f93249aa4c5c6759488c7725c5d421d10709581023df",
+      "size": 862369
+    },
+    {
+      "file": "web/qa/team-real-win32.png",
+      "sha256": "43d089ce1e02cc63071ae05835111f1e01d75917600ebde8dbdc5dcb52039261",
+      "size": 349959
+    },
+    {
+      "file": "web/qa/process-recovery-real-win32.png",
+      "sha256": "acd1aa00e8c3386607e42d2c239af8bbe0f09ac6c869a42c79e3e9fe70f76200",
+      "size": 491621
+    },
+    {
+      "file": "web/qa/process-recovery-real-narrow-win32.png",
+      "sha256": "40f751615b3957ae1153e84c7b6a4071f1df28dfda7f8a4473bebed4d621afcd",
+      "size": 421873
+    },
+    {
+      "file": "web/qa/dispatch-queue-real-1440-win32.png",
+      "sha256": "8186057efc9108b2307b671c58b2f4a7126cdee52f6b966de2bc53e2119401dc",
+      "size": 109673
+    },
+    {
+      "file": "web/qa/dispatch-queue-real-430-win32.png",
+      "sha256": "ec0acde151710c07f91cbb653acc3d82d5feee65acb97f790cd9b517d314c164",
+      "size": 68889
+    },
+    {
+      "file": "web/qa/workspace-created-desktop.png",
+      "sha256": "1f16579cc195fbf0eb1b29c3299a008d5d65d4ae4a7f3859da809bdc97bac93e",
+      "size": 111041
+    },
+    {
+      "file": "web/qa/workspace-created-narrow.png",
+      "sha256": "7d6dd3afab295b844d311961ee61fb1c591481d8ec277896bd4af4b12ad4a066",
+      "size": 65721
+    },
+    {
+      "file": "web/qa/workspace-owned-desktop.png",
+      "sha256": "3fa6409eb02b02352066af4aa0101e37f09c87b346d691e225508062365eeae4",
+      "size": 112640
+    },
+    {
+      "file": "web/qa/workspace-owned-narrow.png",
+      "sha256": "acadc5d2e449be06cff4baeb8063e5b5ddd88681486413bb1e90f24d6028e198",
+      "size": 67025
+    }
+  ],
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha13-final-local-qa",
+  "ci": {
+    "status": "AWAITING_EXACT_COMMIT_PUSH",
+    "receipt": "docs/qa/alpha13-ci-workspaces-receipt.json"
+  },
+  "retainedFailures": [
+    {
+      "kind": "core-junction-fixture-timeout",
+      "evidence": ".runtime/alpha13-core-clean-failure1",
+      "tests": 246,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 2
+    },
+    {
+      "kind": "old-jdk-before-tests",
+      "evidence": ".runtime/alpha13-core-targeted-attempt5.log"
+    },
+    {
+      "kind": "browser-fixture-count-assumption",
+      "evidence": ".runtime/alpha13-workspace-ui-failure1"
+    },
+    {
+      "kind": "jar-browser-refresh-observation",
+      "evidence": ".runtime/workspace-selection-YaUczx/reports",
+      "passedChecks": 7
+    },
+    {
+      "kind": "jar-task-accessible-name-fixture",
+      "evidence": ".runtime/workspace-selection-9dPBWZ/reports",
+      "passedChecks": 8
+    },
+    {
+      "kind": "local-qa-asar-native-path",
+      "evidence": ".runtime/alpha13-qa-asar-path-failure.json",
+      "productionSourcesChanged": false
+    }
+  ],
+  "remainingScope": [
+    "CURRENT_DIRECTORY execution",
+    "exclusive workspace write leases",
+    "complete workspace archive/restore",
+    "remote pairing/queue",
+    "complete historical process trees",
+    "other F01-F21 and M0-M3 release gates"
+  ],
+  "completeProjectGoal": false
+}

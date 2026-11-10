@@ -1,5 +1,6 @@
 package dev.agentworkbench;
 
+import dev.agentworkbench.runtime.WorkspaceSelectionConflict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +14,9 @@ import java.util.Map;
 public class ApiErrors {
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<Map<String, Object>> api(ApiException exception) { return ResponseEntity.status(exception.status()).body(Json.obj("error", exception.getMessage(), "status", exception.status())); }
+
+    @ExceptionHandler(WorkspaceSelectionConflict.class)
+    public ResponseEntity<Map<String, Object>> workspaceSelection(WorkspaceSelectionConflict exception) { return ResponseEntity.status(409).body(Json.obj("error", exception.getMessage(), "status", 409)); }
 
     @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class})
     public ResponseEntity<Map<String, Object>> badRequest(Exception exception) { return ResponseEntity.badRequest().body(Json.obj("error", "请求格式或参数无效", "status", 400)); }

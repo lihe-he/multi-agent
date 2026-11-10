@@ -297,7 +297,7 @@ class ManagedProcessLedgerTest {
         try (var reopened = store(data)) {
             assertEquals("UNKNOWN", reopened.get("operation", "original").get("state")); assertEquals(1, reopened.get("operation", "original").get("dispatchCount"));
             try (var db = DriverManager.getConnection("jdbc:sqlite:" + data.resolve("workbench.sqlite")); var sql = db.createStatement()) {
-                try (var version = sql.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(6, version.getInt(1)); }
+                try (var version = sql.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(7, version.getInt(1)); }
                 try (var index = sql.executeQuery("SELECT COUNT(*) FROM sqlite_master WHERE name IN ('entities_process_session_owner','entities_process_observation_session')")) { assertTrue(index.next()); assertEquals(2, index.getInt(1)); }
             }
         }

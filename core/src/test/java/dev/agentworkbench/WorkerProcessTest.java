@@ -3,6 +3,9 @@ package dev.agentworkbench;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import dev.agentworkbench.runtime.WorkspaceRuntime;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -109,6 +112,37 @@ class WorkerProcessTest {
             await(() -> !actual.isAlive(), 5); assertFalse(fixture.process.alive()); assertTrue(fixture.process.treeStopped());
             assertTrue(result.isDone() || result.get(5, TimeUnit.SECONDS) != null);
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"COMMIT", "STRATEGY", "MISSING", "INCLUDE_CHANGES"})
+    void preparationParametersCannotReplaceTheOriginalWorkerSelection(String mutation) throws Exception {
+        try (var fixture = new Fixture()) {
+            git(fixture.work, "init", "--initial-branch=main"); git(fixture.work, "config", "user.name", "Fixture"); git(fixture.work, "config", "user.email", "fixture@localhost");
+            Files.writeString(fixture.work.resolve("app.txt"), "source content\n"); git(fixture.work, "add", "."); git(fixture.work, "commit", "-m", "source fixture");
+            WorkspaceRuntime runtime = new WorkspaceRuntime(mapper, fixture.data.toString()); Map<String, Object> selection = runtime.selectWorkspace(fixture.work.toString(), obj("strategy", "WORKTREE"), false, 1);
+            Map<String, Object> lease = fixture.lease("prepare"); lease.putAll(obj("operationType", "WORKSPACE", "workspaceSelection", selection));
+            Map<String, Object> input = new java.util.LinkedHashMap<>(selection), parameters = obj("sourcePath", fixture.work.toString(), "taskId", "root", "includeChanges", false, "workspaceSelection", input);
+            switch (mutation) {
+                case "COMMIT" -> input.put("baseline", "0".repeat(40));
+                case "STRATEGY" -> input.put("strategy", "CLONE");
+                case "MISSING" -> parameters.remove("workspaceSelection");
+                case "INCLUDE_CHANGES" -> parameters.put("includeChanges", true);
+                default -> fail("invalid fixture");
+            }
+            WorkerRpc.RemoteFailure error = assertInstanceOf(WorkerRpc.RemoteFailure.class, assertThrows(ExecutionException.class,
+                () -> fixture.process.invoke("changed-prepare", lease, fixture.token, 1, "PREPARE", parameters).get(10, TimeUnit.SECONDS)).getCause());
+            assertEquals(403, error.status()); assertTrue(fixture.callbacks.isEmpty()); assertTrue(fixture.losses.isEmpty());
+            assertFalse(Files.exists(fixture.data.resolve("workspaces/root/selection.json"))); assertFalse(Files.exists(fixture.data.resolve("workspaces/root/work")));
+            assertEquals(1, objects(runtime.workspaceOptions(fixture.work.toString()).get("worktrees")).size()); assertEquals("source content\n", Files.readString(fixture.work.resolve("app.txt")));
+        }
+    }
+
+    private static void git(Path directory, String... arguments) throws Exception {
+        var command = new java.util.ArrayList<>(List.of("git", "--no-optional-locks", "-c", "core.hooksPath=/dev/null", "-c", "core.autocrlf=false")); command.addAll(List.of(arguments));
+        Process process = new ProcessBuilder(command).directory(directory.toFile()).redirectErrorStream(true).start();
+        if (!process.waitFor(20, TimeUnit.SECONDS)) { process.destroyForcibly(); process.waitFor(5, TimeUnit.SECONDS); throw new IllegalStateException("Fixture Git timed out"); }
+        String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8); assertEquals(0, process.exitValue(), output);
     }
 
     private static void await(BooleanSupplier condition, int seconds) throws Exception {

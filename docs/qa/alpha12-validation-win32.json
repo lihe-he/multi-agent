@@ -303,7 +303,36 @@
     "originalConclusion": "failure",
     "failure": "Root Playwright 1.56.1 selected a Chromium revision not installed by Web 1.64.1 CI.",
     "receipt": "docs/qa/alpha12-ci-dispatch-receipt.json",
-    "browserFixCi": "pending for the main browser module revision"
+    "browserFixCi": {
+      "commit": "835d27c450f16b3c0e562e374301c76cb1ccb950",
+      "run": 42623675831,
+      "url": "https://github.com/lihe-he/multi-agent/actions/runs/42623675831",
+      "status": "completed",
+      "conclusion": "success",
+      "platforms": [
+        {
+          "platform": "windows-latest",
+          "jobId": 129181887843,
+          "artifactId": 13678576549,
+          "sha256": "9fb02ab40199804d2c43b2b0732641529b4def6f8647c012afa4639791cf175c",
+          "digestVerified": true
+        },
+        {
+          "platform": "macos-latest",
+          "jobId": 129181887352,
+          "artifactId": 13678715990,
+          "sha256": "2e13cf3814d9994a1a18e1a8ee9047130fc20138182ddfaaad6e57a4d8510863",
+          "digestVerified": true
+        },
+        {
+          "platform": "ubuntu-latest",
+          "jobId": 129181887625,
+          "artifactId": 13678176410,
+          "sha256": "c9929b4ca8222ea3a046a768b4a7b7fe1f3ce6262c6aef5df4143c6e9c16c66d",
+          "digestVerified": true
+        }
+      ]
+    }
   },
   "completeProjectGoal": false,
   "previousDispatchRuns": [

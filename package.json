@@ -1,6 +1,6 @@
 {
   "name": "multi-agent-workbench",
-  "version": "0.2.0-alpha.12",
+  "version": "0.2.0-alpha.13",
   "description": "本地多 Agent 智能研发工作台",
   "private": true,
   "main": "desktop/main.cjs",
@@ -23,6 +23,7 @@
     "test:standalone": "node tools/standalone-smoke.mjs",
     "test:recovery": "node tools/process-recovery-smoke.mjs",
     "test:dispatch": "node tools/dispatch-queue-smoke.mjs",
+    "test:workspaces": "node tools/workspace-selection-smoke.mjs",
     "package": "node tools/manage.mjs package",
     "package:prepared": "node tools/manage.mjs package:prepared"
   },

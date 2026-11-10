@@ -94,6 +94,10 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         return objectValue(invoke("PREPARE", obj("sourcePath", source, "taskId", taskId, "includeChanges", includeChanges), () -> false, ignored -> {}, null, null));
     }
 
+    @Override public Map<String, Object> prepareSelected(String source, String taskId, boolean includeChanges, Map<String, Object> selection) {
+        return objectValue(invoke("PREPARE", obj("sourcePath", source, "taskId", taskId, "includeChanges", includeChanges, "workspaceSelection", selection), () -> false, ignored -> {}, null, null));
+    }
+
     @Override public String reviewCopy(String workspace, String subjectId, String version) {
         return stringValue(invoke("REVIEW_COPY", obj("workspace", workspace, "subjectId", subjectId, "version", version), () -> false, ignored -> {}, null, null));
     }

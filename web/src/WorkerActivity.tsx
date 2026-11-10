@@ -3,21 +3,39 @@ import { api, post } from './api';
 import type { ExecutionNode, RepositoryBinding, Task, WorkerLease } from './types';
 import { executionSource } from './execution-source';
 import { Badge, Field, formatTime, Modal, SaveButton, SectionHeading } from './ui';
+import { WorkspaceContract } from './WorkspaceContract';
+import { WorkspacePicker } from './WorkspacePicker';
+import type { WorkspaceChoice } from './types';
 
 type LeasePage = { leases: WorkerLease[]; cursor: number; hasMore: boolean };
 
 export function ExecutionContract({ task, onSaved }: { task: Task; onSaved: () => Promise<void> }) {
   const [editing, setEditing] = useState(false); const execution = task.execution;
   if (!execution) return null;
-  return <section className="card execution-contract" aria-label="固定执行归属"><SectionHeading title="执行节点与仓库约定" subtitle="任务使用确认时的节点、仓库目录和授权版本。" action={['DRAFT', 'PAUSED', 'WAITING_INPUT', 'FAILED', 'AWAITING_ACCEPTANCE'].includes(task.state) ? <button className="button secondary small" onClick={() => setEditing(true)}>更新执行授权</button> : undefined} /><dl><dt>执行节点</dt><dd>{execution.nodeName} · v{execution.nodeVersion}</dd><dt>仓库绑定</dt><dd>{execution.bindingName} · v{execution.bindingVersion}</dd><dt>源目录</dt><dd className="mono">{execution.sourcePath}</dd><dt>授权版本</dt><dd>{execution.version}</dd></dl>{editing && <ExecutionAuthorization task={task} onClose={() => setEditing(false)} onSaved={onSaved} />}</section>;
+  return <><section className="card execution-contract" aria-label="固定执行归属"><SectionHeading title="执行节点与仓库约定" subtitle="任务使用确认时的节点、仓库目录和授权版本。" action={['DRAFT', 'PAUSED', 'WAITING_INPUT', 'FAILED', 'AWAITING_ACCEPTANCE'].includes(task.state) ? <button className="button secondary small" onClick={() => setEditing(true)}>更新执行授权</button> : undefined} /><dl><dt>执行节点</dt><dd>{execution.nodeName} · v{execution.nodeVersion}</dd><dt>仓库绑定</dt><dd>{execution.bindingName} · v{execution.bindingVersion}</dd><dt>源目录</dt><dd className="mono">{execution.sourcePath}</dd><dt>授权版本</dt><dd>{execution.version}</dd></dl>{editing && <ExecutionAuthorization task={task} onClose={() => setEditing(false)} onSaved={onSaved} />}</section><WorkspaceContract task={task} onSaved={onSaved} /></>;
 }
 
 function ExecutionAuthorization({ task, onClose, onSaved }: { task: Task; onClose: () => void; onSaved: () => Promise<void> }) {
   const [bindings, setBindings] = useState<RepositoryBinding[]>([]), [nodes, setNodes] = useState<ExecutionNode[]>([]), [selected, setSelected] = useState(task.execution?.repositoryBindingId || '');
   const [error, setError] = useState(''), [busy, setBusy] = useState(false), [refresh, setRefresh] = useState(0);
+  const [expectedVersion] = useState(task.execution?.version || 0), [expectedWorkspaceVersion] = useState(task.workspaceSelection?.version || 0);
+  const [workspaceChoice, setWorkspaceChoice] = useState<WorkspaceChoice | null>(null);
   useEffect(() => { let active = true; Promise.all([api<RepositoryBinding[]>(`/repository-bindings?projectId=${encodeURIComponent(task.projectId)}`), api<ExecutionNode[]>('/execution-nodes')]).then(([bindings, nodes]) => { if (active) { setBindings(bindings); setNodes(nodes); } }).catch(error => { if (active) setError((error as Error).message); }); return () => { active = false; }; }, [task.projectId, refresh]);
   const binding = bindings.find(binding => binding.id === selected), node = nodes.find(node => node.id === binding?.executionNodeId);
-  return <Modal title="核对任务执行授权" description="已有工作目录继续绑定原节点和源仓库。保存后重新验证、独立审查，任务保持暂停。" onClose={onClose}><form onSubmit={async event => { event.preventDefault(); if (!binding || !node) return; setBusy(true); setError(''); try { await post(`/tasks/${task.id}/execution-authorization`, { expectedVersion: task.execution?.version || 0, repositoryBindingId: binding.id, bindingVersion: binding.version, nodeVersion: node.version }); await onSaved(); onClose(); } catch (error) { setError((error as Error).message); } finally { setBusy(false); } }}><div className="form-body"><Field label="核对仓库绑定"><select value={selected} onChange={event => setSelected(event.target.value)}>{bindings.map(binding => <option key={binding.id} value={binding.id} disabled={!binding.enabled}>{binding.name} · v{binding.version}</option>)}</select></Field>{binding && <dl className="execution-metadata"><dt>当前节点</dt><dd>{node?.name} · v{node?.version} · {node?.enabled ? '已启用' : '已停用'}</dd><dt>当前目录</dt><dd className="mono">{binding.path}</dd><dt>原目录</dt><dd className="mono">{task.execution?.sourcePath}</dd></dl>}<button type="button" className="text-button" onClick={() => setRefresh(value => value + 1)}>刷新配置版本</button>{error && <p role="alert" className="form-error">{error}</p>}</div><footer><button type="button" className="button secondary" onClick={onClose}>取消</button><SaveButton busy={busy} disabled={!binding?.enabled || !node?.enabled}>确认新的执行版本</SaveButton></footer></form></Modal>;
+  const chooseWorkspace = !task.workspace && !task.workspacePreparationPresent && Boolean(task.workspaceSelection);
+  const choiceReady = !chooseWorkspace || workspaceChoice?.bindingId === binding?.id && workspaceChoice?.bindingVersion === binding?.version;
+  return <Modal title="核对任务执行授权" description="已有工作目录继续绑定原节点和源仓库。保存后重新验证、独立审查，任务保持暂停。" onClose={onClose}><form onSubmit={async event => {
+    event.preventDefault(); if (!binding || !node || !choiceReady) return; setBusy(true); setError('');
+    try {
+      await post(`/tasks/${task.id}/execution-authorization`, { expectedVersion, repositoryBindingId: binding.id, bindingVersion: binding.version, nodeVersion: node.version,
+        ...(chooseWorkspace && workspaceChoice ? { expectedWorkspaceVersion, workspaceSelection: workspaceChoice.input, includeChanges: workspaceChoice.includeChanges } : {}) });
+      await onSaved(); onClose();
+    } catch (error) { setError((error as Error).message); } finally { setBusy(false); }
+  }}><div className="form-body"><Field label="核对仓库绑定"><select value={selected} onChange={event => setSelected(event.target.value)}>{bindings.map(binding => <option key={binding.id} value={binding.id} disabled={!binding.enabled}>{binding.name} · v{binding.version}</option>)}</select></Field>
+    {binding && <dl className="execution-metadata"><dt>当前节点</dt><dd>{node?.name} · v{node?.version} · {node?.enabled ? '已启用' : '已停用'}</dd><dt>当前目录</dt><dd className="mono">{binding.path}</dd><dt>原目录</dt><dd className="mono">{task.execution?.sourcePath}</dd></dl>}
+    {binding && chooseWorkspace && <WorkspacePicker key={binding.id} bindingId={binding.id} bindingVersion={binding.version} initial={task.workspaceSelection} onChange={setWorkspaceChoice} />}
+    <button type="button" className="text-button" onClick={() => setRefresh(value => value + 1)}>刷新配置版本</button>{error && <p role="alert" className="form-error">{error}</p>}
+  </div><footer><button type="button" className="button secondary" onClick={onClose}>取消</button><SaveButton busy={busy} disabled={!binding?.enabled || !node?.enabled || !choiceReady}>确认新的执行版本</SaveButton></footer></form></Modal>;
 }
 
 export function WorkerActivity({ taskId, onEvidence }: { taskId: string; onEvidence: (id: string) => void }) {

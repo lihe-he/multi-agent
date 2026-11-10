@@ -1,92 +1,92 @@
 {
-  "date": "2026-11-09T12:22:12.512Z",
-  "version": "0.2.0-alpha.12",
+  "date": "2026-11-10T02:04:12.177Z",
+  "version": "0.2.0-alpha.13",
   "platform": "win32",
   "status": "passed",
-  "jarSha256": "d8a3a837a377dd7cfe1f7b4f635c20dab73c569d3743d91ecfe77cd8a923060f",
+  "jarSha256": "c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8",
   "checks": [
     {
       "name": "Actual stdio tool dispatch recorded before core crash",
       "status": "passed",
-      "at": "2026-11-09T12:21:37.241Z"
+      "at": "2026-11-10T02:03:30.483Z"
     },
     {
       "name": "Real Worker source and in-flight HTTP request captured",
       "status": "passed",
-      "at": "2026-11-09T12:21:40.400Z"
+      "at": "2026-11-10T02:03:34.439Z"
     },
     {
       "name": "Only original core stopped; original MCP survived EOF",
       "status": "passed",
-      "at": "2026-11-09T12:21:41.910Z"
+      "at": "2026-11-10T02:03:36.024Z"
     },
     {
       "name": "Reopen preserved UNKNOWN, original identities and debited budgets",
       "status": "passed",
-      "at": "2026-11-09T12:21:46.635Z"
+      "at": "2026-11-10T02:03:41.110Z"
     },
     {
       "name": "Live original process blocked task assertions and every new dispatch",
       "status": "passed",
-      "at": "2026-11-09T12:21:46.742Z"
+      "at": "2026-11-10T02:03:41.273Z"
     },
     {
       "name": "Real browser showed original birth and rejected a live-process assertion",
       "status": "passed",
-      "at": "2026-11-09T12:21:48.391Z"
+      "at": "2026-11-10T02:03:43.088Z"
     },
     {
       "name": "Original process exit and historical coverage recorded separately",
       "status": "passed",
-      "at": "2026-11-09T12:21:50.751Z"
+      "at": "2026-11-10T02:03:46.160Z"
     },
     {
       "name": "Task effects reconciled without changing UNKNOWN requests or refunding budget",
       "status": "passed",
-      "at": "2026-11-09T12:21:52.774Z"
+      "at": "2026-11-10T02:03:48.146Z"
     },
     {
       "name": "Saved reconciliation survived another complete core restart",
       "status": "passed",
-      "at": "2026-11-09T12:21:57.202Z"
+      "at": "2026-11-10T02:03:52.940Z"
     },
     {
       "name": "New work completed while original process and request evidence remained exportable",
       "status": "passed",
-      "at": "2026-11-09T12:22:08.356Z"
+      "at": "2026-11-10T02:04:07.333Z"
     },
     {
       "name": "Final core exited and original fixture stop was independently confirmed",
       "status": "passed",
-      "at": "2026-11-09T12:22:12.512Z"
+      "at": "2026-11-10T02:04:12.176Z"
     }
   ],
-  "originalCorePid": 23328,
+  "originalCorePid": 15336,
   "restartedCorePids": [
-    48844,
-    51952
+    43628,
+    22748
   ],
-  "originalWorkerId": "9c779b68-c504-459d-8217-5658ce4dbcaa",
-  "originalWorkerPid": 23732,
-  "originalWorkerStartedAt": "2026-11-09T12:21:24.274Z",
-  "originalWorkerSessionId": "bd5188ed-1910-4721-8f73-c28563895fb8",
-  "originalMcpPid": 50820,
-  "originalMcpStartedAt": "2026-11-09T12:21:35.480Z",
-  "originalMcpSessionId": "0cf90be9-7743-49f7-82d0-07abe8ef97ab",
-  "originalModelRequestId": "fafa8d39-a1db-43ea-b8de-e4729bd3a2d9",
-  "originalMcpOperationId": "e7a08b77abe9bc4a849b767223de41c7d0e1d713fae37d94688ca6b297825a75",
+  "originalWorkerId": "0991e159-4263-4632-82c7-24914a24a245",
+  "originalWorkerPid": 54304,
+  "originalWorkerStartedAt": "2026-11-10T02:03:15.422Z",
+  "originalWorkerSessionId": "24ea52a5-864f-4f27-987f-49abaffd650d",
+  "originalMcpPid": 9996,
+  "originalMcpStartedAt": "2026-11-10T02:03:28.254Z",
+  "originalMcpSessionId": "fd12fcab-5fb0-47e8-a0e1-9ce40eacd16f",
+  "originalModelRequestId": "6e723510-60f2-48b7-b6d3-527723bd487d",
+  "originalMcpOperationId": "e994d56d13e402eeabfc580c2fb257d326e12cf8afb4ab90a11c055c1f4c0810",
   "originalModelCalls": 3,
   "originalExternalCalls": 1,
-  "originalModelTaskExecutionId": "9fde2df8-5897-49f9-8bb8-c3a4953578ed",
-  "originalModelDispatchActionId": "859c4803-d88d-4542-8e86-3fca55b52e59",
-  "originalMcpTaskExecutionId": "f73df83a-4ab1-4b33-ad18-2e760f44be36",
-  "originalMcpDispatchActionId": "ade9a61c-d60b-476d-8006-e2e6ddce8a85",
-  "newTaskId": "45f8ba90-f120-4e56-ba63-3473c85cf8a4",
+  "originalModelTaskExecutionId": "1498e050-dae9-493d-879b-8a72042d95ea",
+  "originalModelDispatchActionId": "3c6e2a63-59c6-4ae0-b8ef-f0e7a9d4c79c",
+  "originalMcpTaskExecutionId": "67c606ad-614d-49c6-ab39-6aa33fedddb5",
+  "originalMcpDispatchActionId": "2c9cff16-bb98-4896-92b0-2beb9d3cd8d1",
+  "newTaskId": "7a4fdc2a-8496-4569-9082-c4e4f39ab561",
   "newTaskCalls": 3,
   "processCoverage": "OBSERVED_ONLY",
   "processesAndEffectsReconciledSeparately": true,
   "automaticReplay": false,
   "pageErrors": [],
   "modelErrors": [],
-  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\process-recovery-W3Du0d"
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\process-recovery-Sgdz69"
 }

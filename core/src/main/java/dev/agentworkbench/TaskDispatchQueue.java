@@ -34,6 +34,7 @@ final class TaskDispatchQueue {
                 "state", "QUEUED", "createdAt", time, "dispatchActionId", actionId, "sourceTaskState", previousState,
                 "policyVersion", task.getOrDefault("policyVersion", ""), "budgetAtEnqueue", new LinkedHashMap<>(map(task, "budget")),
                 "contractVersion", num(map(task, "contract"), "version", 1), "authorizationVersion", num(map(task, "execution"), "version", 0));
+            if (task.containsKey("workspaceSelection")) execution.put("workspaceSelection", task.get("workspaceSelection"));
             Map<String, Object> action = obj("id", actionId, "schemaVersion", 1, "kind", "ROOT_TASK", "taskId", taskId,
                 "projectId", task.get("projectId"), "sessionId", task.getOrDefault("sessionId", ""), "taskExecutionId", executionId,
                 "attempt", attempt, "state", "PENDING", "version", 1, "dispatchCount", 0, "createdAt", time,
@@ -174,7 +175,7 @@ final class TaskDispatchQueue {
 
     private static Map<String, Object> authorization(Map<String, Object> task) {
         Map<String, Object> authorization = new LinkedHashMap<>();
-        for (String field : List.of("contract", "execution", "routeId", "routeSnapshot", "locks", "mcpAuthorization", "collaboration", "policyVersion")) if (task.containsKey(field)) authorization.put(field, task.get(field));
+        for (String field : List.of("contract", "execution", "workspaceSelection", "routeId", "routeSnapshot", "locks", "mcpAuthorization", "collaboration", "policyVersion")) if (task.containsKey(field)) authorization.put(field, task.get(field));
         return authorization;
     }
 
@@ -187,6 +188,7 @@ final class TaskDispatchQueue {
         execution.putAll(obj("state", state, "endedAt", now(), "reason", reason, "taskStateAtEnd", task.get("state"), "taskOutcomeAtEnd", task.getOrDefault("outcome", "UNDETERMINED"),
             "budgetAtEnd", new LinkedHashMap<>(map(task, "budget")), "workspace", task.getOrDefault("workspace", ""), "resultVersion", task.getOrDefault("version", "")));
         execution.put("elapsedMs", Math.max(0, Duration.between(Instant.parse(str(execution, "createdAt")), Instant.parse(str(execution, "endedAt"))).toMillis()));
+        if (task.containsKey("workspaceOwnership")) execution.put("workspaceOwnership", task.get("workspaceOwnership"));
     }
 
     private static void summarize(Map<String, Object> task, Map<String, Object> execution, Map<String, Object> action) {

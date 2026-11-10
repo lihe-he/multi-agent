@@ -172,7 +172,7 @@ try {
   });
   await check('Session routes require authentication and preserve server-owned message identity', async () => {
     const health = (await request('/health')).data;
-    assert.equal(health.schemaVersion, 6); assert.equal(health.apiVersion, 1);
+    assert.equal(health.schemaVersion, 7); assert.equal(health.apiVersion, 1);
     const base = `/projects/${project.id}/sessions`;
     await request(base, undefined, { expected: 401, authorized: false });
     await request(`${base}/search?q=background`, undefined, { expected: 401, authorized: false });

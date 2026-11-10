@@ -17,6 +17,7 @@
 - alpha.9 的 execution 快照、本机节点/仓库版本、实际 Worker 进程与操作租约、执行授权更新和导出：见[本机 Worker 协议](./worker-contract.md)。API 仍为 1，SQLite schema 为 4。
 - alpha.11 的原 Worker/MCP 进程清单、核心重启门禁、出生核验与覆盖/外部效果分别核对：见[进程恢复协议](./process-recovery-contract.md)。API 仍为 1，SQLite schema 为 5；ZIP 保留完整原观察记录。
 - alpha.12 的独立根执行尝试、待派发动作、原编号未领取恢复、领取后 UNKNOWN 和核对后的新尝试：见[根派发协议](./task-dispatch-contract.md)。SQLite schema 为 6，API 与 Worker 帧协议仍为 1；ZIP 保留完整尝试和动作，验收与导出等待根结束回执。
+- alpha.13 的显式启动选择、固定本地/远程提交、独立 clone/真 worktree、READY 复用和实际归属：见[启动现场协议](./workspace-selection-contract.md)。SQLite schema 为 7，API 与 Worker 帧协议仍为 1；已有准备固定原选择和来源。
 - `POST /api/tasks/{id}/{action}`，action 为 `approve`/`pause`/`resume`/`cancel`/`accept`（空对象）；`accept` 只记录人工验收，不写原项目。
 - `GET /api/tasks/{id}/diff` → `{diff,version,workspace}`
 - `GET /api/tasks/{id}/export` → 可下载 zip

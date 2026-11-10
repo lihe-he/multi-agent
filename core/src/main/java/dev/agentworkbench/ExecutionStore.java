@@ -66,7 +66,7 @@ public class ExecutionStore implements AutoCloseable {
                 int schemaVersion;
                 try (var version = statement.executeQuery("PRAGMA user_version")) {
                     schemaVersion = version.next() ? version.getInt(1) : 0;
-                    if (schemaVersion > 6) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
+                    if (schemaVersion > 7) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
                 }
                 statement.execute("PRAGMA journal_mode=WAL");
                 statement.execute("PRAGMA synchronous=FULL");
@@ -105,7 +105,7 @@ public class ExecutionStore implements AutoCloseable {
                     statement.execute("DELETE FROM session_search");
                     statement.execute("INSERT INTO session_search(rowid,project_id,session_id,message_id,sequence,content) SELECT sequence,json_extract(body,'$.projectId'),session_id,id,sequence,session_search_fold(json_extract(body,'$.content')) FROM session_messages");
                 }
-                statement.execute("PRAGMA user_version=6");
+                statement.execute("PRAGMA user_version=7");
                 opened.commit(); opened.setAutoCommit(true);
             }
             connection = opened; ownershipChannel = channel; ownershipLock = lock;
@@ -506,6 +506,7 @@ public class ExecutionStore implements AutoCloseable {
         Map<String, Object> task = get("task", taskId);
         Map<String, Object> run = agentRunId.isBlank() ? null : get("agentRun", agentRunId);
         copyTaskExecutionSource(operation, run == null ? task : run);
+        if ("WORKSPACE".equals(kind) && task.containsKey("workspaceSelection")) operation.put("workspaceSelection", task.get("workspaceSelection"));
         if (run != null) {
             if (!taskId.equals(str(run, "taskId")) || !stage.equals(str(run, "stage")) || !"WAITING_RESOURCE".equals(str(run, "state"))) throw new ApiException(409, "Agent 运行归属或状态不匹配");
             operation.put("agentRunId", agentRunId); run.put("operationId", operation.get("id"));
@@ -1108,6 +1109,7 @@ public class ExecutionStore implements AutoCloseable {
         if (!"RUNNING".equals(str(execution, "state")) || !"CLAIMED".equals(str(action, "state")) || num(action, "dispatchCount", 0) != 1
                 || !str(task, "id").equals(str(execution, "taskId")) || !str(execution, "id").equals(str(action, "taskExecutionId")) || !str(action, "id").equals(str(execution, "dispatchActionId"))
                 || !coreSessionId.equals(str(action, "ownerCoreSessionId")) || !coreSessionId.equals(str(execution, "ownerCoreSessionId"))) throw new ApiException(409, "原根尝试尚未领取、已结束或不属于本次核心");
+        if (!map(task, "workspaceSelection").equals(map(execution, "workspaceSelection"))) throw new ApiException(409, "启动选择已变化，旧根尝试不能继续派发");
     }
 
     private void write(String kind, Map<String, Object> entity) throws Exception {

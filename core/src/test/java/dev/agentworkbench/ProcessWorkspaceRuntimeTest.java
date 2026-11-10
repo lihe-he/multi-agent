@@ -6,6 +6,8 @@ import dev.agentworkbench.runtime.AgentToolSession;
 import dev.agentworkbench.runtime.ModelCallObserver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,14 +52,19 @@ class ProcessWorkspaceRuntimeTest {
         final LocalExecutionWorker worker;
         final Map<String, Object> route;
         final String workspace;
+        final Map<String, Object> selection;
+        final byte[] sourceIndex, sourceConfig;
         volatile BiFunction<Integer, Map<String, Object>, Map<String, Object>> response = (round, request) -> obj("role", "assistant", "content", "actual HTTP response");
         volatile Consumer<Map<String, Object>> afterObservation = ignored -> {};
 
-        Fixture() throws Exception {
+        Fixture() throws Exception { this(null); }
+
+        Fixture(String strategy) throws Exception {
             LocalExecutionWorker opened = null;
             try {
             Files.writeString(source.resolve("app.txt"), "base\n"); git(source, "init", "--initial-branch=main"); git(source, "config", "user.name", "Worker Test");
             git(source, "config", "user.email", "worker@example.invalid"); git(source, "config", "core.autocrlf", "false"); git(source, "add", "."); git(source, "commit", "-m", "fixture");
+            sourceIndex = Files.readAllBytes(source.resolve(".git/index")); sourceConfig = Files.readAllBytes(source.resolve(".git/config"));
             catalog.defaults(); worker = runtime.startWorker(store, catalog.nodes()); opened = worker;
             server.setExecutor(threads); server.createContext("/", exchange -> {
                 try {
@@ -79,8 +86,10 @@ class ProcessWorkspaceRuntimeTest {
                 "contract", obj("scope", List.of("**"), "commands", List.of(), "acceptance", List.of("actual execution")),
                 "budget", obj("maxCalls", 5, "reserveCalls", 1, "usedCalls", 0, "usedDevelopmentCalls", 0, "usedReservedCalls", 0)));
             String confirmedSource = catalog.nodes().sourcePath(store.get("task", "root"));
+            selection = strategy == null ? Map.of() : runtime.selectWorkspace(confirmedSource, obj("strategy", strategy), false, 1);
+            if (!selection.isEmpty()) store.editTask("root", task -> task.put("workspaceSelection", selection), null, "");
             String preparation = str(store.beginOperation("root", "prepare", "WORKSPACE", confirmedSource), "id"); worker.dispatch(preparation, confirmedSource, obj());
-            Map<String, Object> prepared = runtime.prepare(confirmedSource, "root", false); worker.finish(preparation, "ACKNOWLEDGED", prepared);
+            Map<String, Object> prepared = selection.isEmpty() ? runtime.prepare(confirmedSource, "root", false) : runtime.prepareSelected(confirmedSource, "root", false, selection); worker.finish(preparation, "ACKNOWLEDGED", prepared);
             store.editTask("root", task -> task.putAll(prepared), null, ""); workspace = str(prepared, "workspace");
             } catch (Exception | Error failure) {
                 if (opened != null) opened.close(); server.stop(0); threads.shutdownNow(); store.close(); throw failure;
@@ -113,6 +122,28 @@ class ProcessWorkspaceRuntimeTest {
             } finally { worker.settleRun(runId); }
         }
         @Override public void close() throws Exception { released.countDown(); worker.close(); server.stop(0); threads.shutdownNow(); store.close(); }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"CLONE", "WORKTREE"})
+    void actualWorkerPreparesTheFrozenSelectionAndOnlyWritesItsOwnedWorkspace(String strategy) throws Exception {
+        try (var fixture = new Fixture(strategy)) {
+            Map<String, Object> task = fixture.store.get("task", "root"), ownership = map(task, "workspaceOwnership");
+            assertEquals(strategy, ownership.get("strategy")); assertEquals(fixture.selection, map(task, "workspaceSelection"));
+            Map<String, Object> prepare = fixture.store.list("operation").getFirst();
+            assertEquals(fixture.selection, map(prepare, "workspaceSelection")); assertEquals(fixture.selection, map(fixture.store.get("workerLease", str(prepare, "workerLeaseId")), "workspaceSelection"));
+            assertEquals("ACKNOWLEDGED", prepare.get("state")); assertEquals(((Number) fixture.worker.identity().get("pid")).longValue(), ((Number) prepare.get("executorPid")).longValue());
+            if ("WORKTREE".equals(strategy)) { assertTrue(Files.isRegularFile(Path.of(fixture.workspace).resolve(".git"))); assertEquals(fixture.source.resolve(".git").toRealPath().toString(), ownership.get("commonDirectory")); }
+            else { assertTrue(Files.isDirectory(Path.of(fixture.workspace).resolve(".git"))); assertNotEquals(fixture.source.resolve(".git").toRealPath().toString(), ownership.get("commonDirectory")); }
+            fixture.response = (round, request) -> round == 1 ? obj("role", "assistant", "content", null, "tool_calls", List.of(obj("id", "owned-write", "type", "function", "function", obj("name", "write_file", "arguments", "{\"path\":\"app.txt\",\"content\":\"owned task write\\n\"}"))))
+                : obj("role", "assistant", "content", "owned execution complete");
+            assertEquals("SUCCEEDED", fixture.run().get("status")); assertEquals("owned task write\n", Files.readString(Path.of(fixture.workspace).resolve("app.txt")));
+            assertEquals("base\n", Files.readString(fixture.source.resolve("app.txt"))); assertArrayEquals(fixture.sourceIndex, Files.readAllBytes(fixture.source.resolve(".git/index"))); assertArrayEquals(fixture.sourceConfig, Files.readAllBytes(fixture.source.resolve(".git/config")));
+            Map<String, Object> modelLease = fixture.store.workerLeases("", "root", "").stream().filter(lease -> "MODEL".equals(str(lease, "operationType"))).findFirst().orElseThrow();
+            assertEquals(ownership, map(modelLease, "workspaceOwnership")); assertEquals(2, fixture.httpCalls.get()); assertEquals(2, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", 0));
+            assertEquals(403, assertThrows(ApiException.class, () -> fixture.runtime.prepareSelected(fixture.source.toString(), "other-task", false, fixture.selection)).status());
+            assertFalse(Files.exists(fixture.data.resolve("workspaces/other-task/work"))); assertTrue(fixture.errors.isEmpty(), fixture.errors.toString());
+        }
     }
 
     @Test

@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import static dev.agentworkbench.Json.map;
 
 /**
  * Git 隔离现场、真实运行器和本地工具。取消不能证明远端模型已停止计费。
@@ -39,6 +40,7 @@ public class WorkspaceRuntime {
     private static final Set<String> EXCLUDED = Set.of(".git", "node_modules", "target", "dist", "build", ".idea", ".vscode", ".runtime", ".workbench", "__pycache__", ".gradle", "vendor");
     private final ObjectMapper json;
     private final Path data;
+    private final GitWorkspaces workspaces;
     private final HttpClient http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).followRedirects(HttpClient.Redirect.NEVER).build();
     private final ConcurrentMap<Long, Process> processes = new ConcurrentHashMap<>();
     private final ConcurrentMap<Long, String> processWorkspaces = new ConcurrentHashMap<>();
@@ -47,6 +49,7 @@ public class WorkspaceRuntime {
     public WorkspaceRuntime(ObjectMapper json, @Value("${workbench.data-dir:./data}") String dataDir) {
         this.json = json;
         this.data = Path.of(dataDir).toAbsolutePath().normalize();
+        this.workspaces = new GitWorkspaces(this, json, this.data);
     }
 
     /**
@@ -63,6 +66,47 @@ public class WorkspaceRuntime {
                 "fileCount", files.size(), "modules", modules, "files", files.subList(0, Math.min(files.size(), 2000)),
                 "indexedAt", java.time.Instant.now().toString(), "coverage", files.size() >= 100_000 ? "文件数达到索引上限" : "关键词索引；排除依赖目录、符号链接和敏感文件");
     }
+
+    /**
+     * 分支列表与当前源内容来自实际仓库，供用户选择并检查过期提交。
+     */
+    public Map<String, Object> workspaceOptions(String projectPath) { return workspaces.options(projectPath); }
+
+    /**
+     * 启动选择保存所选提交、源文件和暂存区，后续准备不能悄然换版。
+     */
+    public Map<String, Object> selectWorkspace(String projectPath, Map<String, Object> input, boolean includeChanges, int version) {
+        return workspaces.selection(projectPath, input, includeChanges, version);
+    }
+
+    /**
+     * 源变化在实际准备前阻止新操作，过期选择由用户重新确认。
+     */
+    public void requireWorkspaceSelectionCurrent(String projectPath, Map<String, Object> selection) { workspaces.current(projectPath, selection); }
+
+    /**
+     * 已有目录或准备意图保留，重新授权不能把它们改成另一份现场。
+     */
+    public boolean hasWorkspacePreparation(String taskId) { return workspaces.hasPreparation(taskId); }
+
+    /**
+     * 原 Worker 按已确认的选择建立 clone 或 locked detached worktree。
+     */
+    public Map<String, Object> prepareSelected(String projectPath, String taskId, boolean includeChanges, Map<String, Object> selection) {
+        return workspaces.prepare(projectPath, taskId, includeChanges, selection);
+    }
+
+    /**
+     * 旧任务保持原规则；新现场按独立归属回执检查实际 Git 关联。
+     */
+    public void requireWorkspaceOwnership(String taskId, String workspace, Map<String, Object> facts) {
+        if (!map(facts, "workspaceOwnership").isEmpty()) workspaces.owned(taskId, workspace, facts);
+    }
+
+    /**
+     * 项目规则跟随所选提交；带入当前改动时读取已冻结的源文件。
+     */
+    public String workspaceRules(String projectPath, Map<String, Object> selection) { return workspaces.rules(projectPath, selection); }
 
     /**
      * 独立克隆不会写入原仓库元数据；已有修改仅按用户选择复制进新现场。
@@ -106,7 +150,7 @@ public class WorkspaceRuntime {
         } catch (IOException e) { throw failure(e); }
     }
 
-    private void copyChanges(Path source, Path target) throws IOException {
+    void copyChanges(Path source, Path target) throws IOException {
         String changed = git(source, "diff", "--name-only", "-z", "HEAD");
         String untracked = git(source, "ls-files", "--others", "--exclude-standard", "-z");
         Map<String, String> modes = fileModes(source);
@@ -824,7 +868,7 @@ public class WorkspaceRuntime {
 
     private boolean isLoopback(URI uri) { return List.of("127.0.0.1", "localhost", "[::1]", "::1").contains(uri.getHost()); }
 
-    private Path projectRoot(String path) {
+    Path projectRoot(String path) {
         try {
             Path root = Path.of(path).toRealPath();
             if (!Files.isDirectory(root)) throw new IllegalArgumentException("项目路径不是目录。");
@@ -890,8 +934,8 @@ public class WorkspaceRuntime {
         } catch (IOException e) { throw failure(e); }
     }
 
-    private String git(Path cwd, String... args) {
-        List<String> command = new ArrayList<>(List.of("git", "-c", "core.quotePath=false", "-c", "core.hooksPath=/dev/null", "-c", "core.autocrlf=false"));
+    String git(Path cwd, String... args) {
+        List<String> command = new ArrayList<>(List.of("git", "--no-optional-locks", "-c", "core.quotePath=false", "-c", "core.hooksPath=/dev/null", "-c", "core.autocrlf=false"));
         command.addAll(List.of(args));
         Map<String, Object> result = execute(command, cwd, "", () -> false, x -> {}, Duration.ofMinutes(2), false);
         if (Boolean.TRUE.equals(result.get("truncated"))) throw new IllegalStateException("Git 元数据超过读取上限，不能基于不完整文件清单生成版本或快照。");
@@ -1070,15 +1114,15 @@ public class WorkspaceRuntime {
     }
 
     private Path dataDirectory() { try { Files.createDirectories(data); return data; } catch (IOException e) { throw failure(e); } }
-    private void ensureSpace() throws IOException {
+    void ensureSpace() throws IOException {
         FileStore disk = Files.getFileStore(dataDirectory());
         if (disk.getUsableSpace() < 2_000_000_000L || disk.getUsableSpace() < disk.getTotalSpace() * .05) throw new IllegalStateException("磁盘可用空间不足，停止创建新任务。");
     }
-    private void requireId(String id) { if (id == null || !id.matches("[a-zA-Z0-9_-]{1,100}")) throw new IllegalArgumentException("无效任务编号。"); }
+    void requireId(String id) { if (id == null || !id.matches("[a-zA-Z0-9_-]{1,100}")) throw new IllegalArgumentException("无效任务编号。"); }
     /**
      * Windows 共享冲突只重试原元数据替换，最多等待一秒；工具与用户文件写入不重放。
      */
-    private void writeMetadataAtomic(Path target, byte[] bytes) throws IOException { writeAtomic(target, bytes, true); }
+    void writeMetadataAtomic(Path target, byte[] bytes) throws IOException { writeAtomic(target, bytes, true); }
 
     private void writeAtomic(Path target, byte[] bytes) throws IOException { writeAtomic(target, bytes, false); }
 

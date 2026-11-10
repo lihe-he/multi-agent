@@ -4,6 +4,8 @@ import { Bot, Check, FolderOpen, GitBranch, Layers3, LockKeyhole, Network, Shiel
 import { api, currentConnection, post, setConnection } from './api';
 import type { AgentDefinition, ExecutionNode, Memory, Profile, Project, RepositoryBinding, Route, Task } from './types';
 import { Field, lines, Modal, SaveButton } from './ui';
+import { WorkspacePicker } from './WorkspacePicker';
+import type { WorkspaceChoice } from './types';
 
 type DialogProps = { onClose: () => void; onSaved: () => void };
 function ErrorMessage({ error }: { error: string }) { return error ? <div role="alert" className="form-error"><TriangleAlert size={16} />{error}</div> : null; }
@@ -34,6 +36,7 @@ export function TaskDialog({ projects, routes, bindings = [], nodes = [], select
   const [lockRoute, setLockRoute] = useState(false); const [lockModel, setLockModel] = useState(false);
   const [lockEngine, setLockEngine] = useState(false); const [lockProvider, setLockProvider] = useState(false);
   const [includeChanges, setIncludeChanges] = useState(false);
+  const [workspaceChoice, setWorkspaceChoice] = useState<WorkspaceChoice | null>(null);
   const [definitions, setDefinitions] = useState<AgentDefinition[]>([]); const [selectedDefinitions, setSelectedDefinitions] = useState<string[]>([]);
   const [definitionRefresh, setDefinitionRefresh] = useState(0);
   const [delegation, setDelegation] = useState(true); const [maxActive, setMaxActive] = useState(6); const [maxDepth, setMaxDepth] = useState(3); const [maxTotal, setMaxTotal] = useState(24);
@@ -63,6 +66,8 @@ export function TaskDialog({ projects, routes, bindings = [], nodes = [], select
   async function submit(e: FormEvent) {
     e.preventDefault(); setBusy(true); setError('');
     try {
+      if (binding && (!workspaceChoice || workspaceChoice.bindingId !== binding.id || workspaceChoice.bindingVersion !== binding.version)) throw new Error('请先读取并确认当前仓库的有效启动提交与现场选择。');
+      if (binding && !executionNode?.enabled) throw new Error('当前执行节点尚未启用，请刷新配置后再创建任务。');
       if (reserveCalls >= maxCalls) throw new Error('验证预留需要小于总调用预算，给开发阶段留出可用额度。');
       const mcpBindings = Object.entries(mcpSelections).map(([key, selected]) => {
         const tool = mcpTools.find(item => `${item.serverId}:${item.name}` === key);
@@ -74,13 +79,14 @@ export function TaskDialog({ projects, routes, bindings = [], nodes = [], select
       });
       if (mcpBindings.length && route?.engine !== 'API') throw new Error('MCP 固定动作目前只支持 API 运行路由。');
       const collaboration = { enabled: delegation && route?.engine === 'API' && selectedDefinitions.length > 0, definitionIds: selectedDefinitions, definitionVersions: Object.fromEntries(definitions.filter(definition => selectedDefinitions.includes(definition.id)).map(definition => [definition.id, definition.version])), maxActive, maxDepth, maxTotal, allowedRouteIds: definitions.filter(definition => selectedDefinitions.includes(definition.id) && definition.routeId).map(definition => definition.routeId!) };
-      const task = await post<Task>('/tasks', { projectId, ...(binding && executionNode ? { repositoryBindingId: binding.id, bindingVersion: binding.version, nodeVersion: executionNode.version } : {}), ...(sessionId ? { sessionId } : {}), title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, collaboration, mcpBindings, mcpBudget: { maxCalls: mcpMaxCalls, maxDurationMs: mcpMaxDurationMs }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges });
+      const task = await post<Task>('/tasks', { projectId, ...(binding && executionNode ? { repositoryBindingId: binding.id, bindingVersion: binding.version, nodeVersion: executionNode.version } : {}), ...(workspaceChoice ? { workspaceSelection: workspaceChoice.input } : {}), ...(sessionId ? { sessionId } : {}), title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, collaboration, mcpBindings, mcpBudget: { maxCalls: mcpMaxCalls, maxDurationMs: mcpMaxDurationMs }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges: workspaceChoice?.includeChanges ?? includeChanges });
       onCreated(task); onClose();
     } catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   }
   return <Modal wide title="创建研发任务" description="先明确目标和完成约定，再确认平台生成的协作计划。" onClose={onClose}><form onSubmit={submit}><div className="form-body">
     <div className="form-grid"><Field label="所属项目"><select disabled={!!sessionId} value={projectId} onChange={e => setProjectId(e.target.value)} required>{projects.map(p => <option value={p.id} key={p.id}>{p.name}</option>)}</select></Field><Field label="任务名称"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="给这次工作一个清晰的名称" maxLength={180} /></Field></div>
     {binding && <><Field label="执行仓库绑定"><select value={binding.id} onChange={event => setBindingId(event.target.value)}>{availableBindings.map(binding => <option key={binding.id} value={binding.id}>{binding.name} · v{binding.version}</option>)}</select></Field><p className="form-note execution-source">{executionNode?.name || binding.executionNodeId} · 节点 v{executionNode?.version} · <code>{binding.path}</code></p></>}
+    {binding && <WorkspacePicker key={binding.id} bindingId={binding.id} bindingVersion={binding.version} onChange={setWorkspaceChoice} />}
     <Field label="你希望完成什么？"><textarea className="goal-input" required rows={3} value={goal} onChange={e => setGoal(e.target.value)} placeholder="描述用户行为、现有问题、预期结果，以及需要遵守的约束…" /></Field>
     <Field label="协作方式"><div className="mode-picker">{[
       { id: 'AUTO', title: '自动选择', sub: '根据任务推荐', icon: Sparkles }, { id: 'LEAD', title: '主副协作', sub: '调查、拆分与实现', icon: Network },
@@ -109,7 +115,7 @@ export function TaskDialog({ projects, routes, bindings = [], nodes = [], select
     {route?.engine === 'API' && <button type="button" className="text-button" onClick={() => { setDefinitionRefresh(current => current + 1); setError(''); }}>刷新副 Agent 定义</button>}
     <label className="checkbox-card"><input type="checkbox" disabled={route?.engine !== 'API' || !definitions.length} checked={delegation && route?.engine === 'API' && definitions.length > 0} onChange={event => setDelegation(event.target.checked)} /><span><b>允许在执行中创建副 Agent</b><small>{route?.engine === 'API' ? '副任务使用独立现场，父 Agent 等待时释放模型容量。以下选择同时确认可使用的定义和运行路由。' : '此运行器不能确认挂起，请使用 API 路由进行动态委派。'}</small></span></label>
     {delegation && route?.engine === 'API' && <><div className="checkbox-row">{definitions.map(definition => <label key={definition.id}><input type="checkbox" checked={selectedDefinitions.includes(definition.id)} onChange={event => setSelectedDefinitions(current => event.target.checked ? [...current, definition.id] : current.filter(id => id !== definition.id))} />{definition.name} v{definition.version} · {routes.find(value => value.id === definition.routeId)?.name || '根任务路由'}</label>)}</div><div className="form-grid three"><Field label="活动或排队 Agent 上限"><input type="number" min={2} max={6} value={maxActive} onChange={event => setMaxActive(Number(event.target.value))} /></Field><Field label="最大委派深度"><input type="number" min={1} max={4} value={maxDepth} onChange={event => setMaxDepth(Number(event.target.value))} /></Field><Field label="根累计委派上限"><input type="number" min={1} max={64} value={maxTotal} onChange={event => setMaxTotal(Number(event.target.value))} /></Field></div></>}
-    {project?.dirty && <label className="checkbox-card"><input type="checkbox" checked={includeChanges} onChange={e => setIncludeChanges(e.target.checked)} /><span><b>带入当前未提交修改</b><small>在隔离副本中执行，保留原项目与暂存状态。实际支持范围由核心检查。</small></span></label>}
+    {!binding && project?.dirty && <label className="checkbox-card"><input type="checkbox" checked={includeChanges} onChange={e => setIncludeChanges(e.target.checked)} /><span><b>带入当前未提交修改</b><small>在隔离副本中执行，保留原项目与暂存状态。实际支持范围由核心检查。</small></span></label>}
     <ErrorMessage error={error} />
     {!routes.some(r => r.enabled !== false) && <div className="form-error">请先在「资源与设置」中配置一个运行器。</div>}
   </div><footer><span className="footer-hint">创建后仍需确认计划才会执行</span><button type="button" className="button secondary" onClick={onClose}>取消</button><SaveButton busy={busy}>生成任务计划</SaveButton></footer></form></Modal>;

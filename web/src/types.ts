@@ -40,6 +40,10 @@ export interface Task {
   error?: string;
   teamId?: string; collaboration?: { enabled: boolean; maxActive: number; maxDepth: number; maxTotal: number; spawned: number; definitions?: AgentDefinition[] };
   execution?: ExecutionSnapshot;
+  workspaceSelection?: WorkspaceSelection;
+  workspaceOwnership?: WorkspaceOwnership;
+  workspacePreparationPresent?: boolean;
+  workspaceSelectionHistory?: { selection: WorkspaceSelection; actor: string; createdAt: string }[];
   taskExecutionId?: string; dispatchActionId?: string;
   taskExecution?: { id: string; attempt: number; state: string; createdAt: string; endedAt?: string; reconciled?: boolean };
   dispatch?: { id: string; state: string; dispatchCount: number; createdAt: string; claimedAt?: string; waitReason?: string };
@@ -78,6 +82,11 @@ export interface ExecutionNode { id: string; name: string; version: number; prot
 export interface RepositoryBinding { id: string; projectId: string; executionNodeId: string; name: string; path: string; version: number; enabled: boolean; head?: string; branch?: string }
 export interface Worker { id: string; executionNodeId: string; epoch: number; state: string; pid: number; corePid?: number; parentPid?: number; processStartedAt: string; startedAt: string; heartbeatAt: string; heartbeatSource?: string; lastHeartbeatSequence?: number; expiresAt: string; stopState?: string; deployment: string; platform: string; reason?: string }
 export interface ExecutionSnapshot { version: number; protocolVersion: number; executionNodeId: string; nodeVersion: number; nodeName: string; repositoryBindingId: string; bindingVersion: number; bindingName: string; sourcePath: string; deployment: string }
+export interface WorkspaceSource { head: string; branch: string; version: string; index: string; statusDigest: string; dirty: boolean }
+export interface WorkspaceSelection { schemaVersion: number; version: number; strategy: 'CLONE' | 'WORKTREE'; ref: string; baseline: string; sourcePath: string; source: WorkspaceSource; includeChanges: boolean; createdAt: string }
+export interface WorkspaceOwnership { schemaVersion: number; owner: string; taskId: string; strategy: string; sourcePath: string; gitDirectory: string; commonDirectory: string; lockReason?: string }
+export interface WorkspaceOptions { schemaVersion: number; repositoryBindingId: string; bindingVersion: number; nodeVersion: number; sourcePath: string; source: WorkspaceSource; refs: { ref: string; head: string; name: string; kind: string }[]; worktrees: { path: string; head: string; detached?: boolean; locked?: string; branch?: string }[] }
+export interface WorkspaceChoice { bindingId: string; bindingVersion: number; input: { strategy: 'CLONE' | 'WORKTREE'; ref: string; expectedHead: string; sourceVersion: string; sourceIndex: string }; includeChanges: boolean }
 export interface ProcessObservation { id: string; pid: number; processStartedAt: string; origin: string; role?: string; observation: string; currentProcessStartedAt?: string; observedFromPid?: number; observedFromStartedAt?: string }
 export interface ProcessSession { id: string; type: string; state: string; pid?: number; processStartedAt?: string; ownerCorePid?: number; ownerCoreStartedAt?: string; workerId?: string; serverId?: string; taskId?: string; coverage: string; launchReceiptMissing: boolean; observedProcessesStopped: boolean; observedProcessCount: number; unconfirmedProcessCount: number; processes: ProcessObservation[]; recordedProcesses: ProcessObservation[]; processesTruncated: boolean }
 export interface ProcessRecovery { dispatchAllowed: boolean; pendingCount: number; sessions: ProcessSession[]; hasMore: boolean; coverage?: string; corePid?: number; coreStartedAt?: string }

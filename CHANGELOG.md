@@ -1,5 +1,24 @@
 # 版本记录
 
+## 0.2.0-alpha.13 — 固定提交与 Git worktree
+
+- 新建任务读取绑定仓库的实际本地/远程引用，保存完整 ref、所选 SHA、源 HEAD/分支、文件与 index 快照；创建和执行前拒绝过期选择，生产界面刷新后保留输入与策略。
+- 独立 clone 明确获取所选对象，支持仅存在于远程跟踪引用的提交；真实 worktree 使用锁定的 detached 现场，保全源分支、暂存区、引用和共享 Git 配置。
+- 任务、根尝试、准备操作和 Worker 租约固定相同选择；保存 PREPARED/READY、实际 Git 关联与 owner。完整 READY 可在人工核对后复用，部分准备或归属变化保留现场并拒绝覆盖。
+- 选择历史保存原规则内容，包括明确带入的未提交 AGENTS.md；任务准备回执缺失时仍保留原选择，同源更新授权不会从已变化的源替换规则。
+- 活动界面和 ZIP 保存启动选择、实际归属与原未知/新成功尝试。SQLite schema 升为 7，API 与 Worker 帧协议仍为 1；新增真实最终 Jar、生产 Web、SQLite 回执故障和原 PID/出生核验的验收入口，CI 归档准确 Jar/Web、内置核心及隐藏现场。
+
+协议见[启动现场约定](./docs/workspace-selection-contract.md)，固定 Git 源码、审查及逐轮实际结果见[worktree 研究](./docs/research/git-workspaces-2026-11-09.md)。当前目录执行、排他写入租约、完整归档恢复及其他 F01–F21 继续实施，完整结果以[实施记录](./docs/implementation-status.md)为准。
+
+## 0.2.0-alpha.12 — 持久根派发队列
+
+- 计划确认、根执行尝试和待派发动作同事务保存；未领取动作可撤回并跨重启保留原编号，门禁满足后只领取一次。
+- 已领取后缺少结束回执保持 UNKNOWN；核对后继续保存新尝试，原请求、预算、领取核心和历史结果保留。验收与导出等待根结束回执。
+- 生产界面提供派发历史、状态筛选、游标及等待来源；ZIP 包含完整根尝试与动作，公开 Worker 领取仍去除内部摘要。
+- 桌面打包增加固定官方资产、大小与 SHA-512 核对后的缓存回退，保留原下载失败；不自动发布发行包。SQLite schema 为 6，API 与 Worker 帧协议仍为 1。
+
+协议见[根派发约定](./docs/task-dispatch-contract.md)，来源与故障证据见[队列研究](./docs/research/dispatch-queue-2026-11-08.md)和[打包资产研究](./docs/research/electron-builder-assets-2026-11-09.md)。修订 `835d27c450f16b3c0e562e374301c76cb1ccb950` 的[三端 CI](https://github.com/lihe-he/multi-agent/actions/runs/42623675831)已成功；完整计划的其他退出条件继续保留。
+
 ## 0.2.0-alpha.11 — 核心重启与原进程核验
 
 - Worker 与 MCP stdio 启动前保存原核心会话和启动意图；实际 PID、出生时间及已观察后代保留持久来源。每次持锁开库生成新会话，区分未尝试启动和已尝试但缺失 PID 回执。

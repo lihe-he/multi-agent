@@ -94,6 +94,15 @@ final class ExecutionNodes {
         }
     }
 
+    Map<String, Object> workspaceOptions(String bindingId) {
+        Map<String, Object> binding = store.get("repositoryBinding", bindingId), node = store.get("executionNode", str(binding, "executionNodeId"));
+        if (!str(localNode(), "id").equals(str(node, "id")) || !bool(binding, "enabled", false) || !bool(node, "enabled", false)) throw new ApiException(409, "仓库绑定或当前本机节点未启用");
+        Map<String, Object> options = runtime.workspaceOptions(str(binding, "path"));
+        if (!samePath(str(options, "sourcePath"), str(binding, "path"))) throw new ApiException(409, "仓库目录解析目标已变化，请重新核对绑定");
+        options.putAll(obj("projectId", binding.get("projectId"), "repositoryBindingId", bindingId, "bindingVersion", binding.get("version"), "executionNodeId", node.get("id"), "nodeVersion", node.get("version")));
+        return options;
+    }
+
     void requireCurrent(Map<String, Object> task) {
         Map<String, Object> execution = map(task, "execution");
         if (execution.isEmpty()) return;

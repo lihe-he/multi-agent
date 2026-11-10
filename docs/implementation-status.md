@@ -1,6 +1,29 @@
 # 实施与验收记录
 
-产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-09。
+产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-10。
+
+## 0.2.0-alpha.13 开发迭代
+
+按 F03/F12 与计划书 9.1、9.4、10.2、18.1 增加实际本地/远程提交选择和 locked detached Git worktree。任务、根尝试、准备操作和 Worker 租约固定同一 SHA、源文件/index 快照与规则；完整 READY 通过原目录、Git 关联、owner 和内容核对后可复用，原未知尝试与累计预算保留。协议见[启动现场](./workspace-selection-contract.md)，固定 Git v2.51.1 提交、取舍及每轮失败见[worktree 研究](./research/git-workspaces-2026-11-09.md)。
+
+| 检查 | 本轮准确产物与当前状态 |
+| --- | --- |
+| 干净核心构建 | 含读取时准备字段的最后 `clean verify` 成功：22 套、246 项中 244 通过、2 项 Windows 权限跳过，0 失败/错误；全部 XML 载体 parallelism/maxPoolSize 均为 2。最终 Jar 为 35793599 字节，SHA-256 `c625a2a97afe1e325d5078927b22f63756acfe5c1ded5d23d655c0f6814dcee8`；完整 Jar、源码哈希和报告在 `.runtime/alpha13-final-core-evidence/` |
+| 最终 Jar 工作区 | 最终第四轮 15 / 15、退出 0：固定提交 worktree/remote-only clone、原 HEAD/branch/index/config/refs/文件保全、排队源变化零操作、生产 Web 409 刷新、锁定归属变化拒绝、原 Worker READY+ACK 后 task 回执存储故障、普通 Jar 重开与同源授权、原 READY owner 复用和两尝试 ZIP 均通过。12 次真实本地模型协议请求，52 个原 PID/出生身份在报告前及报告后均独立确认停止；页面/模型错误为空。[实际报告](./qa/workspace-selection-win32.json)、`.runtime/workspace-selection-kYJdBk/reports/` 和 `.runtime/alpha13-workspaces-jar-attempt4.log` 保存完整来源 |
+| Web 与界面 | 最终 TypeScript/生产构建成功，全量 UI 62 / 62；1440px/430px 的固定提交、纯文本 ref/owner、旧选择规则、版本冲突及 READY 已保存但 task 回执缺失的同源授权均验证。四张新截图已查看，六张无关历史截图恢复原字节；最终 HTML/JS/CSS/config 哈希及 UI 报告在 `.runtime/alpha13-ui-full-evidence2/` |
+| 原进程恢复 | 同一最终 Jar 的 11 / 11、退出 0：原 Worker/在途 HTTP/旧 MCP EOF 存活、三次核心启动、进程覆盖与任务效果分别核对、UNKNOWN/原请求/预算保全及新任务 ZIP 通过；原夹具停止独立核验。[实际报告](./qa/process-recovery-win32.json)，日志 `.runtime/alpha13-recovery-final.log` |
+| 持久根队列 | 同一最终 Jar 的 13 / 13、退出 0：批准事务故障零执行、原未领取撤回/跨重启领取一次、实际领取后 HTTP 在途核心退出、原 UNKNOWN/请求/预算和显式新尝试完整 ZIP 通过；预算 1→4，原核心与 Worker 身份独立核验停止。[实际报告](./qa/dispatch-queue-win32.json)，日志 `.runtime/alpha13-dispatch-final.log` |
+| 完整本机协议 | 同一最终 Jar 的 29 / 29、退出 0，含三模式、实际团队依赖/采纳、根尝试/动作与预算、MCP 原来源、版本门禁、审查/验收和 ZIP；[协议报告](./qa/smoke-win32.json)，日志 `.runtime/alpha13-integration-final.log` |
+| 独立客户端 | 核心 PID 38724、Worker PID 43160，真实生产 Web/同源代理核对客户端和附加 Electron 退出与重连保留原请求/租约且在途请求仍为 1；随后 18 次根调用、两名副 Agent、13 条 Worker 回执及一次 MCP 派发完成。无页面/模型异常；[报告](./qa/standalone-win32.json)与实际 Worker/团队截图已查看，日志 `.runtime/alpha13-standalone-final.log` |
+| Windows 打包 | 原依赖/打包/连接守卫 17 / 17；原 electron-builder 26.0.12 一次生成 alpha.13 NSIS，安装器 149461427 字节，SHA-256 `3163ec3b58641b96b48c2dd94b76ffb957fcf2184b6fa19328138ee19db3a177`。打包程序 API 200、version/application.version=alpha.13、packaged=true，外部 Java 禁用后以内置 Java 21.0.13 启动，无页面异常且正常退出；包内核心、全部 Web 文件（含 config）、桌面脚本和 Java 来源逐项哈希核对。[打包报告](./qa/desktop-packaged-win32.json)及[产物汇总](./qa/alpha13-validation-win32.json)保存实际事实，本轮未重复完整安装/卸载，安装器签名状态为 NotSigned |
+| 源码审查 | 22 份新增/受改 Java 中 71 条原注释逐项保留，新增 Javadoc 为标准多行；根/Web/锁文件/POM 版本一致，diff whitespace 与脚本语法通过，最终 Jar 全部 class 与原编译输出相同。[源码审查](./qa/alpha13-source-audit-win32.json)保存准确源码与类哈希 |
+| 证据归档与 CI | 六条最终顺序验证的命令、脚本 SHA、退出码及前后 Jar/Web/config 哈希均为 passed，完整本机证据在 `.runtime/alpha13-final-local-qa/`，正式汇总为[alpha.13 本机验证](./qa/alpha13-validation-win32.json)。CI 新增实际工作区步骤与最终 Jar/Web、打包内置核心、夹具原类和隐藏现场归档；本轮准确提交的三端结果将在提交推送后单独核验并追加 |
+
+SQLite schema 为 7，API 与 Worker 帧协议仍为 1。`workspacePreparationPresent` 只表示读取时已有准备记录/目录，不作为 READY 成功事实持久化；实际恢复仍核对原回执和 Git 关联。READY 回执保存故障来自真实 Worker 完成及 ACK 后的 SQLite 触发器；人工 PREPARED 故障窗口另行标记，不能互相替代。选择历史保存原规则全文，源变化后同源更新授权保留原规则。
+
+原 junction 辅助进程超时、旧 JDK 在测试前中止、UI 请求数量假设和前两轮 Jar 脚本等待/名称定位失败均保留。第三轮工作区成功与一次编译探针修订后的第四轮成功分别保存；本机 QA 首次 ASAR 路径分隔符读取失败及修正也记录于汇总，未改变生产源码或原验证结果。后续 Java/Web 源码未再修改，全部最终检查使用上述准确产物。
+
+本轮完成 F03 的所选提交 clone/worktree 与上述恢复边界；当前目录执行、排他写入租约、完整工作区归档恢复、远程配对/队列、完整历史进程树及其他 F01–F21/M0–M3 退出条件继续实施。完整项目目标仍未完成。
 
 ## 0.2.0-alpha.12 开发迭代
 
@@ -17,7 +40,7 @@
 | 打包资产 | 原 Electron 安装守卫 6、打包守卫 8、连接策略 3 共 17 / 17。Windows 两个官方资产实际下载/原 SHA-512/7zip/原 app-builder 缓存消费通过；Linux 资产实际字节核验通过，本机 Windows 解压符号链接权限失败保留，不计作 Linux 原生通过。原失败 run 已终态，原打包器一次回退及固定来源见[打包研究](./research/electron-builder-assets-2026-11-09.md)和[资产报告](./qa/alpha12-desktop-assets-win32.json) |
 | Windows 发行物 | 最终 Jar/Web 使用已核验的 NSIS 资产缓存，由原 electron-builder 26.0.12 生成 alpha.12 安装包；149444501 字节，SHA-256 `9d744f178b7174e04b01d8c66563314b6489e73f929d22a06f1ee17e191c09b9`。打包程序 version/application.version 均为 alpha.12、packaged=true，禁用外部 Java 后以内置运行时启动，API 200、无页面异常；内置核心 SHA 与最终 Jar 一致，见[产物核对](./qa/alpha12-validation-win32.json)和[打包报告](./qa/desktop-packaged-win32.json)。本轮未重复完整安装/卸载，安装包未签名 |
 | 源码审查 | 16 份新增/受改 Java 的 50 条原注释逐项保留，新 Javadoc 为标准多行；根/Web/锁文件/POM 版本一致，diff whitespace 通过，原源码与准确 Jar 哈希见[源码核对](./qa/alpha12-source-audit-win32.json) |
-| 三端 CI | 原提交 `43da58f9975d58e68e74220a711a61300e6bc565` 的 [run 42619100655](https://github.com/lihe-he/multi-agent/actions/runs/42619100655) 已终态 failure，三平台均在实际队列浏览器启动处失败：脚本加载根 Playwright 1.56.1，而 CI 安装 Web 1.64.1 的 Chromium，旧 revision 不存在。修订按 Web package.json 解析浏览器模块并保存版本，本机同一最终 Jar/Web 通过 1.64.1 + Edge 的队列 13 / 13；本机 Chromium 另报 spawn UNKNOWN，尚未进入浏览器断言。原日志、ZIP digest、已完成与未执行步骤见[准确提交记录](./qa/alpha12-ci-dispatch-receipt.json)；修订提交的三端 Chromium/打包结果继续独立验收 |
+| 三端 CI | 修订 `835d27c450f16b3c0e562e374301c76cb1ccb950` 的 [run 42623675831](https://github.com/lihe-he/multi-agent/actions/runs/42623675831) 已终态 success，Windows、macOS、Ubuntu 整条通过。三份实际证据 ZIP 均下载核对 GitHub digest；各平台核心 20 套 / 212 项、载体 2 / 2，Windows 211 通过 + 1 跳过，macOS/Linux 210 通过 + 2 跳过；准确 job 日志确认 UI 48，报告确认队列 13、恢复 11、协议 29，独立客户端和打包启动均通过。1.64.1 Chromium 的实际队列夹具、原编号、停止身份与 `.runtime` 报告已在归档核对。证据 SHA-256 分别为 Windows `9fb02ab40199804d2c43b2b0732641529b4def6f8647c012afa4639791cf175c`、macOS `2e13cf3814d9994a1a18e1a8ee9047130fc20138182ddfaaad6e57a4d8510863`、Ubuntu `c9929b4ca8222ea3a046a768b4a7b7fe1f3ce6262c6aef5df4143c6e9c16c66d`。原 `43da58f` 的 [run 42619100655](https://github.com/lihe-he/multi-agent/actions/runs/42619100655) 三端浏览器版本错误、已执行/未执行步骤、旧归档缺少隐藏现场，以及本机 Chromium spawn UNKNOWN 继续保留在[准确提交记录](./qa/alpha12-ci-dispatch-receipt.json)。发行包 artifact 另只保存元数据，未下载核验全部字节 |
 
 本轮 SQLite schema 为 6，API、实体及 Worker 帧协议仍为 1；旧记录不补造根尝试。执行结束、未知核对和人工验收分别保存，验收/导出等待根结束回执；并发任务变化会拒绝混合导出。旧核心不能打开新库。原 15 秒子请求等待超时尚无足够证据确定原因，相同期限定向与最后完整回归通过，新增失败线程/派发快照进入 CI 证据；不以重跑通过改写旧失败。
 
@@ -270,18 +293,19 @@ run `42229839029` 验证 Linux 的 `--no-sandbox` 修复成功；随后 macOS UI
 - 项目检索为实时关键词扫描，显示覆盖范围；Lucene 持久符号索引、引用关系、语义检索与检索缓存校准尚未完成。
 - 记忆支持项目归属、编辑、停用与修订；自动提炼、完整来源图、跨项目确认偏好和全部缓存失效传播仍需扩展。
 - 已有修改可整体复制到独立任务现场，并保全原暂存状态；动态副成果采纳保全父现场后续修改、暂存 blob 和执行位。原项目逐文件/代码块选择带入、局部采纳、轮次撤销及整合队列仍待实现。
+- alpha.13 从实际本地/远程 refs 固定提交，独立 clone 与 locked detached worktree 保存原源 HEAD/分支、文件/index 快照和实际 Git 归属；排队源变化零准备/零请求，完整 READY 在原回执和关联核对后复用。部分准备与归属变化不自动接管，原选择/规则和未知尝试保留历史。当前目录执行、排他写入租约与完整 worktree 归档恢复继续实施。
 - 导出为任务 JSON、补丁及证据 ZIP；它不是数据库、配置和所有成果的一致备份。完整备份恢复、保留策略和磁盘治理仍待实现。
 - 已提供构建与桌面打包入口，三端安装、签名分发及长时间负载验收没有因入口存在而自动完成。
 
 ## F01–F21 当前追踪
 
-下表是 alpha.12 的实现状态；原[架构审查](./research/current-architecture-audit-2026-11-06.md)保留审查时的历史快照。局部通过与完整需求完成分别记录。
+下表是 alpha.13 的实现状态；原[架构审查](./research/current-architecture-audit-2026-11-06.md)保留审查时的历史快照。局部通过与完整需求完成分别记录。
 
 | 编号 | 当前实现与证据 | 保留的工作 |
 | --- | --- | --- |
 | F01 多会话工作台 | 持久标签、项目切换、历史与笔记、同会话多任务已通过真实代理/浏览器测试 | PTY/终端重连、可拖动侧栏 |
 | F02 全文搜索 | 项目内跨会话消息搜索、Ctrl/Cmd K、纯文本片段和原记录定位已验证 | 文件/符号/语义混合检索及校准 |
-| F03 启动现场 | 实际独立 JVM 执行任务 clone、整体带入未提交修改和原暂存保全；本机节点/仓库绑定、实际源目录/规则和版本冻结已验证；原启动意图、核心会话及已观察进程的跨重启门禁通过最终 Jar 实际恢复；本机根 PENDING/CLAIMED、原编号恢复/领取一次、未领取撤回与核对后新尝试通过准确 Jar 队列验收 | 远程队列、完整历史树、真 worktree、分支与当前目录启动策略、远程配对 |
+| F03 启动现场 | 实际独立 JVM 的本机节点/仓库绑定、冻结源目录/规则、根队列和原进程恢复已验证；alpha.13 的实际本地/远程提交选择、固定 SHA clone/locked detached worktree、原 HEAD/index/config/refs 保全、排队源变化零执行和完整 READY 同 owner 恢复通过最终 Jar 15 / 15 与生产 Web；原 UNKNOWN 和新尝试分别保留 | 当前目录执行、排他写入租约、完整 worktree 归档恢复、远程队列/配对和完整历史树 |
 | F04 Diff 与撤销 | 版本绑定差异、子成果向父预检采纳及后续修改保全已验证 | 逐文件树、高亮、轮次撤销、原项目局部采纳 |
 | F05 预览浏览器 | 待实现 | 会话隔离、端口绑定、登录/Cookie 与清理 |
 | F06 五档权限 | 计划确认、文件范围、动态能力交集、未知操作人工核对已验证 | 五档预设、逐操作审批事务、反问和跨设备审批 |
@@ -290,7 +314,7 @@ run `42229839029` 验证 Linux 的 `--no-sandbox` 修复成功；随后 macOS UI
 | F09 MCP | HTTP JSON/SSE 响应和 stdio、项目只读令牌、API 固定动作、成功请求与实际 Worker 来源、冻结权限及父去重已验证；实际 stdio 在核心退出后仍存活的原身份、409 新派发门禁、停止和覆盖核对通过最终 Jar 恢复 | 动态参数、原生注入、共享/全局继承、完整历史树及完整传输矩阵 |
 | F10 六主题 | 当前单套界面 | 六套 token、持久选择、系统浅深色和对比度 |
 | F11 技能 | 职责模板可导入和版本固定，不等同于技能安装 | 技能源、许可证/权限/安全状态、隔离安装与回退 |
-| F12 活动来源 | 会话活动、实际 AgentRun/请求/副任务/证据；Worker 原管道心跳、PID/出生、核心 PID、原租约/操作及模型/MCP 来源已验证；旧进程会话、观察来源、覆盖缺口、核对历史与完整 ZIP 导出通过真实恢复和生产界面；根尝试/动作、领取核心、当时任务状态与累计预算通过界面/完整历史导出核对 | 终端/其他后台活动、完整历史树、远程 Worker 与长期事件负载 |
+| F12 活动来源 | 会话/AgentRun/请求/副任务、原 Worker/核心 PID 和租约、模型/MCP 来源、进程覆盖与根尝试/动作已验证；alpha.13 的固定选择、完整旧规则、实际 Git owner/关联和两次根尝试在生产桌面/窄屏及 ZIP 核对，真实 READY 回执保存失败与人工 PREPARED 故障分别保存 | 终端/其他后台活动、完整历史树、远程 Worker 与长期事件负载 |
 | F13 副 Agent | 可视化定义/模型/能力/范围、版本冻结、实际受控委派、数量/深度/预算已验证 | 原生/远程运行器能力与完整生命周期验收 |
 | F14 Teams | 实际团队、父子/同父依赖、深度视图、来源消息、等待与采纳已验证 | 完整角色租约、任意 workflow DAG 与跨节点团队 |
 | F15 Workflow | 固定三模式可配合实际动态副任务 | 版本化 DSL、执行前校验、动态 DAG、检查点续跑 |
@@ -312,10 +336,10 @@ run `42229839029` 验证 Linux 的 `--no-sandbox` 修复成功；随后 macOS UI
 | T03–T05 | 模式选择、独立圆桌、流水线失败返回 | 三种固定阶段、本机 API 动态委派及独立提案/审查隔离已通过实际协议/Git 回归；真实外部运行器另验 |
 | T06、T16、T20–T21 | 固定上下文、缓存失效、记忆撤回、策略版本 | 记忆修订、新任务排除失效记忆及验收时编辑/撤回竞争拒绝通过；完整缓存传播待实现 |
 | T07–T08 | 委派权限交集、MCP 身份与定义 | 动态定义版本/路由锁定、实际能力与范围交集、越界读写/命令/MCP 拒绝、固定动作原来源与父去重引用已通过；原生/远程运行器另验 |
-| T09–T10 | 结果未知与崩溃边界 | 状态故障注入、数据目录排他、缺失 PID 回执门禁通过；最终 Jar 的真实 Worker/在途 HTTP/stdio 派发、只杀核心、旧 MCP 存活、三次启动、分别核对与原预算/请求保全 11 / 11；完整外部供应商及崩溃组合待验 |
+| T09–T10 | 结果未知与崩溃边界 | 状态/存储故障、原进程和在途 HTTP/stdio 的最终 Jar 恢复 11 / 11、根队列 13 / 13 通过；alpha.13 原 Worker 保存 READY 并 ACK 后 task 回执落库失败、普通 Jar 重开、原 UNKNOWN/预算和同 owner 新尝试复用通过，人工部分 PREPARED 保全另验；完整外部供应商及崩溃组合待验 |
 | T11–T12 | 根取消及限制覆盖所有后代 | 实际子 HTTP 取消/重开保留 UNKNOWN、停止后无新增请求、两层递归/累计上限、根预算与验证预留通过；跨账号/原生接管另验 |
 | T13–T15 | 语义冲突、版本变化、验证规则变更 | 二进制内容和 Git 可执行位指纹、独立审查副本篡改拒绝、交付版本门禁通过；语义冲突分析待实现 |
-| T17 | 原暂存、未暂存、未跟踪修改共存 | 整体带入、原暂存保全及子成果向父采纳保全后续文件/暂存 blob/执行位已通过真实 Git；原项目逐项选择与采纳仍待实现 |
+| T17 | 原暂存、未暂存、未跟踪修改共存 | 整体带入及子成果向父采纳保全后续文件/暂存 blob/执行位已验证；alpha.13 固定提交 clone/worktree 逐项核对源 HEAD/branch/index/config/refs/文件，明确带入未提交规则，生产 UI 的过期 409 刷新保留输入并提交新 index，源变化后的原 READY/规则保留；原项目逐项选择与采纳仍待实现 |
 | T18–T19 | 生命周期、磁盘、完整备份恢复 | Windows 进程与文件故障；其他系统待验证 |
 | T22–T23 | 效率评测、实验预算与隔离 | 未开展付费评测，不报告收益数字 |
 | T24 | Windows / macOS / Linux 安装及中文空格路径 | 三端完整验收待完成 |

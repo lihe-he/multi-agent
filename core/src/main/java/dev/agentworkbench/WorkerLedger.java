@@ -80,6 +80,13 @@ final class WorkerLedger {
                 "claimDigest", digest, "state", "ACTIVE", "stopState", "RUNNING", "workingDirectory", Path.of(workspace).toAbsolutePath().normalize().toString(),
                 "createdAt", time.toString(), "heartbeatAt", time.toString(), "expiresAt", time.plusMillis(LEASE_MILLIS).toString());
             lease.putAll(obj("operationType", operation.get("kind"), "subjectId", subject(operation, task), "deployment", worker.get("deployment"), "executorPid", worker.get("pid"), "processStartedAt", worker.get("processStartedAt")));
+            if ("WORKSPACE".equals(str(operation, "kind")) && task.containsKey("workspaceSelection")) {
+                if (!map(operation, "workspaceSelection").equals(map(task, "workspaceSelection"))) throw new ApiException(403, "准备操作不属于当前启动选择");
+                lease.put("workspaceSelection", task.get("workspaceSelection"));
+            }
+            if (!str(task, "workspace").isBlank() && ExecutionNodes.samePath(str(task, "workspace"), Path.of(workspace).toAbsolutePath().normalize().toString()) && task.containsKey("workspaceOwnership")) {
+                lease.put("workspaceOwnership", task.get("workspaceOwnership"));
+            }
             ExecutionStore.copyTaskExecutionSource(lease, operation);
             if (worker.containsKey("corePid")) lease.put("corePid", worker.get("corePid"));
             if (worker.containsKey("processSessionId")) lease.put("processSessionId", worker.get("processSessionId"));

@@ -121,7 +121,8 @@ public final class WorkerProcessMain {
     private Object execute(Call call, String method) {
         Map<String, Object> p = call.parameters;
         return switch (method) {
-            case "PREPARE" -> runtime.prepare(str(p, "sourcePath"), str(p, "taskId"), bool(p, "includeChanges", false));
+            case "PREPARE" -> map(p, "workspaceSelection").isEmpty() ? runtime.prepare(str(p, "sourcePath"), str(p, "taskId"), bool(p, "includeChanges", false))
+                : runtime.prepareSelected(str(p, "sourcePath"), str(p, "taskId"), bool(p, "includeChanges", false), map(p, "workspaceSelection"));
             case "REVIEW_COPY" -> runtime.reviewCopy(str(p, "workspace"), str(p, "subjectId"), str(p, "version"));
             case "DELEGATION_COPY" -> runtime.delegationCopy(str(p, "workspace"), str(p, "subjectId"), str(p, "version"));
             case "INTEGRATE" -> runtime.integrateDelegation(str(p, "baseline"), str(p, "working"), str(p, "targetWorkspace"), str(p, "expectedResult"), map(p, "permissions"));
@@ -151,7 +152,7 @@ public final class WorkerProcessMain {
                 if (claims.size() >= 32_768) throw new ApiException(409, "Worker 原领取数量超过会话边界");
                 original = new Claim(new LinkedHashMap<>(lease)); claims.put(operation, original);
             }
-            for (String field : List.of("id", "operationId", "operationKind", "taskId", "projectId", "agentRunId", "workerId", "epoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "authorizationVersion", "workingDirectory", "realWorkingDirectory", "operationType", "subjectId", "claimDigest")) {
+            for (String field : List.of("id", "operationId", "operationKind", "taskId", "projectId", "agentRunId", "workerId", "epoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "authorizationVersion", "workingDirectory", "realWorkingDirectory", "operationType", "subjectId", "claimDigest", "workspaceSelection", "workspaceOwnership")) {
                 if (!java.util.Objects.equals(original.lease.get(field), lease.get(field))) throw new ApiException(403, "原领取的固定来源已变化");
             }
             if (original.released.get() || sequence != original.sequence + 1 || !original.active.compareAndSet(false, true)) throw new ApiException(409, "Worker 原领取不能重放、并发或跳过调用");
@@ -179,6 +180,10 @@ public final class WorkerProcessMain {
         if (!path.isAbsolute() || !ExecutionNodes.samePath(path.normalize().toString(), str(lease, "workingDirectory"))
                 || !ExecutionNodes.samePath(path.toRealPath().toString(), str(lease, "realWorkingDirectory"))) throw new ApiException(403, "现场目录不属于原领取或解析目标已变化");
         if ("PREPARE".equals(method) && !str(lease, "taskId").equals(str(parameters, "taskId"))) throw new ApiException(403, "准备目录不属于原根任务");
+        if ("PREPARE".equals(method) && !map(lease, "workspaceSelection").equals(map(parameters, "workspaceSelection"))) throw new ApiException(403, "准备提交与原 Worker 领取不一致");
+        if ("PREPARE".equals(method) && !map(lease, "workspaceSelection").isEmpty()
+                && (!(parameters.get("includeChanges") instanceof Boolean) || bool(parameters, "includeChanges", false) != bool(map(lease, "workspaceSelection"), "includeChanges", false))) throw new ApiException(403, "带入改动参数与原启动选择不一致");
+        if (!map(lease, "workspaceOwnership").isEmpty()) runtime.requireWorkspaceOwnership(str(lease, "taskId"), target, obj("workspaceOwnership", lease.get("workspaceOwnership")));
         if (Set.of("REVIEW_COPY", "DELEGATION_COPY").contains(method) && !str(lease, "subjectId").equals(str(parameters, "subjectId"))) throw new ApiException(403, "副本不属于原任务或副执行");
     }
 

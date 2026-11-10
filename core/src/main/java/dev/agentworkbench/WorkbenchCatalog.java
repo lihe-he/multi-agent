@@ -44,6 +44,24 @@ public class WorkbenchCatalog {
         catch (Exception exception) { throw new ApiException(409, "项目规则无法读取，请检查权限"); }
     }
 
+    /**
+     * 新任务的规则跟随所选提交和源快照，保留实际 ref 与内容来源。
+     */
+    List<Map<String, Object>> projectRules(String sourcePath, Map<String, Object> selection) {
+        if (selection.isEmpty()) return projectRules(sourcePath);
+        String content = runtime.workspaceRules(sourcePath, selection);
+        if (content.isEmpty()) return List.of();
+        if (content.length() > 128000) throw new ApiException(409, "所选项目规则超过读取上限");
+        return List.of(obj("id", "project-rules", "kind", "RULE", "content", content, "source", "AGENTS.md", "sourcePath", sourcePath,
+            "sourceRef", selection.get("ref"), "baseline", selection.get("baseline"), "version", str(selection, "baseline") + ":" + str(map(selection, "source"), "version")));
+    }
+
+    Map<String, Object> workspaceSelection(String sourcePath, Map<String, Object> body, boolean includeChanges, int version) {
+        if (!(body.get("workspaceSelection") instanceof Map<?, ?> input) || input.keySet().stream().anyMatch(key -> !(key instanceof String))) throw new ApiException(400, "workspaceSelection 必须为启动选择对象");
+        if (body.containsKey("includeChanges") && !(body.get("includeChanges") instanceof Boolean)) throw new ApiException(400, "includeChanges 必须为布尔值");
+        return runtime.selectWorkspace(sourcePath, map(body, "workspaceSelection"), includeChanges, version);
+    }
+
     @PostConstruct
     void defaults() {
         nodes.localNode();
@@ -228,6 +246,7 @@ public class WorkbenchCatalog {
         if (body.containsKey("collaboration") && !(body.get("collaboration") instanceof Map<?, ?>)) throw new ApiException(400, "collaboration 必须为对象");
         Map<String, Object> project = store.get("project", required(body, "projectId", 100));
         Map<String, Object> execution = nodes.snapshot(str(project, "id"), body, 1);
+        Map<String, Object> selection = body.containsKey("workspaceSelection") ? workspaceSelection(str(execution, "sourcePath"), body, bool(body, "includeChanges", false), 1) : Map.of();
         String goal = required(body, "goal", 40000), title = required(body, "title", 200);
         for (Map<String, Object> task : store.list("task")) {
             if (str(task, "projectId").equals(str(project, "id")) && goal.equals(str(task, "goal")) && !Set.of("CANCELLED", "FAILED").contains(str(task, "state"))) {
@@ -266,13 +285,14 @@ public class WorkbenchCatalog {
                 context.add(obj("id", memory.get("id"), "kind", memory.get("kind"), "content", memory.get("content"), "source", memory.get("source"), "version", memory.get("version")));
             }
         }
-        context.addAll(projectRules(str(execution, "sourcePath")));
+        context.addAll(projectRules(str(execution, "sourcePath"), selection));
         Map<String, Object> task = obj("id", id(), "schemaVersion", 1, "projectId", project.get("id"), "title", title, "goal", goal,
             "mode", mode, "modeReason", reason, "state", "DRAFT", "outcome", "UNDETERMINED", "createdAt", now(), "updatedAt", now(),
             "contract", contract, "budget", obj("maxCalls", max, "reserveCalls", reserve, "usedCalls", 0, "usedDevelopmentCalls", 0, "usedReservedCalls", 0, "developmentAvailable", max - reserve, "type", route.get("budgetType")),
-            "locks", locks, "routeId", route.get("id"), "routeSnapshot", route, "profileSnapshot", store.list("profile"), "policyVersion", "1.1/0.2.0-alpha.12",
+            "locks", locks, "routeId", route.get("id"), "routeSnapshot", route, "profileSnapshot", store.list("profile"), "policyVersion", "1.1/0.2.0-alpha.13",
             "includeChanges", bool(body, "includeChanges", false), "execution", execution, "plan", plan, "context", context, "evidence", new ArrayList<>(), "issues", new ArrayList<>(),
             "review", obj("status", "NOT_RUN"), "planValidation", result, "workspace", "", "baseline", "", "version", "", "repairRounds", 0);
+        if (!selection.isEmpty()) task.put("workspaceSelection", selection);
         task.put("mcpAuthorization", McpTaskPolicy.snapshot(store, str(project, "id"), route, body.get("mcpBindings"), 1));
         task.put("mcpBudget", McpTaskPolicy.budget(map(body, "mcpBudget"), Map.of()));
         task.put("collaboration", CollaborationPolicy.snapshot(store, str(project, "id"), route, locks, map(body, "collaboration")));

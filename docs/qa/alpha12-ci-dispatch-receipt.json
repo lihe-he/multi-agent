@@ -168,5 +168,269 @@
         }
       ]
     }
-  ]
+  ],
+  "successfulRevision": {
+    "recordedAt": "2026-11-09T14:06:05.756Z",
+    "version": "0.2.0-alpha.12",
+    "commit": "835d27c450f16b3c0e562e374301c76cb1ccb950",
+    "run": 42623675831,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/42623675831",
+    "status": "completed",
+    "conclusion": "success",
+    "platforms": [
+      {
+        "commit": "835d27c450f16b3c0e562e374301c76cb1ccb950",
+        "run": 42623675831,
+        "platform": "windows-latest",
+        "job": {
+          "id": 129181887843,
+          "attempt": 1,
+          "startedAt": "2026-11-09T13:14:13Z",
+          "completedAt": "2026-11-09T13:26:41Z",
+          "conclusion": "success",
+          "reportsFresh": true,
+          "requiredStepsPassed": true
+        },
+        "artifact": {
+          "id": 13678576549,
+          "name": "evidence-windows-latest",
+          "sha256": "9fb02ab40199804d2c43b2b0732641529b4def6f8647c012afa4639791cf175c",
+          "digestVerified": true
+        },
+        "core": {
+          "suites": 20,
+          "tests": 212,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "passed": 211,
+          "schedulerParallelism": 2,
+          "schedulerMaxPoolSize": 2
+        },
+        "recovery": {
+          "checks": 11,
+          "jarSha256": "2ee872adf539c0b4fa9b7efa1ac5ca2c24392a23b1a1bf39479440059b78fa1a",
+          "originalCorePid": 7884,
+          "originalWorkerPid": 868,
+          "originalMcpPid": 4700,
+          "originalModelCalls": 3,
+          "originalExternalCalls": 1,
+          "newTaskCalls": 3,
+          "automaticReplay": false,
+          "processCoverage": "OBSERVED_ONLY"
+        },
+        "dispatch": {
+          "checks": 13,
+          "jarSha256": "2ee872adf539c0b4fa9b7efa1ac5ca2c24392a23b1a1bf39479440059b78fa1a",
+          "browserModule": "@playwright/test from web/package.json",
+          "browserVersion": "1.64.1",
+          "originalUnknownPreserved": true,
+          "automaticReplay": false,
+          "rawFixtureAndReportPreserved": true,
+          "stoppedOriginalIdentities": 54
+        },
+        "protocol": {
+          "checks": 29,
+          "status": "passed"
+        },
+        "standalone": {
+          "workerPid": 7408,
+          "corePid": 7100,
+          "originalRequestId": "f590e257-ea8e-47ad-a873-ff7cbb1b5096",
+          "originalLeaseId": "185b0b7c-911f-4e71-b460-97caffe847d0",
+          "rootCalls": 18,
+          "receipts": 13
+        },
+        "packaged": {
+          "desktop": "PASS",
+          "api": 200,
+          "version": "0.2.0-alpha.12",
+          "application": {
+            "packaged": true,
+            "version": "0.2.0-alpha.12"
+          },
+          "externalJavaDisabled": true,
+          "pageErrors": []
+        },
+        "ui": {
+          "tests": 48,
+          "channel": "chromium",
+          "exactJobLogVerified": true
+        },
+        "log": ".runtime/alpha12-browser-job-129181887843.log",
+        "logSha256": "fa1225ae78a87663b6f180064546a5db0d452b6471de12119fe609c0dee220a2",
+        "evidence": ".runtime/alpha12-browser-ci-evidence/windows-latest/summary-verified.json"
+      },
+      {
+        "commit": "835d27c450f16b3c0e562e374301c76cb1ccb950",
+        "run": 42623675831,
+        "platform": "macos-latest",
+        "job": {
+          "id": 129181887352,
+          "attempt": 1,
+          "startedAt": "2026-11-09T13:14:14Z",
+          "completedAt": "2026-11-09T13:25:09Z",
+          "conclusion": "success",
+          "reportsFresh": true,
+          "requiredStepsPassed": true
+        },
+        "artifact": {
+          "id": 13678715990,
+          "name": "evidence-macos-latest",
+          "sha256": "2e13cf3814d9994a1a18e1a8ee9047130fc20138182ddfaaad6e57a4d8510863",
+          "digestVerified": true
+        },
+        "core": {
+          "suites": 20,
+          "tests": 212,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 2,
+          "passed": 210,
+          "schedulerParallelism": 2,
+          "schedulerMaxPoolSize": 2
+        },
+        "recovery": {
+          "checks": 11,
+          "jarSha256": "f8efe329e14365fb933a307f8dfc29f0bd73064b15fe0230831d0a9b9a0b9317",
+          "originalCorePid": 12922,
+          "originalWorkerPid": 13068,
+          "originalMcpPid": 13250,
+          "originalModelCalls": 3,
+          "originalExternalCalls": 1,
+          "newTaskCalls": 3,
+          "automaticReplay": false,
+          "processCoverage": "OBSERVED_ONLY"
+        },
+        "dispatch": {
+          "checks": 13,
+          "jarSha256": "f8efe329e14365fb933a307f8dfc29f0bd73064b15fe0230831d0a9b9a0b9317",
+          "browserModule": "@playwright/test from web/package.json",
+          "browserVersion": "1.64.1",
+          "originalUnknownPreserved": true,
+          "automaticReplay": false,
+          "rawFixtureAndReportPreserved": true,
+          "stoppedOriginalIdentities": 44
+        },
+        "protocol": {
+          "checks": 29,
+          "status": "passed"
+        },
+        "standalone": {
+          "workerPid": 17157,
+          "corePid": 16931,
+          "originalRequestId": "c25ad2f4-f896-4da4-a3e0-3db509bce5a2",
+          "originalLeaseId": "109de2f0-fe5d-4855-8fe8-d1712bcad1bc",
+          "rootCalls": 18,
+          "receipts": 13
+        },
+        "packaged": {
+          "desktop": "PASS",
+          "api": 200,
+          "version": "0.2.0-alpha.12",
+          "application": {
+            "packaged": true,
+            "version": "0.2.0-alpha.12"
+          },
+          "externalJavaDisabled": true,
+          "pageErrors": []
+        },
+        "ui": {
+          "tests": 48,
+          "channel": "chromium",
+          "exactJobLogVerified": true
+        },
+        "log": ".runtime/alpha12-browser-job-129181887352.log",
+        "logSha256": "4ab2287466095662747e9b47c48067fa03506448cd99a2e9bc39411ca60f7101",
+        "evidence": ".runtime/alpha12-browser-ci-evidence/macos-latest/summary-verified.json"
+      },
+      {
+        "commit": "835d27c450f16b3c0e562e374301c76cb1ccb950",
+        "run": 42623675831,
+        "platform": "ubuntu-latest",
+        "job": {
+          "id": 129181887625,
+          "attempt": 1,
+          "startedAt": "2026-11-09T13:14:12Z",
+          "completedAt": "2026-11-09T13:21:15Z",
+          "conclusion": "success",
+          "reportsFresh": true,
+          "requiredStepsPassed": true
+        },
+        "artifact": {
+          "id": 13678176410,
+          "name": "evidence-ubuntu-latest",
+          "sha256": "c9929b4ca8222ea3a046a768b4a7b7fe1f3ce6262c6aef5df4143c6e9c16c66d",
+          "digestVerified": true
+        },
+        "core": {
+          "suites": 20,
+          "tests": 212,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 2,
+          "passed": 210,
+          "schedulerParallelism": 2,
+          "schedulerMaxPoolSize": 2
+        },
+        "recovery": {
+          "checks": 11,
+          "jarSha256": "895d969902207cda6ef74c20df1cc12c51c779abd20f1d2c88d231ed1e47dacf",
+          "originalCorePid": 11467,
+          "originalWorkerPid": 11498,
+          "originalMcpPid": 11668,
+          "originalModelCalls": 3,
+          "originalExternalCalls": 1,
+          "newTaskCalls": 3,
+          "automaticReplay": false,
+          "processCoverage": "OBSERVED_ONLY"
+        },
+        "dispatch": {
+          "checks": 13,
+          "jarSha256": "895d969902207cda6ef74c20df1cc12c51c779abd20f1d2c88d231ed1e47dacf",
+          "browserModule": "@playwright/test from web/package.json",
+          "browserVersion": "1.64.1",
+          "originalUnknownPreserved": true,
+          "automaticReplay": false,
+          "rawFixtureAndReportPreserved": true,
+          "stoppedOriginalIdentities": 48
+        },
+        "protocol": {
+          "checks": 29,
+          "status": "passed"
+        },
+        "standalone": {
+          "workerPid": 15501,
+          "corePid": 15469,
+          "originalRequestId": "f07091e7-c970-450a-8cb1-7d411c455ae1",
+          "originalLeaseId": "19d6953c-5521-42eb-b531-817f0f9bcf41",
+          "rootCalls": 18,
+          "receipts": 13
+        },
+        "packaged": {
+          "desktop": "PASS",
+          "api": 200,
+          "version": "0.2.0-alpha.12",
+          "application": {
+            "packaged": true,
+            "version": "0.2.0-alpha.12"
+          },
+          "externalJavaDisabled": true,
+          "pageErrors": []
+        },
+        "ui": {
+          "tests": 48,
+          "channel": "chromium",
+          "exactJobLogVerified": true
+        },
+        "log": ".runtime/alpha12-browser-job-129181887625.log",
+        "logSha256": "9dbfabcc9e0c9a49223a8c1b4817d5c62026de0e419aa97ee233a172dc74e47e",
+        "evidence": ".runtime/alpha12-browser-ci-evidence/ubuntu-latest/summary-verified.json"
+      }
+    ],
+    "distributionArtifacts": {
+      "metadata": ".runtime/alpha12-browser-ci-artifacts.json",
+      "downloadedAndByteVerified": false
+    }
+  }
 }

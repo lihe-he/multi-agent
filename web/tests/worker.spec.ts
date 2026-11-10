@@ -31,6 +31,13 @@ async function workerFixture(page: Page, independent = false) {
       if (prior && body.expectedVersion !== prior.version) return intercepted.fulfill({ status: 409, json: { message: '仓库绑定版本已变化，请刷新后编辑' } });
       const saved = { ...body, id: prior?.id || `binding-${bindings.length}`, version: (prior?.version || 0) + 1 }; if (prior) Object.assign(prior, saved); else bindings.push(saved); return intercepted.fulfill({ json: saved });
     }
+    if (/^\/api\/repository-bindings\/[^/]+\/workspace-options$/.test(path)) {
+      const binding = bindings.find(binding => binding.id === decodeURIComponent(path.split('/')[3]));
+      const head = (binding.id === bindings[0].id ? '1' : '2').repeat(40);
+      return intercepted.fulfill({ json: { schemaVersion: 1, repositoryBindingId: binding.id, bindingVersion: binding.version, projectId: project.id, executionNodeId: node.id, nodeVersion: node.version,
+        sourcePath: binding.path, source: { head, branch: 'main', dirty: false, version: 'a'.repeat(64), index: 'b'.repeat(64), statusDigest: 'c'.repeat(64) },
+        refs: [{ ref: 'refs/heads/main', head, name: 'main', kind: 'LOCAL' }], strategies: ['CLONE', 'WORKTREE'], worktrees: [] } });
+    }
     if (path === '/api/tasks/worker-task/worker-leases') {
       queries.push(url.search); const before = Number(url.searchParams.get('before') || 0), state = url.searchParams.get('state'), limit = Number(url.searchParams.get('limit') || 30);
       const matching = leases.filter(lease => (!before || lease.sequence < before) && (!state || lease.state === state)).sort((a, b) => b.sequence - a.sequence), found = matching.slice(0, limit);
@@ -43,7 +50,8 @@ async function workerFixture(page: Page, independent = false) {
     }
     if (path === '/api/tasks' && request.method() === 'POST') {
       const body = request.postDataJSON(); taskPosts.push(body); const binding = bindings.find(binding => binding.id === body.repositoryBindingId);
-      const created = { ...task, ...body, id: 'created-worker-task', workspace: '', state: 'DRAFT', execution: { ...task.execution, nodeName: node.name, nodeVersion: node.version, repositoryBindingId: binding.id, bindingVersion: binding.version, bindingName: binding.name, sourcePath: binding.path } }; tasks.push(created); return intercepted.fulfill({ json: created });
+      const created = { ...task, ...body, id: 'created-worker-task', workspace: '', state: 'DRAFT', workspaceSelection: body.workspaceSelection ? { ...body.workspaceSelection, schemaVersion: 1, version: 1, baseline: body.workspaceSelection.expectedHead, sourcePath: binding.path, includeChanges: body.includeChanges } : undefined,
+        execution: { ...task.execution, nodeName: node.name, nodeVersion: node.version, repositoryBindingId: binding.id, bindingVersion: binding.version, bindingName: binding.name, sourcePath: binding.path } }; tasks.push(created); return intercepted.fulfill({ json: created });
     }
     if (path.endsWith('/mcp-operations')) return intercepted.fulfill({ json: [] });
     if (path.endsWith('/events')) return intercepted.fulfill({ json: { events: [], cursor: 0, hasMore: false } });

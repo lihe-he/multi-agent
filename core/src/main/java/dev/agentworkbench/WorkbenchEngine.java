@@ -114,7 +114,7 @@ public class WorkbenchEngine {
         Map<String, Object> task = store.get("task", taskId);
         String state = str(task, "state");
         if (Set.of("approve", "resume").contains(action)) processLedger.requireDispatch();
-        if (Set.of("accept", "revalidate", "budget", "mcp-authorization").contains(action)) requireExecutionSettled(taskId);
+        if (Set.of("accept", "revalidate", "budget", "mcp-authorization", "execution-authorization", "workspace-selection").contains(action)) requireExecutionSettled(taskId);
         switch (action) {
             case "approve" -> {
                 requireState(state, Set.of("DRAFT", "WAITING_INPUT"));
@@ -141,6 +141,7 @@ public class WorkbenchEngine {
             }
             case "mcp-authorization" -> reauthorizeMcp(taskId, task, body);
             case "execution-authorization" -> reauthorizeExecution(taskId, task, body);
+            case "workspace-selection" -> reselectWorkspace(taskId, task, body);
             case "revalidate" -> {
                 requireState(state, Set.of("PAUSED", "WAITING_INPUT", "FAILED", "AWAITING_ACCEPTANCE"));
                 if (hasUnknownOperation(taskId)) { throw new ApiException(409, "未知操作必须先核对"); }
@@ -252,17 +253,61 @@ public class WorkbenchEngine {
         Map<String, Object> previous = map(task, "execution");
         if (!(body.get("expectedVersion") instanceof Number number) || number.doubleValue() != number.intValue() || number.intValue() != num(previous, "version", 0)) throw new ApiException(409, "任务执行授权版本已变化，请刷新后确认");
         Map<String, Object> execution = catalog.nodes().snapshot(str(task, "projectId"), body, num(previous, "version", 0) + 1);
-        if (!str(task, "workspace").isBlank() && (!ExecutionNodes.samePath(str(previous, "sourcePath"), str(execution, "sourcePath")) || !str(previous, "executionNodeId").equals(str(execution, "executionNodeId")))) throw new ApiException(409, "已有成果绑定原节点和仓库，切换源目录请新建任务");
-        List<Map<String, Object>> rules = catalog.projectRules(str(execution, "sourcePath"));
+        boolean prepared = !str(task, "workspace").isBlank() || runtime.hasWorkspacePreparation(taskId);
+        if (prepared && (!ExecutionNodes.samePath(str(previous, "sourcePath"), str(execution, "sourcePath")) || !str(previous, "executionNodeId").equals(str(execution, "executionNodeId")))) throw new ApiException(409, "已有成果或准备意图绑定原节点和仓库，切换源目录请新建任务");
+        Map<String, Object> selected = map(task, "workspaceSelection");
+        boolean changeSelection = body.containsKey("workspaceSelection");
+        if (changeSelection) {
+            requireUnpreparedWorkspace(taskId, task);
+            if (!(body.get("expectedWorkspaceVersion") instanceof Number selectionVersion) || selectionVersion.doubleValue() != selectionVersion.intValue() || selectionVersion.intValue() != num(selected, "version", 0)) throw new ApiException(409, "启动选择版本已变化，请刷新后确认");
+            selected = catalog.workspaceSelection(str(execution, "sourcePath"), body, bool(body, "includeChanges", bool(task, "includeChanges", false)), num(selected, "version", 0) + 1);
+        } else if (!selected.isEmpty() && !ExecutionNodes.samePath(str(selected, "sourcePath"), str(execution, "sourcePath"))) throw new ApiException(409, "切换源目录需要同时重新确认启动提交");
+        Map<String, Object> selection = selected;
+        List<Map<String, Object>> rules = !selection.isEmpty() && prepared
+            ? objects(task.get("context")).stream().filter(item -> "project-rules".equals(str(item, "id"))).toList()
+            : catalog.projectRules(str(execution, "sourcePath"), selection);
         store.editTask(taskId, value -> {
             List<Map<String, Object>> history = new ArrayList<>(objects(value.get("executionHistory"))); if (!previous.isEmpty()) history.add(previous); value.put("executionHistory", history); value.put("execution", execution);
             List<Map<String, Object>> context = new ArrayList<>(objects(value.get("context"))), oldRules = context.stream().filter(item -> "project-rules".equals(str(item, "id"))).toList();
             List<Map<String, Object>> ruleHistory = new ArrayList<>(objects(value.get("executionRuleHistory"))); ruleHistory.add(obj("authorizationVersion", num(previous, "version", 0), "rules", oldRules, "createdAt", now())); value.put("executionRuleHistory", ruleHistory);
+            if (changeSelection) recordWorkspaceSelection(value, selection);
             context.removeIf(item -> "project-rules".equals(str(item, "id"))); context.addAll(rules); value.put("context", context);
             if (!"DRAFT".equals(str(value, "state"))) value.put("state", "PAUSED");
             value.remove("error"); value.put("verification", obj("status", "NOT_RUN")); value.put("review", obj("status", "NOT_RUN"));
             for (Map<String, Object> stage : objects(value.get("plan"))) if (Set.of("verify", "review", "delivery").contains(str(stage, "id"))) stage.put("state", "PENDING");
         }, "EXECUTION_AUTHORIZATION_CHANGED", "用户核对节点与仓库绑定版本，后续必要验证和审查重新执行");
+    }
+
+    /**
+     * 尚未准备的现场可显式换版；旧尝试与选择历史保留，预算不重置。
+     */
+    private void reselectWorkspace(String taskId, Map<String, Object> task, Map<String, Object> body) {
+        requireState(str(task, "state"), Set.of("DRAFT", "PAUSED", "WAITING_INPUT", "FAILED"));
+        requireUnpreparedWorkspace(taskId, task);
+        if (!(body.get("expectedVersion") instanceof Number number) || number.doubleValue() != number.intValue() || number.intValue() != num(map(task, "workspaceSelection"), "version", 0)) throw new ApiException(409, "启动选择版本已变化，请刷新后确认");
+        String source = catalog.nodes().sourcePath(task);
+        Map<String, Object> selection = catalog.workspaceSelection(source, body, bool(body, "includeChanges", bool(task, "includeChanges", false)), num(map(task, "workspaceSelection"), "version", 0) + 1);
+        List<Map<String, Object>> rules = catalog.projectRules(source, selection);
+        store.editTask(taskId, value -> {
+            recordWorkspaceSelection(value, selection);
+            List<Map<String, Object>> context = new ArrayList<>(objects(value.get("context"))); context.removeIf(item -> "project-rules".equals(str(item, "id"))); context.addAll(rules); value.put("context", context);
+            if (!"DRAFT".equals(str(value, "state"))) value.put("state", "PAUSED");
+            value.remove("error"); value.put("verification", obj("status", "NOT_RUN")); value.put("review", obj("status", "NOT_RUN"));
+            for (Map<String, Object> stage : objects(value.get("plan"))) stage.put("state", "PENDING");
+        }, "WORKSPACE_SELECTION_CHANGED", "用户重新确认启动提交、源内容和现场策略；旧尝试与累计预算保留");
+    }
+
+    private void requireUnpreparedWorkspace(String taskId, Map<String, Object> task) {
+        requireExecutionSettled(taskId);
+        if (hasUnknownOperation(taskId)) throw new ApiException(409, "先核对旧执行和未知效果");
+        if (!str(task, "workspace").isBlank() || runtime.hasWorkspacePreparation(taskId)) throw new ApiException(409, "已有现场或准备意图，不能覆盖或切换策略；请保留原任务供核对");
+    }
+
+    private void recordWorkspaceSelection(Map<String, Object> task, Map<String, Object> selection) {
+        List<Map<String, Object>> history = new ArrayList<>(objects(task.get("workspaceSelectionHistory")));
+        if (!map(task, "workspaceSelection").isEmpty()) history.add(obj("selection", task.get("workspaceSelection"), "actor", "USER", "createdAt", now(),
+            "rules", objects(task.get("context")).stream().filter(item -> "project-rules".equals(str(item, "id"))).toList()));
+        task.put("workspaceSelectionHistory", history); task.put("workspaceSelection", selection); task.put("includeChanges", selection.get("includeChanges"));
     }
 
     private void launch(String taskId, String trigger) {
@@ -271,6 +316,7 @@ public class WorkbenchEngine {
         if (controls.containsKey(taskId)) { throw new ApiException(409, "任务仍在停止或执行中，请等待确认"); }
         Map<String, Object> task = store.get("task", taskId);
         catalog.nodes().requireCurrent(task);
+        if (!str(task, "workspace").isBlank()) runtime.requireWorkspaceOwnership(taskId, str(task, "workspace"), task);
         if (!executionWorker.current(taskId)) throw new ApiException(409, "本机 Worker 归属不可用或根效果尚未核对");
         if (hasUnknownOperation(taskId)) throw new ApiException(409, "存在未确认操作或根执行，核对前不能建立新尝试");
         dispatchQueue.enqueue(taskId, trigger, value -> {
@@ -360,11 +406,22 @@ public class WorkbenchEngine {
             Map<String, Object> task = store.get("task", taskId);
             if (str(task, "workspace").isBlank()) {
                 String source = catalog.nodes().sourcePath(task);
+                Map<String, Object> selection = map(task, "workspaceSelection");
+                if (!selection.isEmpty() && !runtime.hasWorkspacePreparation(taskId)) {
+                    try { runtime.requireWorkspaceSelectionCurrent(source, selection); }
+                    catch (IllegalArgumentException exception) { throw new NeedsInput(safeMessage(exception)); }
+                }
                 Map<String, Object> operation = store.beginOperation(taskId, "prepare", "WORKSPACE", source);
                 executionWorker.dispatch(str(operation, "id"), source, obj());
-                Map<String, Object> prepared = runtime.prepare(source, taskId, bool(task, "includeChanges", false));
+                Map<String, Object> prepared;
+                try { prepared = selection.isEmpty() ? runtime.prepare(source, taskId, bool(task, "includeChanges", false)) : runtime.prepareSelected(source, taskId, bool(task, "includeChanges", false), selection); }
+                catch (IllegalArgumentException exception) {
+                    if (selection.isEmpty()) throw exception;
+                    executionWorker.finish(str(operation, "id"), "REJECTED", obj("reason", safeMessage(exception), "workspaceSelection", selection));
+                    throw new NeedsInput(safeMessage(exception));
+                }
                 executionWorker.finish(str(operation, "id"), "ACKNOWLEDGED", prepared);
-                store.editTask(taskId, value -> { value.putAll(prepared); value.remove("activeOperation"); }, "WORKSPACE_READY", "独立任务目录已就绪，用户原目录保持原状");
+                store.editTask(taskId, value -> { value.putAll(prepared); value.remove("activeOperation"); }, "WORKSPACE_READY", selection.isEmpty() ? "独立任务目录已就绪，用户原目录保持原状" : "任务现场已就绪，固定提交与 Git 归属已记录");
             }
             store.editTask(taskId, value -> value.put("state", "RUNNING"), "RUNNING", "开始执行已确认的计划");
             while (true) {

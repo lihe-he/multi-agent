@@ -1,50 +1,50 @@
 {
-  "createdAt": "2026-11-09T12:25:59.617Z",
+  "createdAt": "2026-11-10T02:02:13.132Z",
   "platform": "win32",
   "status": "passed",
-  "baseUrl": "http://127.0.0.1:62583",
-  "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-7zvtev",
-  "projectPath": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-7zvtev\\中文 sample project",
+  "baseUrl": "http://127.0.0.1:63619",
+  "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-UICxck",
+  "projectPath": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-UICxck\\中文 sample project",
   "checks": [
     {
       "name": "API rejects missing access token",
       "status": "passed",
-      "durationMs": 13
+      "durationMs": 24
     },
     {
       "name": "Core returns persisted state",
       "status": "passed",
-      "durationMs": 11
+      "durationMs": 41
     },
     {
       "name": "Import real Git repository with Chinese and spaced path",
       "status": "passed",
-      "durationMs": 1163
+      "durationMs": 2241
     },
     {
       "name": "Local execution node and repository binding are authoritative and versioned",
       "status": "passed",
-      "durationMs": 87
+      "durationMs": 186
     },
     {
       "name": "Search reports source locations and coverage",
       "status": "passed",
-      "durationMs": 179
+      "durationMs": 322
     },
     {
       "name": "Session routes require authentication and preserve server-owned message identity",
       "status": "passed",
-      "durationMs": 179
+      "durationMs": 338
     },
     {
       "name": "Save project knowledge with an explicit source",
       "status": "passed",
-      "durationMs": 17
+      "durationMs": 27
     },
     {
       "name": "Reject unsupported permission in an imported role template",
       "status": "passed",
-      "durationMs": 15
+      "durationMs": 12
     },
     {
       "name": "Reject cyclic execution plan before dispatch",
@@ -54,102 +54,102 @@
     {
       "name": "Configure local protocol test route",
       "status": "passed",
-      "durationMs": 5
+      "durationMs": 20
     },
     {
       "name": "Create task with fixed contract and route locks",
       "status": "passed",
-      "durationMs": 28
+      "durationMs": 68
     },
     {
       "name": "One session carries multiple tasks with source goals and scoped activity",
       "status": "passed",
-      "durationMs": 68
+      "durationMs": 123
     },
     {
       "name": "Reject route that does not match the hard model lock",
       "status": "passed",
-      "durationMs": 9
+      "durationMs": 21
     },
     {
       "name": "Reject acceptance before required execution and evidence",
       "status": "passed",
-      "durationMs": 17
+      "durationMs": 48
     },
     {
       "name": "Execute actual Java API tool loop, verification and independent review",
       "status": "passed",
-      "durationMs": 11166
+      "durationMs": 13048
     },
     {
       "name": "Agent runs persist real calls, scoped pages and evidence identity",
       "status": "passed",
-      "durationMs": 39
+      "durationMs": 66
     },
     {
       "name": "Durable root attempt keeps its original action, owner and execution receipt",
       "status": "passed",
-      "durationMs": 42
+      "durationMs": 63
     },
     {
       "name": "Model request trace binds each API round to budget, usage and provider receipt",
       "status": "passed",
-      "durationMs": 33
+      "durationMs": 47
     },
     {
       "name": "Preserve source Git worktree and staged state",
       "status": "passed",
-      "durationMs": 154
+      "durationMs": 221
     },
     {
       "name": "Diff and evidence are bound to the delivered version",
       "status": "passed",
-      "durationMs": 276
+      "durationMs": 293
     },
     {
       "name": "Persistent events can be replayed with a cursor",
       "status": "passed",
-      "durationMs": 14
+      "durationMs": 7
     },
     {
       "name": "Reject acceptance and export when content changes after review",
       "status": "passed",
-      "durationMs": 290
+      "durationMs": 325
     },
     {
       "name": "Manual acceptance records completion without writing source",
       "status": "passed",
-      "durationMs": 150
+      "durationMs": 166
     },
     {
       "name": "Export portable delivery archive",
       "status": "passed",
-      "durationMs": 475
+      "durationMs": 595
     },
     {
       "name": "Disable knowledge while preserving its revision",
       "status": "passed",
-      "durationMs": 5
+      "durationMs": 10
     },
     {
       "name": "Complete LEAD stages under the same root budget",
       "status": "passed",
-      "durationMs": 6583
+      "durationMs": 11287
     },
     {
       "name": "Complete ROUNDTABLE stages under the same root budget",
       "status": "passed",
-      "durationMs": 8603
+      "durationMs": 11223
     },
     {
       "name": "Actual dynamic team shares the root budget, adopts dependencies and preserves MCP source in the ZIP",
       "status": "passed",
-      "durationMs": 15308
+      "durationMs": 22034
     },
     {
       "name": "Cancel an in-flight task and keep source intact",
       "status": "passed",
-      "durationMs": 4791
+      "durationMs": 5673
     }
   ],
   "calls": [
@@ -702,7 +702,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -723,7 +723,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -744,7 +744,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -765,7 +765,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -786,7 +786,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -807,7 +807,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -828,7 +828,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -881,7 +881,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -902,7 +902,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -923,7 +923,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -944,7 +944,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -965,7 +965,7 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+        "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -1017,38 +1017,38 @@
   ],
   "teams": [
     {
-      "taskId": "c0310010-b0b3-4936-a2fd-0c3633ee1163",
-      "teamId": "b72b650b-b16b-4c6e-8148-a18580ac0240",
+      "taskId": "bf06c674-bbaf-4e92-8118-cbdbed340a51",
+      "teamId": "d71065d2-a417-4ff2-9f0e-277ec454e07e",
       "rootCalls": 18,
       "children": [
         {
-          "id": "1b60a125-abbe-4959-97d6-4e4cb0fbb7cf",
-          "agentRunId": "0ac7a972-13dd-43fe-b860-cca34bfe4053",
+          "id": "7688aaf4-9cfb-4948-aacb-81ebd79b0430",
+          "agentRunId": "ffc6ebc1-5820-42a8-a7bb-35d57cbfb887",
           "state": "SUCCEEDED",
           "dependsOn": [
-            "5bbc6e41-4903-4340-9c29-8ac458b04fa6"
+            "403fb22d-4785-4ee6-94c5-08e872f59540"
           ],
           "integrationState": "NOT_ADOPTED"
         },
         {
-          "id": "5bbc6e41-4903-4340-9c29-8ac458b04fa6",
-          "agentRunId": "4f9d33d2-25bd-4931-b6dc-1eb4edcbd155",
+          "id": "403fb22d-4785-4ee6-94c5-08e872f59540",
+          "agentRunId": "7da6db99-8a72-4fa8-a1f4-ff6a177b4e79",
           "state": "SUCCEEDED",
           "dependsOn": [],
           "integrationState": "ADOPTED"
         }
       ],
       "mcpSource": {
-        "id": "41e0cb50dad26f489212fc1605e9559305369da315bbdbe2e38f9d47c661f0b7",
-        "requestId": "41e0cb50dad26f489212fc1605e9559305369da315bbdbe2e38f9d47c661f0b7",
-        "taskId": "c0310010-b0b3-4936-a2fd-0c3633ee1163",
-        "projectId": "aed5799e-be02-470b-b91a-982c71d56c7c",
+        "id": "a62c3fbae5d3848f6df1bedbab5cc7fa0e77131212178ced06c17a362dd43544",
+        "requestId": "a62c3fbae5d3848f6df1bedbab5cc7fa0e77131212178ced06c17a362dd43544",
+        "taskId": "bf06c674-bbaf-4e92-8118-cbdbed340a51",
+        "projectId": "1b4a0920-f4d8-4e78-9149-f3e581e5eada",
         "stage": "IMPLEMENT",
-        "serverId": "a872efb8-6eae-4db1-af9e-7448dc861039",
+        "serverId": "2ed5cc72-1a87-4897-b202-b26fd819ea94",
         "serverName": "Team source lifecycle fixture",
-        "identity": "ae09bc0fe8d9361ef58d3fbe9b7792cecaf48448f06feacbf87502130345b2e5",
+        "identity": "56e32c961f99f672696039334c3d7d8e04603bb05b985bcbc24b0ccd99a673c3",
         "tool": "echo",
-        "actionKey": "034adfff25b651164ee7217c89c64cf6a635b294f27c4d4347387085206ed03e",
+        "actionKey": "ac50d63002f4749c633d36ad2af3da8157b9cd261a6fef03d8ea769ae97af4b2",
         "authorizationVersion": 1,
         "definitionVersion": 1,
         "argumentKeys": [
@@ -1060,30 +1060,30 @@
         "dispatchState": "ACKNOWLEDGED",
         "stopState": "CONFIRMED",
         "canReconcile": false,
-        "createdAt": "2026-11-09T12:25:45.123181100Z",
-        "agentRunId": "4f9d33d2-25bd-4931-b6dc-1eb4edcbd155",
-        "modelRequestId": "3d0ef347-a21c-49eb-bfd0-8f2ec9db6c8f",
-        "toolCallId": "team-smoke-6-mcp_034adfff25b651164ee7217c89c64cf6a635b294",
-        "rootTaskId": "c0310010-b0b3-4936-a2fd-0c3633ee1163",
+        "createdAt": "2026-11-10T02:01:51.272827900Z",
+        "agentRunId": "7da6db99-8a72-4fa8-a1f4-ff6a177b4e79",
+        "modelRequestId": "3a30f388-ea0a-4ecc-a613-cf4d4531c464",
+        "toolCallId": "team-smoke-6-mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
+        "rootTaskId": "bf06c674-bbaf-4e92-8118-cbdbed340a51",
         "actorKind": "SUBAGENT",
-        "taskExecutionId": "f703c4bb-8480-4877-8293-5b30fc0cdde6",
-        "dispatchActionId": "3d543353-a4b1-47a7-a99d-d67cd9033a42",
-        "teamId": "b72b650b-b16b-4c6e-8148-a18580ac0240",
-        "subtaskId": "5bbc6e41-4903-4340-9c29-8ac458b04fa6",
-        "parentRunId": "cdca7c9e-2960-48f2-baba-05223e3ee9dd",
+        "taskExecutionId": "b70ec62f-4af5-4a2a-ac44-2782295a92ce",
+        "dispatchActionId": "920c20b9-d532-4577-a528-0bdcf93ce01d",
+        "teamId": "d71065d2-a417-4ff2-9f0e-277ec454e07e",
+        "subtaskId": "403fb22d-4785-4ee6-94c5-08e872f59540",
+        "parentRunId": "47b41880-d7be-40ae-86bc-18bb61b429e0",
         "definitionId": "agent-developer",
         "depth": 1,
-        "sessionId": "a7eb954a-3248-4ed1-8966-7700cd08c989",
-        "workerLeaseId": "73b82f14-8cfa-4b80-afc7-dc002e3df48f",
-        "workerId": "e234ebad-7f51-4ed5-a3cd-7e97f712158b",
+        "sessionId": "56bd5cdc-c35f-4154-9217-cc6d8eb3454a",
+        "workerLeaseId": "c85fc878-4b32-4042-9439-ad0f34fcd0f6",
+        "workerId": "087697fc-7b91-4a37-a2ab-cfcdee0e8cf9",
         "workerEpoch": 1,
-        "executionNodeId": "9433ce32-649e-4fdb-8126-6dce859de26a",
-        "repositoryBindingId": "3eb1b42e-679d-44ad-9ea1-61b861d3dc6f",
+        "executionNodeId": "41ef8f07-0953-4d9b-9a42-a8341924ff84",
+        "repositoryBindingId": "20bd6238-2d7a-4f2b-a7ec-ee5a460fd710",
         "bindingVersion": 1,
         "deployment": "LOCAL_PROCESS",
-        "executorPid": 4188,
-        "processStartedAt": "2026-11-09T12:25:07.427Z",
-        "corePid": 40356,
+        "executorPid": 27804,
+        "processStartedAt": "2026-11-10T02:01:00.170Z",
+        "corePid": 2512,
         "transport": "HTTP",
         "result": {
           "content": [
@@ -1094,8 +1094,8 @@
           ],
           "isError": false
         },
-        "completedAt": "2026-11-09T12:25:45.204226200Z",
-        "localStoppedAt": "2026-11-09T12:25:45.206704400Z"
+        "completedAt": "2026-11-10T02:01:51.342822500Z",
+        "localStoppedAt": "2026-11-10T02:01:51.345825200Z"
       },
       "calls": [
         {
@@ -1138,7 +1138,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1157,7 +1157,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1176,7 +1176,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1195,7 +1195,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1214,7 +1214,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1233,7 +1233,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1252,7 +1252,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1299,7 +1299,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1318,7 +1318,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1337,7 +1337,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1356,7 +1356,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1375,7 +1375,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_034adfff25b651164ee7217c89c64cf6a635b294",
+            "mcp_ac50d63002f4749c633d36ad2af3da8157b9cd26",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
