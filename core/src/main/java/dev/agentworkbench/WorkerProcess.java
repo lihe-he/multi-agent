@@ -148,6 +148,11 @@ final class WorkerProcess implements AutoCloseable {
         return rpc.request("RELEASE", obj("operationId", lease.get("operationId"), "operationKind", lease.get("operationKind"), "workerLeaseId", lease.get("id"), "claimToken", token));
     }
 
+    CompletableFuture<Object> releaseWorkspaceWrite(Map<String, Object> identity, String note) {
+        requireAvailable();
+        return rpc.request("RELEASE_WORKSPACE_WRITE", obj("identity", identity, "note", note));
+    }
+
     void requireAvailable() { if (!available()) throw new ApiException(409, "原 Worker 进程或私有会话已经停止，不能继续派发"); }
 
     private void event(String name, Map<String, Object> arguments) {

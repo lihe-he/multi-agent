@@ -40,6 +40,7 @@ export function ModelRequests({ taskId, runId = '' }: { taskId: string; runId?: 
         <dt>输入摘要</dt><dd>{request.inputBytes === undefined ? '运行器未提供' : `${request.inputBytes.toLocaleString()} 字节 · ${request.messageCount ?? '未知'} 条消息 · ${request.toolCount ?? '未知'} 项工具`}<br /><code>{request.inputDigest || '摘要未提供'}</code></dd>
         <dt>来源</dt><dd><code>RUN {request.agentRunId}</code><br /><code>REQ {request.id}</code></dd>
         {request.taskExecutionId && <><dt>任务尝试</dt><dd><code>{request.taskExecutionId}</code><br />派发 <code>{request.dispatchActionId}</code></dd></>}
+        {request.workspaceWriteLeaseId && <><dt>现场写入保护</dt><dd><code>{request.workspaceWriteLeaseId}</code></dd></>}
         {(request.providerRequestId || request.responseId) && <><dt>供应商</dt><dd>请求 {request.providerRequestId || '未提供'}<br />响应 {request.responseId || '未提供'}{request.responseModel && ` · ${request.responseModel}`}{request.finishReason && ` · ${request.finishReason}`}</dd></>}
       </dl>
       {request.errorType && <p className="agent-run-reason"><b>{request.errorType}</b> · {request.reason || '运行未取得成功回执'}</p>}

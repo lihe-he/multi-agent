@@ -78,6 +78,23 @@ class ManagedProcessLedgerTest {
     }
 
     @Test
+    void orphanedWriteHistoryStillProtectsItsOriginalWorkerProcesses() throws Exception {
+        ProcessFixture actual = new ProcessFixture(); actual.facts.put(41L, new ManagedProcessLedger.ProcessSnapshot(true, "original"));
+        try (var store = store(directory.resolve("orphaned-write"))) {
+            historical(store, "original-session", 41, "original");
+            Map<String, Object> session = store.get("processSession", "original-session"); session.remove("taskId"); session.put("workerId", "original-worker"); store.put("processSession", session);
+            store.put("workspaceWriteLease", obj("id", "original-write", "taskId", "deleted-task", "taskExecutionId", "original-root", "scopeKey", "original-scope", "workerId", "original-worker", "state", "UNKNOWN", "protectionReleased", false));
+            var ledger = new ManagedProcessLedger(store, 100, "new-core", actual);
+            assertNull(store.find("task", "deleted-task")); assertEquals(1, store.workspaceWriteLeases("deleted-task").size());
+            assertEquals(1, ledger.taskSessions("deleted-task").size()); assertEquals(1, ledger.taskObservations("deleted-task").size());
+            assertEquals(409, assertThrows(ApiException.class, () -> ledger.requireTaskStopped("deleted-task")).status());
+            assertEquals(404, assertThrows(ApiException.class, () -> store.taskDispatchRecords("workspaceWriteLease", "deleted-task")).status());
+            assertEquals(404, assertThrows(ApiException.class, () -> store.workspaceWriteLeasePage("deleted-task", 0, 30, "")).status());
+            assertEquals("UNKNOWN", store.get("workspaceWriteLease", "original-write").get("state")); assertTrue(actual.stopped.isEmpty());
+        }
+    }
+
+    @Test
     void reusedPidPreservesTheNewProcessAndTheOriginalBirthRecord() throws Exception {
         ProcessFixture actual = new ProcessFixture(); actual.facts.put(42L, new ManagedProcessLedger.ProcessSnapshot(true, "new-birth"));
         try (var store = store(directory.resolve("reuse"))) {
@@ -87,6 +104,61 @@ class ManagedProcessLedgerTest {
             assertEquals("old-birth", objects(view.get("recordedProcesses")).getFirst().get("processStartedAt"));
             assertEquals("new-birth", objects(view.get("recordedProcesses")).getFirst().get("currentProcessStartedAt"));
             ledger.reconcile("reused-session", confirmation()); assertTrue(actual.facts.get(42L).alive());
+        }
+    }
+
+    @Test
+    void actualRestrictedWindowsPidReuseLeavesTheReplacementRunning() throws Exception {
+        org.junit.jupiter.api.Assumptions.assumeTrue(System.getProperty("os.name", "").startsWith("Windows"), "Windows restricted process identity");
+        var snapshot = WindowsProcessSnapshot.capture();
+        var candidate = ProcessHandle.allProcesses().filter(process -> process.pid() != ProcessHandle.current().pid() && process.isAlive()
+            && process.info().startInstant().isEmpty() && !snapshot.getOrDefault(process.pid(), "").isBlank())
+            .min(java.util.Comparator.comparing(process -> java.time.Instant.parse(snapshot.get(process.pid()))));
+        org.junit.jupiter.api.Assumptions.assumeTrue(candidate.isPresent(), "No restricted live PID on this runner");
+        long pid = candidate.orElseThrow().pid(); String replacementBirth = snapshot.get(pid), originalBirth = java.time.Instant.parse(replacementBirth).minusSeconds(1).toString();
+        try (var store = store(directory.resolve("restricted-reuse"))) {
+            historical(store, "restricted-session", pid, originalBirth);
+            var ledger = new ManagedProcessLedger(store);
+            Map<String, Object> view = ledger.detail("restricted-session");
+            assertEquals("PID_REUSED", objects(view.get("recordedProcesses")).getFirst().get("observation"));
+            assertEquals(originalBirth, objects(view.get("recordedProcesses")).getFirst().get("processStartedAt"));
+            assertEquals(replacementBirth, objects(view.get("recordedProcesses")).getFirst().get("currentProcessStartedAt"));
+            ledger.reconcile("restricted-session", confirmation());
+            assertEquals(replacementBirth, WindowsProcessSnapshot.capture().get(pid));
+        }
+    }
+
+    @Test
+    void missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory() throws Exception {
+        org.junit.jupiter.api.Assumptions.assumeTrue(System.getProperty("os.name", "").startsWith("Windows"), "Windows native process identity fallback");
+        long pid = ProcessHandle.current().pid(); String actualBirth = ProcessHandle.current().info().startInstant().orElseThrow().toString();
+        String originalBirth = java.time.Instant.parse(actualBirth).minusSeconds(1).toString();
+        ProcessHandle missing = mock(ProcessHandle.class); ProcessHandle.Info information = mock(ProcessHandle.Info.class);
+        when(missing.isAlive()).thenReturn(true); when(missing.info()).thenReturn(information); when(information.startInstant()).thenReturn(java.util.Optional.empty());
+        try (var handles = mockStatic(ProcessHandle.class, CALLS_REAL_METHODS); var store = store(directory.resolve("missing-handle-birth"))) {
+            handles.when(() -> ProcessHandle.of(pid)).thenReturn(java.util.Optional.of(missing));
+            historical(store, "missing-handle-session", pid, originalBirth); var ledger = new ManagedProcessLedger(store);
+            var view = ledger.detail("missing-handle-session"); var observation = objects(view.get("recordedProcesses")).getFirst();
+            assertEquals("PID_REUSED", observation.get("observation")); assertEquals(actualBirth, observation.get("currentProcessStartedAt"));
+            assertEquals(originalBirth, observation.get("processStartedAt")); ledger.reconcile("missing-handle-session", confirmation());
+            assertEquals(originalBirth, store.processObservations("missing-handle-session").getFirst().get("processStartedAt"));
+            verify(missing, never()).destroyForcibly();
+        }
+    }
+
+    @Test
+    void failedWindowsSnapshotStillRejectsAnUnverifiableLivePid() throws Exception {
+        org.junit.jupiter.api.Assumptions.assumeTrue(System.getProperty("os.name", "").startsWith("Windows"), "Windows native process identity failure");
+        long pid = ProcessHandle.current().pid(); String birth = ProcessHandle.current().info().startInstant().orElseThrow().toString();
+        ProcessHandle missing = mock(ProcessHandle.class); ProcessHandle.Info information = mock(ProcessHandle.Info.class);
+        when(missing.isAlive()).thenReturn(true); when(missing.info()).thenReturn(information); when(information.startInstant()).thenReturn(java.util.Optional.empty());
+        try (var handles = mockStatic(ProcessHandle.class, CALLS_REAL_METHODS); var nativeSnapshot = mockStatic(WindowsProcessSnapshot.class); var store = store(directory.resolve("failed-native-snapshot"))) {
+            handles.when(() -> ProcessHandle.of(pid)).thenReturn(java.util.Optional.of(missing));
+            nativeSnapshot.when(WindowsProcessSnapshot::capture).thenThrow(new IllegalStateException("Actual fixture native snapshot unavailable"));
+            historical(store, "unverifiable-session", pid, birth); var ledger = new ManagedProcessLedger(store);
+            assertEquals("UNVERIFIABLE", objects(ledger.detail("unverifiable-session").get("recordedProcesses")).getFirst().get("observation"));
+            assertEquals(409, assertThrows(ApiException.class, () -> ledger.reconcile("unverifiable-session", confirmation())).status());
+            assertEquals(birth, store.processObservations("unverifiable-session").getFirst().get("processStartedAt")); verify(missing, never()).destroyForcibly();
         }
     }
 
@@ -297,7 +369,7 @@ class ManagedProcessLedgerTest {
         try (var reopened = store(data)) {
             assertEquals("UNKNOWN", reopened.get("operation", "original").get("state")); assertEquals(1, reopened.get("operation", "original").get("dispatchCount"));
             try (var db = DriverManager.getConnection("jdbc:sqlite:" + data.resolve("workbench.sqlite")); var sql = db.createStatement()) {
-                try (var version = sql.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(7, version.getInt(1)); }
+                try (var version = sql.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(8, version.getInt(1)); }
                 try (var index = sql.executeQuery("SELECT COUNT(*) FROM sqlite_master WHERE name IN ('entities_process_session_owner','entities_process_observation_session')")) { assertTrue(index.next()); assertEquals(2, index.getInt(1)); }
             }
         }

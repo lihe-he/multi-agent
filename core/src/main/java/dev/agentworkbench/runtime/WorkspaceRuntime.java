@@ -41,6 +41,7 @@ public class WorkspaceRuntime {
     private final ObjectMapper json;
     private final Path data;
     private final GitWorkspaces workspaces;
+    private final WorkspaceWriteGuard workspaceWrites;
     private final HttpClient http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).followRedirects(HttpClient.Redirect.NEVER).build();
     private final ConcurrentMap<Long, Process> processes = new ConcurrentHashMap<>();
     private final ConcurrentMap<Long, String> processWorkspaces = new ConcurrentHashMap<>();
@@ -50,7 +51,28 @@ public class WorkspaceRuntime {
         this.json = json;
         this.data = Path.of(dataDir).toAbsolutePath().normalize();
         this.workspaces = new GitWorkspaces(this, json, this.data);
+        this.workspaceWrites = new WorkspaceWriteGuard(json, this.data, this::writeMetadataAtomic);
     }
+
+    /**
+     * 独立 Worker 在准备前取得整次根调用的实际文件锁，容量释放不影响此归属。
+     */
+    public Map<String, Object> acquireWorkspaceWrite(Map<String, Object> identity) { return workspaceWrites.acquire(identity); }
+
+    /**
+     * 原现场的准备、验证、模型及副任务调用共同借用原根保护。
+     */
+    public WorkspaceWriteGuard.Borrow borrowWorkspaceWrite(Map<String, Object> identity) { return workspaceWrites.enter(identity); }
+
+    /**
+     * 正常收尾或人工核对返回真实释放回执；失联后的清单继续保留。
+     */
+    public Map<String, Object> releaseWorkspaceWrite(Map<String, Object> identity, String note) { return workspaceWrites.release(identity, note); }
+
+    /**
+     * Worker 退出关闭系统锁，原 HELD 清单留给后续核对。
+     */
+    public void closeWorkspaceWrites() { workspaceWrites.close(); }
 
     /**
      * 实际启动者报告首次观察的进程身份，核心只保存原事实并核验出生时间。
@@ -1130,6 +1152,7 @@ public class WorkspaceRuntime {
         Path tmp = target.resolveSibling(target.getFileName() + ".tmp-" + UUID.randomUUID());
         try {
             Files.write(tmp, bytes, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+            if (metadata) try (var channel = java.nio.channels.FileChannel.open(tmp, StandardOpenOption.WRITE)) { channel.force(true); }
             long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(1);
             int attempt = 0;
             while (true) {

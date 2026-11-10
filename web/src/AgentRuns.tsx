@@ -35,6 +35,7 @@ export function AgentRuns({ endpoint, onTask, onEvidence }: { endpoint: string; 
       <dl><dt>运行器</dt><dd>{run.routeName || '已固定路由'} · {run.engine} · {run.model || '默认模型'}</dd><dt>调用</dt><dd>{run.calls} {run.callUnit === 'CLI_SESSION' ? '次 CLI 会话（内部请求未知）' : '次 API 请求'} · {run.elapsedMs === undefined ? '尚未结束' : `${(run.elapsedMs / 1000).toFixed(1)} 秒`}</dd><dt>时间</dt><dd>{formatTime(run.createdAt)}{run.endedAt ? ` → ${formatTime(run.endedAt)}` : ''}</dd><dt>版本</dt><dd><code>{shortHash(run.inputVersion)} → {shortHash(run.resultVersion)}</code></dd></dl>
       {run.reason && <p className="agent-run-reason">{run.reason}</p>}
       {run.taskExecutionId && <p className="form-note">任务执行尝试 <code>{run.taskExecutionId}</code><br />派发动作 <code>{run.dispatchActionId}</code></p>}
+      {run.workspaceWriteLeaseId && <p className="form-note">现场写入保护 <code>{run.workspaceWriteLeaseId}</code></p>}
       <footer><code title={run.id}>RUN {run.id.slice(0, 8)}</code><button className="text-button" onClick={() => setExpandedRun(expandedRun === run.id ? '' : run.id)}>{expandedRun === run.id ? '收起模型请求' : '查看模型请求'}</button>{onTask && <button className="text-button" onClick={() => onTask(run.taskId)}>查看来源任务</button>}{run.evidenceId && onEvidence && <button className="text-button" onClick={() => onEvidence(run.evidenceId!)}>查看关联证据</button>}</footer>
       {expandedRun === run.id && <ModelRequests taskId={run.taskId} runId={run.id} />}
     </article>)}</div>

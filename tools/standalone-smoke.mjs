@@ -21,7 +21,7 @@ const java = home ? join(home, 'bin', windows ? 'java.exe' : 'java') : 'java';
 const jar = join(root, `core/target/agent-workbench-core-${version}.jar`);
 if (!existsSync(jar) || !existsSync(join(root, 'web/dist/workbench-config.json'))) throw new Error('请先构建核心和 Web。');
 let logs = '';
-const core = spawn(java, ['-Dfile.encoding=UTF-8', '-jar', jar], {
+const core = spawn(java, ['-Dfile.encoding=UTF-8', '-Djdk.virtualThreadScheduler.parallelism=2', '-Djdk.virtualThreadScheduler.maxPoolSize=2', '-jar', jar], {
   cwd: dir, windowsHide: true,
   env: { ...process.env, WORKBENCH_CORE_URL: '', WORKBENCH_CORE_TOKEN: '', WORKBENCH_TOKEN: token, WORKBENCH_PORT: '0', WORKBENCH_DATA_DIR: join(dir, 'data'), LOGGING_LEVEL_ROOT: 'INFO' },
   stdio: ['ignore', 'pipe', 'pipe'],

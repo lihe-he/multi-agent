@@ -235,6 +235,6 @@ class TaskDispatchQueueTest {
         sql("DROP INDEX entities_task_execution_attempt"); sql("DROP INDEX entities_dispatch_execution"); sql("DROP INDEX entities_dispatch_active_task"); sql("DROP INDEX entities_dispatch_pending"); sql("DROP INDEX entities_dispatch_task"); sql("PRAGMA user_version=5");
         store = new ExecutionStore(new ObjectMapper(), directory.toString());
         assertEquals(original, store.get("task", taskId)); assertTrue(store.list("taskExecution").isEmpty()); assertTrue(store.list("dispatchAction").isEmpty());
-        try (var database = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite")); var command = database.createStatement(); var version = command.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(7, version.getInt(1)); }
+        try (var database = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite")); var command = database.createStatement(); var version = command.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(8, version.getInt(1)); }
     }
 }

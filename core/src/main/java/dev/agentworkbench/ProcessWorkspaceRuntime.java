@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -98,6 +99,28 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         return objectValue(invoke("PREPARE", obj("sourcePath", source, "taskId", taskId, "includeChanges", includeChanges, "workspaceSelection", selection), () -> false, ignored -> {}, null, null));
     }
 
+    @Override public Map<String, Object> acquireWorkspaceWrite(Map<String, Object> identity) {
+        Claim claim = current.get();
+        if (claim == null || !WorkspaceWriteLedger.identity(map(claim.lease, "workspaceWriteIdentity")).equals(WorkspaceWriteLedger.identity(identity))) throw new ApiException(403, "现场写入申请缺少原 Worker 领取");
+        return objectValue(invoke("ACQUIRE_WRITE", obj("workspace", claim.lease.get("workingDirectory")), () -> false, ignored -> {}, null, null));
+    }
+
+    @Override public Map<String, Object> releaseWorkspaceWrite(Map<String, Object> identity, String note) {
+        requireAvailable();
+        if (invocations.values().stream().anyMatch(call -> str(identity, "taskId").equals(str(call.claim.lease, "taskId")))) throw new ApiException(409, "原根的实际 Worker 调用尚未收尾");
+        try {
+            Map<String, Object> receipt = objectValue(process.releaseWorkspaceWrite(identity, note).get(10, TimeUnit.SECONDS));
+            if (integer(receipt, "receiptExecutorPid") != process.pid() || !str(process.processIdentity(), "processStartedAt").equals(str(receipt, "receiptProcessStartedAt"))
+                    || !WorkspaceWriteLedger.identity(identity).equals(WorkspaceWriteLedger.identity(map(receipt, "identity"))) || !bool(receipt, "protectionReleased", false)) throw new IllegalStateException("现场写入保护的释放回执失去原来源");
+            return receipt;
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt(); throw new IllegalStateException("等待写入保护释放被中断，原归属需核对");
+        } catch (ExecutionException exception) {
+            if (exception.getCause() instanceof WorkerRpc.RemoteFailure remote && remote.status() < 500) throw new ApiException(remote.status() > 0 ? remote.status() : 409, remote.getMessage());
+            throw new IllegalStateException("原现场写入保护未取得完整释放回执，保持未知");
+        } catch (TimeoutException exception) { throw new IllegalStateException("原现场写入保护释放回执超时，保持未知"); }
+    }
+
     @Override public String reviewCopy(String workspace, String subjectId, String version) {
         return stringValue(invoke("REVIEW_COPY", obj("workspace", workspace, "subjectId", subjectId, "version", version), () -> false, ignored -> {}, null, null));
     }
@@ -159,6 +182,7 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
                     || !str(claim.lease, "id").equals(str(response, "workerLeaseId")) || !response.containsKey("value")) {
                 process.fence("WORKER_INVOCATION_RECEIPT_INVALID"); throw new IllegalStateException("独立 Worker 结果失去原领取来源，必须核对");
             }
+            if (!str(claim.lease, "workspaceWriteLeaseId").equals(str(response, "workspaceWriteLeaseId"))) { process.fence("WORKSPACE_WRITE_SOURCE_MISSING"); throw new IllegalStateException("实际 Worker 回执缺少原根现场写入归属"); }
             Object value = response.get("value");
             if (value instanceof Map<?, ?> outcome && "UNKNOWN".equals(outcome.get("status")) && process.childrenRunning()) process.fence("WORKER_COMMAND_STOP_UNKNOWN");
             return value;
@@ -199,6 +223,10 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         Map<String, Object> lease = store.get("workerLease", str(claim.lease, "id"));
         if (!"ACTIVE".equals(str(lease, "state")) || !str(claim.lease, "workerId").equals(str(lease, "workerId")) || integer(claim.lease, "epoch") != integer(lease, "epoch")
                 || !str(claim.lease, "claimDigest").equals(str(lease, "claimDigest"))) throw new ApiException(409, "原 Worker 领取已经失效，不能开始新的动作");
+        Map<String, Object> task = store.get("task", str(lease, "taskId"));
+        store.requireActiveTaskExecution(task, lease);
+        Map<String, Object> writeIdentity = new WorkspaceWriteLedger(store).require(task, worker.identity(), Set.of("WORKSPACE", "WORKSPACE_WRITE").contains(str(lease, "operationType")));
+        if (!writeIdentity.equals(WorkspaceWriteLedger.identity(map(claim.lease, "workspaceWriteIdentity")))) throw new ApiException(409, "原 Worker 调用的现场写入来源已变化");
         if (cancelled.getAsBoolean() || !worker.current(str(lease, "taskId"))) throw new CancellationException("根任务、授权或原 Worker 归属已经停止");
     }
 
@@ -250,6 +278,7 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
             if (closed || !str(lease, "workerId").equals(str(message, "workerId")) || integer(lease, "epoch") != integer(message, "workerEpoch")
                     || !str(lease, "id").equals(str(message, "workerLeaseId")) || !str(lease, "operationId").equals(str(message, "operationId"))
                     || !str(lease, "operationKind").equals(str(message, "operationKind")) || !str(lease, "taskId").equals(str(message, "taskId"))
+                    || !str(lease, "workspaceWriteLeaseId").equals(str(message, "workspaceWriteLeaseId"))
                     || integer(message, "executorPid") != process.pid() || !str(process.processIdentity(), "processStartedAt").equals(str(message, "processStartedAt"))
                     || integer(message, "callSequence") != sequence || integer(message, "callbackSequence") != callbacks + 1) throw new ApiException(403, "回调失去原 Worker、领取或调用顺序");
             callbacks++;

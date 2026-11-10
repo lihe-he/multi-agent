@@ -1,0 +1,6 @@
+.workspace-writes{margin-bottom:28px}
+.workspace-writes .worker-lease summary{cursor:pointer;line-height:1.8;font-size:12px}
+.workspace-writes .worker-lease details{margin-top:14px}
+.workspace-writes .worker-lease details dl{margin-top:14px}
+.workspace-writes .worker-lease dd{overflow-wrap:anywhere;min-width:0}
+@media(max-width:600px){.workspace-writes .agent-run-heading{align-items:stretch}.workspace-writes .agent-run-heading .field{width:100%}.workspace-writes .worker-lease header{flex-wrap:wrap;gap:12px}}

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn, execFileSync } from 'node:child_process';
 import { createHash, randomBytes } from 'node:crypto';
 import { createServer } from 'node:http';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { delimiter, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -75,12 +75,12 @@ function remember(worker) {
 }
 
 function inspectProcess(pid, birth, mode = 'inspect') {
-  return JSON.parse(execFileSync(java, ['-Dfile.encoding=UTF-8', join(root, 'tools/ProcessRecoveryProbe.java'), mode, String(pid), birth], { encoding: 'utf8', windowsHide: true, timeout: 15000 }));
+  return JSON.parse(execFileSync(java, ['-Dfile.encoding=UTF-8', '-cp', join(dir, 'fixture-classes'), 'ProcessRecoveryProbe', mode, String(pid), birth], { encoding: 'utf8', windowsHide: true, timeout: 30000 }));
 }
 
 async function startCore(data, controlled = false) {
   const number = cores.length + 1, marker = join(dir, `release-${number}.marker`);
-  const args = ['-Dfile.encoding=UTF-8', `-Djdk.net.unixdomain.tmpdir=${dir}`];
+  const args = ['-Dfile.encoding=UTF-8', '-Djdk.virtualThreadScheduler.parallelism=2', '-Djdk.virtualThreadScheduler.maxPoolSize=2', `-Djdk.net.unixdomain.tmpdir=${dir}`];
   if (controlled) args.push(`-Dloader.path=${join(dir, 'fixture-classes')}`, '-Dloader.main=dev.agentworkbench.ControlledDispatchLauncher', '-cp', jar, 'org.springframework.boot.loader.launch.PropertiesLauncher', marker);
   else args.push('-jar', jar);
   const child = spawn(java, args, { cwd: dir, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, WORKBENCH_CORE_URL: '', WORKBENCH_CORE_TOKEN: '', WORKBENCH_TOKEN: token, WORKBENCH_PORT: '0', WORKBENCH_DATA_DIR: data, LOGGING_LEVEL_ROOT: 'INFO' } });
@@ -91,7 +91,7 @@ async function startCore(data, controlled = false) {
     if (child.exitCode !== null || child.signalCode !== null) throw new Error(`第 ${number} 个 Jar 核心提前退出`);
     const port = core.logs.match(/Tomcat started on port (\d+)/)?.[1]; if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; }
   });
-  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 7); assert.equal(health.corePid, child.pid);
+  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 8); assert.equal(health.corePid, child.pid);
   if (controlled) { assert.ok(core.logs.includes('CONTROLLED_DISPATCH_FIXTURE engine=jar:')); assert.ok(core.logs.includes('BOOT-INF/classes/')); }
   core.worker = (await api('/workers')).find(worker => worker.state === 'RUNNING'); assert.ok(core.worker); remember(core.worker);
   assert.notEqual(core.worker.pid, child.pid); assert.equal(core.worker.deployment, 'LOCAL_PROCESS');
@@ -153,11 +153,12 @@ try {
   // exact Jar. Runtime loading uses PropertiesLauncher and the original Jar.
   execFileSync(join(javaRoot, 'bin', windows ? 'jar.exe' : 'jar'), ['xf', jar, 'BOOT-INF/classes', 'BOOT-INF/lib'], { cwd: boot, windowsHide: true, timeout: 30000 });
   const classpath = [join(boot, 'BOOT-INF/classes'), join(boot, 'BOOT-INF/lib/*')].join(delimiter);
-  const fixtureSources = ['ControlledDispatchLauncher.java', 'DispatchDatabaseFixture.java'].map(file => join(root, 'tools', file));
+  const fixtureSources = ['ControlledDispatchLauncher.java', 'DispatchDatabaseFixture.java', 'ProcessRecoveryProbe.java'].map(file => join(root, 'tools', file));
   execFileSync(join(javaRoot, 'bin', windows ? 'javac.exe' : 'javac'), ['-encoding', 'UTF-8', '-cp', classpath, '-d', classes, ...fixtureSources], { encoding: 'utf8', windowsHide: true, timeout: 30000 });
   save('fixture.json', { version, jar, jarSha256, fixture: 'ACTUAL_JAR_WITH_EXTERNAL_CONTROLLED_EXECUTOR', productionEntry: 'JarLauncher', controlledEntry: 'PropertiesLauncher',
     productionClassesFromTargetDirectory: false, browserModule: '@playwright/test from web/package.json', browserVersion,
-    fixtureSources: fixtureSources.map(path => ({ path, sha256: createHash('sha256').update(readFileSync(path)).digest('hex') })) });
+    fixtureSources: fixtureSources.map(path => ({ path, sha256: createHash('sha256').update(readFileSync(path)).digest('hex') })), originalProcessProbeCompiledOnce: true,
+    fixtureClasses: readdirSync(classes, { recursive: true }).filter(file => file.endsWith('.class')).map(file => ({ file: file.replaceAll('\\', '/'), sha256: createHash('sha256').update(readFileSync(join(classes, file))).digest('hex') })) });
   pass('Exact final Jar supplied production classes and the original Worker executable');
   await new Promise(done => model.listen(0, '127.0.0.1', done));
   const source = join(dir, '中文 空格 queue project'); mkdirSync(source);
@@ -248,7 +249,7 @@ try {
   pass('All launched cores exited and original Worker identities independently confirmed stop');
   assert.equal(createHash('sha256').update(readFileSync(jar)).digest('hex'), jarSha256);
   report = { recordedAt: new Date().toISOString(), version, platform: process.platform, status: 'passed', jarSha256, fixture: 'ACTUAL_JAR_WITH_EXTERNAL_CONTROLLED_EXECUTOR',
-    browserModule: '@playwright/test from web/package.json', browserVersion, checks,
+    browserModule: '@playwright/test from web/package.json', browserVersion, checks, schedulerParallelism: 2, schedulerMaxPoolSize: 2, originalProcessProbeCompiledOnce: true,
     pendingTaskId: pending.id, originalPendingTaskExecutionId: original.task.taskExecutionId, originalPendingDispatchActionId: original.actions[0].id, pendingDispatchCount: 1,
     heldTaskId: heldTask.id, originalClaimedTaskExecutionId: claimed.executions[0].id, originalClaimedDispatchActionId: claimed.actions[0].id, originalModelRequestId: claimed.requests[0].id,
     resumedTaskExecutionId: final.executions[0].id, originalBudget: claimed.task.budget.usedCalls, finalBudget: resumed.budget.usedCalls, automaticReplay: false, originalUnknownPreserved: true,

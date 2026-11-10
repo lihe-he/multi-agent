@@ -41,7 +41,7 @@ public class WorkbenchController {
     }
 
     @GetMapping("/health")
-    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.13", "apiVersion", 1, "schemaVersion", 7, "workspaceSelectionVersion", 1, "corePid", ProcessHandle.current().pid()); }
+    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.14", "apiVersion", 1, "schemaVersion", 8, "workspaceSelectionVersion", 1, "corePid", ProcessHandle.current().pid()); }
 
     @PostMapping("/shutdown")
     public Map<String, Object> shutdown() {
@@ -63,7 +63,7 @@ public class WorkbenchController {
         }).toList();
         return obj("projects", store.list("project"), "tasks", summaries, "routes", catalog.routes(), "memories", store.list("memory"), "profiles", store.list("profile"), "agentDefinitions", store.list("agentDefinition"),
             "executionNodes", executionNodes(), "repositoryBindings", store.list("repositoryBinding"), "workers", workers(), "processRecovery", engine.processRecovery(),
-            "system", obj("version", "0.2.0-alpha.13", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
+            "system", obj("version", "0.2.0-alpha.14", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
                 "eventCursor", store.latestEvent(), "credentialStorage", "SESSION_ONLY", "releaseStatus", "DEVELOPMENT_PREVIEW", "capabilities", List.of("Git 隔离工作目录", "三模式阶段编排", "根预算与验证预留", "独立审查与人工验收", "结果未知保护", "持久事件续读"),
                 "limitations", List.of("API 兼容性须按实际端点验证", "原生 CLI 费用与内部请求数为软预算", "本机工作目录隔离不等于操作系统安全隔离", "MCP、自动采纳、三端打包与长期性能尚待发布验收")));
     }
@@ -116,6 +116,10 @@ public class WorkbenchController {
     public Map<String, Object> workerLeases(@PathVariable String id, @RequestParam(defaultValue = "0") long before,
             @RequestParam(defaultValue = "30") int limit, @RequestParam(defaultValue = "") String state) { return store.workerLeasePage(id, before, limit, state); }
 
+    @GetMapping("/tasks/{id}/workspace-write-leases")
+    public Map<String, Object> workspaceWriteLeases(@PathVariable String id, @RequestParam(defaultValue = "0") long before,
+            @RequestParam(defaultValue = "30") int limit, @RequestParam(defaultValue = "") String state) { return store.workspaceWriteLeasePage(id, before, limit, state); }
+
     @PostMapping("/projects/{id}/scan")
     public Map<String, Object> scan(@PathVariable String id) { return catalog.scanProject(id); }
 
@@ -137,6 +141,8 @@ public class WorkbenchController {
     private Map<String, Object> taskSnapshot(Map<String, Object> task) {
         Map<String, Object> snapshot = new java.util.LinkedHashMap<>(task);
         if (task.containsKey("workspaceSelection")) snapshot.put("workspacePreparationPresent", runtime.hasWorkspacePreparation(str(task, "id")));
+        if (!str(task, "workspaceWriteLeaseId").isBlank()) snapshot.put("workspaceWrite", store.get("workspaceWriteLease", str(task, "workspaceWriteLeaseId")));
+        snapshot.put("workspaceWriteHistoryPresent", !store.taskDispatchRecords("workspaceWriteLease", str(task, "id")).isEmpty());
         return snapshot;
     }
 
@@ -286,6 +292,7 @@ public class WorkbenchController {
             putZip(zip, "agent-runs.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("agentRun").stream().filter(run -> id.equals(str(run, "taskId"))).toList()));
             putZip(zip, "task-executions.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.taskDispatchRecords("taskExecution", id)));
             putZip(zip, "dispatch-actions.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.taskDispatchRecords("dispatchAction", id)));
+            putZip(zip, "workspace-write-leases.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.taskDispatchRecords("workspaceWriteLease", id)));
             putZip(zip, "model-requests.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("modelRequest").stream().filter(request -> id.equals(str(request, "taskId"))).toList()));
             List<Map<String, Object>> taskLeases = store.workerLeases("", id, "");
             putZip(zip, "worker-leases.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(taskLeases.stream().map(WorkerLedger::publicLease).toList()));

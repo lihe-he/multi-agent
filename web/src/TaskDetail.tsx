@@ -7,10 +7,11 @@ import { ModelRequests } from './ModelRequests';
 import { TeamPanel } from './TeamPanel';
 import { DelegationContract } from './DelegationContract';
 import { ExecutionContract, WorkerActivity } from './WorkerActivity';
+import { WorkspaceWrites } from './WorkspaceWrites';
 import type { Evidence, Project, Route, RunEvent, Stage, Task } from './types';
 import { Badge, Checklist, Empty, Field, formatTime, kindLabel, Modal, modeLabel, SaveButton, SectionHeading, shortHash } from './ui';
 
-type McpOperation = { actionKey?: string; state: string; error?: string; agentRunId?: string; modelRequestId?: string; toolCallId?: string };
+type McpOperation = { actionKey?: string; state: string; error?: string; agentRunId?: string; modelRequestId?: string; toolCallId?: string; workspaceWriteLeaseId?: string };
 
 export function TaskDetail({ task: initial, project, routes, onBack, onAction, onNotice, backLabel = '全部任务' }: { task: Task; project?: Project; routes: Route[]; onBack: () => void; onAction: (id: string, action: string) => Promise<void>; onNotice: (message: string, error?: boolean) => void; backLabel?: string }) {
   const [task, setTask] = useState(initial); const [tab, setTab] = useState('overview');
@@ -96,7 +97,7 @@ export function TaskDetail({ task: initial, project, routes, onBack, onAction, o
     {tab === 'runs' && <AgentRuns key={task.id} endpoint={`/tasks/${task.id}/agent-runs`} onEvidence={id => { setEvidenceTarget(id); setTab('evidence'); }} />}
     {tab === 'dispatch' && <TaskExecutions key={task.id} taskId={task.id} />}
     {tab === 'requests' && <ModelRequests key={task.id} taskId={task.id} />}
-    {tab === 'worker' && <WorkerActivity key={task.id} taskId={task.id} onEvidence={id => { setEvidenceTarget(id); setTab('evidence'); }} />}
+    {tab === 'worker' && <>{(task.workspaceWriteLeaseId || task.workspaceWriteHistoryPresent) && <WorkspaceWrites key={`writes-${task.id}`} taskId={task.id} />}<WorkerActivity key={task.id} taskId={task.id} onEvidence={id => { setEvidenceTarget(id); setTab('evidence'); }} /></>}
     {tab === 'team' && <TeamPanel key={task.id} taskId={task.id} onEvidence={id => { setEvidenceTarget(id); setTab('evidence'); }} />}
     {tab === 'context' && <section><SectionHeading title="本次执行使用的上下文" subtitle="查看选入的资料、来源与固定版本；项目之间保持知识隔离。" />{task.context?.length ? <div className="context-list">{task.context.map((entry, i) => <article className="card context-card" key={entry.id || i}><div className="inline-meta"><span className="chip">{entry.kind || '上下文'}</span><code>{shortHash(entry.version)}</code></div><p>{entry.content}</p><small>来源 · {entry.source || '核心记录'}</small></article>)}</div> : <section className="card"><Empty icon={<LayersIcon size={27} />} title="上下文清单待生成" description="任务启动时会固定完成约定、代码基线和有效记忆。" /></section>}</section>}
     {tab === 'events' && <section className="card events-card"><SectionHeading title="执行活动" subtitle="展示最近 500 条事件，完整历史保存在核心与交付包中。" action={<input className="small-search" value={eventFilter} onChange={e => setEventFilter(e.target.value)} placeholder="筛选记录…" />} />{events.length ? <div className="event-list">{events.filter(e => `${e.message} ${e.type}`.toLowerCase().includes(eventFilter.toLowerCase())).map(event => <div className="event-row" key={event.id}><time>{formatTime(event.createdAt)}</time><span className="event-type">{event.type}</span><pre>{event.message}</pre><small>#{event.id}</small></div>)}</div> : <Empty icon={<Activity size={28} />} title="等待第一条活动记录" description="所有执行状态变化和工具活动会按顺序保存在这里。" />}</section>}
@@ -107,7 +108,7 @@ export function TaskDetail({ task: initial, project, routes, onBack, onAction, o
 
 function LayersIcon(props: { size?: number }) { return <ClipboardCheck {...props} />; }
 function McpSource({ operation }: { operation?: McpOperation }) {
-  return operation?.agentRunId ? <p className="mcp-source">实际执行运行 <code>{operation.agentRunId}</code><br />原模型请求 <code>{operation.modelRequestId}</code><br />原工具调用 <code>{operation.toolCallId}</code></p> : null;
+  return operation?.agentRunId ? <p className="mcp-source">实际执行运行 <code>{operation.agentRunId}</code><br />原模型请求 <code>{operation.modelRequestId}</code><br />原工具调用 <code>{operation.toolCallId}</code>{operation.workspaceWriteLeaseId && <><br />现场写入保护 <code>{operation.workspaceWriteLeaseId}</code></>}</p> : null;
 }
 function EvidenceCard({ item, target = false }: { item: Evidence; target?: boolean }) {
   const [open, setOpen] = useState(target);

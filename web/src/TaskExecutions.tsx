@@ -36,6 +36,7 @@ export function TaskExecutions({ taskId }: { taskId: string }) {
       return <article className="card task-execution" key={execution.id}>
         <header><div><h3>第 {execution.attempt} 次执行</h3><p>{execution.trigger === 'USER_APPROVAL' ? '确认计划' : '手动继续'} · {formatTime(execution.createdAt)}</p></div><Badge state={execution.state}>{states[execution.state] || execution.state}</Badge></header>
         <dl><dt>执行尝试</dt><dd className="mono">{execution.id}</dd><dt>派发动作</dt><dd className="mono">{action.id}</dd>
+          {execution.workspaceWriteLeaseId && <><dt>现场写入保护</dt><dd className="mono">{execution.workspaceWriteLeaseId}</dd></>}
           <dt>领取情况</dt><dd>{actions[action.state] || action.state} · 领取 {action.dispatchCount} 次</dd>
           <dt>固定约定</dt><dd>完成约定 v{execution.contractVersion} · 执行授权 v{execution.authorizationVersion}</dd>
           {action.claimedAt && <><dt>领取时间</dt><dd>{formatTime(action.claimedAt)}</dd><dt>领取核心</dt><dd>PID {action.ownerCorePid ?? '未提供'}<br /><code>{action.ownerCoreSessionId}</code><br />出生 {action.ownerCoreStartedAt || '未提供'}</dd></>}

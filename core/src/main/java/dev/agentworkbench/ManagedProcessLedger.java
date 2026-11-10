@@ -16,7 +16,7 @@ import static dev.agentworkbench.Json.*;
  * 原启动意图、PID 与观察来源持久保存；旧进程停止和历史覆盖核对分别约束新派发。
  */
 public final class ManagedProcessLedger {
-    private static final Set<String> SOURCE_FIELDS = Set.of("workerId", "workerEpoch", "executionNodeId", "taskId", "projectId", "operationId", "serverId", "serverIdentity", "taskExecutionId", "dispatchActionId");
+    private static final Set<String> SOURCE_FIELDS = Set.of("workerId", "workerEpoch", "executionNodeId", "taskId", "projectId", "operationId", "serverId", "serverIdentity", "taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId");
     private static final NativeProcessAccess NATIVE_PROCESSES = new NativeProcessAccess();
     private final ExecutionStore store;
     private final long corePid;
@@ -325,7 +325,10 @@ public final class ManagedProcessLedger {
 
     public List<Map<String, Object>> serverSessions(String serverId) { return store.list("processSession").stream().filter(session -> serverId.equals(str(session, "serverId"))).map(this::inspect).toList(); }
 
-    private Set<String> taskWorkers(String taskId) { return store.workerLeases("", taskId, "").stream().map(lease -> str(lease, "workerId")).filter(worker -> !worker.isBlank()).collect(java.util.stream.Collectors.toSet()); }
+    private Set<String> taskWorkers(String taskId) {
+        return java.util.stream.Stream.concat(store.workerLeases("", taskId, "").stream(), store.workspaceWriteLeases(taskId).stream())
+            .map(lease -> str(lease, "workerId")).filter(worker -> !worker.isBlank()).collect(java.util.stream.Collectors.toSet());
+    }
     private List<Map<String, Object>> observations(String sessionId) { return store.processObservations(sessionId); }
 
     private static Map<String, Object> observation(String sessionId, Map<String, Object> facts, String origin, String role) {
@@ -395,15 +398,28 @@ public final class ManagedProcessLedger {
          */
         @Override public ProcessSnapshot inspect(long pid) {
             ProcessHandle handle = ProcessHandle.of(pid).orElse(null);
-            if (handle != null && handle.isAlive()) return new ProcessSnapshot(true, handle.info().startInstant().map(Object::toString).orElse(""));
+            boolean alive = handle != null && handle.isAlive();
+            String birth = alive ? handle.info().startInstant().map(Object::toString).orElse("") : "";
+            if (!birth.isBlank()) return new ProcessSnapshot(true, birth);
             VisibleProcesses visible = inspection.get();
             Set<Long> listed;
             if (visible == null) listed = visiblePids();
             else { if (visible.pids == null) visible.pids = visiblePids(); listed = visible.pids; }
-            return new ProcessSnapshot(listed.contains(pid), "");
+            alive |= listed.contains(pid);
+            if (alive && System.getProperty("os.name", "").startsWith("Windows")) {
+                // 受限的新进程可能复用旧 PID；快照只补充出生事实，停止仍核验原句柄。
+                VisibleProcesses snapshot = visible == null ? new VisibleProcesses() : visible;
+                if (!snapshot.windowsAttempted) {
+                    snapshot.windowsAttempted = true;
+                    try { snapshot.windowsBirths = WindowsProcessSnapshot.capture(); }
+                    catch (RuntimeException | LinkageError ignored) { snapshot.windowsBirths = Map.of(); }
+                }
+                birth = snapshot.windowsBirths.getOrDefault(pid, "");
+            }
+            return new ProcessSnapshot(alive, birth);
         }
         private Set<Long> visiblePids() { return ProcessHandle.allProcesses().map(ProcessHandle::pid).collect(java.util.stream.Collectors.toSet()); }
-        private static final class VisibleProcesses { Set<Long> pids; }
+        private static final class VisibleProcesses { Set<Long> pids; Map<Long, String> windowsBirths; boolean windowsAttempted; }
         @Override public void stop(long pid, String startedAt) {
             ProcessHandle original = matching(pid, startedAt);
             if (original != null && pid != ProcessHandle.current().pid()) original.destroyForcibly();

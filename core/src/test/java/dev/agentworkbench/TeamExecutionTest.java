@@ -106,7 +106,8 @@ class TeamExecutionTest {
         long timeout = System.nanoTime() + TimeUnit.SECONDS.toNanos(60);
         while (System.nanoTime() < timeout) {
             Map<String, Object> task = store.get("task", taskId);
-            if (states.contains(str(task, "state"))) return task;
+            if (states.contains(str(task, "state")) && (!"AWAITING_ACCEPTANCE".equals(str(task, "state"))
+                    || store.get("taskExecution", str(task, "taskExecutionId")).containsKey("endedAt"))) return task;
             if (Set.of("UNKNOWN", "FAILED", "WAITING_INPUT").contains(str(task, "state"))) fail("Unexpected state: " + task.get("state") + " / " + task.get("error") + " / " + errors + " / children=" + store.list("subtask") + " / operations=" + store.list("operation")
                 + " / roots=" + store.list("task").stream().map(root -> obj("id", root.get("id"), "state", root.get("state"), "error", root.get("error"), "evidence", root.get("evidence"))).toList());
             Thread.sleep(50);
@@ -206,6 +207,8 @@ class TeamExecutionTest {
             return ordinary(prompt);
         });
         Map<String, Object> created = task("WORKER_NODE_REVOKED", 24), identity = engine.workerIdentity(); String taskId = str(created, "id"); engine.action(taskId, "approve", obj());
+        // 原现场准备与子请求启动分开计时，子请求仍须在原十五秒内到达。
+        awaitTask(taskId, Set.of("RUNNING"));
         assertTrue(entered.await(15, TimeUnit.SECONDS), () -> childStartFailure(taskId)); Map<String, Object> child = store.list("subtask").getFirst();
         Map<String, Object> request = store.list("modelRequest").stream().filter(value -> child.get("agentRunId").equals(value.get("agentRunId"))).findFirst().orElseThrow();
         assertEquals("DISPATCHING", request.get("state")); assertTrue(store.workerLeases("", taskId, "ACTIVE").stream().anyMatch(lease -> child.get("agentRunId").equals(lease.get("agentRunId"))));
@@ -266,11 +269,17 @@ class TeamExecutionTest {
 
     @Test
     void twoParentsWaitingForChildrenMakeProgressAtCapacityTwo() throws Exception {
-        CountDownLatch entered = new CountDownLatch(2);
+        CountDownLatch parentsReady = new CountDownLatch(2), entered = new CountDownLatch(2);
+        AtomicInteger parentRequests = new AtomicInteger();
         fixture.set((prompt, results, names) -> {
             if (stage(prompt, "SUBAGENT")) { entered.countDown(); assertTrue(entered.await(8, TimeUnit.SECONDS), () -> barrierFailure(entered.getCount())); return answer("child observation"); }
             if (stage(prompt, "INVESTIGATE")) {
-                if (results.isEmpty()) return call("delegate_agent", obj("definitionId", "agent-research", "title", "barrier child", "goal", "BARRIER", "scope", List.of("src/")));
+                if (results.isEmpty()) {
+                    // 两个原父请求先实际占满模型容量，再开始委派；子请求仍使用原八秒屏障。
+                    if (parentRequests.incrementAndGet() == 2) assertEquals(2, resources.activeModels());
+                    parentsReady.countDown(); assertTrue(parentsReady.await(15, TimeUnit.SECONDS), "both original parent requests must arrive before delegation");
+                    return call("delegate_agent", obj("definitionId", "agent-research", "title", "barrier child", "goal", "BARRIER", "scope", List.of("src/")));
+                }
                 if (results.size() == 1) return call("wait_agent", obj("subtaskId", map(result(results, 0), "agent").get("subtaskId")));
             }
             return ordinary(prompt);

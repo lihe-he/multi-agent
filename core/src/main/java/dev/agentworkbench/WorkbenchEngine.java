@@ -41,6 +41,7 @@ public class WorkbenchEngine {
     private final LocalExecutionWorker executionWorker;
     private final ManagedProcessLedger processLedger;
     private final TaskDispatchQueue dispatchQueue;
+    private final WorkspaceWriteLedger workspaceWrites;
     private final ExecutorService workers;
     private final ScheduledExecutorService dispatcher = Executors.newSingleThreadScheduledExecutor(runnable -> Thread.ofPlatform().daemon(true).name("workbench-root-dispatch").unstarted(runnable));
     private final ReentrantLock dispatchGate = new ReentrantLock();
@@ -61,8 +62,9 @@ public class WorkbenchEngine {
 
     WorkbenchEngine(ExecutionStore store, WorkbenchCatalog catalog, WorkspaceRuntime runtime, ResourceManager resources, ObjectMapper mapper, McpManager mcp, ExecutorService workers) {
         this.store = store; this.catalog = catalog; this.runtime = runtime; this.resources = resources; this.mapper = mapper; this.mcp = mcp;
-        this.workers = workers; this.dispatchQueue = new TaskDispatchQueue(store);
+        this.workers = workers; this.workspaceWrites = new WorkspaceWriteLedger(store);
         this.executionWorker = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.startWorker(store, catalog.nodes()) : new LocalExecutionWorker(store, catalog.nodes());
+        this.dispatchQueue = runtime instanceof ProcessWorkspaceRuntime ? new TaskDispatchQueue(store, workspaceWrites, executionWorker::identity) : new TaskDispatchQueue(store);
         this.processLedger = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.managedProcesses() : new ManagedProcessLedger(store);
         this.teams = new TeamCoordinator(store, catalog, runtime, resources, mapper, mcp, workers, executionWorker);
     }
@@ -82,6 +84,7 @@ public class WorkbenchEngine {
 
     @PostConstruct
     void recover() {
+        workspaceWrites.recover();
         dispatchQueue.recover();
         for (Map<String, Object> run : store.list("agentRun")) {
             if (Set.of("WAITING_RESOURCE", "WAITING_TOOL", "WAITING_CHILDREN", "WAITING_DEPENDENCY", "RUNNING").contains(str(run, "state"))) {
@@ -202,6 +205,9 @@ public class WorkbenchEngine {
         processLedger.requireTaskStopped(taskId);
         executionWorker.requireStopped(taskId);
         if (mcp != null) mcp.requireTaskStopped(taskId);
+        for (Map<String, Object> lease : store.taskDispatchRecords("workspaceWriteLease", taskId)) if (!bool(lease, "protectionReleased", false)) {
+            workspaceWrites.released(str(lease, "id"), runtime.releaseWorkspaceWrite(WorkspaceWriteLedger.identity(lease), str(body, "note")), str(body, "note"));
+        }
         for (Map<String, Object> operation : store.list("operation")) {
             if (taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state"))) {
                 store.markOperation(str(operation, "id"), "RECONCILED", obj("reconciledBy", "USER", "note", str(body, "note")));
@@ -421,7 +427,18 @@ public class WorkbenchEngine {
                     throw new NeedsInput(safeMessage(exception));
                 }
                 executionWorker.finish(str(operation, "id"), "ACKNOWLEDGED", prepared);
-                store.editTask(taskId, value -> { value.putAll(prepared); value.remove("activeOperation"); }, "WORKSPACE_READY", selection.isEmpty() ? "独立任务目录已就绪，用户原目录保持原状" : "任务现场已就绪，固定提交与 Git 归属已记录");
+                Map<String, Object> workspace = new LinkedHashMap<>(prepared); workspace.remove("workspaceWriteGrant");
+                store.editTask(taskId, value -> { value.putAll(workspace); value.remove("activeOperation"); }, "WORKSPACE_READY", selection.isEmpty() ? "独立任务目录已就绪，用户原目录保持原状" : "任务现场已就绪，固定提交与 Git 归属已记录");
+            } else if (!str(task, "workspaceWriteLeaseId").isBlank()) {
+                Map<String, Object> operation = store.beginOperation(taskId, "prepare", "WORKSPACE_WRITE", str(task, "workspace"));
+                executionWorker.dispatch(str(operation, "id"), str(task, "workspace"), obj());
+                Map<String, Object> acquired;
+                try { acquired = runtime.acquireWorkspaceWrite(workspaceWrites.require(task, executionWorker.identity(), true)); }
+                catch (IllegalArgumentException exception) {
+                    executionWorker.finish(str(operation, "id"), "REJECTED", obj("reason", safeMessage(exception))); throw new NeedsInput(safeMessage(exception));
+                }
+                executionWorker.finish(str(operation, "id"), "ACKNOWLEDGED", acquired);
+                store.editTask(taskId, value -> value.remove("activeOperation"), "WORKSPACE_WRITE_HELD", "原 Worker 已取得本次根尝试的现场写入保护");
             }
             store.editTask(taskId, value -> value.put("state", "RUNNING"), "RUNNING", "开始执行已确认的计划");
             while (true) {
@@ -485,15 +502,44 @@ public class WorkbenchEngine {
         } finally {
             try { executionWorker.settleTask(taskId); }
             finally {
-                synchronized (store) {
-                    try {
-                        if (store.healthy() && !"NONE".equals(control.request) && !Set.of("UNKNOWN", "PAUSED", "CANCELLED", "COMPLETED").contains(str(store.get("task", taskId), "state"))) stopped(control);
-                    } finally {
-                        try { if (store.healthy()) dispatchQueue.finish(control.taskExecutionId); }
-                        finally { controls.remove(taskId, control); }
+                try {
+                    synchronized (store) { settleRequestedStop(control); }
+                    if (store.healthy()) settleWorkspaceWrite(taskId);
+                } finally {
+                    synchronized (store) {
+                        try { settleRequestedStop(control); }
+                        finally {
+                            try { if (store.healthy()) dispatchQueue.finish(control.taskExecutionId); }
+                            finally { controls.remove(taskId, control); }
+                        }
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * 在存储锁内复查停止请求；释放等待期间保留控制句柄，根终态与移除句柄一起收尾。
+     */
+    private void settleRequestedStop(Control control) {
+        if (store.healthy() && !"NONE".equals(control.request) && !Set.of("UNKNOWN", "PAUSED", "CANCELLED", "COMPLETED").contains(str(store.get("task", control.taskId), "state"))) stopped(control);
+    }
+
+    /**
+     * 根调用和团队实际收尾后释放原保护；未知效果和缺失回执保留原归属供核对。
+     */
+    private void settleWorkspaceWrite(String taskId) {
+        Map<String, Object> lease = workspaceWrites.current(taskId);
+        if (lease.isEmpty() || bool(lease, "protectionReleased", false)) return;
+        if ("UNKNOWN".equals(str(store.get("task", taskId), "state")) || store.hasUnknownEffects(taskId)) {
+            workspaceWrites.unknown(str(lease, "id"), "原根结束仍有未知效果，实际写入保护与原意图继续保留"); return;
+        }
+        try {
+            teams.requireStopped(taskId); executionWorker.requireStopped(taskId); if (mcp != null) mcp.requireTaskCallsReturned(taskId);
+            workspaceWrites.released(str(lease, "id"), runtime.releaseWorkspaceWrite(WorkspaceWriteLedger.identity(lease), ""), "");
+        } catch (RuntimeException exception) {
+            workspaceWrites.unknown(str(lease, "id"), "原现场写入保护未取得完整释放回执：" + safeMessage(exception));
+            store.editTask(taskId, task -> { task.put("state", "UNKNOWN"); task.put("error", "原现场写入保护的收尾需核对：" + safeMessage(exception)); }, "WORKSPACE_WRITE_UNKNOWN", "保留原根归属及实际现场，不自动建立新的写入者");
         }
     }
 

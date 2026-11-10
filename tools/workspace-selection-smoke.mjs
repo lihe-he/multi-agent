@@ -71,7 +71,7 @@ async function startCore(controlled = false) {
     if (core.error) throw core.error; if (exited(core)) throw new Error(`第 ${number} 次核心启动提前退出`);
     const port = core.logs.match(/Tomcat started on port (\d+)/)?.[1]; if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; }
   });
-  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 7); assert.equal(health.workspaceSelectionVersion, 1); assert.equal(health.corePid, child.pid);
+  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 8); assert.equal(health.workspaceSelectionVersion, 1); assert.equal(health.corePid, child.pid);
   core.worker = (await api('/workers')).find(worker => worker.state === 'RUNNING'); assert.ok(core.worker); remember(core.worker);
   assert.equal(core.worker.deployment, 'LOCAL_PROCESS'); assert.notEqual(core.worker.pid, child.pid);
   if (controlled) { assert.ok(core.logs.includes('CONTROLLED_DISPATCH_FIXTURE engine=jar:')); assert.ok(core.logs.includes('BOOT-INF/classes/')); }

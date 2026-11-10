@@ -1,11 +1,72 @@
 {
   "desktop": "PASS",
   "api": 200,
-  "version": "0.2.0-alpha.13",
+  "version": "0.2.0-alpha.14",
   "application": {
     "packaged": true,
-    "version": "0.2.0-alpha.13"
+    "version": "0.2.0-alpha.14"
   },
   "externalJavaDisabled": true,
-  "pageErrors": []
+  "pageErrors": [],
+  "schedulerParallelism": 2,
+  "schedulerMaxPoolSize": 2,
+  "processCoverage": "OBSERVED_ONLY",
+  "originalProcessProbeCompiledOnce": true,
+  "probeFixture": {
+    "compiledOnce": true,
+    "sourceSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+    "classes": [
+      {
+        "file": "ProcessRecoveryProbe$Identity.class",
+        "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+      },
+      {
+        "file": "ProcessRecoveryProbe$State.class",
+        "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+      },
+      {
+        "file": "ProcessRecoveryProbe$Visibility.class",
+        "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+      },
+      {
+        "file": "ProcessRecoveryProbe.class",
+        "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+      }
+    ]
+  },
+  "probeEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\desktop-qa-1794311981110\\probe-classes",
+  "originalIdentitiesVerifiedStopped": 3,
+  "originalProcessesStopped": true,
+  "originalProcessObservations": [
+    {
+      "pid": 63812,
+      "originalStartedAt": "2026-11-10T11:59:41.844Z",
+      "currentStartedAt": "",
+      "alive": false,
+      "matchesOriginal": false,
+      "stopRequested": false,
+      "beforeStopAlive": false,
+      "originalStopped": true
+    },
+    {
+      "pid": 61764,
+      "originalStartedAt": "2026-11-10T11:59:42.450Z",
+      "currentStartedAt": "",
+      "alive": false,
+      "matchesOriginal": false,
+      "stopRequested": false,
+      "beforeStopAlive": false,
+      "originalStopped": true
+    },
+    {
+      "pid": 58636,
+      "originalStartedAt": "2026-11-10T11:59:45.572Z",
+      "currentStartedAt": "",
+      "alive": false,
+      "matchesOriginal": false,
+      "stopRequested": false,
+      "beforeStopAlive": false,
+      "originalStopped": true
+    }
+  ]
 }

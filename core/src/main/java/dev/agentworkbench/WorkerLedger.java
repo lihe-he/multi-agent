@@ -49,6 +49,7 @@ final class WorkerLedger {
             Map<String, List<Map<String, Object>>> records = new LinkedHashMap<>(); records.put("executionNode", List.of(node)); records.put("worker", workerRecords);
             List<Map<String, Object>> abandoned = store.list("workerLease").stream().filter(lease -> str(node, "id").equals(str(lease, "executionNodeId")) && "ACTIVE".equals(str(lease, "state"))).toList();
             appendUnknown(records, abandoned, "核心会话更换，旧租约结果需核对", time);
+            appendWriteUnknown(records, store.list("workspaceWriteLease").stream().filter(lease -> str(node, "id").equals(str(lease, "executionNodeId"))).toList(), "核心会话更换，原根现场写入归属需核对", time);
             store.commitRecords(records, null, null, null);
             return worker;
         }
@@ -73,6 +74,7 @@ final class WorkerLedger {
             Map<String, Object> execution = map(task, "execution");
             if (!execution.isEmpty() && !str(worker, "executionNodeId").equals(str(execution, "executionNodeId"))) throw new ApiException(403, "Worker 不属于任务固定节点");
             requireWorkspace(operation, task, workspace);
+            Map<String, Object> writeIdentity = new WorkspaceWriteLedger(store).require(task, worker, Set.of("WORKSPACE", "WORKSPACE_WRITE").contains(str(operation, "kind")));
             String digest = digest(token), leaseId = id();
             Map<String, Object> lease = obj("id", leaseId, "operationKind", kind, "operationId", operationId, "taskId", task.get("id"), "projectId", task.get("projectId"),
                 "agentRunId", operation.getOrDefault("agentRunId", ""), "workerId", worker.get("id"), "executionNodeId", worker.get("executionNodeId"), "epoch", worker.get("epoch"),
@@ -88,6 +90,7 @@ final class WorkerLedger {
                 lease.put("workspaceOwnership", task.get("workspaceOwnership"));
             }
             ExecutionStore.copyTaskExecutionSource(lease, operation);
+            if (!writeIdentity.isEmpty()) lease.put("workspaceWriteIdentity", writeIdentity);
             if (worker.containsKey("corePid")) lease.put("corePid", worker.get("corePid"));
             if (worker.containsKey("processSessionId")) lease.put("processSessionId", worker.get("processSessionId"));
             if ("LOCAL_PROCESS".equals(str(worker, "deployment"))) {
@@ -101,7 +104,7 @@ final class WorkerLedger {
             Map<String, List<Map<String, Object>>> records = new LinkedHashMap<>(); records.put(kind, List.of(operation)); records.put("workerLease", List.of(lease));
             if (!str(operation, "agentRunId").isBlank()) {
                 Map<String, Object> run = store.get("agentRun", str(operation, "agentRunId"));
-                for (String key : List.of("workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid", "processSessionId")) if (operation.containsKey(key)) run.put(key, operation.get(key));
+                for (String key : List.of("workerLeaseId", "workspaceWriteLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid", "processSessionId")) if (operation.containsKey(key)) run.put(key, operation.get(key));
                 records.put("agentRun", List.of(run));
             }
             store.commitRecords(records, str(task, "id"), "WORKER_DISPATCHED", str(operation, "stage") + " · 操作 " + operationId + " · Worker " + str(worker, "id"));
@@ -187,7 +190,9 @@ final class WorkerLedger {
             boolean stopped = !"LOCAL_PROCESS".equals(str(identity, "deployment")) || Boolean.TRUE.equals(processFacts.get("treeStopped"));
             worker.putAll(obj("state", leases.isEmpty() && stopped ? "STOPPED" : "LOST", "stopState", leases.isEmpty() && stopped ? "CONFIRMED" : "UNKNOWN", "endedAt", time.toString(), "reason", reason));
             if (!processFacts.isEmpty()) worker.put("processStopFacts", processFacts);
-            Map<String, List<Map<String, Object>>> records = new LinkedHashMap<>(); records.put("worker", List.of(worker)); appendUnknown(records, leases, reason, time); store.commitRecords(records, null, null, null);
+            Map<String, List<Map<String, Object>>> records = new LinkedHashMap<>(); records.put("worker", List.of(worker)); appendUnknown(records, leases, reason, time);
+            appendWriteUnknown(records, store.list("workspaceWriteLease").stream().filter(lease -> str(identity, "id").equals(str(lease, "workerId"))).toList(), reason, time);
+            store.commitRecords(records, null, null, null);
         }
     }
 
@@ -209,6 +214,23 @@ final class WorkerLedger {
             records.computeIfAbsent(str(lease, "operationKind"), ignored -> new ArrayList<>()).add(operation);
         }
         records.put("workerLease", leases); if (!tasks.isEmpty()) records.put("task", new ArrayList<>(tasks.values()));
+    }
+
+    /**
+     * 两次操作之间失联也保留整次根归属，不能因没有在途模型租约而接管现场。
+     */
+    private void appendWriteUnknown(Map<String, List<Map<String, Object>>> records, List<Map<String, Object>> writes, String reason, Instant time) {
+        Map<String, Map<String, Object>> tasks = new LinkedHashMap<>();
+        for (Map<String, Object> task : records.getOrDefault("task", List.of())) tasks.put(str(task, "id"), task);
+        List<Map<String, Object>> changed = new ArrayList<>();
+        for (Map<String, Object> lease : writes) {
+            if (bool(lease, "protectionReleased", false)) continue;
+            if (!"UNKNOWN".equals(str(lease, "state"))) { lease.putAll(obj("state", "UNKNOWN", "lostAt", time.toString(), "reason", reason)); changed.add(lease); }
+            Map<String, Object> task = tasks.computeIfAbsent(str(lease, "taskId"), taskId -> store.get("task", taskId));
+            if (str(lease, "taskExecutionId").equals(str(task, "taskExecutionId"))) task.putAll(obj("state", "UNKNOWN", "error", unknownReason(task, reason), "updatedAt", time.toString()));
+        }
+        if (!changed.isEmpty()) records.put("workspaceWriteLease", changed);
+        if (!tasks.isEmpty()) records.put("task", new ArrayList<>(tasks.values()));
     }
 
     void reconcile(String taskId, String note, Instant time) {

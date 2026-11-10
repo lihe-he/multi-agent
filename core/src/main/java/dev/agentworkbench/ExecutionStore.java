@@ -66,7 +66,7 @@ public class ExecutionStore implements AutoCloseable {
                 int schemaVersion;
                 try (var version = statement.executeQuery("PRAGMA user_version")) {
                     schemaVersion = version.next() ? version.getInt(1) : 0;
-                    if (schemaVersion > 7) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
+                    if (schemaVersion > 8) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
                 }
                 statement.execute("PRAGMA journal_mode=WAL");
                 statement.execute("PRAGMA synchronous=FULL");
@@ -95,6 +95,9 @@ public class ExecutionStore implements AutoCloseable {
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_dispatch_active_task ON entities(json_extract(body,'$.taskId')) WHERE kind='dispatchAction' AND json_extract(body,'$.state') IN ('PENDING','CLAIMED')");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_dispatch_pending ON entities(json_extract(body,'$.state')) WHERE kind='dispatchAction'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_dispatch_task ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.state')) WHERE kind IN ('dispatchAction','taskExecution')");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_workspace_write_root ON entities(json_extract(body,'$.taskExecutionId')) WHERE kind='workspaceWriteLease'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_workspace_write_scope ON entities(json_extract(body,'$.scopeKey')) WHERE kind='workspaceWriteLease' AND json_extract(body,'$.protectionReleased')=0");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_workspace_write_task ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.state')) WHERE kind='workspaceWriteLease'");
                 boolean rebuildSearch;
                 try (var tables = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_search'")) { rebuildSearch = schemaVersion < 3 || !tables.next(); }
                 statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS session_search USING fts5(project_id UNINDEXED,session_id UNINDEXED,message_id UNINDEXED,sequence UNINDEXED,content,tokenize='trigram case_sensitive 1')");
@@ -105,7 +108,7 @@ public class ExecutionStore implements AutoCloseable {
                     statement.execute("DELETE FROM session_search");
                     statement.execute("INSERT INTO session_search(rowid,project_id,session_id,message_id,sequence,content) SELECT sequence,json_extract(body,'$.projectId'),session_id,id,sequence,session_search_fold(json_extract(body,'$.content')) FROM session_messages");
                 }
-                statement.execute("PRAGMA user_version=7");
+                statement.execute("PRAGMA user_version=8");
                 opened.commit(); opened.setAutoCommit(true);
             }
             connection = opened; ownershipChannel = channel; ownershipLock = lock;
@@ -173,6 +176,13 @@ public class ExecutionStore implements AutoCloseable {
      * 领取在 SQL 中再次限制原状态与版本；零行更新保留原记录，不写任务或执行尝试。
      */
     synchronized boolean claimDispatch(Map<String, Object> task, Map<String, Object> execution, Map<String, Object> action, int expectedVersion) {
+        return claimDispatch(task, execution, action, expectedVersion, obj());
+    }
+
+    /**
+     * 新写入意图与原根领取共用事务，任何一项失败都不留下可执行的归属。
+     */
+    synchronized boolean claimDispatch(Map<String, Object> task, Map<String, Object> execution, Map<String, Object> action, int expectedVersion, Map<String, Object> writeLease) {
         boolean[] claimed = {false};
         transaction(() -> {
             try (var update = connection.prepareStatement("UPDATE entities SET body=? WHERE kind='dispatchAction' AND id=? AND json_extract(body,'$.state')='PENDING' AND json_extract(body,'$.version')=? AND json_extract(body,'$.dispatchCount')=0"
@@ -184,6 +194,7 @@ public class ExecutionStore implements AutoCloseable {
             }
             if (claimed[0]) {
                 write("task", task); write("taskExecution", execution);
+                if (!writeLease.isEmpty()) write("workspaceWriteLease", writeLease);
                 appendEvent(str(task, "id"), "TASK_DISPATCHED", "原动作 " + action.get("id") + " 已领取一次，根执行 " + execution.get("id"));
             }
         });
@@ -215,8 +226,17 @@ public class ExecutionStore implements AutoCloseable {
     }
 
     synchronized List<Map<String, Object>> taskDispatchRecords(String kind, String taskId) {
-        if (!Set.of("taskExecution", "dispatchAction").contains(kind)) throw new IllegalArgumentException("Invalid dispatch record kind");
+        if (!Set.of("taskExecution", "dispatchAction", "workspaceWriteLease").contains(kind)) throw new IllegalArgumentException("Invalid dispatch record kind");
         get("task", taskId);
+        return dispatchRecords(kind, taskId);
+    }
+
+    /**
+     * 历史进程门禁保留孤立写入记录的原 Worker 关联，任务删除不代表原进程停止。
+     */
+    synchronized List<Map<String, Object>> workspaceWriteLeases(String taskId) { return dispatchRecords("workspaceWriteLease", taskId); }
+
+    private List<Map<String, Object>> dispatchRecords(String kind, String taskId) {
         try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind=? AND json_extract(body,'$.taskId')=? ORDER BY rowid DESC")) {
             query.setString(1, kind); query.setString(2, taskId);
             try (var rows = query.executeQuery()) { List<Map<String, Object>> records = new ArrayList<>(); while (rows.next()) records.add(decode(rows.getString(1))); return records; }
@@ -242,6 +262,11 @@ public class ExecutionStore implements AutoCloseable {
     public synchronized Map<String, Object> dispatchActionPage(String taskId, long before, int limit, String state) {
         if (!state.isBlank() && !TaskDispatchQueue.ACTION_STATES.contains(state)) throw new ApiException(400, "派发动作状态无效");
         return dispatchRecordPage("dispatchAction", "actions", taskId, before, limit, state);
+    }
+
+    public synchronized Map<String, Object> workspaceWriteLeasePage(String taskId, long before, int limit, String state) {
+        if (!state.isBlank() && !WorkspaceWriteLedger.STATES.contains(state)) throw new ApiException(400, "现场写入归属状态无效");
+        return dispatchRecordPage("workspaceWriteLease", "leases", taskId, before, limit, state);
     }
 
     private Map<String, Object> dispatchRecordPage(String kind, String key, String taskId, long before, int requestedLimit, String state) {
@@ -612,7 +637,7 @@ public class ExecutionStore implements AutoCloseable {
             "sequence", num(run, "calls", 0) + 1, "state", "DISPATCHING", "createdAt", now(), "attempt", 1,
             "routeId", run.get("routeId"), "routeVersion", run.get("routeVersion"), "engine", run.get("engine"), "model", run.get("model"),
             "unit", run.get("callUnit"), "usage", obj("cost", "UNKNOWN"));
-        for (String key : List.of("taskExecutionId", "dispatchActionId", "teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid", "processSessionId")) if (run.containsKey(key)) request.put(key, run.get(key));
+        for (String key : List.of("taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId", "teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid", "processSessionId")) if (run.containsKey(key)) request.put(key, run.get(key));
         for (String key : List.of("round", "messageCount", "inputBytes", "inputDigest", "toolCount", "inputPreview", "inputTruncated")) {
             if (metadata.containsKey(key)) request.put(key, metadata.get(key));
         }
@@ -740,12 +765,12 @@ public class ExecutionStore implements AutoCloseable {
                 || !AgentPermissions.has(permissions, "mcp") || !AgentPermissions.has(permissions, "write")) throw new ApiException(403, "执行者没有固定 MCP 权限或原工具身份");
         if (!str(run, "subtaskId").isBlank() && (!AgentPermissions.unrestricted(permissions, "read") || !AgentPermissions.unrestricted(permissions, "write"))) throw new ApiException(403, "窄范围副任务不能证明外部 MCP 的文件访问边界，请交回根授权阶段");
         Map<String, Object> source = obj("agentRunId", runId, "modelRequestId", requestId, "toolCallId", toolCallId, "rootTaskId", run.get("rootTaskId"), "actorKind", run.get("kind"));
-        for (String key : List.of("taskExecutionId", "dispatchActionId", "teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "sessionId", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid")) if (run.containsKey(key)) source.put(key, run.get(key));
+        for (String key : List.of("taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId", "teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "sessionId", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid")) if (run.containsKey(key)) source.put(key, run.get(key));
         return source;
     }
 
     public synchronized boolean hasUnknownEffects(String taskId) {
-        try (var query = connection.prepareStatement("SELECT 1 FROM entities WHERE kind IN ('operation','mcpOperation','teamOperation') AND json_extract(body,'$.taskId')=? AND json_extract(body,'$.state')='UNKNOWN' LIMIT 1")) {
+        try (var query = connection.prepareStatement("SELECT 1 FROM entities WHERE (kind IN ('operation','mcpOperation','teamOperation') OR (kind='workspaceWriteLease' AND json_extract(body,'$.protectionReleased')=0)) AND json_extract(body,'$.taskId')=? AND json_extract(body,'$.state')='UNKNOWN' LIMIT 1")) {
             query.setString(1, taskId); try (var rows = query.executeQuery()) { return rows.next(); }
         } catch (SQLException exception) { throw failure(exception); }
     }
@@ -955,7 +980,13 @@ public class ExecutionStore implements AutoCloseable {
         operation.put("state", state); operation.put("updatedAt", now());
         operation.putAll(details);
         Map<String, Object> persistedLease = recoveryLease;
-        transaction(() -> { write("operation", operation); if (persistedLease != null) write("workerLease", persistedLease); });
+        Map<String, Object> writeGrant = obj();
+        if (!map(details, "workspaceWriteGrant").isEmpty()) {
+            if (!"ACKNOWLEDGED".equals(state)) throw new ApiException(403, "现场写入锁需要原操作的完整成功回执");
+            writeGrant = new WorkspaceWriteLedger(this).granted(operation, details);
+        }
+        Map<String, Object> persistedGrant = writeGrant;
+        transaction(() -> { write("operation", operation); if (persistedLease != null) write("workerLease", persistedLease); if (!persistedGrant.isEmpty()) write("workspaceWriteLease", persistedGrant); });
     }
 
     private void requireLeaseReceipt(Map<String, Object> operation, String state, Map<String, Object> lease) {
@@ -1036,6 +1067,15 @@ public class ExecutionStore implements AutoCloseable {
         } catch (Exception exception) { throw failure(exception); }
     }
 
+    /**
+     * 同一规范目录的未释放归属通过索引查询，UNKNOWN 核对前仍阻止新根领取。
+     */
+    synchronized Map<String, Object> protectedWorkspaceWriteLease(String scopeKey) {
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='workspaceWriteLease' AND json_extract(body,'$.scopeKey')=? AND json_extract(body,'$.protectionReleased')=0 LIMIT 1")) {
+            query.setString(1, scopeKey); try (var rows = query.executeQuery()) { return rows.next() ? decode(rows.getString(1)) : null; }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
     synchronized Map<String, Object> workerLeasePage(String taskId, long before, int requestedLimit, String state) {
         get("task", taskId);
         if (before < 0 || (!state.isBlank() && !Set.of("ACTIVE", "RELEASED", "UNKNOWN", "RECONCILED").contains(state))) throw new ApiException(400, "Worker 租约游标或状态无效");
@@ -1096,7 +1136,7 @@ public class ExecutionStore implements AutoCloseable {
      * 根尝试来源从原任务或父运行传递；历史记录没有来源时不推测补造。
      */
     static void copyTaskExecutionSource(Map<String, Object> target, Map<String, Object> source) {
-        for (String key : List.of("taskExecutionId", "dispatchActionId")) if (!str(source, key).isBlank()) target.put(key, source.get(key));
+        for (String key : List.of("taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId")) if (!str(source, key).isBlank()) target.put(key, source.get(key));
     }
 
     /**
@@ -1105,6 +1145,7 @@ public class ExecutionStore implements AutoCloseable {
     synchronized void requireActiveTaskExecution(Map<String, Object> task, Map<String, Object> source) {
         if (str(task, "taskExecutionId").isBlank()) return;
         if (!str(task, "taskExecutionId").equals(str(source, "taskExecutionId")) || !str(task, "dispatchActionId").equals(str(source, "dispatchActionId"))) throw new ApiException(409, "操作缺少当前根执行来源");
+        if (!str(task, "workspaceWriteLeaseId").isBlank() && !str(task, "workspaceWriteLeaseId").equals(str(source, "workspaceWriteLeaseId"))) throw new ApiException(409, "操作缺少原根现场写入归属");
         Map<String, Object> execution = get("taskExecution", str(source, "taskExecutionId")), action = get("dispatchAction", str(source, "dispatchActionId"));
         if (!"RUNNING".equals(str(execution, "state")) || !"CLAIMED".equals(str(action, "state")) || num(action, "dispatchCount", 0) != 1
                 || !str(task, "id").equals(str(execution, "taskId")) || !str(execution, "id").equals(str(action, "taskExecutionId")) || !str(action, "id").equals(str(execution, "dispatchActionId"))

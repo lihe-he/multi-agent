@@ -296,7 +296,7 @@ public class McpManager {
             if (trackNativeProcesses && "STDIO".equals(str(server, "transport"))) {
                 Map<String, Object> source = obj("serverId", server.get("id"), "serverIdentity", server.get("identity"));
                 if (operation != null) source.putAll(obj("operationId", operation.get("id"), "taskId", str(operation, "taskId"), "projectId", str(operation, "projectId")));
-                if (operation != null) for (String field : List.of("taskExecutionId", "dispatchActionId")) if (operation.containsKey(field)) source.put(field, operation.get(field));
+                if (operation != null) for (String field : List.of("taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId")) if (operation.containsKey(field)) source.put(field, operation.get(field));
                 tracking = processLedger.begin("MCP_STDIO", source);
                 if (operation != null) { operation.put("processSessionId", tracking.id()); store.put("mcpOperation", operation); }
                 delegate = McpTransport.open(server, tokens.getOrDefault(str(server, "id"), ""), mapper, cancelled, timeout, tracking);
@@ -391,6 +391,14 @@ public class McpManager {
         }
     }
 
+    /**
+     * 根写入保护等待原工具调用的停止回执，另一任务后续使用同一服务不改变旧回执。
+     */
+    public void requireTaskCallsReturned(String taskId) {
+        for (Map<String, Object> operation : store.list("mcpOperation")) if (taskId.equals(str(operation, "taskId"))
+                && (Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")) || !"CONFIRMED".equals(str(operation, "stopState")))) throw new ApiException(409, "原根 MCP 调用的实际收尾尚未确认，现场写入保护继续保留");
+    }
+
     public List<Map<String, Object>> operations(String serverId) { store.get("mcpServer", serverId); return store.list("mcpOperation").stream().filter(operation -> serverId.equals(str(operation, "serverId"))).toList(); }
     public List<Map<String, Object>> processSessions(String serverId) { store.get("mcpServer", serverId); return processLedger.serverSessions(serverId); }
 
@@ -401,7 +409,7 @@ public class McpManager {
     }
 
     Map<String, Object> discover(Map<String, Object> server, McpTransport transport) throws Exception {
-        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.13")));
+        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.14")));
         String protocol = str(initialized, "protocolVersion");
         if (!Set.of("2025-06-18", "2025-03-26").contains(protocol)) { throw new ApiException(409, "此客户端尚未验证服务协商的 MCP 版本：" + protocol); }
         transport.notify("notifications/initialized", obj());

@@ -68,6 +68,7 @@ public final class WorkerProcessMain {
             worker.stop(); worker.rpc.close();
             worker.rpc.awaitHandlers(5, TimeUnit.SECONDS);
             if (worker.runtime != null) worker.runtime.stop("");
+            if (worker.runtime != null) worker.runtime.closeWorkspaceWrites();
             try { Runtime.getRuntime().removeShutdownHook(hook); } catch (IllegalStateException ignored) { }
         }
     }
@@ -78,6 +79,7 @@ public final class WorkerProcessMain {
             case "INVOKE" -> invoke(arguments);
             case "CANCEL" -> cancel(arguments);
             case "RELEASE" -> release(arguments);
+            case "RELEASE_WORKSPACE_WRITE" -> releaseWorkspaceWrite(arguments);
             default -> throw new IllegalArgumentException("Worker 方法未获支持");
         };
     }
@@ -112,9 +114,19 @@ public final class WorkerProcessMain {
             if (callIds.size() >= 32_768 || !callIds.add(callId) || calls.putIfAbsent(callId, call) != null) throw new ApiException(409, "Worker 原调用不能重复执行或越过会话边界");
             if (claim.released.get()) throw new ApiException(409, "Worker 原领取已结束");
             call.callback("CHECK_CURRENT", obj());
-            Object value = execute(call, method);
+            Object value;
+            Map<String, Object> writeIdentity = map(lease, "workspaceWriteIdentity");
+            if (writeIdentity.isEmpty()) value = execute(call, method);
+            else if ("ACQUIRE_WRITE".equals(method)) value = obj("workspaceWriteGrant", runtime.acquireWorkspaceWrite(writeIdentity));
+            else {
+                Map<String, Object> grant = "PREPARE".equals(method) ? runtime.acquireWorkspaceWrite(writeIdentity) : obj();
+                try (var protection = runtime.borrowWorkspaceWrite(writeIdentity)) {
+                    value = execute(call, method);
+                    if (!grant.isEmpty()) { Map<String, Object> prepared = valueMap(value); prepared.put("workspaceWriteGrant", grant); value = prepared; }
+                }
+            }
             return obj("callId", callId, "workerId", assignment.get("id"), "workerEpoch", assignment.get("epoch"), "executorPid", pid,
-                "processStartedAt", startedAt, "workerLeaseId", lease.get("id"), "value", value);
+                "processStartedAt", startedAt, "workerLeaseId", lease.get("id"), "workspaceWriteLeaseId", lease.getOrDefault("workspaceWriteLeaseId", ""), "value", value);
         } finally { calls.remove(callId, call); claim.active.set(false); }
     }
 
@@ -152,7 +164,7 @@ public final class WorkerProcessMain {
                 if (claims.size() >= 32_768) throw new ApiException(409, "Worker 原领取数量超过会话边界");
                 original = new Claim(new LinkedHashMap<>(lease)); claims.put(operation, original);
             }
-            for (String field : List.of("id", "operationId", "operationKind", "taskId", "projectId", "agentRunId", "workerId", "epoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "authorizationVersion", "workingDirectory", "realWorkingDirectory", "operationType", "subjectId", "claimDigest", "workspaceSelection", "workspaceOwnership")) {
+            for (String field : List.of("id", "operationId", "operationKind", "taskId", "projectId", "agentRunId", "taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId", "workspaceWriteIdentity", "workerId", "epoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "authorizationVersion", "workingDirectory", "realWorkingDirectory", "operationType", "subjectId", "claimDigest", "workspaceSelection", "workspaceOwnership")) {
                 if (!java.util.Objects.equals(original.lease.get(field), lease.get(field))) throw new ApiException(403, "原领取的固定来源已变化");
             }
             if (original.released.get() || sequence != original.sequence + 1 || !original.active.compareAndSet(false, true)) throw new ApiException(409, "Worker 原领取不能重放、并发或跳过调用");
@@ -163,6 +175,7 @@ public final class WorkerProcessMain {
     private void requireMethod(Map<String, Object> lease, String method) {
         Set<String> allowed = switch (str(lease, "operationType")) {
             case "WORKSPACE" -> Set.of("PREPARE");
+            case "WORKSPACE_WRITE" -> Set.of("ACQUIRE_WRITE");
             case "MODEL", "SUBAGENT_MODEL", "REVIEW" -> Set.of("RUN");
             case "VERIFICATION" -> Set.of("VERIFY");
             case "REVIEW_SNAPSHOT" -> Set.of("REVIEW_COPY");
@@ -202,6 +215,16 @@ public final class WorkerProcessMain {
             if (original.active.get()) throw new ApiException(409, "原领取仍有实际在途调用");
             original.released.set(true); return obj("released", true);
         }
+    }
+
+    /**
+     * 原根没有实际在途调用后才返回锁关闭事实；重开核对仍使用旧进程身份。
+     */
+    private Map<String, Object> releaseWorkspaceWrite(Map<String, Object> arguments) {
+        requireBound(); Map<String, Object> identity = map(arguments, "identity"); String taskId = str(identity, "taskId");
+        if (taskId.isBlank() || calls.values().stream().anyMatch(call -> taskId.equals(str(call.lease, "taskId")))
+                || claims.values().stream().anyMatch(claim -> claim.active.get() && taskId.equals(str(claim.lease, "taskId")))) throw new ApiException(409, "原根仍有实际调用，现场写入保护继续持有");
+        return runtime.releaseWorkspaceWrite(identity, str(arguments, "note"));
     }
 
     private void requireBound() { if (stopping.get() || assignment.isEmpty() || runtime == null) throw new ApiException(409, "Worker 尚未绑定或已经停止"); }
@@ -255,7 +278,7 @@ public final class WorkerProcessMain {
             callbackLock.lock();
             try {
                 var result = rpc.request("CALLBACK", obj("callId", id, "workerId", assignment.get("id"), "workerEpoch", assignment.get("epoch"), "workerLeaseId", lease.get("id"),
-                    "operationId", lease.get("operationId"), "operationKind", lease.get("operationKind"), "taskId", lease.get("taskId"), "executorPid", pid,
+                    "operationId", lease.get("operationId"), "operationKind", lease.get("operationKind"), "taskId", lease.get("taskId"), "workspaceWriteLeaseId", lease.getOrDefault("workspaceWriteLeaseId", ""), "executorPid", pid,
                     "processStartedAt", startedAt, "callSequence", sequence, "callbackSequence", ++callbacks, "action", action, "arguments", arguments));
                 try {
                     while (true) {

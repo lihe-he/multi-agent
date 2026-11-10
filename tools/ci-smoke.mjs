@@ -12,7 +12,7 @@ const token = randomBytes(32).toString('hex');
 const env = { ...process.env, WORKBENCH_PORT: String(port), WORKBENCH_URL: `http://127.0.0.1:${port}`, WORKBENCH_TOKEN: token, WORKBENCH_DATA_DIR: dir, WORKBENCH_REPORT_PATH: resolve(`docs/qa/smoke-${process.platform}.json`) };
 const java = join(javaHome(resolve('.')), 'bin', process.platform === 'win32' ? 'java.exe' : 'java');
 const version = JSON.parse(readFileSync(resolve('package.json'), 'utf8')).version;
-const child = spawn(java, ['-Dfile.encoding=UTF-8', `-Djdk.net.unixdomain.tmpdir=${dir}`, '-jar', resolve(`core/target/agent-workbench-core-${version}.jar`)], { env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+const child = spawn(java, ['-Dfile.encoding=UTF-8', '-Djdk.virtualThreadScheduler.parallelism=2', '-Djdk.virtualThreadScheduler.maxPoolSize=2', `-Djdk.net.unixdomain.tmpdir=${dir}`, '-jar', resolve(`core/target/agent-workbench-core-${version}.jar`)], { env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
 env.WORKBENCH_EXPECTED_CORE_PID = String(child.pid);
 let logs = ''; child.stdout.on('data', b => { logs = (logs + b).slice(-10000); }); child.stderr.on('data', b => { logs = (logs + b).slice(-10000); });
 try {

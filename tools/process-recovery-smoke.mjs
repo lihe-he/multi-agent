@@ -3,7 +3,7 @@ import { spawn, execFileSync } from 'node:child_process';
 import { createHash, randomBytes } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { createServer } from 'node:http';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { javaHome } from './java-runtime.mjs';
@@ -12,11 +12,12 @@ import { zipEntry } from './team-smoke-fixture.mjs';
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const version = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version;
 const windows = process.platform === 'win32';
-const java = join(javaHome(root), 'bin', windows ? 'java.exe' : 'java');
+const javaRoot = javaHome(root), java = join(javaRoot, 'bin', windows ? 'java.exe' : 'java');
 const jar = join(root, `core/target/agent-workbench-core-${version}.jar`);
 if (!existsSync(jar) || !existsSync(join(root, 'web/dist/index.html'))) throw new Error('请先构建最新核心与 Web。');
 mkdirSync(join(root, '.runtime'), { recursive: true });
 const dir = mkdtempSync(join(root, '.runtime', 'process-recovery-'));
+const probeClasses = join(dir, 'probe-classes');
 const token = randomBytes(32).toString('hex');
 const cores = [], modelCalls = [], heldResponses = [], pageErrors = [], modelErrors = [], checks = [];
 const fixtureIdentities = new Map();
@@ -93,7 +94,7 @@ async function waitForObservedStop(sessionId, evidenceName) {
 
 async function startCore() {
   const number = cores.length + 1;
-  const core = spawn(java, ['-Dfile.encoding=UTF-8', `-Djdk.net.unixdomain.tmpdir=${dir}`, '-jar', jar], { cwd: dir, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, WORKBENCH_CORE_URL: '', WORKBENCH_CORE_TOKEN: '', WORKBENCH_TOKEN: token, WORKBENCH_PORT: '0', WORKBENCH_DATA_DIR: join(dir, 'data'), LOGGING_LEVEL_ROOT: 'INFO' } });
+  const core = spawn(java, ['-Dfile.encoding=UTF-8', '-Djdk.virtualThreadScheduler.parallelism=2', '-Djdk.virtualThreadScheduler.maxPoolSize=2', `-Djdk.net.unixdomain.tmpdir=${dir}`, '-jar', jar], { cwd: dir, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, WORKBENCH_CORE_URL: '', WORKBENCH_CORE_TOKEN: '', WORKBENCH_TOKEN: token, WORKBENCH_PORT: '0', WORKBENCH_DATA_DIR: join(dir, 'data'), LOGGING_LEVEL_ROOT: 'INFO' } });
   const instance = { core, logs: '', number, error: null }; cores.push(instance); currentCore = instance;
   for (const stream of [core.stdout, core.stderr]) stream.on('data', chunk => { instance.logs += chunk.toString(); });
   core.once('error', error => { instance.error = error; });
@@ -103,7 +104,7 @@ async function startCore() {
     const port = instance.logs.match(/Tomcat started on port (\d+)/)?.[1];
     if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; }
   });
-  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 7); assert.equal(health.corePid, core.pid);
+  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 8); assert.equal(health.corePid, core.pid);
   return instance;
 }
 
@@ -117,7 +118,7 @@ async function stopCore(instance, crash = false) {
 }
 
 function inspectProcess(pid, birth, mode = 'inspect') {
-  return JSON.parse(execFileSync(java, ['-Dfile.encoding=UTF-8', join(root, 'tools/ProcessRecoveryProbe.java'), mode, String(pid), birth], { encoding: 'utf8', windowsHide: true, timeout: 15000 }));
+  return JSON.parse(execFileSync(java, ['-Dfile.encoding=UTF-8', '-cp', probeClasses, 'ProcessRecoveryProbe', mode, String(pid), birth], { encoding: 'utf8', windowsHide: true, timeout: 30000 }));
 }
 
 function rememberFixture(session) {
@@ -154,6 +155,11 @@ const confirmProcesses = { processesStopped: true, coverageChecked: true, note: 
 const effectNote = { processesStopped: true, sideEffectsChecked: true, note: 'Recovery fixture files and the one original external call checked separately; preserved original requests and budget; no replay.' };
 
 try {
+  mkdirSync(probeClasses);
+  const probeSource = join(root, 'tools/ProcessRecoveryProbe.java');
+  execFileSync(join(javaRoot, 'bin', windows ? 'javac.exe' : 'javac'), ['-encoding', 'UTF-8', '-d', probeClasses, probeSource], { encoding: 'utf8', windowsHide: true, timeout: 30000 });
+  writeFileSync(join(dir, 'ProcessRecoveryProbe.java'), readFileSync(probeSource));
+  save('process-probe-fixture.json', { compiledOnce: true, sourceSha256: createHash('sha256').update(readFileSync(probeSource)).digest('hex'), classes: readdirSync(probeClasses).filter(file => file.endsWith('.class')).map(file => ({ file, sha256: createHash('sha256').update(readFileSync(join(probeClasses, file))).digest('hex') })) });
   await new Promise(done => model.listen(0, '127.0.0.1', done));
   const first = await startCore();
   const projectDir = join(dir, '中文 recovery project'); mkdirSync(projectDir);
@@ -297,7 +303,7 @@ try {
   const cleanup = cleanupFixture();
   assert.equal(cleanup.originalStopped, true, 'Original fixture stop must be independently confirmed before reporting success');
   pass('Final core exited and original fixture stop was independently confirmed');
-  report = { date: new Date().toISOString(), version, platform: process.platform, status: 'passed', jarSha256: createHash('sha256').update(readFileSync(jar)).digest('hex'), checks,
+  report = { date: new Date().toISOString(), version, platform: process.platform, status: 'passed', jarSha256: createHash('sha256').update(readFileSync(jar)).digest('hex'), checks, schedulerParallelism: 2, schedulerMaxPoolSize: 2, originalProcessProbeCompiledOnce: true,
     originalCorePid: first.core.pid, restartedCorePids: [second.core.pid, third.core.pid], originalWorkerId: oldWorker.id, originalWorkerPid: oldWorker.pid, originalWorkerStartedAt: oldWorker.processStartedAt,
     originalWorkerSessionId: oldWorker.processSessionId, originalMcpPid: mcpSession.pid, originalMcpStartedAt: mcpSession.processStartedAt, originalMcpSessionId: mcpSession.id,
     originalModelRequestId: before.model.requests[0].id, originalMcpOperationId: before.mcpOperations[0].id, originalModelCalls: before.modelCalls.length, originalExternalCalls: lines(paths.calls).length,

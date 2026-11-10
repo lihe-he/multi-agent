@@ -29,7 +29,9 @@
 | OBSERVATION_FAILED | 进程读取失败；继续保持未确认 |
 | CURRENT_CORE | 仍是当前核心；恢复入口不能停止或勾选绕过 |
 
-Windows 的句柄读取失败可能表现为空句柄或 isAlive=false；若 `allProcesses()` 中仍可见该 PID，保持 UNVERIFIABLE。一次核验、停止前的后代捕获、信号检查及每轮等待各自共享系统 PID 快照，避免为每条已退出历史记录重复枚举整个系统；下一轮重新观察，信号仍逐项核验原出生。快照不提供完整操作系统历史树。
+Windows 的句柄读取失败可能表现为空句柄或 isAlive=false；若 `allProcesses()` 中仍可见该 PID 且当前出生无法核验，保持 UNVERIFIABLE。一次核验、停止前的后代捕获、信号检查及每轮等待各自共享系统 PID 快照，避免为每条已退出历史记录重复枚举整个系统；下一轮重新观察，信号仍逐项核验原出生。快照不提供完整操作系统历史树。
+
+alpha.14 在 Windows 可见 PID 的 Java 出生信息缺失时，共享一次只读 `NtQuerySystemInformation(SystemProcessInformation)` 快照，补充当前出生时间。读取限定最多32 MiB缓冲和8次增长，解析核对链偏移、指针宽度、重复PID以及本JVM实际出生。原出生与补充出生不同则记录 PID_REUSED，保留两份事实；读取或布局核验失败继续 UNVERIFIABLE。快照只补充元数据，实际停止仍要求原Java句柄出生与已记录身份相同。固定来源及接口兼容限制见[第三方说明](./third-party-dependencies.md)。
 
 Worker、MCP 和实际命令读取后代快照前后，均核对原父进程仍存活且出生时间一致。原身份更换、退出或缺失时不采用这份新增后代快照，继续按已记录的原 PID/出生清理；不能根据复用父 PID 的当前子树新增停止目标。原进程自然退出和被丢弃的快照仍不证明完整历史覆盖。
 

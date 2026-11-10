@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import static dev.agentworkbench.Json.*;
 
 /**
@@ -17,8 +18,14 @@ final class TaskDispatchQueue {
     static final Set<String> EXECUTION_STATES = Set.of("QUEUED", "RUNNING", "SUCCEEDED", "FAILED", "UNKNOWN", "PAUSED", "CANCELLED", "WAITING_INPUT");
     static final Set<String> ACTION_STATES = Set.of("PENDING", "CLAIMED", "SETTLED", "WITHDRAWN", "UNKNOWN");
     private final ExecutionStore store;
+    private final WorkspaceWriteLedger workspaceWrites;
+    private final Supplier<Map<String, Object>> writerIdentity;
 
-    TaskDispatchQueue(ExecutionStore store) { this.store = store; }
+    TaskDispatchQueue(ExecutionStore store) { this(store, null, Map::of); }
+
+    TaskDispatchQueue(ExecutionStore store, WorkspaceWriteLedger workspaceWrites, Supplier<Map<String, Object>> writerIdentity) {
+        this.store = store; this.workspaceWrites = workspaceWrites; this.writerIdentity = writerIdentity;
+    }
 
     Map<String, Object> enqueue(String taskId, String trigger, Consumer<Map<String, Object>> edit) {
         synchronized (store) {
@@ -40,6 +47,7 @@ final class TaskDispatchQueue {
                 "attempt", attempt, "state", "PENDING", "version", 1, "dispatchCount", 0, "createdAt", time,
                 "enqueuedCoreSessionId", store.coreSessionId(), "authorization", authorization(task));
             task.putAll(obj("state", "QUEUED", "taskExecutionId", executionId, "dispatchActionId", actionId, "updatedAt", time));
+            task.remove("workspaceWriteLeaseId");
             task.remove("error"); summarize(task, execution, action);
             List<Map<String, Object>> events = new ArrayList<>();
             if ("USER_APPROVAL".equals(trigger)) events.add(obj("type", "PLAN_APPROVED", "message", "用户确认了完成约定、范围、路由与预算"));
@@ -65,13 +73,17 @@ final class TaskDispatchQueue {
                 waiting(actionId, "存在尚未核对的根执行或外部效果，当前动作不会领取"); return Map.of();
             }
             preflight.accept(task);
+            Map<String, Object> writeLease = workspaceWrites == null ? obj() : workspaceWrites.intent(task, execution, action, writerIdentity.get());
             String time = now();
             Map<String, Object> owner = obj("ownerCoreSessionId", store.coreSessionId(), "ownerCorePid", ProcessHandle.current().pid(),
                 "ownerCoreStartedAt", ProcessHandle.current().info().startInstant().map(Object::toString).orElse(""));
             action.putAll(owner); action.putAll(obj("state", "CLAIMED", "version", expectedVersion + 1, "dispatchCount", 1, "claimedAt", time)); action.remove("waitReason");
             execution.putAll(owner); execution.putAll(obj("state", "RUNNING", "startedAt", time, "budgetAtStart", new LinkedHashMap<>(map(task, "budget"))));
+            if (!writeLease.isEmpty()) {
+                task.put("workspaceWriteLeaseId", writeLease.get("id")); execution.put("workspaceWriteLeaseId", writeLease.get("id")); action.put("workspaceWriteLeaseId", writeLease.get("id"));
+            }
             task.put("updatedAt", time); task.remove("error"); summarize(task, execution, action);
-            return store.claimDispatch(task, execution, action, expectedVersion) ? execution : Map.of();
+            return store.claimDispatch(task, execution, action, expectedVersion, writeLease) ? execution : Map.of();
         }
     }
 
@@ -110,7 +122,15 @@ final class TaskDispatchQueue {
             if (!"RUNNING".equals(str(execution, "state"))) return;
             Map<String, Object> task = store.get("task", str(execution, "taskId")), action = store.get("dispatchAction", str(execution, "dispatchActionId"));
             if (!store.coreSessionId().equals(str(action, "ownerCoreSessionId")) || !"CLAIMED".equals(str(action, "state"))) throw new ApiException(409, "根执行终态缺少本次核心原领取");
-            if (store.hasUnknownEffects(str(task, "id")) && executionId.equals(str(task, "taskExecutionId"))) task.putAll(obj("state", "UNKNOWN", "error", "根执行收尾仍有未确认效果，保留原动作供核对"));
+            Map<String, Object> writeLease = store.find("workspaceWriteLease", str(execution, "workspaceWriteLeaseId"));
+            if (writeLease != null) {
+                if (!bool(writeLease, "protectionReleased", false)) {
+                    writeLease.put("state", "UNKNOWN"); writeLease.putIfAbsent("lostAt", now()); writeLease.putIfAbsent("reason", "根结束缺少原现场写入保护的完整释放回执");
+                    unresolved(task, "原现场写入保护尚未完成收尾，保留原根归属供核对");
+                }
+                execution.putAll(obj("workspaceWriteStateAtEnd", writeLease.get("state"), "workspaceWriteProtectionReleased", writeLease.get("protectionReleased")));
+            }
+            if (store.hasUnknownEffects(str(task, "id")) && executionId.equals(str(task, "taskExecutionId"))) unresolved(task, "根执行收尾仍有未确认效果，保留原动作供核对");
             String state = switch (str(task, "state")) {
                 case "AWAITING_ACCEPTANCE", "COMPLETED" -> "SUCCEEDED";
                 case "FAILED", "PAUSED", "CANCELLED", "WAITING_INPUT" -> str(task, "state");
@@ -119,7 +139,9 @@ final class TaskDispatchQueue {
             end(execution, task, state, str(task, "error"));
             action.putAll(obj("state", "UNKNOWN".equals(state) ? "UNKNOWN" : "SETTLED", "version", num(action, "version", 1) + 1, "endedAt", now(), "executionState", state));
             if (executionId.equals(str(task, "taskExecutionId"))) { task.put("updatedAt", now()); summarize(task, execution, action); }
-            store.commitRecords(records(task, execution, action), str(task, "id"), "TASK_EXECUTION_FINISHED", "根执行 " + executionId + "：" + state + "；任务状态与人工验收另行保存");
+            Map<String, List<Map<String, Object>>> records = records(task, execution, action);
+            if (writeLease != null && !bool(writeLease, "protectionReleased", false)) records.put("workspaceWriteLease", List.of(writeLease));
+            store.commitRecords(records, str(task, "id"), "TASK_EXECUTION_FINISHED", "根执行 " + executionId + "：" + state + "；任务状态与人工验收另行保存");
         }
     }
 
@@ -189,6 +211,11 @@ final class TaskDispatchQueue {
             "budgetAtEnd", new LinkedHashMap<>(map(task, "budget")), "workspace", task.getOrDefault("workspace", ""), "resultVersion", task.getOrDefault("version", "")));
         execution.put("elapsedMs", Math.max(0, Duration.between(Instant.parse(str(execution, "createdAt")), Instant.parse(str(execution, "endedAt"))).toMillis()));
         if (task.containsKey("workspaceOwnership")) execution.put("workspaceOwnership", task.get("workspaceOwnership"));
+    }
+
+    private static void unresolved(Map<String, Object> task, String reason) {
+        String previous = str(task, "error");
+        task.putAll(obj("state", "UNKNOWN", "error", previous.isBlank() ? reason : previous.contains(reason) ? previous : previous + "\n" + reason));
     }
 
     private static void summarize(Map<String, Object> task, Map<String, Object> execution, Map<String, Object> action) {
