@@ -1,0 +1,2601 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-11-11T02:48:44.002Z",
+  "version": "0.2.0-alpha.14",
+  "headSha": "cff00fb3bca47cf13986928146aa9879f06980f4",
+  "runId": 42941627882,
+  "runAttempt": 1,
+  "status": "completed",
+  "conclusion": "success",
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/42941627882",
+  "evidenceCollection": {
+    "directory": ".runtime/alpha14-ci/run-42941627882-attempt-1",
+    "collectionReceiptSha256": "775b5d5fb82a7fe34ea718472562d15fff8753bef6cc99feb21e068098d7f6d9",
+    "verificationSummarySha256": "af859f48fb7117bffdfba3d78b2786a8317bbe12d4ea38f56af05f1a305305e8",
+    "inspectorSha256": "3bfe5b3d49a7c66c9fc86f4de99ee0276eec3949da0edda058c55b64cc25441b",
+    "collectorSha256": "658735843f8b8c9509e16e13f7008d0f1b597259366d4625a30addbc6520121b",
+    "archiveDigestsAndSizesVerified": true,
+    "originalArtifactsPreserved": true,
+    "collected": [
+      {
+        "type": "job-log",
+        "id": 130264560291,
+        "name": "verify (ubuntu-latest)",
+        "sha256": "f10ef4305c67049f4d940b29eda851440f48109e039be5459f53fa7024826d1c",
+        "size": 141193
+      },
+      {
+        "type": "job-log",
+        "id": 130264560622,
+        "name": "verify (macos-latest)",
+        "sha256": "c2db4c7e3cc2661b0a59092494f9f04599dab8f5c482bafd594a6ca4dcbcd53f",
+        "size": 128432
+      },
+      {
+        "type": "job-log",
+        "id": 130264561120,
+        "name": "verify (windows-latest)",
+        "sha256": "b670a177a4b4a849fec2932e32af6c3dbc699c18cdff066dee626c3ccb108d17",
+        "size": 130705
+      },
+      {
+        "type": "artifact",
+        "id": 13821685344,
+        "name": "evidence-ubuntu-latest",
+        "sha256": "4a214307f405fee81f68c68fd4685f8343c01d501a53e56cc96b6354efa404aa",
+        "digestVerified": true,
+        "size": 88224222,
+        "downloadMode": "FRESH_SIGNED_URL_PER_RANGE_AND_RETRY"
+      },
+      {
+        "type": "artifact",
+        "id": 13822935502,
+        "name": "evidence-windows-latest",
+        "sha256": "87ed4510ba64b6ecd4e39b4e0e4da4f275394e9bc448c559f0ae8b1d436366fc",
+        "digestVerified": true,
+        "size": 84317084,
+        "downloadMode": "FRESH_SIGNED_URL_PER_RANGE_AND_RETRY"
+      },
+      {
+        "type": "artifact",
+        "id": 13821632034,
+        "name": "evidence-macos-latest",
+        "sha256": "cd3e0e9ea2f4affcf94383db12807aadb64d59c811fdea5d5077a8e751f8d40e",
+        "digestVerified": true,
+        "size": 88524012,
+        "downloadMode": "FRESH_SIGNED_URL_PER_RANGE_AND_RETRY"
+      }
+    ]
+  },
+  "platforms": [
+    {
+      "platform": "win32",
+      "runner": "windows-latest",
+      "jobId": 130264561120,
+      "artifactId": 13822935502,
+      "artifactSha256": "87ed4510ba64b6ecd4e39b4e0e4da4f275394e9bc448c559f0ae8b1d436366fc",
+      "artifactDigestVerified": true,
+      "jarSha256": "9ba5ad6fd2b30df0f53b39462c2a58ee1f61e0b3edd66a53e7bf890fcbb4811d",
+      "freshRuntimeEvidenceVerified": true,
+      "core": {
+        "suiteCount": 26,
+        "tests": 285,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2,
+        "passed": 283,
+        "suites": [
+          {
+            "name": "dev.agentworkbench.AgentRunStoreTest",
+            "xmlSha256": "5a2dd3353ede1f4071ad7b680d87b327a5970d6bd55352f28ff1678182be1776",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ExecutionStoreTest",
+            "xmlSha256": "32067a433dafddd2aa457162ba014841041bc05606eea4098c0cf85546d55e8a",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.GitWorkspaceTest",
+            "xmlSha256": "db3b40f70aba6dc6409f3c6431385e564bafa57c0f98c62ab57e4a6e6b609a34",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.LocalAccessFilterTest",
+            "xmlSha256": "62c056060e3e5406cd5338685d4a210f80c34c21fb7e144d4572b8c13c3d08c9",
+            "tests": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "xmlSha256": "8243c641ce4c705aff050b288ae7b2a0917f38004dd5f47d6309ee0166a6eb53",
+            "tests": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: No restricted live PID on this runner"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.mcp.McpIntegrationTest",
+            "xmlSha256": "582a721bc89336c580a4bb5358e298ea5b8918babeda702923875387a30dd25c",
+            "tests": 23,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ModelRequestStoreTest",
+            "xmlSha256": "f7f9224e8edc8f1140ebbb2171b24c8552f104740ea7d8e211f989c73737bde2",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.PlanAndPolicyTest",
+            "xmlSha256": "4acdfb3d10b4a347ee15c59a31205594dae8692e0f4dd681e9f6182c967c510a",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+            "xmlSha256": "83b3cf29a90407759b60a391f7f173161d40817db40acb42a90d662f7764fd16",
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RootDispatchEngineTest",
+            "xmlSha256": "ff151928c207cc3c3088529308a3e7797a4e6b36959cd56ba1dbbbfb9a22c5b5",
+            "tests": 11,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.runtime.WorkspaceWriteGuardTest",
+            "xmlSha256": "688fc34f790b87fa8ab779c1903dcb31fc23b1bed5f2e56b69f1bd71134e6901",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeDelegationTest",
+            "xmlSha256": "f25cde8eca6699202121b1eeb5cca10830da683b67fe065f54d6575434966203",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeIntegrationTest",
+            "xmlSha256": "082312cf3ce4ac733c9d2701c8b53d2daf2d47cabdde9c00e29597e44ff20f48",
+            "tests": 27,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging",
+                "className": "dev.agentworkbench.RuntimeIntegrationTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Requires real POSIX executable permissions"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.SessionStoreTest",
+            "xmlSha256": "8f5efb7e5034ed24e08df284d7e1b71f152540dd9d6bc12ce3e9ff16480a9428",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamExecutionTest",
+            "xmlSha256": "083293bc5416c2a20f5985e27750af45fdd8fae1754b5477ae83b2b0240c01c9",
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TaskDispatchQueueTest",
+            "xmlSha256": "2cb20786047585668a0176f9f15b7586de33df086bb704ef4c31c0c41c841bd4",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamRecordsTest",
+            "xmlSha256": "b96bf562820d67f97adad3b6e294aa983dae5abec4ae222d552aa9d0f3af41ad",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WindowsProcessSnapshotTest",
+            "xmlSha256": "aa3e9cabec4b3de57be83ee259bc98f282c1d4782ae3898169334aa8b3d75ffd",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkbenchEngineTest",
+            "xmlSha256": "69c16b39b97e864d1c1825603d10138a47221e33267dde4314cc09d0b908b370",
+            "tests": 24,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerLeaseTest",
+            "xmlSha256": "6feacdcaeaa7be76170d9099617a2ecfb863dbe942d8c0281c7c1ae9cdfd7b30",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerProcessTest",
+            "xmlSha256": "5e101478b091848a282be96cb226e10813e01aa6f8c2e2b05602a8b09a27429c",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerRpcTest",
+            "xmlSha256": "038cdb1abdf7dfeb2387fb245755044f7361e372f338b1abaec1ad97574592d6",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerWireTest",
+            "xmlSha256": "57b64a7ea9c0e7eb4a53031a7430b1e329778b0d57ec6cce143a5d20dba73eb4",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceSelectionEngineTest",
+            "xmlSha256": "3fb8b7412900d6bd2ddbb22a3f50d36152123b84fedc824b676fbb84c196816f",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteEngineTest",
+            "xmlSha256": "c5132991b8b3d71dbe0ef8896cf0760af5179df4ac65bfe2a46a2f63a5bed258",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+            "xmlSha256": "290918e767512cc2b5db6fb2d5f4899e545b782a83d8dc29d10475aea339e5eb",
+            "tests": 15,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          }
+        ]
+      },
+      "uiTests": 69,
+      "workspaceChecks": 15,
+      "protocolChecks": 29,
+      "recoveryChecks": 11,
+      "dispatchChecks": 13,
+      "standaloneStatus": "passed",
+      "packagedStatus": "passed",
+      "packagedCoreMatchesFinalJar": true,
+      "fixtureSourcesMatchExactCommit": true,
+      "fixtureSourceCheckouts": [
+        {
+          "file": "tools/ControlledDispatchLauncher.java",
+          "rawSha256": "4bbeb4f709a48a59211a7b7f30f340fce3732685cf19736de6fe8e006a1d6f72",
+          "gitBlobSha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+          "lineEndings": "WINDOWS_CRLF_CHECKOUT"
+        },
+        {
+          "file": "tools/WorkspaceDatabaseFixture.java",
+          "rawSha256": "8697a4701cba8cb7a78e8995fead260f1bbad31de3be3c6dd5abc4fcec7caae0",
+          "gitBlobSha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c",
+          "lineEndings": "WINDOWS_CRLF_CHECKOUT"
+        },
+        {
+          "file": "tools/ProcessRecoveryProbe.java",
+          "rawSha256": "a8fcd560a15b327170d91f8921c5f9290ac4c887f354856c9ce7e2583c018da6",
+          "gitBlobSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+          "lineEndings": "WINDOWS_CRLF_CHECKOUT"
+        }
+      ],
+      "originalReadyOwner": "992230d8-e88b-4f43-b0d6-0f5ff2abca7b",
+      "readyOriginalTaskExecutionId": "2fd530e1-1983-4f67-81b5-b8f062ab03f5",
+      "readyRecoveredTaskExecutionId": "add2e7fb-0a1d-44f4-9cca-8a17595a5f4e",
+      "modelCalls": 12,
+      "originalIdentitiesIndependentlyStopped": 52,
+      "productionWebHashes": [
+        {
+          "file": "web/dist/index.html",
+          "sha256": "d5861a8a880dce32c2304ba68110002a3229ba866651e37bcce826e928e8b38c"
+        },
+        {
+          "file": "web/dist/assets/index-Bv8F9oTj.js",
+          "sha256": "2049e5ed366576435f4627c563c344bdd828b6b88d0b11608982fa219e1832d0"
+        },
+        {
+          "file": "web/dist/assets/index-C4kV3agE.css",
+          "sha256": "e72ff1440d5862da3d67fcc203e9f1f2772163e23be03e05e5cf5f8d45b30375"
+        }
+      ],
+      "runtimeConfigSha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874",
+      "runtimeConfigMatchesExactCommit": true,
+      "actualTaskZipSha256": "576b42d54f98cd33897cb7ba14279d65ef5baae4632827ad01c162a5946d6cc7",
+      "workspaceWriteChecks": 22,
+      "workspaceWriteModelCalls": 26,
+      "workspaceWriterIdentitiesStopped": 1313,
+      "actualReleaseGates": 2,
+      "nativeDependencies": [
+        {
+          "file": "jna-5.17.0.jar",
+          "bytes": 2002589,
+          "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        },
+        {
+          "file": "jna-platform-5.17.0.jar",
+          "bytes": 1378617,
+          "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        }
+      ],
+      "actualPackagedJreWriter": {
+        "recordedAt": "2026-11-11T02:16:21.159Z",
+        "version": "0.2.0-alpha.14",
+        "platform": "win32",
+        "status": "passed",
+        "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
+        "jarSha256": "9ba5ad6fd2b30df0f53b39462c2a58ee1f61e0b3edd66a53e7bf890fcbb4811d",
+        "packagedJarSha256": "9ba5ad6fd2b30df0f53b39462c2a58ee1f61e0b3edd66a53e7bf890fcbb4811d",
+        "packagedJava": "D:\\a\\multi-agent\\multi-agent\\release\\win-unpacked\\resources\\jre\\bin\\java.exe",
+        "packagedJavaSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
+        "javaVersion": "21.0.13",
+        "packagedRuntimeReleaseSha256": "b3f0f2c915151893f679218e30bf445ee6b489681e06457f466744fe89e50e8c",
+        "fixtureClassesCompiledOnce": true,
+        "fixtureClasses": [
+          {
+            "file": "ProcessRecoveryProbe$Identity.class",
+            "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+          },
+          {
+            "file": "ProcessRecoveryProbe$State.class",
+            "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+          },
+          {
+            "file": "ProcessRecoveryProbe$Visibility.class",
+            "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+          },
+          {
+            "file": "ProcessRecoveryProbe.class",
+            "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteDatabaseFixture.class",
+            "sha256": "a588579f7b3a02bb2246c3d3718765c672e72742947a425f774a0cfbb0add75b"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$1.class",
+            "sha256": "e19bcd1e5940a102a8e849b7303b016196bfaf31cf3c132b9f3b2a9f61acebed"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$2.class",
+            "sha256": "a0d4e287e5364f47dab229f62eefdba5c195123bdc4c5540c72d0458d0da7a86"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe.class",
+            "sha256": "17969c48c3e8b6a10357e24eaa8b8a4c1e08d20f723b78c5b0c0842018ad28a6"
+          }
+        ],
+        "productionClasses": [
+          {
+            "file": "dev/agentworkbench/WorkbenchEngine.class",
+            "sha256": "888a353be60c66c4dd960eaf0403c3d5b06b1cb3a01dde986434e08ad9e15410"
+          },
+          {
+            "file": "dev/agentworkbench/WorkerProcessMain.class",
+            "sha256": "3418574b7edd61d7dc694f654688cd31fd9bfe468c81c25fd12264adb68ab016"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+            "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+          },
+          {
+            "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+            "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+            "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+            "sha256": "b275affe510f6773b140a41d5e3d2225bc6f63194c3113db039ef6c3d98050df"
+          }
+        ],
+        "nativeDependencies": [
+          {
+            "file": "jna-5.17.0.jar",
+            "bytes": 2002589,
+            "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          },
+          {
+            "file": "jna-platform-5.17.0.jar",
+            "bytes": 1378617,
+            "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          }
+        ],
+        "nativeFileKey": "WINDOWS:56687e9c687e7a97:945c0000000001000000000000000000",
+        "originalPid": 7884,
+        "originalProcessStartedAt": "2026-11-11T02:16:19.512Z",
+        "originalStopped": true,
+        "releaseDuringBorrowRejected": true,
+        "lockAvailableAfterRelease": true,
+        "windowsNativeProcessSnapshotApplicable": true,
+        "windowsNativeProcessSnapshotVerified": true,
+        "nativeProcessBirth": "2026-11-11T02:16:19.512Z",
+        "nativeProcessSnapshotCount": 133,
+        "probeOutputEncoding": "UTF-8",
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2,
+        "evidenceDirectory": "D:\\a\\multi-agent\\multi-agent\\.runtime\\bundled-workspace-writer-OihjPy"
+      },
+      "originalWorkspaceWriteUnknownHistoryVerified": true,
+      "startedAt": "2026-11-11T01:48:52Z",
+      "completedAt": "2026-11-11T02:16:36Z",
+      "requiredSteps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Core tests and package",
+          "conclusion": "success"
+        },
+        {
+          "name": "Web dependency install",
+          "conclusion": "success"
+        },
+        {
+          "name": "Web build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Full local protocol lifecycle",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install UI test browser",
+          "conclusion": "success"
+        },
+        {
+          "name": "UI interaction tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Desktop dependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Desktop dependency download guards",
+          "conclusion": "success"
+        },
+        {
+          "name": "Desktop connection policy",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual core crash and original process recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual durable root queue and explicit recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual selected Git workspaces and READY receipt recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual root workspace writers and original receipt recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Standalone browser and attached desktop lifecycle",
+          "conclusion": "success"
+        },
+        {
+          "name": "Standalone lifecycle with virtual display",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build desktop distribution with bundled Java",
+          "conclusion": "success"
+        },
+        {
+          "name": "Packaged application lifecycle",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual packaged Java workspace writer",
+          "conclusion": "success"
+        },
+        {
+          "name": "Preserve desktop distributions",
+          "conclusion": "success"
+        },
+        {
+          "name": "Preserve test reports",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "platform": "darwin",
+      "runner": "macos-latest",
+      "jobId": 130264560622,
+      "artifactId": 13821632034,
+      "artifactSha256": "cd3e0e9ea2f4affcf94383db12807aadb64d59c811fdea5d5077a8e751f8d40e",
+      "artifactDigestVerified": true,
+      "jarSha256": "7ab5253947e8897bd5bbec084ced4d3b5c2446c6734206975cfb9fb95b6bee78",
+      "freshRuntimeEvidenceVerified": true,
+      "core": {
+        "suiteCount": 26,
+        "tests": 285,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8,
+        "passed": 277,
+        "suites": [
+          {
+            "name": "dev.agentworkbench.AgentRunStoreTest",
+            "xmlSha256": "5645341fda2de482add11e15792ee5da64feaf8a4b1ea7c6b65286334adbad40",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ExecutionStoreTest",
+            "xmlSha256": "dd5d2b6e7c2437cccb3139c25ea3c345623b3eb3142d7c1c2624001c3cd81893",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.GitWorkspaceTest",
+            "xmlSha256": "f6fe21407de89a6b839242df5c468dc956de4d68837014c2ddc3131db61b263d",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "redirectedWorkspaceRootCannotCreateTaskDirectoriesInsideAForeignJunction",
+                "className": "dev.agentworkbench.GitWorkspaceTest",
+                "reason": "Disabled on operating system: Mac OS X"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.LocalAccessFilterTest",
+            "xmlSha256": "365252c9831142e418aa607554f792df065f691b3f96927395d8c4f40e9cc370",
+            "tests": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "xmlSha256": "3c3615bfffd4f0055e554963805457d77c40452f4feeef95f82312113670a268",
+            "tests": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 3,
+            "skippedCases": [
+              {
+                "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows restricted process identity"
+              },
+              {
+                "name": "failedWindowsSnapshotStillRejectsAnUnverifiableLivePid",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity failure"
+              },
+              {
+                "name": "missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity fallback"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ModelRequestStoreTest",
+            "xmlSha256": "741a155ba51f3b4daf2d233c254ebc0c3b5002772d1159cef7c3d2f74c559d7c",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.PlanAndPolicyTest",
+            "xmlSha256": "a252a325098819fb8e72181fe31e9566ddbc4951024a518101fe96bb33689595",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+            "xmlSha256": "9fbc80ab7d355a959655105129b98e04376bb4bdaa91143a5088e6a2a0062826",
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RootDispatchEngineTest",
+            "xmlSha256": "a5ee89622408c4c5b6cb991a0f611e8cee172a566c52beadbe9e46f7192fd2c6",
+            "tests": 11,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeDelegationTest",
+            "xmlSha256": "f2bce744e0d95a6552c3c280597517d7a52955026f80cfced692d178240f3860",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeIntegrationTest",
+            "xmlSha256": "e280e96b0248bd6d1a916c503bf63bb4a32eaf9367e5d01b70518ac4938d970a",
+            "tests": 27,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 2,
+            "skippedCases": [
+              {
+                "name": "transientWindowsReceiptLockDoesNotReplayCompletedFileTool",
+                "className": "dev.agentworkbench.RuntimeIntegrationTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+              },
+              {
+                "name": "persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay",
+                "className": "dev.agentworkbench.RuntimeIntegrationTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.SessionStoreTest",
+            "xmlSha256": "f62d1f4b74490fa3275843d1ff7a09d9edf44fd727e1d8928ed14dfcfd192399",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamRecordsTest",
+            "xmlSha256": "de88fafbd8998470bf5e50e315a7642bdc26e960f6f70b33e89e3f69289b4add",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamExecutionTest",
+            "xmlSha256": "f5a11bff6e64dbedd0fd01f76e1580b11dff90824d596f9e93f354a8e7e6cc0d",
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TaskDispatchQueueTest",
+            "xmlSha256": "5e004e69fc14c67f003edb019e7c2c6ad4b35d8c2908e46fefd64b39601cbc8c",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkbenchEngineTest",
+            "xmlSha256": "d928f7a06859e905a1ce68fb46708eb0ad2eee1a11535892c1f81ff432a2ee3b",
+            "tests": 24,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WindowsProcessSnapshotTest",
+            "xmlSha256": "6cd8f9ef0b838e834598135aad7bf750d70a9681c8719c2f1dcd2d4e50c90698",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "actualWindowsSnapshotMatchesReadableProcessBirths",
+                "className": "dev.agentworkbench.WindowsProcessSnapshotTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native system process snapshot"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerLeaseTest",
+            "xmlSha256": "642418121c94ae47f612169bcc560ab6d3f22538e90f1e4bca87d68b8934fa68",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerProcessTest",
+            "xmlSha256": "c9020b1c8576782664ece2b34f75a524485e869629ede1decbe748804747271e",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerRpcTest",
+            "xmlSha256": "9993777a1e462fdea995fb3775d7c5836d1ceb0966b8aa2ac0a058cca4902162",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerWireTest",
+            "xmlSha256": "9df005b40d4ff5653b757c61a456439807e221b38c512d4b38cad276b571c25a",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceSelectionEngineTest",
+            "xmlSha256": "f6bb9c490bbbc1eb122a630081d844c96a68739f4031881811016df15477eba2",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteEngineTest",
+            "xmlSha256": "23dee70675ad59601413e9b6fdbc29e8fb35d8e20444fbc190728075ab3d9a51",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+            "xmlSha256": "ca845a2a4806be344b782b9371e3e7399ae0283a741d6e5a0d3ec4e5b60f3986",
+            "tests": 15,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "savedWindowsShortWorkspaceKeepsItsPhysicalScopeAfterStoreReopen",
+                "className": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+                "reason": "Disabled on operating system: Mac OS X"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.mcp.McpIntegrationTest",
+            "xmlSha256": "221222feaba6e68ed3ecf3d465d186d7a933f79babc5c2fe2b42ad835f65fa17",
+            "tests": 23,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.runtime.WorkspaceWriteGuardTest",
+            "xmlSha256": "e7c5ac62686af68f389efc9b0ecaebd0042abcfcf70aed478e48039b6cfc2958",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          }
+        ]
+      },
+      "uiTests": 69,
+      "workspaceChecks": 15,
+      "protocolChecks": 29,
+      "recoveryChecks": 11,
+      "dispatchChecks": 13,
+      "standaloneStatus": "passed",
+      "packagedStatus": "passed",
+      "packagedCoreMatchesFinalJar": true,
+      "fixtureSourcesMatchExactCommit": true,
+      "fixtureSourceCheckouts": [
+        {
+          "file": "tools/ControlledDispatchLauncher.java",
+          "rawSha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+          "gitBlobSha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+          "lineEndings": "GIT_BLOB_BYTES"
+        },
+        {
+          "file": "tools/WorkspaceDatabaseFixture.java",
+          "rawSha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c",
+          "gitBlobSha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c",
+          "lineEndings": "GIT_BLOB_BYTES"
+        },
+        {
+          "file": "tools/ProcessRecoveryProbe.java",
+          "rawSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+          "gitBlobSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+          "lineEndings": "GIT_BLOB_BYTES"
+        }
+      ],
+      "originalReadyOwner": "9539829f-5e1a-4821-9854-84e1706a68d3",
+      "readyOriginalTaskExecutionId": "116f8382-3d45-499a-8119-b07ba322bf17",
+      "readyRecoveredTaskExecutionId": "1d4c4f66-73b0-4e75-97df-49054d92adcf",
+      "modelCalls": 12,
+      "originalIdentitiesIndependentlyStopped": 52,
+      "productionWebHashes": [
+        {
+          "file": "web/dist/index.html",
+          "sha256": "ec3249f06e2785cb7a0582add3c27633d6efef3328b00a72199a07005b23148e"
+        },
+        {
+          "file": "web/dist/assets/index-Bv8F9oTj.js",
+          "sha256": "2049e5ed366576435f4627c563c344bdd828b6b88d0b11608982fa219e1832d0"
+        },
+        {
+          "file": "web/dist/assets/index-C4kV3agE.css",
+          "sha256": "e72ff1440d5862da3d67fcc203e9f1f2772163e23be03e05e5cf5f8d45b30375"
+        }
+      ],
+      "runtimeConfigSha256": "3be957fbf2bc4239f17ca04398c552f2214c74caabe1109ee876ddeca9e8f270",
+      "runtimeConfigMatchesExactCommit": true,
+      "actualTaskZipSha256": "0e370dc5b44ff8d23c0fc18f119daeea957e01075c4e46c6cfc4d5e7cbc0cc7f",
+      "workspaceWriteChecks": 22,
+      "workspaceWriteModelCalls": 26,
+      "workspaceWriterIdentitiesStopped": 540,
+      "actualReleaseGates": 2,
+      "nativeDependencies": [
+        {
+          "file": "jna-5.17.0.jar",
+          "bytes": 2002589,
+          "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        },
+        {
+          "file": "jna-platform-5.17.0.jar",
+          "bytes": 1378617,
+          "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        }
+      ],
+      "actualPackagedJreWriter": {
+        "recordedAt": "2026-11-11T02:03:33.545Z",
+        "version": "0.2.0-alpha.14",
+        "platform": "darwin",
+        "status": "passed",
+        "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
+        "jarSha256": "7ab5253947e8897bd5bbec084ced4d3b5c2446c6734206975cfb9fb95b6bee78",
+        "packagedJarSha256": "7ab5253947e8897bd5bbec084ced4d3b5c2446c6734206975cfb9fb95b6bee78",
+        "packagedJava": "/Users/runner/work/multi-agent/multi-agent/release/mac-arm64/Agent Workbench.app/Contents/Resources/jre/bin/java",
+        "packagedJavaSha256": "0f642542ea1f0be6957557c0db96653ec128113bb5a4aaa7c2534d1d72ddb51f",
+        "javaVersion": "21.0.13",
+        "packagedRuntimeReleaseSha256": "32d77bb26cba44ee2282c8b4fbb6dcf429757ed8b851d9d84863c7342989584d",
+        "fixtureClassesCompiledOnce": true,
+        "fixtureClasses": [
+          {
+            "file": "ProcessRecoveryProbe$Identity.class",
+            "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+          },
+          {
+            "file": "ProcessRecoveryProbe$State.class",
+            "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+          },
+          {
+            "file": "ProcessRecoveryProbe$Visibility.class",
+            "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+          },
+          {
+            "file": "ProcessRecoveryProbe.class",
+            "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteDatabaseFixture.class",
+            "sha256": "a588579f7b3a02bb2246c3d3718765c672e72742947a425f774a0cfbb0add75b"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$1.class",
+            "sha256": "e19bcd1e5940a102a8e849b7303b016196bfaf31cf3c132b9f3b2a9f61acebed"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$2.class",
+            "sha256": "a0d4e287e5364f47dab229f62eefdba5c195123bdc4c5540c72d0458d0da7a86"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe.class",
+            "sha256": "17969c48c3e8b6a10357e24eaa8b8a4c1e08d20f723b78c5b0c0842018ad28a6"
+          }
+        ],
+        "productionClasses": [
+          {
+            "file": "dev/agentworkbench/WorkbenchEngine.class",
+            "sha256": "888a353be60c66c4dd960eaf0403c3d5b06b1cb3a01dde986434e08ad9e15410"
+          },
+          {
+            "file": "dev/agentworkbench/WorkerProcessMain.class",
+            "sha256": "3418574b7edd61d7dc694f654688cd31fd9bfe468c81c25fd12264adb68ab016"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+            "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+          },
+          {
+            "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+            "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+            "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+            "sha256": "b275affe510f6773b140a41d5e3d2225bc6f63194c3113db039ef6c3d98050df"
+          }
+        ],
+        "nativeDependencies": [
+          {
+            "file": "jna-5.17.0.jar",
+            "bytes": 2002589,
+            "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          },
+          {
+            "file": "jna-platform-5.17.0.jar",
+            "bytes": 1378617,
+            "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          }
+        ],
+        "nativeFileKey": "NIO:(dev=100000f,ino=3098458)",
+        "originalPid": 47463,
+        "originalProcessStartedAt": "2026-11-11T02:03:31.156Z",
+        "originalStopped": true,
+        "releaseDuringBorrowRejected": true,
+        "lockAvailableAfterRelease": true,
+        "windowsNativeProcessSnapshotApplicable": false,
+        "windowsNativeProcessSnapshotVerified": null,
+        "probeOutputEncoding": "UTF-8",
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2,
+        "evidenceDirectory": "/Users/runner/work/multi-agent/multi-agent/.runtime/bundled-workspace-writer-HE9xJ2"
+      },
+      "originalWorkspaceWriteUnknownHistoryVerified": true,
+      "startedAt": "2026-11-11T01:48:52Z",
+      "completedAt": "2026-11-11T02:04:00Z",
+      "requiredSteps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Core tests and package",
+          "conclusion": "success"
+        },
+        {
+          "name": "Web dependency install",
+          "conclusion": "success"
+        },
+        {
+          "name": "Web build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Full local protocol lifecycle",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install UI test browser",
+          "conclusion": "success"
+        },
+        {
+          "name": "UI interaction tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Desktop dependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Desktop dependency download guards",
+          "conclusion": "success"
+        },
+        {
+          "name": "Desktop connection policy",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual core crash and original process recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual durable root queue and explicit recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual selected Git workspaces and READY receipt recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual root workspace writers and original receipt recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Standalone browser and attached desktop lifecycle",
+          "conclusion": "success"
+        },
+        {
+          "name": "Standalone lifecycle with virtual display",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Build desktop distribution with bundled Java",
+          "conclusion": "success"
+        },
+        {
+          "name": "Packaged application lifecycle",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual packaged Java workspace writer",
+          "conclusion": "success"
+        },
+        {
+          "name": "Preserve desktop distributions",
+          "conclusion": "success"
+        },
+        {
+          "name": "Preserve test reports",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "runner": "ubuntu-latest",
+      "jobId": 130264560291,
+      "artifactId": 13821685344,
+      "artifactSha256": "4a214307f405fee81f68c68fd4685f8343c01d501a53e56cc96b6354efa404aa",
+      "artifactDigestVerified": true,
+      "jarSha256": "c1dcb2a154a04be4e9303b88dbbd6abe7de6c219184b6a0d407f896aab478cd3",
+      "freshRuntimeEvidenceVerified": true,
+      "core": {
+        "suiteCount": 26,
+        "tests": 285,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8,
+        "passed": 277,
+        "suites": [
+          {
+            "name": "dev.agentworkbench.ExecutionStoreTest",
+            "xmlSha256": "35c3666fabf25bcc9e8d126dd6ae77d991e517ff8d59077e36044165dea82474",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.GitWorkspaceTest",
+            "xmlSha256": "14a36d8816ae116a518d856e2d18cb97d4f9a172a1269c95a534eb5dc451cb4a",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "redirectedWorkspaceRootCannotCreateTaskDirectoriesInsideAForeignJunction",
+                "className": "dev.agentworkbench.GitWorkspaceTest",
+                "reason": "Disabled on operating system: Linux"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.AgentRunStoreTest",
+            "xmlSha256": "7d26a45d23f3c7e5f36d0e1930813f484ce2ff28dba8a547502f9abbbf75eaea",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.LocalAccessFilterTest",
+            "xmlSha256": "0dbbd0a1a4bc2e21b06b17c344ac46a92967dd012447f47010dc968ff766cbe3",
+            "tests": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "xmlSha256": "7b884c9316b75ffdb9e3413a0d0388bc22d7f09bd516eb2b54ba7a27867492d5",
+            "tests": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 3,
+            "skippedCases": [
+              {
+                "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows restricted process identity"
+              },
+              {
+                "name": "failedWindowsSnapshotStillRejectsAnUnverifiableLivePid",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity failure"
+              },
+              {
+                "name": "missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity fallback"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ModelRequestStoreTest",
+            "xmlSha256": "b69fcd6109177ed9c2f2f178c90c8e8c6de4bc5e891c69f6dfb8fef60e15e9d4",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.PlanAndPolicyTest",
+            "xmlSha256": "020402f8fb53c1a55cffc0d10b64c7fba23bc7f8b10f0247683728d7d8620b0d",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+            "xmlSha256": "20e0657049f85e33599adc003b09380336a1ae2c818fdfb9428190612dd372dc",
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RootDispatchEngineTest",
+            "xmlSha256": "91e563e4fff40013a86b29309b25ad858ee1572c1f902d21195a40effde83378",
+            "tests": 11,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeDelegationTest",
+            "xmlSha256": "4ea21a52d0d0c21a1767f181c06540058070251db7ae023461bd8675a7124af7",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeIntegrationTest",
+            "xmlSha256": "6019814a323c8c44b7ab2eb8a8c8a92d7a1dfdbca622e8c86c633737a701916f",
+            "tests": 27,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 2,
+            "skippedCases": [
+              {
+                "name": "transientWindowsReceiptLockDoesNotReplayCompletedFileTool",
+                "className": "dev.agentworkbench.RuntimeIntegrationTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+              },
+              {
+                "name": "persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay",
+                "className": "dev.agentworkbench.RuntimeIntegrationTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.SessionStoreTest",
+            "xmlSha256": "1c4baa811236d21cd85e35e0c5e073f0337246d3cc6e1c565d88d5142f3fa023",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TaskDispatchQueueTest",
+            "xmlSha256": "0fbd4761638751062cee55682d3710a7eeaa8b5da04bf8c3568c831181c4b950",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamExecutionTest",
+            "xmlSha256": "b44402cf97009275b0a6ad7c54e12f95d3fc3c5f668836680f502f454587bb50",
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamRecordsTest",
+            "xmlSha256": "1ff2c98e1f8fc204ce7ac0f64ccc738fce40b85c1b29c1c8227881dccfde9c9a",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WindowsProcessSnapshotTest",
+            "xmlSha256": "df5f82dd9b51b49668842e69ba1010f73c2db6679f6d0033619f6a9d6c552aef",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "actualWindowsSnapshotMatchesReadableProcessBirths",
+                "className": "dev.agentworkbench.WindowsProcessSnapshotTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native system process snapshot"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkbenchEngineTest",
+            "xmlSha256": "12147edb9d74b6fa82a81942a191d771d2b7bf2715a9278a9404ad49e0e6a000",
+            "tests": 24,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerLeaseTest",
+            "xmlSha256": "d8f972808335cd418ec62619f77027138dd57e956f02c8ce11fc017c1f95b411",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerProcessTest",
+            "xmlSha256": "35f64474806fef80bf3a335f14e97c6377bdfc54527ffa192468b04b666f0bec",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerRpcTest",
+            "xmlSha256": "23a05012353689c83bf05bd6cf5ac0c149051e9e983dee984fdf3d28b88ffc0c",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerWireTest",
+            "xmlSha256": "4c3d793a9a0049765bd760e8747ee9e14eee62da4675c98495aef9164cccb6d8",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceSelectionEngineTest",
+            "xmlSha256": "378489d663c7149be428a051f6f9844cd5203efc349b24acdfad828c903f6c28",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteEngineTest",
+            "xmlSha256": "f91a0fbf7747c85bea1d9c45cb7baa28e615f967cf9203993f17ba3557dd87fe",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+            "xmlSha256": "5af6048308b624ddea884fe1c9e4ed99ebacd914aa013e20d6e976753e8b9d24",
+            "tests": 15,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "savedWindowsShortWorkspaceKeepsItsPhysicalScopeAfterStoreReopen",
+                "className": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+                "reason": "Disabled on operating system: Linux"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.mcp.McpIntegrationTest",
+            "xmlSha256": "38c7c0edf095cf30b62a1ff2b9220af0c7257df873b572399f0490a38b8701f9",
+            "tests": 23,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.runtime.WorkspaceWriteGuardTest",
+            "xmlSha256": "7ac3efa4998d317add8a64484f7590dd1709ecd4e87fdb33c264436bcd94912d",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          }
+        ]
+      },
+      "uiTests": 69,
+      "workspaceChecks": 15,
+      "protocolChecks": 29,
+      "recoveryChecks": 11,
+      "dispatchChecks": 13,
+      "standaloneStatus": "passed",
+      "packagedStatus": "passed",
+      "packagedCoreMatchesFinalJar": true,
+      "fixtureSourcesMatchExactCommit": true,
+      "fixtureSourceCheckouts": [
+        {
+          "file": "tools/ControlledDispatchLauncher.java",
+          "rawSha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+          "gitBlobSha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+          "lineEndings": "GIT_BLOB_BYTES"
+        },
+        {
+          "file": "tools/WorkspaceDatabaseFixture.java",
+          "rawSha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c",
+          "gitBlobSha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c",
+          "lineEndings": "GIT_BLOB_BYTES"
+        },
+        {
+          "file": "tools/ProcessRecoveryProbe.java",
+          "rawSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+          "gitBlobSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+          "lineEndings": "GIT_BLOB_BYTES"
+        }
+      ],
+      "originalReadyOwner": "e9b71078-5ef2-4695-afbd-e9a0a11fa2e3",
+      "readyOriginalTaskExecutionId": "e87242fd-6379-44ee-a1e4-738ade7b7861",
+      "readyRecoveredTaskExecutionId": "0fc6618e-6f63-43e1-83e6-deacb2f52fc7",
+      "modelCalls": 12,
+      "originalIdentitiesIndependentlyStopped": 52,
+      "productionWebHashes": [
+        {
+          "file": "web/dist/index.html",
+          "sha256": "ec3249f06e2785cb7a0582add3c27633d6efef3328b00a72199a07005b23148e"
+        },
+        {
+          "file": "web/dist/assets/index-Bv8F9oTj.js",
+          "sha256": "2049e5ed366576435f4627c563c344bdd828b6b88d0b11608982fa219e1832d0"
+        },
+        {
+          "file": "web/dist/assets/index-C4kV3agE.css",
+          "sha256": "e72ff1440d5862da3d67fcc203e9f1f2772163e23be03e05e5cf5f8d45b30375"
+        }
+      ],
+      "runtimeConfigSha256": "3be957fbf2bc4239f17ca04398c552f2214c74caabe1109ee876ddeca9e8f270",
+      "runtimeConfigMatchesExactCommit": true,
+      "actualTaskZipSha256": "7baf6c805e9a8ddcdeea31650e275008e6407841183add50af7cdbf82a4bcee6",
+      "workspaceWriteChecks": 22,
+      "workspaceWriteModelCalls": 26,
+      "workspaceWriterIdentitiesStopped": 590,
+      "actualReleaseGates": 2,
+      "nativeDependencies": [
+        {
+          "file": "jna-5.17.0.jar",
+          "bytes": 2002589,
+          "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        },
+        {
+          "file": "jna-platform-5.17.0.jar",
+          "bytes": 1378617,
+          "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        }
+      ],
+      "actualPackagedJreWriter": {
+        "recordedAt": "2026-11-11T01:56:22.827Z",
+        "version": "0.2.0-alpha.14",
+        "platform": "linux",
+        "status": "passed",
+        "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
+        "jarSha256": "c1dcb2a154a04be4e9303b88dbbd6abe7de6c219184b6a0d407f896aab478cd3",
+        "packagedJarSha256": "c1dcb2a154a04be4e9303b88dbbd6abe7de6c219184b6a0d407f896aab478cd3",
+        "packagedJava": "/home/runner/work/multi-agent/multi-agent/release/linux-unpacked/resources/jre/bin/java",
+        "packagedJavaSha256": "9cad3f2620d3ef2ed10b26f922af7e773d54fdaa05f615d6d6df014f3fec4155",
+        "javaVersion": "21.0.13",
+        "packagedRuntimeReleaseSha256": "32d77bb26cba44ee2282c8b4fbb6dcf429757ed8b851d9d84863c7342989584d",
+        "fixtureClassesCompiledOnce": true,
+        "fixtureClasses": [
+          {
+            "file": "ProcessRecoveryProbe$Identity.class",
+            "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+          },
+          {
+            "file": "ProcessRecoveryProbe$State.class",
+            "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+          },
+          {
+            "file": "ProcessRecoveryProbe$Visibility.class",
+            "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+          },
+          {
+            "file": "ProcessRecoveryProbe.class",
+            "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteDatabaseFixture.class",
+            "sha256": "a588579f7b3a02bb2246c3d3718765c672e72742947a425f774a0cfbb0add75b"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$1.class",
+            "sha256": "e19bcd1e5940a102a8e849b7303b016196bfaf31cf3c132b9f3b2a9f61acebed"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$2.class",
+            "sha256": "a0d4e287e5364f47dab229f62eefdba5c195123bdc4c5540c72d0458d0da7a86"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe.class",
+            "sha256": "17969c48c3e8b6a10357e24eaa8b8a4c1e08d20f723b78c5b0c0842018ad28a6"
+          }
+        ],
+        "productionClasses": [
+          {
+            "file": "dev/agentworkbench/WorkbenchEngine.class",
+            "sha256": "888a353be60c66c4dd960eaf0403c3d5b06b1cb3a01dde986434e08ad9e15410"
+          },
+          {
+            "file": "dev/agentworkbench/WorkerProcessMain.class",
+            "sha256": "3418574b7edd61d7dc694f654688cd31fd9bfe468c81c25fd12264adb68ab016"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+            "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+          },
+          {
+            "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+            "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+            "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+            "sha256": "b275affe510f6773b140a41d5e3d2225bc6f63194c3113db039ef6c3d98050df"
+          }
+        ],
+        "nativeDependencies": [
+          {
+            "file": "jna-5.17.0.jar",
+            "bytes": 2002589,
+            "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          },
+          {
+            "file": "jna-platform-5.17.0.jar",
+            "bytes": 1378617,
+            "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          }
+        ],
+        "nativeFileKey": "NIO:(dev=10301,ino=5050562)",
+        "originalPid": 37493,
+        "originalProcessStartedAt": "2026-11-11T01:56:21.370Z",
+        "originalStopped": true,
+        "releaseDuringBorrowRejected": true,
+        "lockAvailableAfterRelease": true,
+        "windowsNativeProcessSnapshotApplicable": false,
+        "windowsNativeProcessSnapshotVerified": null,
+        "probeOutputEncoding": "UTF-8",
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2,
+        "evidenceDirectory": "/home/runner/work/multi-agent/multi-agent/.runtime/bundled-workspace-writer-L8M8OL"
+      },
+      "originalWorkspaceWriteUnknownHistoryVerified": true,
+      "startedAt": "2026-11-11T01:48:52Z",
+      "completedAt": "2026-11-11T01:56:36Z",
+      "requiredSteps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Core tests and package",
+          "conclusion": "success"
+        },
+        {
+          "name": "Web dependency install",
+          "conclusion": "success"
+        },
+        {
+          "name": "Web build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Full local protocol lifecycle",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install UI test browser",
+          "conclusion": "success"
+        },
+        {
+          "name": "UI interaction tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Desktop dependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Desktop dependency download guards",
+          "conclusion": "success"
+        },
+        {
+          "name": "Desktop connection policy",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual core crash and original process recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual durable root queue and explicit recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual selected Git workspaces and READY receipt recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual root workspace writers and original receipt recovery",
+          "conclusion": "success"
+        },
+        {
+          "name": "Standalone browser and attached desktop lifecycle",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Standalone lifecycle with virtual display",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build desktop distribution with bundled Java",
+          "conclusion": "success"
+        },
+        {
+          "name": "Packaged application lifecycle",
+          "conclusion": "success"
+        },
+        {
+          "name": "Actual packaged Java workspace writer",
+          "conclusion": "success"
+        },
+        {
+          "name": "Preserve desktop distributions",
+          "conclusion": "success"
+        },
+        {
+          "name": "Preserve test reports",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "initialFailure": {
+    "headSha": "a9f55d5f1f9640de1c0acfc70d9a0790244f99f2",
+    "runId": 42815606757,
+    "conclusion": "failure",
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/42815606757",
+    "directory": ".runtime/alpha14-ci/run-42815606757-attempt-1",
+    "collectionComplete": false,
+    "preservedFiles": [
+      {
+        "file": ".runtime/alpha14-ci/run-42815606757-attempt-1/artifacts.json",
+        "sha256": "4ce3d05b3034c05d0cdb90afc123703acaa8eb34df5371d1105425b331d3661b"
+      },
+      {
+        "file": ".runtime/alpha14-ci/run-42815606757-attempt-1/evidence-macos-latest-13765745048.zip",
+        "sha256": "f85bff6510412b11350b7ea841d5889810234a54088b5f14e028081f30f445ba"
+      },
+      {
+        "file": ".runtime/alpha14-ci/run-42815606757-attempt-1/evidence-ubuntu-latest-13765000155.zip",
+        "sha256": "f95e719bfd2d0b7737fc83a7fd6e081c7a479a0a79314a507130b933160b8c03"
+      },
+      {
+        "file": ".runtime/alpha14-ci/run-42815606757-attempt-1/job-129827794976.log",
+        "sha256": "1367008cfb98f0b9c40ed38ff5f488e4d299b20e59de9551c466c3ca53a52eeb"
+      },
+      {
+        "file": ".runtime/alpha14-ci/run-42815606757-attempt-1/job-129827795163.log",
+        "sha256": "e1f9af3769eb0ea845d61daf08daa3aff619250612ccaa88141b3b199637f223"
+      },
+      {
+        "file": ".runtime/alpha14-ci/run-42815606757-attempt-1/job-129827796505.log",
+        "sha256": "716ca915843e4d385fd8f6dc4d07947c84ed354691e7647c409393204edc42fa"
+      },
+      {
+        "file": ".runtime/alpha14-ci/run-42815606757-attempt-1/jobs.json",
+        "sha256": "66949d7ee4cc4fd7a6afe8aefb2cf811f7cc1a647b867a66e92a196dad0f7ef4"
+      },
+      {
+        "file": ".runtime/alpha14-ci/run-42815606757-attempt-1/run.json",
+        "sha256": "be549fb1cea2694ec7e6ecb413e7115fed69c01768862cf8c22f652d9dd735ed"
+      }
+    ],
+    "jobs": [
+      {
+        "id": 129827794976,
+        "name": "verify (macos-latest)",
+        "conclusion": "failure",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-java@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Core tests and package",
+            "conclusion": "failure"
+          },
+          {
+            "name": "Web dependency install",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Web build",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Full local protocol lifecycle",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Install UI test browser",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "UI interaction tests",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Desktop dependencies",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Desktop dependency download guards",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Desktop connection policy",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual core crash and original process recovery",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual durable root queue and explicit recovery",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual selected Git workspaces and READY receipt recovery",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual root workspace writers and original receipt recovery",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Standalone browser and attached desktop lifecycle",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Standalone lifecycle with virtual display",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Build desktop distribution with bundled Java",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Packaged application lifecycle",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual packaged Java workspace writer",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Preserve desktop distributions",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Preserve test reports",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Post Run actions/setup-java@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 129827795163,
+        "name": "verify (windows-latest)",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-java@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Core tests and package",
+            "conclusion": "success"
+          },
+          {
+            "name": "Web dependency install",
+            "conclusion": "success"
+          },
+          {
+            "name": "Web build",
+            "conclusion": "success"
+          },
+          {
+            "name": "Full local protocol lifecycle",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install UI test browser",
+            "conclusion": "success"
+          },
+          {
+            "name": "UI interaction tests",
+            "conclusion": "success"
+          },
+          {
+            "name": "Desktop dependencies",
+            "conclusion": "success"
+          },
+          {
+            "name": "Desktop dependency download guards",
+            "conclusion": "success"
+          },
+          {
+            "name": "Desktop connection policy",
+            "conclusion": "success"
+          },
+          {
+            "name": "Actual core crash and original process recovery",
+            "conclusion": "success"
+          },
+          {
+            "name": "Actual durable root queue and explicit recovery",
+            "conclusion": "success"
+          },
+          {
+            "name": "Actual selected Git workspaces and READY receipt recovery",
+            "conclusion": "success"
+          },
+          {
+            "name": "Actual root workspace writers and original receipt recovery",
+            "conclusion": "success"
+          },
+          {
+            "name": "Standalone browser and attached desktop lifecycle",
+            "conclusion": "success"
+          },
+          {
+            "name": "Standalone lifecycle with virtual display",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Build desktop distribution with bundled Java",
+            "conclusion": "success"
+          },
+          {
+            "name": "Packaged application lifecycle",
+            "conclusion": "success"
+          },
+          {
+            "name": "Actual packaged Java workspace writer",
+            "conclusion": "success"
+          },
+          {
+            "name": "Preserve desktop distributions",
+            "conclusion": "success"
+          },
+          {
+            "name": "Preserve test reports",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/setup-java@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 129827796505,
+        "name": "verify (ubuntu-latest)",
+        "conclusion": "failure",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-java@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Core tests and package",
+            "conclusion": "failure"
+          },
+          {
+            "name": "Web dependency install",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Web build",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Full local protocol lifecycle",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Install UI test browser",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "UI interaction tests",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Desktop dependencies",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Desktop dependency download guards",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Desktop connection policy",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual core crash and original process recovery",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual durable root queue and explicit recovery",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual selected Git workspaces and READY receipt recovery",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual root workspace writers and original receipt recovery",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Standalone browser and attached desktop lifecycle",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Standalone lifecycle with virtual display",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Build desktop distribution with bundled Java",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Packaged application lifecycle",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual packaged Java workspace writer",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Preserve desktop distributions",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Preserve test reports",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Post Run actions/setup-java@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ],
+    "failureScope": "Four original second-JVM lock/real-release assertions failed on each Unix runner; Windows completed successfully. Partial archives and original logs are preserved; no complete initial collection receipt exists."
+  },
+  "distributionArtifacts": [
+    {
+      "id": 13821806474,
+      "name": "desktop-macos-latest",
+      "digest": "sha256:852fa1d3c027cbb9b2ab7f89e15801146cbb1ae2108409ed1468169600af6d2b",
+      "size": 175387762,
+      "downloadedAndByteVerified": false
+    },
+    {
+      "id": 13821768871,
+      "name": "desktop-windows-latest",
+      "digest": "sha256:8fd5b8c0bc798cd9739e5d8da8ee4e0c01568afe20cb456459522d300ffd0831",
+      "size": 152616781,
+      "downloadedAndByteVerified": false
+    },
+    {
+      "id": 13820633416,
+      "name": "desktop-ubuntu-latest",
+      "digest": "sha256:4a7e5c45cd4236133219af1128dd306e68d2289d786e3c0ac960ac4cb93d82b7",
+      "size": 184780835,
+      "downloadedAndByteVerified": false
+    }
+  ],
+  "productionScope": "alpha.14 local CLONE/WORKTREE root writer leases, original POSIX descriptor checks and lifecycle receipts",
+  "completeProjectGoal": false
+}

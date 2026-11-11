@@ -13,7 +13,7 @@
 | 真实释放与容量 | 旧实现两项释放心跳阻塞真实复现继续保留；最终完整测试两门心跳分别 6→7、6→7，store monitor 未持有，原RPC读管道，暂停/取消、原锁释放、ZIP及原Worker停止均核对。原八秒容量屏障在完整团队12项中通过；原释放与自然/未确认后台子进程边界定向5 / 5通过 |
 | Web、最终Jar与发行物 | Web源码和生产产物摘要与已通过的69 / 69全量UI一致，原桌面与430px长卡片目视记录保留。修订后的准确最终Jar写入保护22项、5次核心启动、26次模型请求通过；工作区15、恢复11、队列13、协议29、独立浏览器/附加桌面、打包启动及内置JRE的实际授予/借用/释放和系统进程快照均通过。17项未修改守卫的原通过记录已核对；新安装包152607646字节、SHA-256 `c420568025e08536667374a841f7cf79ba71d1ba8693e7b224b178c579e4375c`，签名状态NotSigned，本轮未重测完整安装/卸载 |
 | 源码审查 | 27 份新增/受改Java的 95 条原注释保留，新Javadoc为标准多行；版本、脚本语法和whitespace通过，最终Jar全部class匹配实际编译输出。验收命令均保存脚本SHA、退出码和前后Jar/Web/config摘要；九条顺序步骤均 passed，完整本机证据在 `.runtime/alpha14-final-local-qa/`，正式汇总见[alpha.14验证](./qa/alpha14-validation-win32.json) |
-| CI | 初始提交 `a9f55d5f1f9640de1c0acfc70d9a0790244f99f2` 的 [run 42815606757](https://github.com/lihe-he/multi-agent/actions/runs/42815606757) 已终态failure：Windows整条成功，macOS/Ubuntu各有4项实际锁竞争/释放门失败。修订依据固定Temurin FileLock文档与fcntl实现，保留原断言、失败日志和归档。修订提交的准确三端终态与实际证据待推送后核验；整条期限仍为50分钟 |
+| CI | 修订提交 `cff00fb3bca47cf13986928146aa9879f06980f4` 的 [run 42941627882](https://github.com/lihe-he/multi-agent/actions/runs/42941627882) 三端终态success，三份实际证据ZIP大小与GitHub digest均核对；核心每端26套/285项、载体2 / 2，win32 283通过/2条件跳过，darwin 277通过/8条件跳过，linux 277通过/8条件跳过。三端UI69、写入22、工作区15、协议29、恢复11、队列13、独立客户端及包内JRE锁探针均通过，四个真实写入故障窗口、UNKNOWN/预算历史、原PID/出生停止与准确Jar/Web/config/夹具已核对。[正式记录](./qa/alpha14-ci-writers-receipt.json)保留原跳过原因及初始Unix四项失败；初始收取不完整，发行包artifact仅保存元数据。整条期限仍为50分钟 |
 
 SQLite schema 为8，公开API/实体/Worker帧仍为1；原alpha.13的Jar、QA和准确CI保留原版本。第二轮WORKTREE释放夹具在Node基线返回0后发现未确认原子进程而保留UNKNOWN，尚未进入释放故障窗口；独立八次PowerShell/Node自然退出观察未复现，原因仍未确定，后续定向成功不回写原失败。当前目录、跨核心现场协调、已读版本保护、完整归档恢复及其余F01–F21/M0–M3仍继续实施，完整目标未完成。
 
