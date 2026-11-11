@@ -50,7 +50,7 @@ Worker 丢失、核心会话变化、真实锁取得但 ACK 落库失败、真�
 
 ## 文件与路径核验
 
-锁回执保存 fileKey 与随机 lockMarker。Unix 使用文件系统提供的 NIO 文件身份，并核对实际锁路径内容与原描述符 marker；Windows 在 NIO fileKey 为空时，通过原生属性句柄读取卷编号和 128 位文件编号，拒绝重解析点和目录。Windows FileChannel 使用 NOSHARE_DELETE，在持有期间拒绝删除/改名访问。
+锁回执保存 fileKey 与随机 lockMarker。Unix 使用文件系统提供的 NIO 文件身份和大小关联实际路径，只从原持锁描述符读取 marker；路径核对不另开并关闭同一锁文件，避免解除原 POSIX 文件锁。Windows 在 NIO fileKey 为空时，通过原生属性句柄读取卷编号和 128 位文件编号，拒绝重解析点和目录。Windows FileChannel 使用 NOSHARE_DELETE，在持有期间拒绝删除/改名访问。
 
 取得锁前后、每次借用和恢复释放，都核对原路径、文件身份、marker 与清单。清单被替换、原锁缺失、目录解析改变或未完成准备不自动修复。已取得成功 grant 的旧归属不能用“原锁/清单不存在”或外国清单来确认释放。
 

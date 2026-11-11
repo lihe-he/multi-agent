@@ -1,22 +1,22 @@
 {
-  "recordedAt": "2026-11-10T12:16:54.864Z",
+  "recordedAt": "2026-11-11T01:46:57.172Z",
   "version": "0.2.0-alpha.14",
   "platform": "win32",
   "status": "passed",
-  "sourceBaseCommit": "7f31be5d30d2deff637e251be5208104eb179f9d",
+  "sourceBaseCommit": "a9f55d5f1f9640de1c0acfc70d9a0790244f99f2",
   "implementedScope": [
     "F03 root workspace write intent and actual lock",
     "F03 original UNKNOWN reconciliation and READY reuse",
     "F12 original write identity in operations, requests, MCP, UI and ZIP"
   ],
   "core": {
-    "recordedAt": "2026-11-10T11:05:59.461Z",
+    "recordedAt": "2026-11-10T13:06:21.983Z",
     "version": "0.2.0-alpha.14",
-    "baseCommit": "7f31be5d30d2deff637e251be5208104eb179f9d",
+    "baseCommit": "a9f55d5f1f9640de1c0acfc70d9a0790244f99f2",
     "jar": {
       "path": "D:\\Projects\\多Agent研发工作台\\core\\target\\agent-workbench-core-0.2.0-alpha.14.jar",
-      "sha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
-      "size": 39213511
+      "sha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
+      "size": 39213501
     },
     "suiteCount": 26,
     "tests": 285,
@@ -34,7 +34,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "4f56b8a7fb81777497ae229665d951d8898bcfa377e1243f71c8a169dcc52db7"
+        "sha256": "cbb5dc5db8e5e02d80980809fcb8590f10fc828814a410e9c0ecd34a81e05d27"
       },
       {
         "name": "dev.agentworkbench.ExecutionStoreTest",
@@ -45,7 +45,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "5196c7c062d63b77831937dce964871ac403ddac3f97befb8595866f743a54e5"
+        "sha256": "eb7d9baa9f892bf3b4710beea0f1f1db3ade4c1fcebc9f0917fbf73e1c1f3619"
       },
       {
         "name": "dev.agentworkbench.GitWorkspaceTest",
@@ -56,7 +56,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "917a0cc02e48e083076575173ffb2d0097c721ed70626bbd72db796e5675981c"
+        "sha256": "d159e1066639b817580bafcdaf86c3749d119b20398fabdfc3ed0c19b773fd75"
       },
       {
         "name": "dev.agentworkbench.LocalAccessFilterTest",
@@ -67,7 +67,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "ccba2f66199d8529b08ef93c7bc0bfdca9b8fe6a7a6e54b05416b95192ed4c45"
+        "sha256": "90e15994fa2fe5adecbe1acb525d3060fcd9f7284f7ea32268d8daddcd3ed441"
       },
       {
         "name": "dev.agentworkbench.ManagedProcessLedgerTest",
@@ -78,7 +78,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "9979da24c2a7638b832a4a044e40ed580d1092ebf74f242ce2a4bd894a9069c6"
+        "sha256": "41ab6190b4dfd32784ebb360982c4a622be74824335574786bc04cdc9ab3aec4"
       },
       {
         "name": "dev.agentworkbench.mcp.McpIntegrationTest",
@@ -89,7 +89,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "4843e899c60055f57187f027e2875cd3f5d0426178424d1c234d6f60e51fa399"
+        "sha256": "136c7d28a2d7e321a0f70778c4121fd641d98b314af5d59ae6de8f88619306a2"
       },
       {
         "name": "dev.agentworkbench.ModelRequestStoreTest",
@@ -100,7 +100,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "b12a0ec6d566aba1d47a60109bac4bbf779fcf86d0b850d82b9f485e1dc7a340"
+        "sha256": "7564287111e01c072b68f10acd4a0905d3193bcffdf582d362cfae6d4cc78ab7"
       },
       {
         "name": "dev.agentworkbench.PlanAndPolicyTest",
@@ -111,7 +111,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "53b82bf0526d056f155846bab220a1e403cb30331bf5637c40f4325c5089f8c8"
+        "sha256": "b01ceaea469e2cf24322de64ff5eb3e30c08114c907c446c03e4a75d19c31043"
       },
       {
         "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
@@ -122,7 +122,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "a685d01447e63fa2f2536c906d41847f507b2156348352723ac3e86c57fc57e0"
+        "sha256": "8691743c6c36333b9153a2a1af18f77f9220e8a05076792cb30db0630e109e5b"
       },
       {
         "name": "dev.agentworkbench.RootDispatchEngineTest",
@@ -133,7 +133,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "e45442c0a908c68d66d9a5a4bb22e376faf123aedd2748a2be68c46974c91121"
+        "sha256": "cf2789dda45ca86ebaf07a84ccc45a005a8933e002ad3811fcaf1282c14f85fc"
       },
       {
         "name": "dev.agentworkbench.runtime.WorkspaceWriteGuardTest",
@@ -144,7 +144,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "28eab056c714cfede46f068042ed5419b5e65d464db41dff2b095415d9bfac71"
+        "sha256": "549835676f0e02a0209fe360939ce349048dda40136c2f72a10ed16291ec064a"
       },
       {
         "name": "dev.agentworkbench.RuntimeDelegationTest",
@@ -155,7 +155,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "42b1dd0319aa0173fdd916aa6d80f3d3d632a5801d980b347c960fb4ed47d86f"
+        "sha256": "03cd781da4b9ea7ad45ec98de00dbb20e52a30f59f6daa8b238c96d09c9f9165"
       },
       {
         "name": "dev.agentworkbench.RuntimeIntegrationTest",
@@ -166,7 +166,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "fe68fde92bba9819cae80adfa87e0313f814a9737faed44fa09045dbe7da7023"
+        "sha256": "19dd08f4d992512ba62434c648c6ba10661db895e7019598dab90620d9acf797"
       },
       {
         "name": "dev.agentworkbench.SessionStoreTest",
@@ -177,7 +177,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "c7583f4cdff10198be2759101b6a0961b85c39911fcee32cd996b810300f410e"
+        "sha256": "b84319a5bf11a360d4bd1a65c3572bad2f27a99683b87f155c8efe7cd219ea03"
       },
       {
         "name": "dev.agentworkbench.TaskDispatchQueueTest",
@@ -188,7 +188,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "4d94ea93e44d29e05e0e43a53110db700b197ee3a55105fdb4bacdc5f1f6c0e7"
+        "sha256": "c9fd6ba26dd4fdd880d83783de5b8e53b27770853ecf4a3e48e91baf2463bb3d"
       },
       {
         "name": "dev.agentworkbench.TeamExecutionTest",
@@ -199,7 +199,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "56b9dfeba65ccb5eaf073c299bed54e9c891bdad0b0e1eaa61a4b637dfe4f44b"
+        "sha256": "3af659147ad9f8058661de215d0fd5d7b82d21234e37831a39c5b70b4fc8ae77"
       },
       {
         "name": "dev.agentworkbench.TeamRecordsTest",
@@ -210,7 +210,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "89f4030c8e97bd5a69d72ef521478a911b007232ffaeac5c262e51dbfc658288"
+        "sha256": "8648872cbe0bb7703bded71f2e36102b75362f07117d649c1adcac2330d3b4da"
       },
       {
         "name": "dev.agentworkbench.WindowsProcessSnapshotTest",
@@ -221,7 +221,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "0bed889fe955a2d47c1c972d01f23691c549ccb7ec8c2f7122c5f23a9c48bae9"
+        "sha256": "271d8347219a9a09405e4d6e0221f205b539d9ba0a97227472fd3b333a594566"
       },
       {
         "name": "dev.agentworkbench.WorkbenchEngineTest",
@@ -232,7 +232,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "4169615177ec0239554214621a3d7fe79b40d8df82e3e3045583203a5be1d2bf"
+        "sha256": "b696219f47c0d1e3fbe8fe09cf49dbc2c1ddf9d917110d186176c4709a770c25"
       },
       {
         "name": "dev.agentworkbench.WorkerLeaseTest",
@@ -243,7 +243,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "85321bc10b2c60db47d93e11d7f24b5f7e93ee7403b83bd1b5fa7cde56cc95c3"
+        "sha256": "b505f017c46797fe3e56ac9bdc03ca4a88785a6059f3f186aeb54ac1c6b787fe"
       },
       {
         "name": "dev.agentworkbench.WorkerProcessTest",
@@ -254,7 +254,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "62cd38aa08db9875df785194cc8e81357ffe1cada377f689128eb8203039f317"
+        "sha256": "ff71e350b8f41652345eaf932dcadbeb4227bdf59011ae10f977fa647a90f783"
       },
       {
         "name": "dev.agentworkbench.WorkerRpcTest",
@@ -265,7 +265,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "363b1a74e653134e0a0c7a265f53382d6d4e52df80a329db6e2ed64d4c2d6755"
+        "sha256": "59d708d17a7debd237f9e226b62e4654c15c5861542d657e3bfa6a51cb791e7f"
       },
       {
         "name": "dev.agentworkbench.WorkerWireTest",
@@ -276,7 +276,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "8673dddc9b709e865f33e4308297241d545a17eff654a2c59c3e58582d8b5475"
+        "sha256": "f29863e33c41da114301da620cce07b69d6f7c830e6f4e72ad4a8c6d23d3d914"
       },
       {
         "name": "dev.agentworkbench.WorkspaceSelectionEngineTest",
@@ -287,7 +287,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "3628088ebade95ce1ff74f08b46c7809a487d7dec3c20065e3c97bc64ad184bb"
+        "sha256": "fec06260c56d675e375faa2f860b4dfe5ba39345982220a99c9fdacabb109b46"
       },
       {
         "name": "dev.agentworkbench.WorkspaceWriteEngineTest",
@@ -298,7 +298,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "c98c9b924a07d69e5b3d104935dda03e01fc3caca0772132d876f346167f0ada"
+        "sha256": "482d791741ba702f6867d17f56ebc6bf342a31252d9364030af6cf05e3fc210d"
       },
       {
         "name": "dev.agentworkbench.WorkspaceWriteLedgerTest",
@@ -309,7 +309,7 @@
         "parallelism": "2",
         "maxPoolSize": "2",
         "javaVersion": "21.0.13",
-        "sha256": "6bccad243d74517d511ce103fcd659637b2073886648f5dfe143c2881d037e73"
+        "sha256": "bb273fa6e87914b92dcfb898461daa925d3a43c428e38452c19e1f795217b8a6"
       }
     ],
     "sourceHashes": [
@@ -579,7 +579,7 @@
       },
       {
         "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
-        "sha256": "38f00dc09eea84bc3f9cc372885101743e12fc1b1e303e5850414896386c51d5"
+        "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
       },
       {
         "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
@@ -898,62 +898,62 @@
     "checks": 22,
     "modelCalls": 26,
     "coreStarts": 5,
-    "originalIdentitiesIndependentlyStopped": 1447,
+    "originalIdentitiesIndependentlyStopped": 1379,
     "processCoverage": "OBSERVED_ONLY",
     "automaticReplay": false,
     "faults": [
       {
         "strategy": "CLONE",
         "window": "grant",
-        "originalWriterId": "4ef8550a-7508-4bfd-94e9-7263831a04e6",
-        "recoveredWriterId": "398d6e23-b6a3-4b07-acdb-86593db371a9",
+        "originalWriterId": "934ffe22-1260-48ee-8c38-bc3cd92e9ae9",
+        "recoveredWriterId": "fbbc1c69-46f5-48bb-8acb-01bc70ca0558",
         "originalBudget": 0,
         "finalBudget": 4,
-        "originalReadyOwner": "f411a2ce-77b8-4493-b134-d91e27a0aa2b",
-        "recoveredReadyOwner": "f411a2ce-77b8-4493-b134-d91e27a0aa2b",
-        "actualZipSha256": "16ce1d2dfa54889e8bee263543c422a634c5010f3dfe5e830940cb67a9d62575"
+        "originalReadyOwner": "8b75afef-63a7-4070-9a67-3402fb6bc8a0",
+        "recoveredReadyOwner": "8b75afef-63a7-4070-9a67-3402fb6bc8a0",
+        "actualZipSha256": "d93794df7c42d9998e1f036c22a23d816097bcdcbdab82d90f7b1ca084801fc3"
       },
       {
         "strategy": "CLONE",
         "window": "release",
-        "originalWriterId": "beed8278-a1aa-487b-8822-41cb578718a4",
-        "recoveredWriterId": "2f6520be-1535-4ca9-9fc4-9e58954b95a6",
+        "originalWriterId": "d304ccf0-93ce-4bcc-bc84-58f96a3509df",
+        "recoveredWriterId": "39050f22-b407-4034-a3be-0d736a32cf6a",
         "originalBudget": 4,
         "finalBudget": 4,
-        "originalReadyOwner": "905da361-490d-4aef-b681-83533f2d5d37",
-        "recoveredReadyOwner": "905da361-490d-4aef-b681-83533f2d5d37",
-        "actualZipSha256": "1146fa502322cd61f599b3b6885bd241eb88b03294ed5051b56ebf048d692507"
+        "originalReadyOwner": "9ba35690-b7b1-4383-8cea-40d4ec108cb9",
+        "recoveredReadyOwner": "9ba35690-b7b1-4383-8cea-40d4ec108cb9",
+        "actualZipSha256": "2f4c16e52c47b6974d5a539027db81799f660dbad1311e4dde6f7bf2615bb56c"
       },
       {
         "strategy": "WORKTREE",
         "window": "grant",
-        "originalWriterId": "166440f2-60f9-482e-a95a-ed07f3fca4fd",
-        "recoveredWriterId": "203d8234-b22f-4372-84a6-83d676ab5e39",
+        "originalWriterId": "4983ae84-1a84-4a00-bedc-66a1d9fce58a",
+        "recoveredWriterId": "07f39d58-56ec-4017-8d8c-01d008670227",
         "originalBudget": 0,
         "finalBudget": 4,
-        "originalReadyOwner": "c1014780-b7d7-4777-9a69-a9d5aa291f6b",
-        "recoveredReadyOwner": "c1014780-b7d7-4777-9a69-a9d5aa291f6b",
-        "actualZipSha256": "bf78c1995e04219f012f4b37b03a4a53e7efbe7ca003f6a0bcd1343516da8fb1"
+        "originalReadyOwner": "47b09237-5690-45d1-b79f-515f23beb702",
+        "recoveredReadyOwner": "47b09237-5690-45d1-b79f-515f23beb702",
+        "actualZipSha256": "730ec3c1e25c6ba5fd21554c8dc856ba35eafec71df8eb4f01112eea2d8f3f06"
       },
       {
         "strategy": "WORKTREE",
         "window": "release",
-        "originalWriterId": "2f040cd0-a804-4f82-964b-7f34d7c279fb",
-        "recoveredWriterId": "834f830f-6bb9-4950-9509-66e9692a59cd",
+        "originalWriterId": "f7ecccf0-bf8d-46d8-96f9-d4e664f77eda",
+        "recoveredWriterId": "77625969-f951-4d2c-ba38-e6aa5cddcb34",
         "originalBudget": 4,
         "finalBudget": 4,
-        "originalReadyOwner": "a83de124-22df-44ae-af58-7e3ce56527d7",
-        "recoveredReadyOwner": "a83de124-22df-44ae-af58-7e3ce56527d7",
-        "actualZipSha256": "15b8d5d0b8bcf4db21971229f08b77a0f68ab595f4d37d71e4686068dae66c67"
+        "originalReadyOwner": "b0647124-f4f4-4298-83e3-4a78a52e709f",
+        "recoveredReadyOwner": "b0647124-f4f4-4298-83e3-4a78a52e709f",
+        "actualZipSha256": "d48f75540842c56fff28386ddc71e350f1b669c8050b7a0241ca0434839b98e1"
       }
     ],
-    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\workspace-writes-pw8H8w\\reports",
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\workspace-writes-gkrvLx\\reports",
     "fixture": {
       "version": "0.2.0-alpha.14",
       "fixture": "ACTUAL_JAR_WORKSPACE_WRITES_WITH_SQLITE_RECEIPT_FAULTS",
       "productionEntry": "JarLauncher",
       "jar": "D:\\Projects\\多Agent研发工作台\\core\\target\\agent-workbench-core-0.2.0-alpha.14.jar",
-      "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+      "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
       "scriptSha256": "dfc945e40832e86b2a9e63068a8e378205f07f24586adb3d516294cfc2dc7d17",
       "productionWebHashes": [
         {
@@ -1022,7 +1022,7 @@
         },
         {
           "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
-          "sha256": "374cb1a88ee8a9e31d94bb6ec24495d7f58491c54ea41d9664e41e4c00cb52ed"
+          "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
         },
         {
           "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
@@ -1061,18 +1061,18 @@
   },
   "releaseGates": [
     {
-      "file": ".runtime/alpha14-final-core-evidence/workspace-write-release-gate-2687b849-65e2-4040-ba64-4703f84ca936/release-gate-pause.json",
-      "sha256": "3ad7e9d60e3a4233ab304c6495256917f8fc7a0ff0e0f0f569fcbd83c5b8e67a",
-      "writerId": "b6f1a90b-80e5-406f-ad8b-4e9937bf322b",
+      "file": ".runtime/alpha14-final-core-evidence/workspace-write-release-gate-e80bf5e1-6f12-4797-97e0-3518385d6de6/release-gate-cancel.json",
+      "sha256": "7889a2462ef1815cba781345d6f9902b308f28843f15e21318afbf5a180990f7",
+      "writerId": "8f650d48-043f-498b-95f6-ac800caf7ffc",
       "originalHeartbeatSequence": 6,
       "observedHeartbeatSequence": 7,
       "storeMonitorHeld": false,
       "originalWorkerStopped": true
     },
     {
-      "file": ".runtime/alpha14-final-core-evidence/workspace-write-release-gate-69c5080a-cac6-4cca-8b55-1c3b1e9c774c/release-gate-cancel.json",
-      "sha256": "cfb1959911dc57c208873c75f2cd3e45d16a849de73c56c2e52552d4906c6dd4",
-      "writerId": "b96e621d-2934-4430-8e02-12422dd7b3f3",
+      "file": ".runtime/alpha14-final-core-evidence/workspace-write-release-gate-f110d409-8210-4b70-b6fd-9a885735e90f/release-gate-pause.json",
+      "sha256": "2c1c4eeae104eed422dc70f4014d6d58985c84f9897df4626de73f6460e98a21",
+      "writerId": "23327ce0-4d58-43d1-9307-484c16c0283c",
       "originalHeartbeatSequence": 6,
       "observedHeartbeatSequence": 7,
       "storeMonitorHeld": false,
@@ -1080,13 +1080,13 @@
     }
   ],
   "bundledWriter": {
-    "recordedAt": "2026-11-10T12:10:09.479Z",
+    "recordedAt": "2026-11-11T01:46:05.976Z",
     "version": "0.2.0-alpha.14",
     "platform": "win32",
     "status": "passed",
     "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
-    "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
-    "packagedJarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+    "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
+    "packagedJarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
     "packagedJava": "D:\\Projects\\多Agent研发工作台\\release\\win-unpacked\\resources\\jre\\bin\\java.exe",
     "packagedJavaSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
     "javaVersion": "21.0.13",
@@ -1145,7 +1145,7 @@
       },
       {
         "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
-        "sha256": "374cb1a88ee8a9e31d94bb6ec24495d7f58491c54ea41d9664e41e4c00cb52ed"
+        "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
       },
       {
         "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
@@ -1190,25 +1190,25 @@
         ]
       }
     ],
-    "nativeFileKey": "WINDOWS:86ca0064ca0052bb:15f50900000001000000000000000000",
-    "originalPid": 57836,
-    "originalProcessStartedAt": "2026-11-10T12:10:07.395Z",
+    "nativeFileKey": "WINDOWS:86ca0064ca0052bb:3d070a00000001000000000000000000",
+    "originalPid": 40640,
+    "originalProcessStartedAt": "2026-11-11T01:46:03.862Z",
     "originalStopped": true,
     "releaseDuringBorrowRejected": true,
     "lockAvailableAfterRelease": true,
     "windowsNativeProcessSnapshotApplicable": true,
     "windowsNativeProcessSnapshotVerified": true,
-    "nativeProcessBirth": "2026-11-10T12:10:07.395Z",
-    "nativeProcessSnapshotCount": 507,
+    "nativeProcessBirth": "2026-11-11T01:46:03.862Z",
+    "nativeProcessSnapshotCount": 393,
     "probeOutputEncoding": "UTF-8",
     "schedulerParallelism": 2,
     "schedulerMaxPoolSize": 2,
-    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-7zpn2O"
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-SmmhPr"
   },
   "workspace": {
     "tests": 15,
     "originalIdentitiesIndependentlyStopped": 52,
-    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\workspace-selection-OOWatR\\reports"
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\workspace-selection-II6ftK\\reports"
   },
   "protocol": {
     "tests": 29
@@ -1216,15 +1216,15 @@
   "recovery": {
     "tests": 11,
     "originalIdentitiesIndependentlyStopped": 2,
-    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\process-recovery-9kzxtn"
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\process-recovery-b9dICW"
   },
   "dispatch": {
     "tests": 13,
-    "originalIdentitiesIndependentlyStopped": 53,
-    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\dispatch-queue-JvU8TF\\reports"
+    "originalIdentitiesIndependentlyStopped": 54,
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\dispatch-queue-sT2IvD\\reports"
   },
   "standalone": {
-    "date": "2026-11-10T11:49:21.542Z",
+    "date": "2026-11-11T01:45:22.216Z",
     "version": "0.2.0-alpha.14",
     "platform": "win32",
     "coreIndependentOfWebAndNpm": true,
@@ -1241,12 +1241,12 @@
     "desktopExitPreservesCore": true,
     "clientExitPreservesRunningTask": true,
     "modelRequestsBeforeAndAfterReconnect": 1,
-    "childRequestPreservedOnReconnect": "15db77a9-21fd-466d-8a4b-571fb632e7ea",
-    "workerLeasePreservedOnReconnect": "dc3ddf5d-fcd6-41e3-8087-7d0225e26416",
-    "workerId": "b17b3360-c933-4348-9ff1-2d383d1a7c1f",
+    "childRequestPreservedOnReconnect": "1d298d20-5105-463e-8f2c-c942c6ada993",
+    "workerLeasePreservedOnReconnect": "9d380b54-70ce-4789-ae41-2d793f68f85c",
+    "workerId": "eddfc402-8f5e-4309-9447-00fcf4d1372b",
     "workerEpoch": 1,
-    "workerPid": 65452,
-    "repositoryBindingId": "113434ee-f318-4f88-a04f-44fa0c3862a2",
+    "workerPid": 30068,
+    "repositoryBindingId": "8b4af825-2a5e-41ea-919a-ebfc09cb5604",
     "workerReceiptsVerified": 13,
     "parentWaitReleasesModelCapacity": true,
     "teamDependencyAdoptionThroughProxy": true,
@@ -1255,14 +1255,14 @@
     "teamRootCalls": 18,
     "teamChildRuns": [
       {
-        "id": "6799e6e9-388d-46df-8d69-6267db823730",
-        "agentRunId": "c97147e2-2106-439d-a0b4-43acf3e73106",
+        "id": "adbc069d-d75e-4a61-96f3-fdaa2a8bd4a9",
+        "agentRunId": "c6c678a9-e973-4cd5-9843-b9294ad5bc1f",
         "state": "SUCCEEDED",
         "integrationState": "NOT_ADOPTED"
       },
       {
-        "id": "c27cb70a-ba66-4ebf-810e-f20fb43cc692",
-        "agentRunId": "7f14dcc5-a4ad-4ec4-9f24-bcbfc83ed4cb",
+        "id": "4360d9fa-fff3-4ef5-a451-21492bdf53a7",
+        "agentRunId": "eca70888-169b-4727-8aaa-d34e339bc85b",
         "state": "SUCCEEDED",
         "integrationState": "ADOPTED"
       }
@@ -1270,11 +1270,11 @@
     "externalMcpCalls": 1,
     "pageErrors": [],
     "modelErrors": [],
-    "corePid": 62064,
+    "corePid": 39996,
     "workerDeployment": "LOCAL_PROCESS",
-    "workerProcessStartedAt": "2026-11-10T11:48:22.309Z",
+    "workerProcessStartedAt": "2026-11-11T01:44:42.145Z",
     "workerHeartbeatSource": "CHILD_PIPE",
-    "workerHeartbeatSequenceOnReconnect": 9
+    "workerHeartbeatSequenceOnReconnect": 8
   },
   "guards": {
     "tests": 17,
@@ -1316,13 +1316,13 @@
         }
       ]
     },
-    "probeEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\desktop-qa-1794311981110\\probe-classes",
+    "probeEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\desktop-qa-1794361549964\\probe-classes",
     "originalIdentitiesVerifiedStopped": 3,
     "originalProcessesStopped": true,
     "originalProcessObservations": [
       {
-        "pid": 63812,
-        "originalStartedAt": "2026-11-10T11:59:41.844Z",
+        "pid": 25656,
+        "originalStartedAt": "2026-11-11T01:45:50.786Z",
         "currentStartedAt": "",
         "alive": false,
         "matchesOriginal": false,
@@ -1331,8 +1331,8 @@
         "originalStopped": true
       },
       {
-        "pid": 61764,
-        "originalStartedAt": "2026-11-10T11:59:42.450Z",
+        "pid": 18228,
+        "originalStartedAt": "2026-11-11T01:45:53.007Z",
         "currentStartedAt": "",
         "alive": false,
         "matchesOriginal": false,
@@ -1341,8 +1341,8 @@
         "originalStopped": true
       },
       {
-        "pid": 58636,
-        "originalStartedAt": "2026-11-10T11:59:45.572Z",
+        "pid": 35988,
+        "originalStartedAt": "2026-11-11T01:45:55.570Z",
         "currentStartedAt": "",
         "alive": false,
         "matchesOriginal": false,
@@ -1354,16 +1354,16 @@
   },
   "packagedJar": {
     "file": "release/win-unpacked/resources/core/core.jar",
-    "sha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4"
+    "sha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12"
   },
   "installer": {
-    "recordedAt": "2026-11-10T12:12:13.7536974Z",
-    "version": "0.2.0-alpha.14",
+    "recordedAt": "2026-11-11T01:46:56.4314559Z",
     "file": "release/Agent Workbench Setup 0.2.0-alpha.14.exe",
-    "sha256": "83319a7159c4b0c2f684a96ab93584c8dd2b6de4e3546fb18abd10fea4162534",
-    "size": 152607831,
+    "size": 152607646,
+    "sha256": "c420568025e08536667374a841f7cf79ba71d1ba8693e7b224b178c579e4375c",
     "authenticodeStatus": "NotSigned",
-    "authenticodeMessage": "The file D:\\Projects\\多Agent研发工作台\\release\\Agent Workbench Setup 0.2.0-alpha.14.exe is not digitally signed. You cannot run this script on the current system. For more information about running scripts and setting execution policy, see about_Execution_Policies at https://go.microsoft.com/fwlink/?LinkID=135170",
+    "authenticodeStatusMessage": "The file D:\\Projects\\多Agent研发工作台\\release\\Agent Workbench Setup 0.2.0-alpha.14.exe is not digitally signed. You cannot run this script on the current system. For more information about running scripts and setting execution policy, see about_Execution_Policies at https://go.microsoft.com/fwlink/?LinkID=135170",
+    "signerSubject": null,
     "fullInstallUninstallRetested": false
   },
   "packagedAssets": {
@@ -1414,7 +1414,7 @@
   },
   "steps": {
     "workspace-writes": {
-      "file": ".runtime/alpha14-workspace-writes-artifact-usage-attempt3.json",
+      "file": ".runtime/alpha14-workspace-writes-artifact-usage-attempt4.json",
       "version": "0.2.0-alpha.14",
       "npmScript": "test:workspace-writes",
       "command": [
@@ -1422,14 +1422,14 @@
         "tools/workspace-write-smoke.mjs"
       ],
       "sourceSha256": "dfc945e40832e86b2a9e63068a8e378205f07f24586adb3d516294cfc2dc7d17",
-      "childPid": 52720,
-      "startedAt": "2026-11-10T11:06:01.936Z",
-      "endedAt": "2026-11-10T11:10:29.247Z",
+      "childPid": 60472,
+      "startedAt": "2026-11-10T13:06:22.197Z",
+      "endedAt": "2026-11-10T13:10:54.755Z",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
       "before": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1450,7 +1450,7 @@
         }
       },
       "after": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1471,10 +1471,10 @@
         }
       },
       "productionAssetsUnchanged": true,
-      "log": ".runtime/alpha14-workspace-writes-final-attempt3.log"
+      "log": ".runtime/alpha14-workspace-writes-final-attempt4.log"
     },
     "workspaces": {
-      "file": ".runtime/alpha14-workspaces-artifact-usage.json",
+      "file": ".runtime/alpha14-workspaces-artifact-usage-attempt2.json",
       "version": "0.2.0-alpha.14",
       "npmScript": "test:workspaces",
       "command": [
@@ -1482,14 +1482,14 @@
         "tools/workspace-selection-smoke.mjs"
       ],
       "sourceSha256": "9cf96f86c65876018d75264c9200a9e7ab9927bf446b4e12d85c70686583bbbf",
-      "childPid": 61784,
-      "startedAt": "2026-11-10T11:16:55.909Z",
-      "endedAt": "2026-11-10T11:20:41.360Z",
+      "childPid": 64184,
+      "startedAt": "2026-11-10T13:13:22.868Z",
+      "endedAt": "2026-11-10T13:17:55.061Z",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
       "before": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1510,7 +1510,7 @@
         }
       },
       "after": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1531,10 +1531,10 @@
         }
       },
       "productionAssetsUnchanged": true,
-      "log": ".runtime/alpha14-workspaces-final.log"
+      "log": ".runtime/alpha14-workspaces-final-attempt2.log"
     },
     "recovery": {
-      "file": ".runtime/alpha14-recovery-artifact-usage.json",
+      "file": ".runtime/alpha14-recovery-artifact-usage-attempt2.json",
       "version": "0.2.0-alpha.14",
       "npmScript": "test:recovery",
       "command": [
@@ -1542,14 +1542,14 @@
         "tools/process-recovery-smoke.mjs"
       ],
       "sourceSha256": "c1397880aaa15f4516145bf19f01daf86f1dd4d88fddbe279a694166b3d0b73b",
-      "childPid": 19852,
-      "startedAt": "2026-11-10T11:29:53.778Z",
-      "endedAt": "2026-11-10T11:31:17.180Z",
+      "childPid": 35816,
+      "startedAt": "2026-11-11T01:40:27.169Z",
+      "endedAt": "2026-11-11T01:41:17.686Z",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
       "before": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1570,7 +1570,7 @@
         }
       },
       "after": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1591,10 +1591,10 @@
         }
       },
       "productionAssetsUnchanged": true,
-      "log": ".runtime/alpha14-recovery-final.log"
+      "log": ".runtime/alpha14-recovery-final-attempt2.log"
     },
     "dispatch": {
-      "file": ".runtime/alpha14-dispatch-artifact-usage.json",
+      "file": ".runtime/alpha14-dispatch-artifact-usage-attempt2.json",
       "version": "0.2.0-alpha.14",
       "npmScript": "test:dispatch",
       "command": [
@@ -1602,14 +1602,14 @@
         "tools/dispatch-queue-smoke.mjs"
       ],
       "sourceSha256": "fceecda6c17c7ed432e8c5fa23aed3852ed25722913386dc623a3daeb4b63dda",
-      "childPid": 62456,
-      "startedAt": "2026-11-10T11:36:41.471Z",
-      "endedAt": "2026-11-10T11:39:56.180Z",
+      "childPid": 37712,
+      "startedAt": "2026-11-11T01:41:42.976Z",
+      "endedAt": "2026-11-11T01:43:37.146Z",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
       "before": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1630,7 +1630,7 @@
         }
       },
       "after": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1651,10 +1651,10 @@
         }
       },
       "productionAssetsUnchanged": true,
-      "log": ".runtime/alpha14-dispatch-final.log"
+      "log": ".runtime/alpha14-dispatch-final-attempt2.log"
     },
     "integration": {
-      "file": ".runtime/alpha14-integration-artifact-usage.json",
+      "file": ".runtime/alpha14-integration-artifact-usage-attempt2.json",
       "version": "0.2.0-alpha.14",
       "npmScript": "test:integration",
       "command": [
@@ -1662,14 +1662,14 @@
         "tools/ci-smoke.mjs"
       ],
       "sourceSha256": "6293893a62aa89492b0ba85d60b80a23db3e00cbe90d5cc0806db70c4e5f058d",
-      "childPid": 31916,
-      "startedAt": "2026-11-10T11:44:53.830Z",
-      "endedAt": "2026-11-10T11:46:50.262Z",
+      "childPid": 40540,
+      "startedAt": "2026-11-11T01:43:37.257Z",
+      "endedAt": "2026-11-11T01:44:38.879Z",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
       "before": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1690,7 +1690,7 @@
         }
       },
       "after": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1711,10 +1711,10 @@
         }
       },
       "productionAssetsUnchanged": true,
-      "log": ".runtime/alpha14-integration-final.log"
+      "log": ".runtime/alpha14-integration-final-attempt2.log"
     },
     "standalone": {
-      "file": ".runtime/alpha14-standalone-artifact-usage.json",
+      "file": ".runtime/alpha14-standalone-artifact-usage-attempt2.json",
       "version": "0.2.0-alpha.14",
       "npmScript": "test:standalone",
       "command": [
@@ -1722,14 +1722,14 @@
         "tools/standalone-smoke.mjs"
       ],
       "sourceSha256": "a064e26ee871a4bf9ef452dfbea8d82f41da7f27d3b9ba76b900bed1c918edc5",
-      "childPid": 34308,
-      "startedAt": "2026-11-10T11:48:19.653Z",
-      "endedAt": "2026-11-10T11:49:24.527Z",
+      "childPid": 36644,
+      "startedAt": "2026-11-11T01:44:39.003Z",
+      "endedAt": "2026-11-11T01:45:23.939Z",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
       "before": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1750,7 +1750,7 @@
         }
       },
       "after": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1771,10 +1771,10 @@
         }
       },
       "productionAssetsUnchanged": true,
-      "log": ".runtime/alpha14-standalone-final.log"
+      "log": ".runtime/alpha14-standalone-final-attempt2.log"
     },
     "package": {
-      "file": ".runtime/alpha14-package-artifact-usage.json",
+      "file": ".runtime/alpha14-package-artifact-usage-attempt2.json",
       "version": "0.2.0-alpha.14",
       "npmScript": "package:prepared",
       "command": [
@@ -1783,14 +1783,14 @@
         "package:prepared"
       ],
       "sourceSha256": "cadc15ff78b71d83d02eeb6f078adc91848fd030010e3a80f6980cce7e911627",
-      "childPid": 63228,
-      "startedAt": "2026-11-10T11:56:33.005Z",
-      "endedAt": "2026-11-10T11:56:58.476Z",
+      "childPid": 34132,
+      "startedAt": "2026-11-11T01:45:24.024Z",
+      "endedAt": "2026-11-11T01:45:49.407Z",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
       "before": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1811,7 +1811,7 @@
         }
       },
       "after": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1832,10 +1832,10 @@
         }
       },
       "productionAssetsUnchanged": true,
-      "log": ".runtime/alpha14-package-final.log"
+      "log": ".runtime/alpha14-package-final-attempt2.log"
     },
     "packaged": {
-      "file": ".runtime/alpha14-packaged-artifact-usage.json",
+      "file": ".runtime/alpha14-packaged-artifact-usage-attempt2.json",
       "version": "0.2.0-alpha.14",
       "npmScript": "test:packaged",
       "command": [
@@ -1843,14 +1843,14 @@
         "tools/ci-desktop.mjs"
       ],
       "sourceSha256": "f26df059c64e79a6c572dc240d72543b2366e80356c587753c2177b1f42dd5a9",
-      "childPid": 66088,
-      "startedAt": "2026-11-10T11:59:40.638Z",
-      "endedAt": "2026-11-10T11:59:57.010Z",
+      "childPid": 38644,
+      "startedAt": "2026-11-11T01:45:49.507Z",
+      "endedAt": "2026-11-11T01:46:03.517Z",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
       "before": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1871,7 +1871,7 @@
         }
       },
       "after": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1892,10 +1892,10 @@
         }
       },
       "productionAssetsUnchanged": true,
-      "log": ".runtime/alpha14-packaged-final.log"
+      "log": ".runtime/alpha14-packaged-final-attempt2.log"
     },
     "bundled-writer": {
-      "file": ".runtime/alpha14-bundled-writer-artifact-usage-attempt2.json",
+      "file": ".runtime/alpha14-bundled-writer-artifact-usage-attempt3.json",
       "version": "0.2.0-alpha.14",
       "npmScript": "test:bundled-writer",
       "command": [
@@ -1903,14 +1903,14 @@
         "tools/bundled-workspace-write-smoke.mjs"
       ],
       "sourceSha256": "ad817b76fcd922cca67139a34d15b2654e7cceb2f0ce132a723f79d5177d3f99",
-      "childPid": 58224,
-      "startedAt": "2026-11-10T12:10:07.215Z",
-      "endedAt": "2026-11-10T12:10:09.562Z",
+      "childPid": 27464,
+      "startedAt": "2026-11-11T01:46:03.697Z",
+      "endedAt": "2026-11-11T01:46:06.050Z",
       "exitCode": 0,
       "signal": null,
       "status": "passed",
       "before": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1931,7 +1931,7 @@
         }
       },
       "after": {
-        "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+        "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
         "web": [
           {
             "file": "web/dist/index.html",
@@ -1952,98 +1952,98 @@
         }
       },
       "productionAssetsUnchanged": true,
-      "log": ".runtime/alpha14-bundled-writer-final-attempt2.log"
+      "log": ".runtime/alpha14-bundled-writer-final-attempt3.log"
     }
   },
   "copied": [
     {
-      "file": ".runtime/alpha14-workspace-writes-artifact-usage-attempt3.json",
-      "sha256": "7a00c56bef2ebee94e137831fcd830c254b2c99e4fb144d887c4b89c12af9270",
+      "file": ".runtime/alpha14-workspace-writes-artifact-usage-attempt4.json",
+      "sha256": "c178fcaa27e001b98dc33abac60d1739fda7360828dde2bb46899104d06fc34f",
       "bytes": 1994
     },
     {
-      "file": ".runtime/alpha14-workspace-writes-final-attempt3.log",
-      "sha256": "3fedbc3f0ede743effe08ac018c4f9287642e0917beaeebe6006e50ba9fb438e",
+      "file": ".runtime/alpha14-workspace-writes-final-attempt4.log",
+      "sha256": "236b8edc8a19328a955377bd8cb844b9cf0e962ce9236a63b5711e8fcfc9decb",
       "bytes": 2773
     },
     {
-      "file": ".runtime/alpha14-workspaces-artifact-usage.json",
-      "sha256": "d955cf703751729d108b8b9b5b24406302290b434a22a11742631bc8b89c5650",
-      "bytes": 1977
+      "file": ".runtime/alpha14-workspaces-artifact-usage-attempt2.json",
+      "sha256": "ffb0a3b3b6da27c658b85885116f80c1b46e4ffe4681dda4868545853eeacce1",
+      "bytes": 1986
     },
     {
-      "file": ".runtime/alpha14-workspaces-final.log",
-      "sha256": "6be1c75b90288a32165fda36f24c3086c926293e7acec01a2cfa92f05153da32",
+      "file": ".runtime/alpha14-workspaces-final-attempt2.log",
+      "sha256": "66b2ab95a3b574e4789e43ee9da95410dcc451d8da311d63c40bac549c2470f7",
       "bytes": 10990
     },
     {
-      "file": ".runtime/alpha14-recovery-artifact-usage.json",
-      "sha256": "0b989a9cb7eb4901a903e40463a40ca98fa596f6e76410f054bf8c91603f533c",
-      "bytes": 1970
+      "file": ".runtime/alpha14-recovery-artifact-usage-attempt2.json",
+      "sha256": "b27de14b0421b5e3e55c6445c0d0648d7c2f1788d90f39384f63d0c6cd5d0ba0",
+      "bytes": 1979
     },
     {
-      "file": ".runtime/alpha14-recovery-final.log",
-      "sha256": "539ac9853a4cc9459e7be6f4ec2fb2db2968cb4d475ad8ca61a80d0e9145786f",
+      "file": ".runtime/alpha14-recovery-final-attempt2.log",
+      "sha256": "f84329c89b5a9202f7c1f1a3e0613f4c0c645df22d53b4cf6f8c06e46fe465cb",
       "bytes": 4172
     },
     {
-      "file": ".runtime/alpha14-dispatch-artifact-usage.json",
-      "sha256": "2b9f41bf0f6d5208582c9697a15a3ae37908ba819b76be1ca49aa9473e301633",
-      "bytes": 1968
+      "file": ".runtime/alpha14-dispatch-artifact-usage-attempt2.json",
+      "sha256": "64668d446c323f7590088fa17f9efbc0ba65824ecf5d0423ce91542f67b2e1b1",
+      "bytes": 1977
     },
     {
-      "file": ".runtime/alpha14-dispatch-final.log",
-      "sha256": "7ff7a78762f19776c2dd11cf2778e801c67b3b890d12cafd53a1d199ab3aa60f",
+      "file": ".runtime/alpha14-dispatch-final-attempt2.log",
+      "sha256": "eab040066056fde837d4d73a703cfcfad0d496d6ac4af2f01fa47f716d7bb333",
       "bytes": 5661
     },
     {
-      "file": ".runtime/alpha14-integration-artifact-usage.json",
-      "sha256": "94561dca6119f151bcbf4b46fcd7c58c9131f9c0c96b9423b9149047ddb7efaa",
-      "bytes": 1962
+      "file": ".runtime/alpha14-integration-artifact-usage-attempt2.json",
+      "sha256": "f316e5f61aa08f6c68c88ccdaa7b0cb885ef31230e997cedb6802cb9c6d9add9",
+      "bytes": 1971
     },
     {
-      "file": ".runtime/alpha14-integration-final.log",
-      "sha256": "3e5b3c36751b573fe0624220b36e3407d5f61e9ef1ea0319169f7b87c2dd898f",
+      "file": ".runtime/alpha14-integration-final-attempt2.log",
+      "sha256": "f44e7d03690c14d61da1359f2795a17d9e441b8bfe143dd23942a4885b5b888b",
       "bytes": 2050
     },
     {
-      "file": ".runtime/alpha14-standalone-artifact-usage.json",
-      "sha256": "0110cebf20a22c125616dc0b30f8c5be98f07903b3c48e0732315572030a003b",
-      "bytes": 1968
+      "file": ".runtime/alpha14-standalone-artifact-usage-attempt2.json",
+      "sha256": "5a72a956d0a5a4020914cb3ecf67fd41cea5f0799d9f25b78afd01917a4bc72f",
+      "bytes": 1977
     },
     {
-      "file": ".runtime/alpha14-standalone-final.log",
-      "sha256": "7cf046d8a8fe2052e9b1fc77a086ed19b0e9f3355c4e24efc097e86beb3d6e93",
+      "file": ".runtime/alpha14-standalone-final-attempt2.log",
+      "sha256": "ab39745e9634625601857c8e47be88cc2e5871bc6116ee65a1b4a6ff7ba23def",
       "bytes": 1874
     },
     {
-      "file": ".runtime/alpha14-package-artifact-usage.json",
-      "sha256": "b4488e39e303fbbf6a4c5de2dca8319037578d8d4d0992badae683438fe503ea",
-      "bytes": 1980
+      "file": ".runtime/alpha14-package-artifact-usage-attempt2.json",
+      "sha256": "8c3c06b6789d98cf02fc8d58b8170d8297bb7afdcfd5f994d0d788023f96e50a",
+      "bytes": 1989
     },
     {
-      "file": ".runtime/alpha14-package-final.log",
-      "sha256": "659933a6849f831d022d58f10da47d4e10a593165d1a4cb66c35e1ba9fbf91f7",
+      "file": ".runtime/alpha14-package-final-attempt2.log",
+      "sha256": "3238ab2a6849d425fe9dbe007eda43e598fd43a4df85a872df779907fdc08edf",
       "bytes": 1634
     },
     {
-      "file": ".runtime/alpha14-packaged-artifact-usage.json",
-      "sha256": "c07f6b6fbf2daef02f4176fff9e21e1f6adfb3c7186eda2980a06c39c1c28eab",
-      "bytes": 1958
+      "file": ".runtime/alpha14-packaged-artifact-usage-attempt2.json",
+      "sha256": "71a96f9e58177f61a08613a5d5937e839842f839df116f239c995a9af42551c0",
+      "bytes": 1967
     },
     {
-      "file": ".runtime/alpha14-packaged-final.log",
-      "sha256": "894f18edc94f68b4b5007bb4f7e82914d95d78a8fa6e4a8a78780aa6a113453c",
-      "bytes": 1948
+      "file": ".runtime/alpha14-packaged-final-attempt2.log",
+      "sha256": "85c278e8228a79558066f6b2de5b43917f46981c6638cdee1e93578a2e055ef4",
+      "bytes": 1947
     },
     {
-      "file": ".runtime/alpha14-bundled-writer-artifact-usage-attempt2.json",
-      "sha256": "5bad95b98deae7d4c192235ae8d764a439301c340d7135bf87b406dbff948cd3",
+      "file": ".runtime/alpha14-bundled-writer-artifact-usage-attempt3.json",
+      "sha256": "729e677f5a11016f4e2565d4b11232d018f1ccdf9c4817943e389587a173370f",
       "bytes": 1998
     },
     {
-      "file": ".runtime/alpha14-bundled-writer-final-attempt2.log",
-      "sha256": "f759709cc9299abcebdb6668661baa97870a6392babd7bf87714b08727ee7d0d",
+      "file": ".runtime/alpha14-bundled-writer-final-attempt3.log",
+      "sha256": "d7a45ebdcc4639fda7e7b7969c488d8d663ab26f24209013d0460c8d5cd2e9c7",
       "bytes": 322
     },
     {
@@ -2053,53 +2053,53 @@
     },
     {
       "file": ".runtime/alpha14-installer-identity.json",
-      "sha256": "723b42b0f25161ca7cf8a3eaadf38c521ec9d35512b5fc146b753adebd3e20f2",
+      "sha256": "97d6c55d1d559fad1c6b3ef99b75e85fdac93651fdc199900fd87a0c4c05653a",
       "bytes": 726
     },
     {
       "file": "docs/qa/smoke-win32.json",
-      "sha256": "5aaafb6911e34a58281dc077011540cb67d8ccbab8385671ce87435da93afedd",
-      "bytes": 36119
+      "sha256": "2057a1d68e55c5782154653168456a42377702a0a429caed2bd740b2f3f5fbeb",
+      "bytes": 36113
     },
     {
       "file": "docs/qa/process-recovery-win32.json",
-      "sha256": "d7ca7078d88f23fbcdef2640e85a721cbace0ac19d61b2537295c2ca08bf03a7",
+      "sha256": "b225269ea79f849a1f5784010698f3c0204cb19d573316b53323f5b17b6e1265",
       "bytes": 3387
     },
     {
       "file": "docs/qa/dispatch-queue-win32.json",
-      "sha256": "869ec3a2083799925779a2e65f81cedb5025361283e4eab4d5620fa51e48a04f",
+      "sha256": "98d391c753aa8c4f6da2fc4146c585edb728913c6e4b15a1812fd19bed8a02da",
       "bytes": 4568
     },
     {
       "file": "docs/qa/workspace-selection-win32.json",
-      "sha256": "331bfa7e33693662588db0da75b2227045760b4b28ff826ae0e8f21805e49976",
+      "sha256": "80d17f06b3f3af0cfff0692301be9b3f0c29215e51522d304fdd6738c90a48ea",
       "bytes": 9140
     },
     {
       "file": "docs/qa/workspace-writes-win32.json",
-      "sha256": "5faf1225c4ababfaab06dbe613fd251afba3f40c53264eefcaa31348cc1ec809",
-      "bytes": 144006
+      "sha256": "04486329263535894ecd35913f5287678508dbb09a952a79830cb7b219bc3c9a",
+      "bytes": 138140
     },
     {
       "file": "docs/qa/standalone-win32.json",
-      "sha256": "7cf046d8a8fe2052e9b1fc77a086ed19b0e9f3355c4e24efc097e86beb3d6e93",
+      "sha256": "ab39745e9634625601857c8e47be88cc2e5871bc6116ee65a1b4a6ff7ba23def",
       "bytes": 1874
     },
     {
       "file": "docs/qa/desktop-packaged-win32.json",
-      "sha256": "cb9768b4220dd2deb3d66d7b02fd74247a7c8a2d20ce07bb9aece1e239384c4f",
+      "sha256": "8a095eb71df9307028325fc7b7c38ee98b670658d3d7c137095e5d70e8080495",
       "bytes": 2147
     },
     {
       "file": "docs/qa/bundled-workspace-writer-win32.json",
-      "sha256": "8757fed7421b49630f566e5c97bfe37d9a8eb919f64f700cd00b729370ecb237",
+      "sha256": "f47f20e729852b6ee6d7217ecdca1cd0e502c5be4a1e58b7b697a2bbae445d86",
       "bytes": 4795
     },
     {
       "file": "docs/qa/alpha14-source-audit-win32.json",
-      "sha256": "18421775296485bdddcdb8da4015928fa85ed6fc15551e373afdaff7809e1c97",
-      "bytes": 36197
+      "sha256": "e93ef70990cf20efc7a10f53852a93b0f9e18c952041586e54c667279ddefaf3",
+      "bytes": 38589
     },
     {
       "file": "web/qa/workspace-writes-desktop.png",

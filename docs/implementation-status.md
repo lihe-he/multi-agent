@@ -1,6 +1,6 @@
 # 实施与验收记录
 
-产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-10。
+产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-11。
 
 ## 0.2.0-alpha.14 开发迭代
 
@@ -8,18 +8,20 @@
 
 | 检查 | 当前准确状态 |
 | --- | --- |
-| 干净核心构建 | 加入 Windows 受限 PID 出生读取回退后的第四轮 clean verify 成功：26 套、285 项中 282 通过、3 项条件跳过，0失败/错误，全部报告载体2 / 2。最终 Jar 39213511 字节、SHA-256 `ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4`；完整源码/类/报告在 `.runtime/alpha14-final-core-evidence/`，第三轮旧 Jar 和278项报告保存在 `.runtime/alpha14-pre-native-process-core-evidence/` |
+| 干净核心构建 | POSIX 文件描述符修订后的第五轮 clean verify 成功：26 套、285 项中 282 通过、3 项条件跳过，0失败/错误，全部报告载体2 / 2。最终 Jar 39213501 字节、SHA-256 `f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12`；准确源码/类/报告在 `.runtime/alpha14-final-core-evidence/`，修订前285项产物在 `.runtime/alpha14-pre-posix-core-evidence/`，第三轮278项产物仍在 `.runtime/alpha14-pre-native-process-core-evidence/` |
 | 路径与进程兼容 | 74项定向中Ledger15、ManagedProcessLedger16、MCP23和WorkspaceWriteEngine8通过；两项团队夹具边界失败已保留，原两个期限复验2 / 2通过 |
 | 真实释放与容量 | 旧实现两项释放心跳阻塞真实复现继续保留；最终完整测试两门心跳分别 6→7、6→7，store monitor 未持有，原RPC读管道，暂停/取消、原锁释放、ZIP及原Worker停止均核对。原八秒容量屏障在完整团队12项中通过；原释放与自然/未确认后台子进程边界定向5 / 5通过 |
-| Web、最终Jar与发行物 | TypeScript/生产构建通过，三轮全量 UI 均 69 / 69，最后桌面与430px长卡片已目视检查。准确最终 Jar 写入保护 22 项、5 次核心启动、26 次模型请求通过；工作区 15、恢复 11、队列 13、协议29、独立浏览器/附加桌面、打包启动、内置JRE的实际授予/借用/释放及系统进程快照均通过。17 项守卫通过，安装包 152607831 字节、SHA-256 `83319a7159c4b0c2f684a96ab93584c8dd2b6de4e3546fb18abd10fea4162534`，签名状态 NotSigned，本轮未重测完整安装/卸载 |
+| Web、最终Jar与发行物 | Web源码和生产产物摘要与已通过的69 / 69全量UI一致，原桌面与430px长卡片目视记录保留。修订后的准确最终Jar写入保护22项、5次核心启动、26次模型请求通过；工作区15、恢复11、队列13、协议29、独立浏览器/附加桌面、打包启动及内置JRE的实际授予/借用/释放和系统进程快照均通过。17项未修改守卫的原通过记录已核对；新安装包152607646字节、SHA-256 `c420568025e08536667374a841f7cf79ba71d1ba8693e7b224b178c579e4375c`，签名状态NotSigned，本轮未重测完整安装/卸载 |
 | 源码审查 | 27 份新增/受改Java的 95 条原注释保留，新Javadoc为标准多行；版本、脚本语法和whitespace通过，最终Jar全部class匹配实际编译输出。验收命令均保存脚本SHA、退出码和前后Jar/Web/config摘要；九条顺序步骤均 passed，完整本机证据在 `.runtime/alpha14-final-local-qa/`，正式汇总见[alpha.14验证](./qa/alpha14-validation-win32.json) |
-| CI | 已接入实际写入四故障窗口、两份释放心跳门、一次编译进程夹具、准确Jar/Web和内置JRE原生验证，整条期限50分钟。准确alpha.14提交的三端终态与实际证据归档待提交推送后核验；本机通过不代替CI |
+| CI | 初始提交 `a9f55d5f1f9640de1c0acfc70d9a0790244f99f2` 的 [run 42815606757](https://github.com/lihe-he/multi-agent/actions/runs/42815606757) 已终态failure：Windows整条成功，macOS/Ubuntu各有4项实际锁竞争/释放门失败。修订依据固定Temurin FileLock文档与fcntl实现，保留原断言、失败日志和归档。修订提交的准确三端终态与实际证据待推送后核验；整条期限仍为50分钟 |
 
 SQLite schema 为8，公开API/实体/Worker帧仍为1；原alpha.13的Jar、QA和准确CI保留原版本。第二轮WORKTREE释放夹具在Node基线返回0后发现未确认原子进程而保留UNKNOWN，尚未进入释放故障窗口；独立八次PowerShell/Node自然退出观察未复现，原因仍未确定，后续定向成功不回写原失败。当前目录、跨核心现场协调、已读版本保护、完整归档恢复及其余F01–F21/M0–M3仍继续实施，完整目标未完成。
 
 Windows PID 复用回归定向23项中22通过、1项当时无受限候选而跳过。缺失Java句柄出生使用实际原生快照、快照失败继续UNKNOWN两项强制条件均通过。独立WMI与原生快照的527条前后稳定出生记录相同；当时受限候选为0，特定受限对照未执行。原夹具先完成22项业务与全部独立停止报告，重复逐JVM清理被主动中止，命令保留失败；后续原1266个身份批量补核对通过。第二轮原PID63096被LogonUI复用，新出生比原记录晚约47秒；该轮真实恢复失败与未确认记录保留。最终第三轮写入验收退出0，独立确认 1447 个原PID/出生停止，覆盖仍为OBSERVED_ONLY。
 
 内置Java首次验收的锁已释放、原探针已停止，但默认GBK标准输出按UTF-8解码后，中文javaHome路径核对失败，原命令保留exit1。显式设置UTF-8标准输出和错误输出后的第二轮通过，最终Jar、Web和配置字节未变化；原失败、独立停止和一次PowerShell日期转换造成的辅助核验输入失败分别保存在 `.runtime/alpha14-bundled-writer-failure1/`。本轮未重测完整安装/卸载。
+
+2026-11-11，POSIX修订后的本机九组顺序验收均退出0，前后准确Jar/Web/config及命令源码摘要相同；写入验收独立确认1379个原PID/出生身份停止，进程覆盖仍为OBSERVED_ONLY。两份原释放门的心跳均为6→7，原第二JVM竞争、暂停/取消及完整UNKNOWN历史继续核对。修订前九步骤、安装器和app.asar保存在 `.runtime/alpha14-pre-posix-local-qa/`；新归档为 `.runtime/alpha14-final-local-qa/`，本轮实际客户端截图另存 `.runtime/alpha14-posix-acceptance-screenshots/`，无关历史截图恢复原字节。
 
 ## 0.2.0-alpha.13 开发迭代
 

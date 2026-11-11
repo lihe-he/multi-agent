@@ -76,7 +76,7 @@ public final class WorkspaceWriteGuard implements AutoCloseable {
                 ByteBuffer content = ByteBuffer.wrap(marker.getBytes(StandardCharsets.UTF_8));
                 while (content.hasRemaining()) channel.write(content);
                 channel.force(true);
-                requireMarker(channel, lockPath, marker);
+                requireMarker(channel, lockPath, marker, originalKey);
                 if (!key.equals(fileKey(lockPath))) throw new IllegalArgumentException("原文件描述符与实际锁路径不一致");
                 Map<String, Object> record = obj("schemaVersion", 1, "state", "HELD", "identity", identity, "lockPath", lockPath.toString(), "manifestPath", manifest.toString(),
                     "fileKey", key, "lockMarker", marker, "executorPid", ProcessHandle.current().pid(), "processStartedAt", birth(), "lockValid", true, "grantedAt", now());
@@ -135,7 +135,7 @@ public final class WorkspaceWriteGuard implements AutoCloseable {
                     return receipt(identity, obj("state", "FOREIGN_PRESERVED", "originalRecord", record), true);
                 }
                 if (!record.isEmpty() && !str(record, "fileKey").isBlank() && !str(record, "fileKey").equals(fileKey(lockPath))) throw new IllegalArgumentException("原写入锁文件身份已变化，不能确认释放");
-                if (!str(record, "lockMarker").isBlank()) requireMarker(channel, lockPath, str(record, "lockMarker"));
+                if (!str(record, "lockMarker").isBlank()) requireMarker(channel, lockPath, str(record, "lockMarker"), originalKey);
                 if (List.of("RELEASED", "RECONCILED").contains(str(record, "state"))) return receipt(identity, record, false);
                 if (note.isBlank()) throw new IllegalArgumentException("原写入归属的结束回执缺失，需要核对说明");
                 requireOriginalStopped(identity);
@@ -156,7 +156,7 @@ public final class WorkspaceWriteGuard implements AutoCloseable {
     private void require(Holder holder, Map<String, Object> identity) throws IOException {
         if (!same(holder.identity, identity) || !holder.lock.isValid() || !holder.channel.isOpen() || !holder.fileKey.equals(fileKey(holder.parent.resolve("writer.lock")))
                 || !holder.parent.toRealPath().equals(holder.parent) || !str(holder.record, "lockMarker").equals(lockMarker(holder.channel))) throw new IllegalArgumentException("原写入锁或实际目录身份已变化");
-        requireMarker(holder.channel, holder.parent.resolve("writer.lock"), str(holder.record, "lockMarker"));
+        requireMarker(holder.channel, holder.parent.resolve("writer.lock"), str(holder.record, "lockMarker"), holder.fileKey);
         Path work = holder.parent.resolve("work");
         if (Files.exists(work, LinkOption.NOFOLLOW_LINKS) && (!Files.isDirectory(work, LinkOption.NOFOLLOW_LINKS) || !work.toRealPath().equals(work))) throw new IllegalArgumentException("原工作目录的解析目标已变化");
         Map<String, Object> saved = read(holder.parent.resolve("writer.json"));
@@ -207,9 +207,10 @@ public final class WorkspaceWriteGuard implements AutoCloseable {
     /**
      * Unix 的文件锁是建议锁，另从实际路径核对标记与原描述符的关联。
      */
-    private static void requireMarker(FileChannel channel, Path path, String expected) throws IOException {
+    private static void requireMarker(FileChannel channel, Path path, String expected, String expectedKey) throws IOException {
         if (!expected.equals(lockMarker(channel))) throw new IllegalArgumentException("原写入锁描述符的标记已变化");
-        if (!System.getProperty("os.name", "").startsWith("Windows") && (Files.size(path) > 512 || !expected.equals(Files.readString(path, StandardCharsets.UTF_8)))) throw new IllegalArgumentException("原描述符不再对应实际锁路径");
+        // POSIX 关闭同进程的另一同文件描述符会解除原锁，路径核验只读取文件身份与大小。
+        if (!System.getProperty("os.name", "").startsWith("Windows") && (!expectedKey.equals(fileKey(path)) || Files.size(path) != channel.size())) throw new IllegalArgumentException("原描述符不再对应实际锁路径");
     }
 
     /**

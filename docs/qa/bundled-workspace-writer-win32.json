@@ -1,11 +1,11 @@
 {
-  "recordedAt": "2026-11-10T12:10:09.479Z",
+  "recordedAt": "2026-11-11T01:46:05.976Z",
   "version": "0.2.0-alpha.14",
   "platform": "win32",
   "status": "passed",
   "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
-  "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
-  "packagedJarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+  "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
+  "packagedJarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
   "packagedJava": "D:\\Projects\\多Agent研发工作台\\release\\win-unpacked\\resources\\jre\\bin\\java.exe",
   "packagedJavaSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
   "javaVersion": "21.0.13",
@@ -64,7 +64,7 @@
     },
     {
       "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
-      "sha256": "374cb1a88ee8a9e31d94bb6ec24495d7f58491c54ea41d9664e41e4c00cb52ed"
+      "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
     },
     {
       "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
@@ -109,18 +109,18 @@
       ]
     }
   ],
-  "nativeFileKey": "WINDOWS:86ca0064ca0052bb:15f50900000001000000000000000000",
-  "originalPid": 57836,
-  "originalProcessStartedAt": "2026-11-10T12:10:07.395Z",
+  "nativeFileKey": "WINDOWS:86ca0064ca0052bb:3d070a00000001000000000000000000",
+  "originalPid": 40640,
+  "originalProcessStartedAt": "2026-11-11T01:46:03.862Z",
   "originalStopped": true,
   "releaseDuringBorrowRejected": true,
   "lockAvailableAfterRelease": true,
   "windowsNativeProcessSnapshotApplicable": true,
   "windowsNativeProcessSnapshotVerified": true,
-  "nativeProcessBirth": "2026-11-10T12:10:07.395Z",
-  "nativeProcessSnapshotCount": 507,
+  "nativeProcessBirth": "2026-11-11T01:46:03.862Z",
+  "nativeProcessSnapshotCount": 393,
   "probeOutputEncoding": "UTF-8",
   "schedulerParallelism": 2,
   "schedulerMaxPoolSize": 2,
-  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-7zpn2O"
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-SmmhPr"
 }

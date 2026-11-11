@@ -23,6 +23,8 @@ Windows 使用 `com.sun.nio.file.ExtendedOpenOption.NOSHARE_DELETE`，让原 Fil
 
 本机固定 Temurin 21.0.13+9 的 release SOURCE 对应 [adoptium/jdk21u](https://github.com/adoptium/jdk21u/tree/2ab10ca20c191701c3a9f3153bfc6e93d63714c1) 提交 `2ab10ca20c191701c3a9f3153bfc6e93d63714c1`，GPL-2.0 with Classpath Exception；仅核验 API 与打开模式，没有复制上游实现。内置运行时继续保留原 legal 文件。
 
+同一固定提交的 [FileLock 文档](https://github.com/adoptium/jdk21u/blob/2ab10ca20c191701c3a9f3153bfc6e93d63714c1/src/java.base/share/classes/java/nio/channels/FileLock.java)明确说明：部分系统关闭同进程另一文件通道会释放原锁，建议每个文件使用唯一通道。本机 `src.zip` 的 FileLock 与固定源码字节相同。原生 [UnixFileDispatcherImpl.c](https://github.com/adoptium/jdk21u/blob/2ab10ca20c191701c3a9f3153bfc6e93d63714c1/src/java.base/unix/native/libnio/ch/UnixFileDispatcherImpl.c)使用 fcntl 的 F_SETLK/F_SETLKW，blob `a24f0503e557955c074814de05ebea5507056624` 已按目录 API 与原字节核对。源码只作参考，没有复制进业务代码；来源、原错误路径的404和文档文本断言失败保存在 `.runtime/alpha14-posix-lock-research*/`。
+
 `npm run test:bundled-writer` 直接使用实际发行目录的内置 Java，逐项核对准确核心、原 JNA Jar 和许可摘要，并验证实际文件身份、授予、借用和释放。Windows 同时检查系统进程快照的本 JVM 出生。完整包内运行结果以[实施记录](./implementation-status.md)与平台报告为准。
 
 ## Windows 只读进程快照参考

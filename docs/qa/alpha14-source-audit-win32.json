@@ -1,16 +1,20 @@
 {
-  "recordedAt": "2026-11-10T12:16:54.236Z",
+  "recordedAt": "2026-11-11T01:40:27.006Z",
   "version": "0.2.0-alpha.14",
   "sourceBaseCommit": "7f31be5d30d2deff637e251be5208104eb179f9d",
-  "jarSha256": "ffaeeb1415ebde3d99863fc566492364b2b3852a5dfab50d2a5816722bdf5ff4",
+  "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
   "javaFilesChecked": 27,
   "originalJavaCommentsPreserved": 95,
+  "interimSourceBaseCommit": "a9f55d5f1f9640de1c0acfc70d9a0790244f99f2",
+  "interimOriginalJavaCommentsPreserved": 138,
   "java": [
     {
       "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
       "sha256": "77444659060aea666de9a58bffb715f88d37bd5941b2bddf9ef3804e451a5656",
       "originalComments": 27,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 30,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 3,
       "addedJavadocMultiline": true
     },
@@ -19,6 +23,8 @@
       "sha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85",
       "originalComments": 9,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 10,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 1,
       "addedJavadocMultiline": true
     },
@@ -27,6 +33,8 @@
       "sha256": "87abc9fd77d2696745af0a49677e207ed33f191b1f9fa7b8e5015005a8f875a5",
       "originalComments": 2,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 2,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -35,7 +43,19 @@
       "sha256": "9c74bd373ea345f5743449c503810251d4d87c6e1500f74ff8d22c8a61c09469",
       "originalComments": 4,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 4,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+      "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 3,
+      "interimOriginalCommentsPreserved": true,
+      "addedComments": 3,
       "addedJavadocMultiline": true
     },
     {
@@ -43,6 +63,8 @@
       "sha256": "da3a0600ad1bed99cc7f26bdfe8cf990f4edf89da329e2b615b695ed7346aac6",
       "originalComments": 3,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 3,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -51,6 +73,8 @@
       "sha256": "f559f721124dfe88e5a59b89aa8af7892f078ebda7517d72cfe0dab8d4a7b669",
       "originalComments": 2,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 2,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -59,6 +83,8 @@
       "sha256": "0c77f90e6dd92e7aa5949cae32556d982ab00e59c27ba89a7fcdc1ff4c06a4f3",
       "originalComments": 9,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 11,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 2,
       "addedJavadocMultiline": true
     },
@@ -67,6 +93,8 @@
       "sha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28",
       "originalComments": 2,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 3,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 1,
       "addedJavadocMultiline": true
     },
@@ -75,6 +103,8 @@
       "sha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837",
       "originalComments": 4,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 4,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -83,7 +113,19 @@
       "sha256": "8b989b2b6bfbd0b682be4a87b09215f2b8abe8c67994b623ce604114a20a81e8",
       "originalComments": 2,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 3,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 1,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+      "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 5,
+      "interimOriginalCommentsPreserved": true,
+      "addedComments": 5,
       "addedJavadocMultiline": true
     },
     {
@@ -91,6 +133,8 @@
       "sha256": "e837194f3f6584cafccfd21cc7a4add60db5e8384d3bac141fa804be36a8f70d",
       "originalComments": 1,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 1,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -99,7 +143,19 @@
       "sha256": "5969ae7ef433122ef135e4149d9eb6c76b2f52af9cf2281192fe5a4990971c7c",
       "originalComments": 4,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 5,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 1,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+      "sha256": "49e281b6105586893fd9d7322af32f05338f425e1f34f832b1b3365c8122ccd3",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 2,
+      "interimOriginalCommentsPreserved": true,
+      "addedComments": 2,
       "addedJavadocMultiline": true
     },
     {
@@ -107,7 +163,19 @@
       "sha256": "7dbf208ebeee3dabb8d2fa33135b9b4ccc76f3e572b0cc8b04f244d23d3cf1ba",
       "originalComments": 21,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 25,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 4,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+      "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 7,
+      "interimOriginalCommentsPreserved": true,
+      "addedComments": 8,
       "addedJavadocMultiline": true
     },
     {
@@ -115,6 +183,8 @@
       "sha256": "c028300d9a29414c893179627631b8e6ffc38b9a96f5b32fee8b4646b96907e8",
       "originalComments": 0,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 0,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -123,6 +193,8 @@
       "sha256": "1d5c94fa9d6dc216cbf621d09f0bef89a6c7e7d1ac4973f9f593ee04d14dbd29",
       "originalComments": 0,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 0,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -131,47 +203,9 @@
       "sha256": "7e1ce54fd7d2c75bac60cf0d10a6e0cc2033f4537cfd680492fa4102cdd5f714",
       "originalComments": 3,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 5,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 2,
-      "addedJavadocMultiline": true
-    },
-    {
-      "file": "tools/ProcessRecoveryProbe.java",
-      "sha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
-      "originalComments": 2,
-      "originalCommentsPreserved": true,
-      "addedComments": 2,
-      "addedJavadocMultiline": true
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
-      "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c",
-      "originalComments": 0,
-      "originalCommentsPreserved": true,
-      "addedComments": 3,
-      "addedJavadocMultiline": true
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
-      "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c",
-      "originalComments": 0,
-      "originalCommentsPreserved": true,
-      "addedComments": 5,
-      "addedJavadocMultiline": true
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
-      "sha256": "49e281b6105586893fd9d7322af32f05338f425e1f34f832b1b3365c8122ccd3",
-      "originalComments": 0,
-      "originalCommentsPreserved": true,
-      "addedComments": 2,
-      "addedJavadocMultiline": true
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
-      "sha256": "38f00dc09eea84bc3f9cc372885101743e12fc1b1e303e5850414896386c51d5",
-      "originalComments": 0,
-      "originalCommentsPreserved": true,
-      "addedComments": 7,
       "addedJavadocMultiline": true
     },
     {
@@ -179,6 +213,8 @@
       "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1",
       "originalComments": 0,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 0,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -187,6 +223,8 @@
       "sha256": "0d2f7f4b8a24f88abc5414d0459c50908cc793182b564b695b303d2204cd9c52",
       "originalComments": 0,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 3,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 3,
       "addedJavadocMultiline": true
     },
@@ -195,6 +233,8 @@
       "sha256": "1c7ddebe69a97522c407a05d65a03c6efb888b26f68b1ca3d3b9bd174462ca58",
       "originalComments": 0,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 1,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 1,
       "addedJavadocMultiline": true
     },
@@ -203,6 +243,18 @@
       "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9",
       "originalComments": 0,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 2,
+      "interimOriginalCommentsPreserved": true,
+      "addedComments": 2,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "tools/ProcessRecoveryProbe.java",
+      "sha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+      "originalComments": 2,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 4,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 2,
       "addedJavadocMultiline": true
     },
@@ -211,6 +263,8 @@
       "sha256": "3750ad2943fff276b3e917fb6a4d2bedbd1b37569390bca214741261cf7cc0af",
       "originalComments": 0,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 1,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 1,
       "addedJavadocMultiline": true
     },
@@ -219,6 +273,8 @@
       "sha256": "5b647a630e0814aad7c93d9e652c647f91b8c11e07f278d0359cceea40aa2f20",
       "originalComments": 0,
       "originalCommentsPreserved": true,
+      "interimOriginalComments": 2,
+      "interimOriginalCommentsPreserved": true,
       "addedComments": 2,
       "addedJavadocMultiline": true
     }
@@ -249,6 +305,7 @@
   "whitespace": "passed",
   "scriptSyntax": "passed",
   "syntaxFiles": [
+    "tools/bundled-workspace-write-smoke.mjs",
     "tools/ci-smoke.mjs",
     "tools/desktop-smoke.cjs",
     "tools/dispatch-queue-smoke.mjs",
@@ -256,7 +313,6 @@
     "tools/smoke-test.mjs",
     "tools/standalone-smoke.mjs",
     "tools/workspace-selection-smoke.mjs",
-    "tools/bundled-workspace-write-smoke.mjs",
     "tools/workspace-write-smoke.mjs"
   ],
   "jarMatchesCompiledClasses": true,
@@ -655,11 +711,11 @@
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceWriteGuard$Borrow.class",
-      "sha256": "98934dede54fc3ac2e554640f89081e2536f57177106fba284bf400f12b5cf28"
+      "sha256": "c5ad962511784a7ab28b14d8a7af25bcc3033201f61c9dcf4669a2ac40ea2822"
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceWriteGuard$Holder.class",
-      "sha256": "5997498c4b1eccbfd0723d9dbd3c9513122db2973a06c4e25abe81cc7a994bad"
+      "sha256": "bbd36b5d525347c9ae32f7644ba349850f2ee3855a92e1224fee885c77a2bb13"
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceWriteGuard$MetadataWriter.class",
@@ -667,7 +723,7 @@
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
-      "sha256": "374cb1a88ee8a9e31d94bb6ec24495d7f58491c54ea41d9664e41e4c00cb52ed"
+      "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
     }
   ],
   "sourceHashes": [
@@ -696,6 +752,10 @@
       "sha256": "9c74bd373ea345f5743449c503810251d4d87c6e1500f74ff8d22c8a61c09469"
     },
     {
+      "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+      "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+    },
+    {
       "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
       "sha256": "da3a0600ad1bed99cc7f26bdfe8cf990f4edf89da329e2b615b695ed7346aac6"
     },
@@ -720,6 +780,10 @@
       "sha256": "8b989b2b6bfbd0b682be4a87b09215f2b8abe8c67994b623ce604114a20a81e8"
     },
     {
+      "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+      "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+    },
+    {
       "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
       "sha256": "e837194f3f6584cafccfd21cc7a4add60db5e8384d3bac141fa804be36a8f70d"
     },
@@ -728,8 +792,16 @@
       "sha256": "5969ae7ef433122ef135e4149d9eb6c76b2f52af9cf2281192fe5a4990971c7c"
     },
     {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+      "sha256": "49e281b6105586893fd9d7322af32f05338f425e1f34f832b1b3365c8122ccd3"
+    },
+    {
       "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
       "sha256": "7dbf208ebeee3dabb8d2fa33135b9b4ccc76f3e572b0cc8b04f244d23d3cf1ba"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+      "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
     },
     {
       "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
@@ -744,6 +816,22 @@
       "sha256": "7e1ce54fd7d2c75bac60cf0d10a6e0cc2033f4537cfd680492fa4102cdd5f714"
     },
     {
+      "file": "core/src/test/java/dev/agentworkbench/WindowsProcessSnapshotTest.java",
+      "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteEngineTest.java",
+      "sha256": "0d2f7f4b8a24f88abc5414d0459c50908cc793182b564b695b303d2204cd9c52"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteLedgerTest.java",
+      "sha256": "1c7ddebe69a97522c407a05d65a03c6efb888b26f68b1ca3d3b9bd174462ca58"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceWriteGuardTest.java",
+      "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9"
+    },
+    {
       "file": "package-lock.json",
       "sha256": "1810364dc4c617d90c0c47ea04f1c5deb121eae3ea6314bcc0b09d21127545d9"
     },
@@ -754,6 +842,18 @@
     {
       "file": "tools/ProcessRecoveryProbe.java",
       "sha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268"
+    },
+    {
+      "file": "tools/WorkspaceWriteDatabaseFixture.java",
+      "sha256": "3750ad2943fff276b3e917fb6a4d2bedbd1b37569390bca214741261cf7cc0af"
+    },
+    {
+      "file": "tools/WorkspaceWriteProbe.java",
+      "sha256": "5b647a630e0814aad7c93d9e652c647f91b8c11e07f278d0359cceea40aa2f20"
+    },
+    {
+      "file": "tools/bundled-workspace-write-smoke.mjs",
+      "sha256": "ad817b76fcd922cca67139a34d15b2654e7cceb2f0ce132a723f79d5177d3f99"
     },
     {
       "file": "tools/ci-smoke.mjs",
@@ -784,6 +884,10 @@
       "sha256": "9cf96f86c65876018d75264c9200a9e7ab9927bf446b4e12d85c70686583bbbf"
     },
     {
+      "file": "tools/workspace-write-smoke.mjs",
+      "sha256": "dfc945e40832e86b2a9e63068a8e378205f07f24586adb3d516294cfc2dc7d17"
+    },
+    {
       "file": "web/package-lock.json",
       "sha256": "fcd0e3cb54c9921b0b654cc08b2408061f85ec565365fa10cb5eaa6096068689"
     },
@@ -812,60 +916,12 @@
       "sha256": "458e7cf944f750b9a9ffa8dd0416f32d83a9b7865fbf7512a34e3186f2528d2f"
     },
     {
-      "file": "web/src/types.ts",
-      "sha256": "d7f163e924fe3b6631e324b915601b7358adb26a4df93697354994fef4dc741d"
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
-      "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
-      "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
-      "sha256": "49e281b6105586893fd9d7322af32f05338f425e1f34f832b1b3365c8122ccd3"
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
-      "sha256": "38f00dc09eea84bc3f9cc372885101743e12fc1b1e303e5850414896386c51d5"
-    },
-    {
-      "file": "core/src/test/java/dev/agentworkbench/WindowsProcessSnapshotTest.java",
-      "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1"
-    },
-    {
-      "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteEngineTest.java",
-      "sha256": "0d2f7f4b8a24f88abc5414d0459c50908cc793182b564b695b303d2204cd9c52"
-    },
-    {
-      "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteLedgerTest.java",
-      "sha256": "1c7ddebe69a97522c407a05d65a03c6efb888b26f68b1ca3d3b9bd174462ca58"
-    },
-    {
-      "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceWriteGuardTest.java",
-      "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9"
-    },
-    {
-      "file": "tools/WorkspaceWriteDatabaseFixture.java",
-      "sha256": "3750ad2943fff276b3e917fb6a4d2bedbd1b37569390bca214741261cf7cc0af"
-    },
-    {
-      "file": "tools/WorkspaceWriteProbe.java",
-      "sha256": "5b647a630e0814aad7c93d9e652c647f91b8c11e07f278d0359cceea40aa2f20"
-    },
-    {
-      "file": "tools/bundled-workspace-write-smoke.mjs",
-      "sha256": "ad817b76fcd922cca67139a34d15b2654e7cceb2f0ce132a723f79d5177d3f99"
-    },
-    {
-      "file": "tools/workspace-write-smoke.mjs",
-      "sha256": "dfc945e40832e86b2a9e63068a8e378205f07f24586adb3d516294cfc2dc7d17"
-    },
-    {
       "file": "web/src/WorkspaceWrites.tsx",
       "sha256": "ad9bd8c6a851d3bfddbdf0c3092caa441cb43e0407b1adbcfa9dd6758e71b487"
+    },
+    {
+      "file": "web/src/types.ts",
+      "sha256": "d7f163e924fe3b6631e324b915601b7358adb26a4df93697354994fef4dc741d"
     },
     {
       "file": "web/src/workspace-writes.css",
