@@ -254,11 +254,14 @@ public class WorkspaceRuntime {
         return cap(output.toString());
     }
 
+    /**
+     * 每个审查副本使用独立父目录，避免操作清单混入其他任务或重复审查。
+     */
     public String reviewCopy(String workspace, String taskId, String version) {
         requireId(taskId);
         Path source = Path.of(workspace).toAbsolutePath().normalize();
         if (!fingerprint(workspace).equals(version)) throw new IllegalStateException("待审查内容已经变化，请重新验证。");
-        Path target = data.resolve("reviews").resolve(taskId + "-" + UUID.randomUUID());
+        Path target = data.resolve("reviews").resolve(taskId + "-" + UUID.randomUUID()).resolve("work");
         try {
             Files.createDirectories(target.getParent());
             git(target.getParent(), "clone", "--no-hardlinks", "--no-local", "--", source.toString(), target.toString());
@@ -267,6 +270,59 @@ public class WorkspaceRuntime {
             if (!fingerprint(target.toString()).equals(version)) throw new IllegalStateException("审查快照与交付内容不一致。");
             return target.toString();
         } catch (IOException e) { throw failure(e); }
+    }
+
+    /**
+     * 只读本核心数据范围内的原工具清单，不沿外部目录或清单链接读取。
+     */
+    public Map<String, Object> fileToolJournal(String workspace) {
+        try {
+            Path base = data.toRealPath(), supplied = Path.of(workspace).toAbsolutePath().normalize();
+            Path ancestor = supplied.getParent();
+            while (ancestor != null && !Files.exists(ancestor, LinkOption.NOFOLLOW_LINKS)) ancestor = ancestor.getParent();
+            if (ancestor == null || supplied.getFileName() == null) throw new IllegalArgumentException("文件工具清单不属于本核心数据目录。");
+            Path parent = ancestor.toRealPath(LinkOption.NOFOLLOW_LINKS).resolve(ancestor.relativize(supplied.getParent())).normalize();
+            Path configured = data.toRealPath(LinkOption.NOFOLLOW_LINKS);
+            if (parent.startsWith(configured)) parent = base.resolve(configured.relativize(parent));
+            Path actualWorkspace = parent.resolve(supplied.getFileName());
+            if (!parent.startsWith(base)) throw new IllegalArgumentException("文件工具清单目录越界。");
+            Path current = base;
+            for (Path part : base.relativize(parent)) {
+                current = current.resolve(part);
+                if (!Files.exists(current, LinkOption.NOFOLLOW_LINKS)) return object("workspace", actualWorkspace.toString(), "journalPresent", false, "operations", List.of());
+                if (!Files.isDirectory(current, LinkOption.NOFOLLOW_LINKS) || !current.toRealPath().equals(current)) throw new IllegalArgumentException("文件工具清单父目录身份已变化。");
+            }
+            Path directory = parent.resolve("operations");
+            if (!Files.exists(directory, LinkOption.NOFOLLOW_LINKS)) return object("workspace", actualWorkspace.toString(), "journalPresent", false, "operations", List.of());
+            if (!Files.isDirectory(directory, LinkOption.NOFOLLOW_LINKS) || !directory.toRealPath().equals(directory)) throw new IllegalArgumentException("文件工具清单包含外部解析目录。");
+            // 旧共享清单缺少逐条现场归属，不能从文件时间或模型声明猜测任务。
+            if (parent.equals(base.resolve("reviews"))) throw new IllegalArgumentException("旧审查文件工具清单为共享目录，无法确定逐条任务归属；保留原文件并拒绝混合查询或导出。");
+            List<Map<String, Object>> operations = new ArrayList<>();
+            long journalBytes = 0;
+            try (var files = Files.newDirectoryStream(directory, "*.json")) {
+                for (Path file : files) {
+                    if (operations.size() >= 50_000) throw new IllegalArgumentException("文件工具清单超过完整读取上限，不能返回截断记录。");
+                    String filename = file.getFileName().toString();
+                    BasicFileAttributes before = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+                    if (!filename.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.json")
+                            || !before.isRegularFile() || before.size() > 256_000) throw new IllegalArgumentException("原文件工具清单身份或大小无效。");
+                    String fileKey = WorkspaceFileIdentity.key(file);
+                    byte[] bytes;
+                    try (var input = Files.newInputStream(file, StandardOpenOption.READ, LinkOption.NOFOLLOW_LINKS)) { bytes = input.readNBytes(256_001); }
+                    BasicFileAttributes after = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+                    if (bytes.length > 256_000 || bytes.length != before.size() || bytes.length != after.size()
+                            || !before.lastModifiedTime().equals(after.lastModifiedTime()) || !after.isRegularFile()
+                            || !fileKey.equals(WorkspaceFileIdentity.key(file))) throw new IllegalArgumentException("读取期间原文件工具清单发生变化，请读取当前回执。");
+                    journalBytes += bytes.length;
+                    if (journalBytes > 32L * 1024 * 1024) throw new IllegalArgumentException("文件工具清单超过32 MiB完整读取上限，不能返回截断记录。");
+                    Map<String, Object> operation = json.readValue(bytes, new TypeReference<>() {});
+                    if (!filename.equals(str(operation, "id", "") + ".json")) throw new IllegalArgumentException("原文件工具清单编号不匹配。");
+                    operations.add(operation);
+                }
+            }
+            if (!parent.toRealPath().equals(parent) || !directory.toRealPath().equals(directory)) throw new IllegalArgumentException("读取期间文件工具清单目录发生变化。");
+            return object("workspace", actualWorkspace.toString(), "journalPresent", true, "journalBytes", journalBytes, "operations", operations);
+        } catch (IOException exception) { throw failure(exception); }
     }
 
     /**
@@ -392,6 +448,7 @@ public class WorkspaceRuntime {
     private Map<String, Object> apiRunLoop(Map<String, Object> route, String key, Path root, String prompt, boolean readOnly,
                                        List<String> scope, BooleanSupplier cancelled, Consumer<String> log, BooleanSupplier acquireCall,
                                        List<Map<String, Object>> mcpBindings, FixedToolInvoker mcpInvoker, List<Map<String, Object>> observedUsage, AgentToolSession session) {
+        FileEditSession fileEdits = new FileEditSession();
         URI url = endpoint(str(route, "baseUrl", ""));
         if ((key == null || key.isBlank()) && !isLoopback(url)) throw new IllegalArgumentException("API 密钥未配置；请在资源设置中添加本次会话凭据。");
         String model = str(route, "model", "");
@@ -410,7 +467,7 @@ public class WorkspaceRuntime {
                 if (mcpBindings.stream().anyMatch(binding -> name.equals(str(binding, "alias", "")))) return !AgentPermissions.has(session.permissions(), "mcp");
                 try { AgentPermissions.requireTool(session.permissions(), name, object("path", "__definition_check__")); }
                 catch (IllegalArgumentException exception) {
-                    String capability = switch (name) { case "list_files", "read_file" -> "read"; case "search_files" -> "search"; case "write_file", "delete_file" -> "write"; case "run_command" -> "verify"; default -> ""; };
+                    String capability = switch (name) { case "list_files", "read_file", "inspect_file" -> "read"; case "search_files" -> "search"; case "write_file", "delete_file" -> "write"; case "run_command" -> "verify"; default -> ""; };
                     return !AgentPermissions.has(session.permissions(), capability) || name.equals("run_command");
                 }
                 return false;
@@ -436,12 +493,15 @@ public class WorkspaceRuntime {
                 List<Map<String, Object>> toolCalls = (List<Map<String, Object>>) message.getOrDefault("tool_calls", List.of());
                 messages.add(message);
                 if (toolCalls.isEmpty()) {
+                    if (fileEdits.hasConflicts()) return result(-1, "文件版本冲突尚未重新读取处理：" + String.join("、", fileEdits.conflicts()), "WAITING_INPUT");
                     String answer = Objects.toString(message.get("content"), "");
                     Map<String, Object> result = result(0, answer, "SUCCEEDED");
                     return result;
                 }
                 if (toolCalls.size() > 16) return result(-1, "单轮工具数量超限", "FAILED");
+                int toolOrdinal = 0;
                 for (Map<String, Object> call : toolCalls) {
+                    toolOrdinal++;
                     if (cancelled.getAsBoolean()) return result(-1, "取消后不再执行新工具", "CANCELLED");
                     Map<String, Object> function = (Map<String, Object>) call.get("function");
                     String name = Objects.toString(function.get("name"), "");
@@ -486,7 +546,10 @@ public class WorkspaceRuntime {
                         Path ledger = root.getParent().resolve("operations");
                         Files.createDirectories(ledger);
                         operation = ledger.resolve(opId + ".json");
-                        entry = object("id", opId, "tool", name, "path", args.get("path"), "state", "PREPARED", "createdAt", java.time.Instant.now().toString());
+                        entry = object("id", opId, "tool", name, "path", args.get("path"), "state", "PREPARED", "createdAt", java.time.Instant.now().toString(),
+                            "toolProtocolVersion", 2, "modelRequestId", acquireCall instanceof ModelCallObserver observer ? observer.lastRequestId() : "", "toolCallId", Objects.toString(call.get("id"), ""),
+                            "toolOrdinal", toolOrdinal, "argumentDigest", FileEditSession.argumentDigest(Objects.toString(function.get("arguments"), "{}")));
+                        if (Set.of("write_file", "delete_file").contains(name)) entry.put("expectedReadVersion", FileEditSession.requestedVersion(args.get("expectedVersion")));
                         writeMetadataAtomic(operation, json.writeValueAsBytes(entry));
                         receiptPhase = "SEND_METADATA";
                         entry.put("state", "SENT"); writeMetadataAtomic(operation, json.writeValueAsBytes(entry));
@@ -494,8 +557,13 @@ public class WorkspaceRuntime {
                         Object observation;
                         receiptPhase = "TOOL_EXECUTION";
                         try (AutoCloseable toolLease = session == null ? () -> {} : session.acquireTool()) {
-                            observation = invokeTool(root, name, args, readOnly, scope, route, cancelled, log, session);
+                            observation = invokeTool(root, name, args, readOnly, scope, route, cancelled, log, session, fileEdits, opId);
                             toolReturned = true;
+                            if (Set.of("read_file", "inspect_file", "write_file", "delete_file").contains(name) && observation instanceof Map<?, ?> fileReceipt) {
+                                Map<String, Object> savedReceipt = new LinkedHashMap<>();
+                                for (var field : fileReceipt.entrySet()) if (!"content".equals(field.getKey())) savedReceipt.put(field.getKey().toString(), field.getValue());
+                                entry.put("fileReceipt", savedReceipt);
+                            }
                         }
                         toolResult = json.writeValueAsString(observation);
                         receiptPhase = "CONFIRM_METADATA";
@@ -508,8 +576,16 @@ public class WorkspaceRuntime {
                         entry.put("state", "CONFIRMED"); entry.put("completedAt", java.time.Instant.now().toString());
                         writeMetadataAtomic(operation, json.writeValueAsBytes(entry));
                     } catch (IllegalArgumentException e) {
-                        toolResult = json.writeValueAsString(object("error", e.getMessage()));
+                        if (toolReturned && operation != null && entry != null) {
+                            entry.putAll(object("state", "UNKNOWN", "errorType", e.getClass().getSimpleName(), "failedReceiptPhase", receiptPhase, "toolReturned", true));
+                            try { writeMetadataAtomic(operation, json.writeValueAsBytes(entry)); } catch (Exception ignored) { }
+                            return result(-1, "工具效果已返回，但收尾未取得完整回执：" + name + " · " + receiptPhase, "UNKNOWN");
+                        }
+                        Map<String, Object> rejection = object("error", e.getMessage());
+                        if (e instanceof FileEditSession.VersionConflict) rejection.put("code", "FILE_VERSION_CONFLICT");
+                        toolResult = json.writeValueAsString(rejection);
                         if (operation != null && entry != null) {
+                            if (e instanceof FileEditSession.VersionConflict) entry.putAll(object("errorCode", "FILE_VERSION_CONFLICT", "error", e.getMessage()));
                             entry.put("state", "REJECTED"); writeMetadataAtomic(operation, json.writeValueAsBytes(entry));
                         }
                     } catch (Exception e) {
@@ -644,7 +720,7 @@ public class WorkspaceRuntime {
     }
 
     private Object invokeTool(Path root, String name, Map<String, Object> args, boolean readOnly, List<String> scope,
-                              Map<String, Object> route, BooleanSupplier cancelled, Consumer<String> log, AgentToolSession session) throws IOException {
+                              Map<String, Object> route, BooleanSupplier cancelled, Consumer<String> log, AgentToolSession session, FileEditSession fileEdits, String operationId) throws IOException {
         if (session != null) AgentPermissions.requireTool(session.permissions(), name, args);
         switch (name) {
             case "list_files": {
@@ -662,7 +738,13 @@ public class WorkspaceRuntime {
                 Path path = safePath(root, nameArg, true);
                 if (sensitive(nameArg)) throw new IllegalArgumentException("不允许读取凭据或平台内部文件。");
                 if (Files.size(path) > MAX_FILE) throw new IllegalArgumentException("文件超过 256 KB，请通过搜索定位必要部分。");
-                return object("path", nameArg, "content", Files.readString(path, StandardCharsets.UTF_8));
+                return fileEdits.read(path, root.relativize(path).toString().replace('\\', '/'), operationId);
+            }
+            case "inspect_file": {
+                String nameArg = str(args, "path", "");
+                if (sensitive(nameArg)) throw new IllegalArgumentException("不允许读取凭据或平台内部文件。");
+                Path path = safePath(root, nameArg, false);
+                return fileEdits.inspect(path, root.relativize(path).toString().replace('\\', '/'), operationId);
             }
             case "search_files": return session == null ? search(root.toString(), str(args, "query", ""), 80) : scopedSearch(root, str(args, "query", ""), session.permissions());
             case "write_file": {
@@ -670,16 +752,12 @@ public class WorkspaceRuntime {
                 Path path = safePath(root, str(args, "path", ""), false);
                 byte[] content = str(args, "content", "").getBytes(StandardCharsets.UTF_8);
                 if (content.length > MAX_FILE) throw new IllegalArgumentException("单次写入超过 256 KB。");
-                Files.createDirectories(path.getParent());
-                writeAtomic(path, content);
-                return object("written", root.relativize(path).toString(), "bytes", content.length);
+                return fileEdits.write(path, root.relativize(path).toString().replace('\\', '/'), content, str(args, "expectedVersion", ""), operationId);
             }
             case "delete_file": {
                 requireWrite(readOnly, scope, str(args, "path", ""));
-                Path path = safePath(root, str(args, "path", ""), true);
-                if (!Files.isRegularFile(path)) throw new IllegalArgumentException("只允许删除单个普通文件。");
-                Files.delete(path);
-                return object("deleted", root.relativize(path).toString());
+                Path path = safePath(root, str(args, "path", ""), false);
+                return fileEdits.delete(path, root.relativize(path).toString().replace('\\', '/'), str(args, "expectedVersion", ""), operationId);
             }
             case "run_command": {
                 if (readOnly) throw new IllegalArgumentException("只读阶段不允许命令执行。");
@@ -858,11 +936,12 @@ public class WorkspaceRuntime {
     private List<Map<String, Object>> toolDefinitions(boolean readOnly, List<Map<String, Object>> mcpBindings) {
         List<Map<String, Object>> tools = new ArrayList<>();
         tools.add(tool("list_files", "列出项目内非敏感文件，最多2000项", object("path", object("type", "string")), List.of()));
-        tools.add(tool("read_file", "读取项目中的UTF-8文本文件", object("path", object("type", "string")), List.of("path")));
+        tools.add(tool("read_file", "完整读取项目中的UTF-8文本文件，返回此执行独有的 readVersion；覆盖已有文件时将其传入 expectedVersion", object("path", object("type", "string")), List.of("path")));
+        tools.add(tool("inspect_file", "读取单个普通文件的存在状态和有界版本摘要；其 readVersion 可用于删除二进制文件，不能用于覆盖已有文本", object("path", object("type", "string")), List.of("path")));
         tools.add(tool("search_files", "在项目文本文件中按关键词检索", object("query", object("type", "string")), List.of("query")));
         if (!readOnly) {
-            tools.add(tool("write_file", "在任务范围内创建或替换文本文件", object("path", object("type", "string"), "content", object("type", "string")), List.of("path", "content")));
-            tools.add(tool("delete_file", "删除任务范围内的单个文件", object("path", object("type", "string")), List.of("path")));
+            tools.add(tool("write_file", "在任务范围内创建或替换文本文件；已有文件必须传入最近完整 read_file 返回的 expectedVersion，新文件使用 ABSENT；冲突后重新读取，不使用旧回执", object("path", object("type", "string"), "content", object("type", "string"), "expectedVersion", object("type", "string", "maxLength", 64)), List.of("path", "content")));
+            tools.add(tool("delete_file", "删除任务范围内的单个普通文件；expectedVersion 必须来自此执行中该文件的 read_file 或 inspect_file", object("path", object("type", "string"), "expectedVersion", object("type", "string", "maxLength", 64)), List.of("path", "expectedVersion")));
             tools.add(tool("run_command", "执行完成约定中已批准的验证命令", object("command", object("type", "string")), List.of("command")));
         }
         if (!readOnly) {

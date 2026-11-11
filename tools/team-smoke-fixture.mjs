@@ -41,9 +41,10 @@ export function createTeamProtocol({ model = 'smoke-model', holdWriter = false }
     const alias = names.find(name => name.startsWith('mcp_'));
     if (writer) {
       assert.ok(alias, 'The unrestricted writer must receive the fixed MCP action');
-      if (!results.length) { await writerGate; return tool('write_file', { path: 'src/greeting.txt', content: 'hello agent\n' }); }
-      if (results.length === 1) return tool(alias, {});
-      assert.equal(result(1).state, 'ACKNOWLEDGED');
+      if (!results.length) { await writerGate; return tool('read_file', { path: 'src/greeting.txt' }); }
+      if (results.length === 1) { assert.match(result(0).readVersion, /^file-read-/); return tool('write_file', { path: 'src/greeting.txt', content: 'hello agent\n', expectedVersion: result(0).readVersion }); }
+      if (results.length === 2) return tool(alias, {});
+      assert.equal(result(2).state, 'ACKNOWLEDGED');
       return answer('TEAM_SMOKE_WRITE_EVIDENCE：已实际写入文件并收到固定 MCP 原始回执，需由父任务采纳和验证。');
     }
     if (reader) {

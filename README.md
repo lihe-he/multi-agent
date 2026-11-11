@@ -4,13 +4,15 @@
 
 平台使用 Java 21、Spring Boot、SQLite、React、TypeScript 和 Electron。任务在独立工作目录中执行，验证和审查记录绑定代码版本，最终由用户验收。验收操作记录用户决定，不会自动提交、推送或改写原项目。
 
-当前开发版本为 **0.2.0-alpha.14**，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
+当前开发版本为 **0.2.0-alpha.15**，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
 
 计划确认与显式继续同事务保存根执行尝试和待派发动作。未领取动作可跨重启保留原编号，门禁满足后领取一次；已领取后缺少结果保持 UNKNOWN，核对后继续建立新尝试并沿用累计预算。“任务派发”页和 ZIP 保存完整历史，执行结束与人工验收分别记录。边界见[根派发协议](./docs/task-dispatch-contract.md)。
 
 创建任务可从实际本地或远程分支选择提交，以独立 clone 或锁定的 detached Git worktree 执行。计划保存所选 SHA、源文件与 index 快照，排队期间源变化会要求重新确认；完整 READY 现场在核对原目录、关联、归属和内容后可复用，原未知尝试与规则保留在历史和 ZIP 中。SQLite schema 为 8，API 与 Worker 帧协议仍为 1；旧核心不能打开新库。协议见[启动现场约定](./docs/workspace-selection-contract.md)。
 
-原 Worker 从准备到根收尾持有实际文件锁，写入意图与根领取、授予与操作 ACK 分别同事务保存。模型容量释放和客户端退出保留根保护；丢失回执保持原 UNKNOWN，核对原进程及效果后释放保护，下一次恢复建立新的写入编号。Worker 页、请求/MCP 来源和 ZIP 可查看完整记录，边界见[根写入保护协议](./docs/workspace-write-contract.md)。当前目录执行、跨核心共享现场协调、已读文件版本保护与完整 worktree 归档恢复继续实施。
+原 Worker 从准备到根收尾持有实际文件锁，写入意图与根领取、授予与操作 ACK 分别同事务保存。模型容量释放和客户端退出保留根保护；丢失回执保持原 UNKNOWN，核对原进程及效果后释放保护，下一次恢复建立新的写入编号。Worker 页、请求/MCP 来源和 ZIP 可查看完整记录，边界见[根写入保护协议](./docs/workspace-write-contract.md)。当前目录执行、跨核心共享现场协调与完整 worktree 归档恢复继续实施。
+
+API Agent 覆盖已有文本前须完整读取并提供原 `readVersion`；删除须提供当前读取或检查回执。用户在读取后修改文件时，旧操作被拒绝，重新读取后才可决定修改；未解决冲突进入等待输入。任务详情“文件操作”页显示版本、冲突和原请求来源，ZIP 包含完整根/副 Agent 历史。协议及外部写入窗口见[文件版本约定](./docs/file-version-contract.md)。
 
 Windows 原 PID 被受限进程复用、Java 句柄无法读取当前出生时间时，核心通过只读系统快照补充出生信息，核对后保留原身份和新的出生。快照无法核验时继续显示未知；请求停止仍逐项检查原 Java 句柄的出生时间。具体边界见[进程恢复约定](./docs/process-recovery-contract.md)。
 
@@ -101,6 +103,8 @@ node tools/smoke-test.mjs
 `npm run test:workspaces` 验证实际分支选择、固定 SHA 的 clone/worktree、原 HEAD/index/config/refs 保全、过期选择的生产界面刷新、归属变化拒绝和 READY 回执恢复。外部队列门建立未领取窗口，SQLite 故障发生在原 Worker 保存 READY 并 ACK 之后；重开使用普通生产 Jar。脚本保留原源码、编译类、两次尝试、停止身份和 ZIP，人工 PREPARED 故障窗口单独标记。它需要已构建的核心/Web 和 Playwright 浏览器。
 
 `npm run test:workspace-writes` 验证普通最终 Jar 的实际根文件锁、第二 JVM 竞争、文件工具写入、Node 验证、READY 复用，以及 clone/worktree 的授予与释放回执数据库故障。生产 Web、原 UNKNOWN/新尝试、预算、两尝试 ZIP 和原 PID/出生停止事实分别保存；该入口需要已构建核心/Web 和 Playwright 浏览器，结果按平台记录。
+
+`npm run test:file-versions` 使用普通最终 Jar 与原独立 Worker，验证相同字节大小且恢复 mtime 的用户改动、旧覆盖/删除拒绝、重新读取后的恢复、未解决冲突等待和原请求/参数摘要。实际八条文件回执与明确标记的旧日志夹具一起验证超过单页的完整历史/ZIP、引号和反斜杠凭据脱敏及原进程停止；样例和原始事实保存在独立运行目录。
 
 完成上述验收和 `npm run package:prepared` 后，`npm run test:bundled-writer` 使用实际发行目录中的内置 Java，加载已核对的最终核心和一次编译夹具，验证原生文件身份、锁授予、借用期间拒绝提前释放、正常释放及原探针退出。Windows 同时核验实际系统进程快照与原探针出生。报告保存包内核心、Java、JNA 和许可摘要；该入口复用已有夹具，不需要内置编译器。
 

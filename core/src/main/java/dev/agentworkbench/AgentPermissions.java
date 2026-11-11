@@ -72,14 +72,14 @@ public final class AgentPermissions {
 
     public static void requireTool(Map<String, Object> policy, String name, Map<String, Object> args) {
         String capability = switch (name) {
-            case "list_files", "read_file" -> "read";
+            case "list_files", "read_file", "inspect_file" -> "read";
             case "search_files" -> "search";
             case "write_file", "delete_file" -> "write";
             case "run_command" -> "verify";
             default -> "";
         };
         if (capability.isBlank() || !has(policy, capability)) throw new IllegalArgumentException("Agent 实际权限不允许工具：" + name);
-        if (Set.of("read_file", "write_file", "delete_file").contains(name) && !permits(policy, name.equals("read_file") ? "read" : "write", str(args, "path"))) throw new IllegalArgumentException("文件不在 Agent 委派范围内");
+        if (Set.of("read_file", "inspect_file", "write_file", "delete_file").contains(name) && !permits(policy, Set.of("read_file", "inspect_file").contains(name) ? "read" : "write", str(args, "path"))) throw new IllegalArgumentException("文件不在 Agent 委派范围内");
         if (name.equals("run_command") && (!has(policy, "write") || !unrestricted(policy, "read") || !unrestricted(policy, "write"))) throw new IllegalArgumentException("命令不能强制细粒度文件范围，请交回根验证阶段");
     }
 }

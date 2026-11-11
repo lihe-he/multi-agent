@@ -34,14 +34,16 @@ public class WorkbenchController {
     private final PlanValidator validator;
     private final ObjectMapper mapper;
     private final ConfigurableApplicationContext application;
+    private final FileToolHistory fileTools;
 
     public WorkbenchController(ExecutionStore store, WorkbenchCatalog catalog, WorkbenchEngine engine, WorkspaceRuntime runtime, ResourceManager resources, PlanValidator validator, ObjectMapper mapper, ConfigurableApplicationContext application) {
         this.store = store; this.catalog = catalog; this.engine = engine; this.runtime = runtime; this.resources = resources; this.validator = validator; this.mapper = mapper;
         this.application = application;
+        this.fileTools = new FileToolHistory(store, catalog, runtime);
     }
 
     @GetMapping("/health")
-    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.14", "apiVersion", 1, "schemaVersion", 8, "workspaceSelectionVersion", 1, "corePid", ProcessHandle.current().pid()); }
+    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", "0.2.0-alpha.15", "apiVersion", 1, "schemaVersion", 8, "workspaceSelectionVersion", 1, "fileToolProtocolVersion", 2, "corePid", ProcessHandle.current().pid()); }
 
     @PostMapping("/shutdown")
     public Map<String, Object> shutdown() {
@@ -63,7 +65,7 @@ public class WorkbenchController {
         }).toList();
         return obj("projects", store.list("project"), "tasks", summaries, "routes", catalog.routes(), "memories", store.list("memory"), "profiles", store.list("profile"), "agentDefinitions", store.list("agentDefinition"),
             "executionNodes", executionNodes(), "repositoryBindings", store.list("repositoryBinding"), "workers", workers(), "processRecovery", engine.processRecovery(),
-            "system", obj("version", "0.2.0-alpha.14", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
+            "system", obj("version", "0.2.0-alpha.15", "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
                 "eventCursor", store.latestEvent(), "credentialStorage", "SESSION_ONLY", "releaseStatus", "DEVELOPMENT_PREVIEW", "capabilities", List.of("Git 隔离工作目录", "三模式阶段编排", "根预算与验证预留", "独立审查与人工验收", "结果未知保护", "持久事件续读"),
                 "limitations", List.of("API 兼容性须按实际端点验证", "原生 CLI 费用与内部请求数为软预算", "本机工作目录隔离不等于操作系统安全隔离", "MCP、自动采纳、三端打包与长期性能尚待发布验收")));
     }
@@ -218,6 +220,12 @@ public class WorkbenchController {
         return store.list("operation").stream().filter(operation -> id.equals(str(operation, "taskId"))).toList();
     }
 
+    @GetMapping("/tasks/{id}/file-tool-operations")
+    public Map<String, Object> fileToolOperations(@PathVariable String id, @RequestParam(defaultValue = "") String before,
+            @RequestParam(defaultValue = "30") int limit, @RequestParam(defaultValue = "") String state) {
+        return fileTools.page(id, before, limit, state);
+    }
+
     @GetMapping("/tasks/{id}/events")
     public Map<String, Object> events(@PathVariable String id, @RequestParam(defaultValue = "0") long after, @RequestParam(defaultValue = "200") int limit) {
         store.get("task", id); return store.events(id, after, limit);
@@ -283,12 +291,15 @@ public class WorkbenchController {
         if (!workspace.isBlank() && !str(task, "version").equals(runtime.fingerprint(workspace))) { throw new ApiException(409, "当前文件与任务记录的版本不同，请先重新验证，避免将新补丁与旧证据混合导出"); }
         String patch = workspace.isBlank() ? "" : runtime.exportPatch(workspace);
         if (!workspace.isBlank() && !str(task, "version").equals(runtime.fingerprint(workspace))) { throw new ApiException(409, "生成补丁时文件发生变化，请停止外部修改并重新验证"); }
+        FileToolHistory.Snapshot fileToolSnapshot = fileTools.snapshot(id);
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (ZipOutputStream zip = new ZipOutputStream(bytes, StandardCharsets.UTF_8)) {
             putZip(zip, "manifest.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(obj("schemaVersion", 1, "taskId", id, "exportedAt", now(), "version", task.get("version"), "baseline", task.get("baseline"), "state", task.get("state"), "outcome", task.get("outcome"), "credentialsIncluded", false)));
             putZip(zip, "task.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(task));
             putZip(zip, "changes.patch", patch.getBytes(StandardCharsets.UTF_8));
             putZip(zip, "operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(operations(id)));
+            putZip(zip, "file-tool-operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(fileToolSnapshot.operations()));
+            putZip(zip, "file-tool-journal-sources.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(fileToolSnapshot.journals()));
             putZip(zip, "agent-runs.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("agentRun").stream().filter(run -> id.equals(str(run, "taskId"))).toList()));
             putZip(zip, "task-executions.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.taskDispatchRecords("taskExecution", id)));
             putZip(zip, "dispatch-actions.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.taskDispatchRecords("dispatchAction", id)));

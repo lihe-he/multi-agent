@@ -19,6 +19,7 @@
 - alpha.12 的独立根执行尝试、待派发动作、原编号未领取恢复、领取后 UNKNOWN 和核对后的新尝试：见[根派发协议](./task-dispatch-contract.md)。SQLite schema 为 6，API 与 Worker 帧协议仍为 1；ZIP 保留完整尝试和动作，验收与导出等待根结束回执。
 - alpha.13 的显式启动选择、固定本地/远程提交、独立 clone/真 worktree、READY 复用和实际归属：见[启动现场协议](./workspace-selection-contract.md)。SQLite schema 为 7，API 与 Worker 帧协议仍为 1；已有准备固定原选择和来源。
 - alpha.14 的整次根写入归属、实际文件锁、授予/释放回执、UNKNOWN核对和完整历史：见[根写入保护协议](./workspace-write-contract.md)。SQLite schema 为8，API与Worker帧协议仍为1；`GET /api/tasks/{id}/workspace-write-leases` 提供稳定游标，ZIP保留完整原编号与依据。
+- alpha.15 的完整 UTF-8 读回执、已有文件覆盖/删除版本核对及原请求关联：见[文件版本协议](./file-version-contract.md)。文件工具日志协议为2，SQLite仍为8，API与Worker帧仍为1；`GET /api/tasks/{id}/file-tool-operations?before=&limit=30&state=` 返回稳定长整数游标，ZIP保留全部同任务根/AgentRun记录及缺失清单事实，超限报错。
 - `POST /api/tasks/{id}/{action}`，action 为 `approve`/`pause`/`resume`/`cancel`/`accept`（空对象）；`accept` 只记录人工验收，不写原项目。
 - `GET /api/tasks/{id}/diff` → `{diff,version,workspace}`
 - `GET /api/tasks/{id}/export` → 可下载 zip

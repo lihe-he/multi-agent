@@ -1,0 +1,220 @@
+{
+  "recordedAt": "2026-11-11T03:35:40.720Z",
+  "version": "0.2.0-alpha.15",
+  "sourceBytesReverified": true,
+  "upstreamImplementationCopied": false,
+  "scope": "Pinned file mutation/read/edit sources and original licenses; local Windows path alias probe",
+  "projects": [
+    {
+      "repository": "anomalyco/opencode",
+      "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+      "license": "MIT",
+      "evidenceManifest": ".runtime/read-version-sources-2026-11-11/opencode-source-attempt4/manifest.json",
+      "sources": [
+        {
+          "path": "packages/core/src/file-write.ts",
+          "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/core/src/file-write.ts",
+          "blobSha": "2afb8d3b85df2f3652feaed1de4c7a4ce3268c44",
+          "sha256": "82b9b349f1b120776c6d895749f3c0daa97e5b1649844412cb5b918137a110ea",
+          "bytes": 4233,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/opencode-source-attempt4/file-write.ts",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "packages/core/src/tool/plugin/edit.ts",
+          "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/core/src/tool/plugin/edit.ts",
+          "blobSha": "e0f629bda434b173c4402451c68725bd12737682",
+          "sha256": "94df9d68b7bf5afe971ef1a068198876cb16c8f6d3aee60d212b78fb0ae24314",
+          "bytes": 17024,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/opencode-source-attempt4/edit.ts",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "packages/core/src/tool/plugin/read.ts",
+          "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/core/src/tool/plugin/read.ts",
+          "blobSha": "f0b04931e627c08f09a0b9c905d2399219fcdba2",
+          "sha256": "ff3d3248d78d182a8d1065049673a82494216feb2502c8ba5cdf14134c841056",
+          "bytes": 17927,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/opencode-source-attempt4/read.ts",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "packages/core/src/tool/plugin/write.ts",
+          "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/core/src/tool/plugin/write.ts",
+          "blobSha": "7d04595b60326d4e60d0d7ba9d00ff118dedf5df",
+          "sha256": "72466ace2fc97a2537ac4718a01b235e1e7eee79a551ecdef5ba41b19f6c611d",
+          "bytes": 2822,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/opencode-source-attempt4/write.ts",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/LICENSE",
+          "blobSha": "6439474beed8e0271df9862eff97ffd70ec2464c",
+          "sha256": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "bytes": 1065,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/anomalyco-opencode/LICENSE",
+          "actualBlobVerified": true
+        }
+      ]
+    },
+    {
+      "repository": "Aider-AI/aider",
+      "commit": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+      "license": "Apache-2.0",
+      "evidenceManifest": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/Aider-AI-aider/manifest.json",
+      "sources": [
+        {
+          "path": "LICENSE.txt",
+          "url": "https://github.com/Aider-AI/aider/blob/5dc9490bb35f9729ef2c95d00a19ccd30c26339c/LICENSE.txt",
+          "blobSha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "bytes": 11358,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/Aider-AI-aider/LICENSE.txt",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "aider/coders/base_coder.py",
+          "url": "https://github.com/Aider-AI/aider/blob/5dc9490bb35f9729ef2c95d00a19ccd30c26339c/aider/coders/base_coder.py",
+          "blobSha": "56613782b02e756085d930554b8f9deeadeebb28",
+          "sha256": "04a7b38c4f1d2b1684ac958f40bcd81a28b00139eae88afed59d2c970bef1ee1",
+          "bytes": 86302,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/Aider-AI-aider/aider/coders/base_coder.py",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "aider/coders/editblock_coder.py",
+          "url": "https://github.com/Aider-AI/aider/blob/5dc9490bb35f9729ef2c95d00a19ccd30c26339c/aider/coders/editblock_coder.py",
+          "blobSha": "37d40d97c7077fe050670532de48c2a24febcf8a",
+          "sha256": "244df08f5ccd19928bcdac1901ae591a7a786d12a6f70d31400baaefb5a136a3",
+          "bytes": 19616,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/Aider-AI-aider/aider/coders/editblock_coder.py",
+          "actualBlobVerified": true
+        }
+      ]
+    },
+    {
+      "repository": "OpenHands/software-agent-sdk",
+      "commit": "5ff99f1b6ca28f7d16870b69f57a31351e59bcd0",
+      "license": "MIT",
+      "evidenceManifest": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/OpenHands-software-agent-sdk/manifest.json",
+      "sources": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/OpenHands/software-agent-sdk/blob/5ff99f1b6ca28f7d16870b69f57a31351e59bcd0/LICENSE",
+          "blobSha": "b0bd86a6335a564bd3766666bebbf014fd6a8013",
+          "sha256": "14a9b631c658eee682c6c2973525fbdf808c3457176bc47513052c559cc5ce86",
+          "bytes": 1079,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/OpenHands-software-agent-sdk/LICENSE",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "openhands-tools/openhands/tools/file_editor/__init__.py",
+          "url": "https://github.com/OpenHands/software-agent-sdk/blob/5ff99f1b6ca28f7d16870b69f57a31351e59bcd0/openhands-tools/openhands/tools/file_editor/__init__.py",
+          "blobSha": "5c5c7b41a43f7a1eace316a077198a2314fa9e96",
+          "sha256": "97a33dd4249bd6554e5ad7a0fffcbbb7c044d8748e635c79182f1d8eb4c95494",
+          "bytes": 337,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/OpenHands-software-agent-sdk/openhands-tools/openhands/tools/file_editor/__init__.py",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "openhands-tools/openhands/tools/file_editor/definition.py",
+          "url": "https://github.com/OpenHands/software-agent-sdk/blob/5ff99f1b6ca28f7d16870b69f57a31351e59bcd0/openhands-tools/openhands/tools/file_editor/definition.py",
+          "blobSha": "58abf6fc67874be135a59e2b012fb081580c341b",
+          "sha256": "da48687fd40e93c943a1634d6326bcf95e624e3bde7ff8e66be693a6035dbf4a",
+          "bytes": 10712,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/OpenHands-software-agent-sdk/openhands-tools/openhands/tools/file_editor/definition.py",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "openhands-tools/openhands/tools/file_editor/editor.py",
+          "url": "https://github.com/OpenHands/software-agent-sdk/blob/5ff99f1b6ca28f7d16870b69f57a31351e59bcd0/openhands-tools/openhands/tools/file_editor/editor.py",
+          "blobSha": "1ebce2e3da50fc2243c5e6ec56510434d7ef4550",
+          "sha256": "a1d735d4406ebc9984f4ea002d994b629ecdd85719878df401dfbb18e22cc833",
+          "bytes": 33481,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/OpenHands-software-agent-sdk/openhands-tools/openhands/tools/file_editor/editor.py",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "openhands-tools/openhands/tools/file_editor/exceptions.py",
+          "url": "https://github.com/OpenHands/software-agent-sdk/blob/5ff99f1b6ca28f7d16870b69f57a31351e59bcd0/openhands-tools/openhands/tools/file_editor/exceptions.py",
+          "blobSha": "5b37b2a52c0ec9654638e803a7cf75ade29f6093",
+          "sha256": "ca35cad9cc9f2cafe88b568dc3b8c9edbe9a0cf7e5697f3328a6864339d2307f",
+          "bytes": 1490,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/OpenHands-software-agent-sdk/openhands-tools/openhands/tools/file_editor/exceptions.py",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "openhands-tools/openhands/tools/file_editor/impl.py",
+          "url": "https://github.com/OpenHands/software-agent-sdk/blob/5ff99f1b6ca28f7d16870b69f57a31351e59bcd0/openhands-tools/openhands/tools/file_editor/impl.py",
+          "blobSha": "a653a6a24aa8f05628e8d75c7a837657752baf80",
+          "sha256": "35353ad394ff6d856dba8201376219059e8d7e4eb57d23970ca4afa41148e4ea",
+          "bytes": 3589,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/OpenHands-software-agent-sdk/openhands-tools/openhands/tools/file_editor/impl.py",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "openhands-tools/openhands/tools/file_editor/utils/__init__.py",
+          "url": "https://github.com/OpenHands/software-agent-sdk/blob/5ff99f1b6ca28f7d16870b69f57a31351e59bcd0/openhands-tools/openhands/tools/file_editor/utils/__init__.py",
+          "blobSha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/OpenHands-software-agent-sdk/openhands-tools/openhands/tools/file_editor/utils/__init__.py",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "openhands-tools/openhands/tools/file_editor/utils/config.py",
+          "url": "https://github.com/OpenHands/software-agent-sdk/blob/5ff99f1b6ca28f7d16870b69f57a31351e59bcd0/openhands-tools/openhands/tools/file_editor/utils/config.py",
+          "blobSha": "bfe020446d6d51ac44bef3ac2f65fa6217fe28c9",
+          "sha256": "8f2420d150037dccb9e36fd316664d0b9d076b07c2f49540b4616b4c9f975d6a",
+          "bytes": 67,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/OpenHands-software-agent-sdk/openhands-tools/openhands/tools/file_editor/utils/config.py",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "openhands-tools/openhands/tools/file_editor/utils/constants.py",
+          "url": "https://github.com/OpenHands/software-agent-sdk/blob/5ff99f1b6ca28f7d16870b69f57a31351e59bcd0/openhands-tools/openhands/tools/file_editor/utils/constants.py",
+          "blobSha": "63f489f277bd9957b1df8050be2fef5220403b5a",
+          "sha256": "a5b3f2bfd5bde9d792be138735c8fad8bf6461219135ce98c06f7e20c7507f33",
+          "bytes": 1013,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/OpenHands-software-agent-sdk/openhands-tools/openhands/tools/file_editor/utils/constants.py",
+          "actualBlobVerified": true
+        },
+        {
+          "path": "openhands-tools/openhands/tools/file_editor/utils/diff.py",
+          "url": "https://github.com/OpenHands/software-agent-sdk/blob/5ff99f1b6ca28f7d16870b69f57a31351e59bcd0/openhands-tools/openhands/tools/file_editor/utils/diff.py",
+          "blobSha": "20f072f3b8851d529ac01c2dcd3f34a4c8afcd23",
+          "sha256": "c7b47e5340a655ed98b287c05838f90db44ac52fe4f33635c0d4ad1dd965b802",
+          "bytes": 4637,
+          "evidenceFile": ".runtime/read-version-sources-2026-11-11/authenticated-attempt2/OpenHands-software-agent-sdk/openhands-tools/openhands/tools/file_editor/utils/diff.py",
+          "actualBlobVerified": true
+        }
+      ]
+    }
+  ],
+  "windowsPathProbe": {
+    "javaVersion": "Temurin 21.0.13+9",
+    "files": [
+      {
+        "file": ".runtime/alpha15-path-alias-probe/observations.log",
+        "bytes": 419,
+        "sha256": "edcb1d517b4ccd4500c9f1cae2d3937b869bfbe47b0404b2ff5e5e61cdbeb4a0"
+      },
+      {
+        "file": ".runtime/alpha15-path-alias-probe/PathAliasProbe.java",
+        "bytes": 656,
+        "sha256": "6d107f942d7aa162902b2d1355ecd33efa38070baeeb6c3d187a51c0cdd2af04"
+      },
+      {
+        "file": ".runtime/alpha15-path-alias-probe/WindowsLinkSupport.java",
+        "bytes": 17256,
+        "sha256": "47cd04299a370c50483d4535a2bfb51cc9559b2d165055c330c56c41e97f49ae"
+      },
+      {
+        "file": ".runtime/alpha15-path-alias-probe/WindowsPath.java",
+        "bytes": 32604,
+        "sha256": "750917f3fbf0593fe8366553c5c5e65666504ebb735ec50fa9bcad9fa2bb6416"
+      }
+    ]
+  }
+}

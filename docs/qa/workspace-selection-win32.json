@@ -1,23 +1,23 @@
 {
-  "recordedAt": "2026-11-10T13:17:11.293Z",
-  "version": "0.2.0-alpha.14",
+  "recordedAt": "2026-11-11T06:22:26.488Z",
+  "version": "0.2.0-alpha.15",
   "platform": "win32",
   "status": "passed",
   "fixture": "ACTUAL_JAR_WITH_EXTERNAL_QUEUE_GATE_AND_RECEIPT_FAULT",
-  "jarSha256": "f262f5e88fff99b01d3a4881673afd0c41821836aa5bfa99a8c7ef816cd86b12",
-  "scriptSha256": "9cf96f86c65876018d75264c9200a9e7ab9927bf446b4e12d85c70686583bbbf",
+  "jarSha256": "0f06b0d7e22a2dbd3ec97cfb07d0788dea11ae9c44746aba650defd3114d82e9",
+  "scriptSha256": "073bbea69b2c5595eb3eec38c66b4cc6aa3865221d70324f82bd3ede7b48d0d3",
   "productionWebHashes": [
     {
       "file": "web/dist/index.html",
-      "sha256": "ec3249f06e2785cb7a0582add3c27633d6efef3328b00a72199a07005b23148e"
+      "sha256": "beaf201dbc22771d3f56ac661cefaa2662b085cc7d8bef6f1863880e2f31f29e"
     },
     {
-      "file": "web/dist/assets/index-Bv8F9oTj.js",
-      "sha256": "2049e5ed366576435f4627c563c344bdd828b6b88d0b11608982fa219e1832d0"
+      "file": "web/dist/assets/index-BaUy8ubQ.css",
+      "sha256": "dc6427dbf9e1df58ed99ca17a5afb5d64c0aa3e08ff4fb12dde1a2e4bbf82313"
     },
     {
-      "file": "web/dist/assets/index-C4kV3agE.css",
-      "sha256": "e72ff1440d5862da3d67fcc203e9f1f2772163e23be03e05e5cf5f8d45b30375"
+      "file": "web/dist/assets/index-CYf0tGPM.js",
+      "sha256": "86a9bff9886aa587c03f80b213220882ef4ea1e136c69993e7a7b31e78790474"
     }
   ],
   "browserModule": "@playwright/test from web/package.json",
@@ -26,224 +26,254 @@
     {
       "name": "Current Jar schema and independent Worker were verified with the external queue gate",
       "status": "passed",
-      "at": "2026-11-10T13:13:32.308Z"
+      "at": "2026-11-11T06:18:52.811Z"
     },
     {
       "name": "Actual local and remote refs excluded aliases and rejected stale creation before any task or model call",
       "status": "passed",
-      "at": "2026-11-10T13:13:42.311Z"
+      "at": "2026-11-11T06:18:59.566Z"
     },
     {
       "name": "Both strategies settled original stale attempts without preparation, Worker operations or budget use",
       "status": "passed",
-      "at": "2026-11-10T13:14:04.922Z"
+      "at": "2026-11-11T06:19:12.824Z"
     },
     {
       "name": "Actual Worker created a locked detached worktree at the fixed branch commit and kept source metadata unchanged",
       "status": "passed",
-      "at": "2026-11-10T13:14:49.244Z"
+      "at": "2026-11-11T06:19:43.560Z"
     },
     {
       "name": "Actual independent clone fetched the remote-only selected commit without borrowing shared Git metadata",
       "status": "passed",
-      "at": "2026-11-10T13:15:11.783Z"
+      "at": "2026-11-11T06:20:04.277Z"
     },
     {
       "name": "Selections, root attempts, preparation leases and real model requests retained their original identities and cumulative budget",
       "status": "passed",
-      "at": "2026-11-10T13:15:11.784Z"
+      "at": "2026-11-11T06:20:04.277Z"
     },
     {
       "name": "Full task ZIPs retained fixed selections, previous attempts and actual ownership while removing claim digests",
       "status": "passed",
-      "at": "2026-11-10T13:15:14.282Z"
+      "at": "2026-11-11T06:20:07.235Z"
     },
     {
       "name": "Production task creation exposed a stale-source 409, kept inputs and submitted refreshed actual Git metadata without execution",
       "status": "passed",
-      "at": "2026-11-10T13:15:31.101Z"
+      "at": "2026-11-11T06:20:28.970Z"
     },
     {
       "name": "Production browser showed actual ownership and fixed selection history on desktop and narrow screens",
       "status": "passed",
-      "at": "2026-11-10T13:15:31.592Z"
+      "at": "2026-11-11T06:20:30.875Z"
     },
     {
       "name": "A changed worktree lock blocked a new root attempt and all Worker execution",
       "status": "passed",
-      "at": "2026-11-10T13:15:33.461Z"
+      "at": "2026-11-11T06:20:33.400Z"
     },
     {
       "name": "Real Worker READY metadata and ACK survived the injected failure saving the task receipt without a model call",
       "status": "passed",
-      "at": "2026-11-10T13:15:46.369Z"
+      "at": "2026-11-11T06:20:55.227Z"
     },
     {
       "name": "Restart and production authorization kept the original UNKNOWN attempt, READY choice and old rules without requesting a replacement selection",
       "status": "passed",
-      "at": "2026-11-10T13:15:57.515Z"
+      "at": "2026-11-11T06:21:08.216Z"
     },
     {
       "name": "Ordinary Jar reused the same READY owner after source moved and exported both attempts without another worktree",
       "status": "passed",
-      "at": "2026-11-10T13:16:17.083Z"
+      "at": "2026-11-11T06:21:29.760Z"
     },
     {
       "name": "The explicit partial-intent fault window remained unchanged and could not be overwritten or reselected",
       "status": "passed",
-      "at": "2026-11-10T13:16:25.876Z"
+      "at": "2026-11-11T06:21:38.770Z"
     },
     {
       "name": "Both launched cores exited and all original recorded Worker identities were independently confirmed stopped",
       "status": "passed",
-      "at": "2026-11-10T13:17:11.292Z"
+      "at": "2026-11-11T06:22:26.488Z"
     }
   ],
   "schedulerParallelism": 2,
   "schedulerMaxPoolSize": 2,
-  "worktreeTaskId": "fc7c0137-dece-4dd3-90f6-5d42edee18e6",
-  "cloneTaskId": "8b127395-4971-4369-a991-6f949e1d6c04",
-  "readyTaskId": "6f4ed25d-8648-4dbf-a8e4-1a5b42ea0861",
-  "partialTaskId": "1f6a5192-8084-4ab5-be8d-31f573c3e679",
-  "featureHead": "a937103738daaddeb6d5387d25a79ffca4150d72",
-  "remoteHead": "168b85715fc699ee107f55a07b55265938994da7",
-  "worktreeOwner": "036d0715-460f-4271-b3b9-22bc4d209918",
-  "originalReadyOwner": "86e29419-0ddc-4605-8ff4-7d3912c35e25",
-  "recoveredReadyOwner": "86e29419-0ddc-4605-8ff4-7d3912c35e25",
-  "readyOriginalTaskExecutionId": "c448a95a-3a17-4661-8641-b4f821b91857",
-  "readyRecoveredTaskExecutionId": "243d78a7-48bd-4228-a0da-354950a3991e",
+  "worktreeTaskId": "b10930d6-fe1e-445a-8bd7-4f0695561c33",
+  "cloneTaskId": "d3e5db84-4328-486b-b3b2-e34b2efc61e1",
+  "readyTaskId": "a190b1ea-e3e9-4a9b-a073-1f602039db4b",
+  "partialTaskId": "72ff0717-940d-4d62-9691-534fc6cf5349",
+  "featureHead": "8e26c83615ff9661b65bd5b8975e09896948a7e2",
+  "remoteHead": "10d4cce44404134b5e1e56a0f7317819576c2ab1",
+  "worktreeOwner": "0ed8f656-b559-4f43-a19b-8bd23b6f426f",
+  "originalReadyOwner": "1a48e266-6b5d-439d-ba42-cf83e1f75987",
+  "recoveredReadyOwner": "1a48e266-6b5d-439d-ba42-cf83e1f75987",
+  "readyOriginalTaskExecutionId": "86d6f853-9bc6-40b0-8f70-697bf5b01170",
+  "readyRecoveredTaskExecutionId": "c4249222-6c45-40ad-8bd7-32c2ec930f4a",
   "automaticReplay": false,
   "corePids": [
-    61252,
-    61136
+    58944,
+    57796
   ],
   "workerPids": [
-    64708,
-    33924
+    64520,
+    36860
   ],
   "modelCalls": [
     {
       "number": 1,
       "marker": "WORKSPACE_WORKTREE_ROOT",
-      "taskId": "fc7c0137-dece-4dd3-90f6-5d42edee18e6",
+      "taskId": "b10930d6-fe1e-445a-8bd7-4f0695561c33",
       "stage": "INVESTIGATE",
-      "requestId": "9f5f71d1-40d3-46ea-a95f-86e0f3752e9b",
-      "workerLeaseId": "c8c7e6b8-5fa1-46ef-9d21-c59db10f66dc",
-      "workerPid": 64708,
-      "at": "2026-11-10T13:14:35.831Z"
+      "requestId": "69648262-0d1e-4cbd-a3cf-fc40f2cd36ef",
+      "workerLeaseId": "b4c6f532-4172-4059-9904-534f5cbf4ee2",
+      "workerPid": 64520,
+      "at": "2026-11-11T06:19:35.439Z"
     },
     {
       "number": 2,
       "marker": "WORKSPACE_WORKTREE_ROOT",
-      "taskId": "fc7c0137-dece-4dd3-90f6-5d42edee18e6",
+      "taskId": "b10930d6-fe1e-445a-8bd7-4f0695561c33",
       "stage": "IMPLEMENT",
-      "requestId": "5c0194d8-29ae-41bf-a8db-b2c1090e7b47",
-      "workerLeaseId": "11bc610f-a371-4835-8fd5-7aee8a931adc",
-      "workerPid": 64708,
-      "at": "2026-11-10T13:14:38.775Z"
+      "requestId": "f32cfb3e-f8d5-4c5a-90a0-62db8b6de805",
+      "workerLeaseId": "3027d4a6-834c-406a-a4c0-25aacd5dc998",
+      "workerPid": 64520,
+      "at": "2026-11-11T06:19:37.124Z"
     },
     {
       "number": 3,
       "marker": "WORKSPACE_WORKTREE_ROOT",
-      "taskId": "fc7c0137-dece-4dd3-90f6-5d42edee18e6",
+      "taskId": "b10930d6-fe1e-445a-8bd7-4f0695561c33",
       "stage": "IMPLEMENT",
-      "requestId": "476d5df3-dcbd-4c4f-945d-420479c939c5",
-      "workerLeaseId": "11bc610f-a371-4835-8fd5-7aee8a931adc",
-      "workerPid": 64708,
-      "at": "2026-11-10T13:14:38.983Z"
+      "requestId": "02b73169-f989-4992-815e-4a097fd9da24",
+      "workerLeaseId": "3027d4a6-834c-406a-a4c0-25aacd5dc998",
+      "workerPid": 64520,
+      "at": "2026-11-11T06:19:37.218Z"
     },
     {
       "number": 4,
       "marker": "WORKSPACE_WORKTREE_ROOT",
-      "taskId": "fc7c0137-dece-4dd3-90f6-5d42edee18e6",
-      "stage": "REVIEW",
-      "requestId": "3abbe27e-7769-472e-bfb1-7153e1e957ff",
-      "workerLeaseId": "7108933a-1b77-44a7-bd00-6dc3373b8a85",
-      "workerPid": 64708,
-      "at": "2026-11-10T13:14:47.358Z"
+      "taskId": "b10930d6-fe1e-445a-8bd7-4f0695561c33",
+      "stage": "IMPLEMENT",
+      "requestId": "d1d24008-6b94-488d-8433-62fe8f0ea718",
+      "workerLeaseId": "3027d4a6-834c-406a-a4c0-25aacd5dc998",
+      "workerPid": 64520,
+      "at": "2026-11-11T06:19:37.308Z"
     },
     {
       "number": 5,
-      "marker": "WORKSPACE_CLONE_ROOT",
-      "taskId": "8b127395-4971-4369-a991-6f949e1d6c04",
-      "stage": "INVESTIGATE",
-      "requestId": "e5c56610-9a2e-4c51-89f5-8f9f37ec00ed",
-      "workerLeaseId": "6351f260-e8c8-4e2a-a783-5842d8eebcf5",
-      "workerPid": 64708,
-      "at": "2026-11-10T13:15:02.687Z"
+      "marker": "WORKSPACE_WORKTREE_ROOT",
+      "taskId": "b10930d6-fe1e-445a-8bd7-4f0695561c33",
+      "stage": "REVIEW",
+      "requestId": "9813a785-a68b-4d6a-b3c6-c66efbfac173",
+      "workerLeaseId": "7b18b211-84e3-4ff6-baad-2b34880a9eb4",
+      "workerPid": 64520,
+      "at": "2026-11-11T06:19:42.462Z"
     },
     {
       "number": 6,
       "marker": "WORKSPACE_CLONE_ROOT",
-      "taskId": "8b127395-4971-4369-a991-6f949e1d6c04",
-      "stage": "IMPLEMENT",
-      "requestId": "e5ea7235-2145-4ecf-9865-d88a9ab74f1a",
-      "workerLeaseId": "b8d437a1-19ed-4c88-9c88-ca389023322d",
-      "workerPid": 64708,
-      "at": "2026-11-10T13:15:04.084Z"
+      "taskId": "d3e5db84-4328-486b-b3b2-e34b2efc61e1",
+      "stage": "INVESTIGATE",
+      "requestId": "233cdc01-1732-48f4-86c8-e021425f80f6",
+      "workerLeaseId": "310a0a92-fb8e-4eee-bb1e-9b07191edc96",
+      "workerPid": 64520,
+      "at": "2026-11-11T06:19:54.726Z"
     },
     {
       "number": 7,
       "marker": "WORKSPACE_CLONE_ROOT",
-      "taskId": "8b127395-4971-4369-a991-6f949e1d6c04",
+      "taskId": "d3e5db84-4328-486b-b3b2-e34b2efc61e1",
       "stage": "IMPLEMENT",
-      "requestId": "459c1d95-fc9f-4577-b170-0f79069b12dd",
-      "workerLeaseId": "b8d437a1-19ed-4c88-9c88-ca389023322d",
-      "workerPid": 64708,
-      "at": "2026-11-10T13:15:04.255Z"
+      "requestId": "4d23f781-6efa-4151-b4e0-76ce0137609a",
+      "workerLeaseId": "f76b348a-ca25-4da0-b26a-326efec8b8b3",
+      "workerPid": 64520,
+      "at": "2026-11-11T06:19:56.274Z"
     },
     {
       "number": 8,
       "marker": "WORKSPACE_CLONE_ROOT",
-      "taskId": "8b127395-4971-4369-a991-6f949e1d6c04",
-      "stage": "REVIEW",
-      "requestId": "35cd7f60-ea45-4c2e-8be8-14b670f9dfe6",
-      "workerLeaseId": "ffd0acdb-547b-4614-80e4-e9b0c12dbd13",
-      "workerPid": 64708,
-      "at": "2026-11-10T13:15:09.986Z"
+      "taskId": "d3e5db84-4328-486b-b3b2-e34b2efc61e1",
+      "stage": "IMPLEMENT",
+      "requestId": "113a971c-1442-4a71-a353-91abdb17bde5",
+      "workerLeaseId": "f76b348a-ca25-4da0-b26a-326efec8b8b3",
+      "workerPid": 64520,
+      "at": "2026-11-11T06:19:56.480Z"
     },
     {
       "number": 9,
-      "marker": "WORKSPACE_READY_ROOT",
-      "taskId": "6f4ed25d-8648-4dbf-a8e4-1a5b42ea0861",
-      "stage": "INVESTIGATE",
-      "requestId": "4cb80a14-14ea-4ece-9c9a-b8e86212df32",
-      "workerLeaseId": "7b23a6be-9e9b-4f7a-bf9b-b728e295f274",
-      "workerPid": 33924,
-      "at": "2026-11-10T13:16:07.114Z"
+      "marker": "WORKSPACE_CLONE_ROOT",
+      "taskId": "d3e5db84-4328-486b-b3b2-e34b2efc61e1",
+      "stage": "IMPLEMENT",
+      "requestId": "79e82cf5-cec7-4d85-a100-c032a5e3ebba",
+      "workerLeaseId": "f76b348a-ca25-4da0-b26a-326efec8b8b3",
+      "workerPid": 64520,
+      "at": "2026-11-11T06:19:56.680Z"
     },
     {
       "number": 10,
-      "marker": "WORKSPACE_READY_ROOT",
-      "taskId": "6f4ed25d-8648-4dbf-a8e4-1a5b42ea0861",
-      "stage": "IMPLEMENT",
-      "requestId": "d60fb5df-e35b-4ca0-ba65-38e9198a0252",
-      "workerLeaseId": "7713f587-15d3-4023-8e89-202f75f613cb",
-      "workerPid": 33924,
-      "at": "2026-11-10T13:16:08.766Z"
+      "marker": "WORKSPACE_CLONE_ROOT",
+      "taskId": "d3e5db84-4328-486b-b3b2-e34b2efc61e1",
+      "stage": "REVIEW",
+      "requestId": "c8d63ff0-6028-4037-84ac-444704e74708",
+      "workerLeaseId": "fa4ea5cd-8437-4872-92ba-632657c03faa",
+      "workerPid": 64520,
+      "at": "2026-11-11T06:20:02.558Z"
     },
     {
       "number": 11,
       "marker": "WORKSPACE_READY_ROOT",
-      "taskId": "6f4ed25d-8648-4dbf-a8e4-1a5b42ea0861",
-      "stage": "IMPLEMENT",
-      "requestId": "5aea855b-4d60-4763-ba2f-36659a189235",
-      "workerLeaseId": "7713f587-15d3-4023-8e89-202f75f613cb",
-      "workerPid": 33924,
-      "at": "2026-11-10T13:16:08.879Z"
+      "taskId": "a190b1ea-e3e9-4a9b-a073-1f602039db4b",
+      "stage": "INVESTIGATE",
+      "requestId": "b51afc82-c329-435b-b376-36e12855325e",
+      "workerLeaseId": "ac18e0f5-96e3-4b2b-955b-bc90306b7331",
+      "workerPid": 36860,
+      "at": "2026-11-11T06:21:19.470Z"
     },
     {
       "number": 12,
       "marker": "WORKSPACE_READY_ROOT",
-      "taskId": "6f4ed25d-8648-4dbf-a8e4-1a5b42ea0861",
+      "taskId": "a190b1ea-e3e9-4a9b-a073-1f602039db4b",
+      "stage": "IMPLEMENT",
+      "requestId": "4ab275d3-e1a7-42eb-a201-a9e1db935c6b",
+      "workerLeaseId": "5d0f3fdc-66ac-4a7c-8f2a-b2c4cc2f554c",
+      "workerPid": 36860,
+      "at": "2026-11-11T06:21:21.152Z"
+    },
+    {
+      "number": 13,
+      "marker": "WORKSPACE_READY_ROOT",
+      "taskId": "a190b1ea-e3e9-4a9b-a073-1f602039db4b",
+      "stage": "IMPLEMENT",
+      "requestId": "06bc98e2-bf03-4cbc-96d2-196e667772a4",
+      "workerLeaseId": "5d0f3fdc-66ac-4a7c-8f2a-b2c4cc2f554c",
+      "workerPid": 36860,
+      "at": "2026-11-11T06:21:21.219Z"
+    },
+    {
+      "number": 14,
+      "marker": "WORKSPACE_READY_ROOT",
+      "taskId": "a190b1ea-e3e9-4a9b-a073-1f602039db4b",
+      "stage": "IMPLEMENT",
+      "requestId": "ea2c09f1-6fb6-42cf-a37e-db7d1b03e24c",
+      "workerLeaseId": "5d0f3fdc-66ac-4a7c-8f2a-b2c4cc2f554c",
+      "workerPid": 36860,
+      "at": "2026-11-11T06:21:21.323Z"
+    },
+    {
+      "number": 15,
+      "marker": "WORKSPACE_READY_ROOT",
+      "taskId": "a190b1ea-e3e9-4a9b-a073-1f602039db4b",
       "stage": "REVIEW",
-      "requestId": "5a069f5c-c43e-4577-bd34-251aa2541d0f",
-      "workerLeaseId": "94ec5b18-ee40-4233-8ebf-5c7b1caab208",
-      "workerPid": 33924,
-      "at": "2026-11-10T13:16:13.642Z"
+      "requestId": "3863ef73-983c-435e-803a-2d2fbdfc4019",
+      "workerLeaseId": "829778bf-272e-4eac-89f4-4ac593a67cdc",
+      "workerPid": 36860,
+      "at": "2026-11-11T06:21:26.144Z"
     }
   ],
   "pageErrors": [],
   "modelErrors": [],
-  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\workspace-selection-II6ftK\\reports"
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\workspace-selection-mtDG1B\\reports"
 }

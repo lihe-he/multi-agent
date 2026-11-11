@@ -138,7 +138,10 @@ class WorkspaceWriteEngineTest {
             await(() -> {
                 if (condition.getAsBoolean()) return true;
                 Map<String, Object> root = store.find("taskExecution", str(task(), "taskExecutionId"));
-                if (root != null && root.containsKey("endedAt")) fail("original root ended before the expected boundary: " + task());
+                if (root != null && root.containsKey("endedAt")) {
+                    if (condition.getAsBoolean()) return true;
+                    fail("original root ended before the expected boundary: " + task());
+                }
                 return false;
             }, 90);
         }

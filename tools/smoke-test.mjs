@@ -93,7 +93,8 @@ async function startFixture() {
       if (completedTools.length === 0 && toolNames.includes('read_file')) {
         reply(response, { content: null, tool_calls: [tool('read_file', { path: 'src/greeting.txt' })] });
       } else if (writable && completedTools.length === 1) {
-        reply(response, { content: null, tool_calls: [tool('write_file', { path: 'src/greeting.txt', content: 'hello agent\n' })] });
+        const read = JSON.parse(completedTools[0].content); assert.match(read.readVersion, /^file-read-/);
+        reply(response, { content: null, tool_calls: [tool('write_file', { path: 'src/greeting.txt', content: 'hello agent\n', expectedVersion: read.readVersion })] });
       } else if (writable && completedTools.length === 2 && toolNames.includes('run_command')) {
         reply(response, { content: null, tool_calls: [tool('run_command', { command: 'node verify.mjs' })] });
       } else if (reviewing) {

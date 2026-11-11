@@ -233,7 +233,8 @@ class TeamExecutionTest {
             if (stage(prompt, "SUBAGENT") && prompt.contains("委派目标：CHILD_WRITE")) {
                 assertFalse(names.contains("run_command"), "narrow file scope cannot grant command access");
                 if (results.isEmpty()) return call("read_file", obj("path", "outside.txt"));
-                if (results.size() == 1) { assertTrue(result(results, 0).containsKey("error")); assertFalse(str(results.getFirst(), "content").contains("outside-private-value")); return call("write_file", obj("path", "src/source.txt", "content", "made\n")); }
+                if (results.size() == 1) { assertTrue(result(results, 0).containsKey("error")); assertFalse(str(results.getFirst(), "content").contains("outside-private-value")); return call("read_file", obj("path", "src/source.txt")); }
+                if (results.size() == 2) return call("write_file", obj("path", "src/source.txt", "content", "made\n", "expectedVersion", str(result(results, 1), "readVersion")));
                 return answer("Changed src/source.txt; parent must adopt and independently verify.");
             }
             if (stage(prompt, "SUBAGENT") && prompt.contains("委派目标：CHILD_READ")) {
@@ -315,13 +316,18 @@ class TeamExecutionTest {
     @Test
     void conflictingParentEditCannotBeOverwrittenByChildAdoption() throws Exception {
         fixture.set((prompt, results, names) -> {
-            if (stage(prompt, "SUBAGENT")) { if (results.isEmpty()) return call("write_file", obj("path", "src/source.txt", "content", "made\n")); return answer("child change"); }
+            if (stage(prompt, "SUBAGENT")) {
+                if (results.isEmpty()) return call("read_file", obj("path", "src/source.txt"));
+                if (results.size() == 1) return call("write_file", obj("path", "src/source.txt", "content", "made\n", "expectedVersion", str(result(results, 0), "readVersion")));
+                return answer("child change");
+            }
             if (stage(prompt, "IMPLEMENT")) {
                 if (results.isEmpty()) return call("delegate_agent", obj("definitionId", "agent-developer", "title", "writer", "goal", "write", "scope", List.of("src/")));
                 if (results.size() == 1) return call("wait_agent", obj("subtaskId", map(result(results, 0), "agent").get("subtaskId")));
-                if (results.size() == 2) return call("write_file", obj("path", "src/source.txt", "content", "base\nparent edit\n"));
-                if (results.size() == 3) return call("adopt_agent_changes", obj("subtaskId", map(result(results, 0), "agent").get("subtaskId")));
-                assertEquals("REJECTED", str(result(results, 3), "state")); return answer("conflict requires a revised integration decision");
+                if (results.size() == 2) return call("read_file", obj("path", "src/source.txt"));
+                if (results.size() == 3) return call("write_file", obj("path", "src/source.txt", "content", "base\nparent edit\n", "expectedVersion", str(result(results, 2), "readVersion")));
+                if (results.size() == 4) return call("adopt_agent_changes", obj("subtaskId", map(result(results, 0), "agent").get("subtaskId")));
+                assertEquals("REJECTED", str(result(results, 4), "state")); return answer("conflict requires a revised integration decision");
             }
             return ordinary(prompt);
         });

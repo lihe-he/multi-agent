@@ -146,8 +146,12 @@ const model = createServer(async (request, response) => {
     for (const result of results) assert.equal(JSON.parse(result.content).error, undefined);
     let message = { role: 'assistant', content: stage === 'REVIEW' ? '{"approved":true,"issues":[]}' : 'Original workspace fixture stage completed.' };
     if (stage === 'IMPLEMENT' && !results.length) {
-      assert.ok(names.includes('write_file')); message = { role: 'assistant', content: null, tool_calls: [{ id: `workspace-write-${modelCalls.length}`, type: 'function',
-        function: { name: 'write_file', arguments: JSON.stringify({ path: 'app.txt', content: `owned ${marker}\n` }) } }] };
+      assert.ok(names.includes('read_file')); message = { role: 'assistant', content: null, tool_calls: [{ id: `workspace-read-${modelCalls.length}`, type: 'function',
+        function: { name: 'read_file', arguments: JSON.stringify({ path: 'app.txt' }) } }] };
+    } else if (stage === 'IMPLEMENT' && results.length === 1) {
+      const read = JSON.parse(results[0].content); assert.match(read.readVersion, /^file-read-/); assert.ok(names.includes('write_file'));
+      message = { role: 'assistant', content: null, tool_calls: [{ id: `workspace-write-${modelCalls.length}`, type: 'function',
+        function: { name: 'write_file', arguments: JSON.stringify({ path: 'app.txt', content: `owned ${marker}\n`, expectedVersion: read.readVersion }) } }] };
     }
     response.writeHead(200, { 'Content-Type': 'application/json' }); response.end(JSON.stringify({ id: `workspace-response-${modelCalls.length}`, model: body.model,
       choices: [{ message, finish_reason: message.tool_calls ? 'tool_calls' : 'stop' }], usage: { prompt_tokens: 10, completion_tokens: 5 } }));
@@ -212,8 +216,8 @@ try {
   pass('Actual independent clone fetched the remote-only selected commit without borrowing shared Git metadata');
   for (const current of [worktree, clone]) {
     assert.equal(current.executions.length, 2); assert.equal(current.executions[1].state, 'WAITING_INPUT'); assert.equal(current.task.workspaceSelectionHistory[0].selection.version, 1);
-    assert.equal(current.task.workspaceSelection.version, 2); assert.equal(current.task.budget.usedCalls, 4); assert.equal(current.executions[0].budgetAtStart.usedCalls, 0);
-    assert.equal(current.requests.length, 4); assert.ok(current.leases.every(lease => lease.executorPid === first.worker.pid));
+    assert.equal(current.task.workspaceSelection.version, 2); assert.equal(current.task.budget.usedCalls, 5); assert.equal(current.executions[0].budgetAtStart.usedCalls, 0);
+    assert.equal(current.requests.length, 5); assert.ok(current.leases.every(lease => lease.executorPid === first.worker.pid));
     const preparation = current.operations.find(operation => operation.kind === 'WORKSPACE'); assert.deepEqual(preparation.workspaceSelection, current.task.workspaceSelection);
     assert.deepEqual(current.leases.find(lease => lease.id === preparation.workerLeaseId).workspaceSelection, current.task.workspaceSelection);
     assert.deepEqual(current.executions[0].workspaceOwnership, current.task.workspaceOwnership);
@@ -301,7 +305,7 @@ try {
   await api(`/tasks/${readyTask.id}/resume`, {}); const recovered = await succeeded(readyTask.id); save('ready-recovered-completed.json', recovered);
   assert.equal(recovered.task.recoveredPreparation, true); assert.deepEqual(recovered.task.workspaceOwnership, readyManifest.facts.workspaceOwnership); assert.equal(recovered.task.baseline, readyTask.workspaceSelection.baseline);
   assert.equal((await options(project)).worktrees.length, worktreeCount); assert.equal(recovered.executions.length, 2); assert.equal(recovered.executions[1].state, 'UNKNOWN'); assert.ok(recovered.executions[1].reconciliation);
-  assert.equal(recovered.task.budget.usedCalls, 4); assert.equal(recovered.executions[0].budgetAtStart.usedCalls, 0); assert.ok(recovered.requests.every(request => request.workerId === second.worker.id)); sourceUnchanged(movedSource);
+  assert.equal(recovered.task.budget.usedCalls, 5); assert.equal(recovered.executions[0].budgetAtStart.usedCalls, 0); assert.ok(recovered.requests.every(request => request.workerId === second.worker.id)); sourceUnchanged(movedSource);
   const recoveredArchive = await archive(readyTask.id, 'ready-unknown-and-recovered.zip'); assert.deepEqual(recoveredArchive.task.workspaceOwnership, readyManifest.facts.workspaceOwnership); assert.equal(recoveredArchive.executions[1].state, 'UNKNOWN');
   pass('Ordinary Jar reused the same READY owner after source moved and exported both attempts without another worktree');
   phase = 'partial preparation preservation'; const latest = await options(project), partial = await createTask(project, route, '保留部分准备意图', 'WORKSPACE_PARTIAL_ROOT', latest, 'WORKTREE');

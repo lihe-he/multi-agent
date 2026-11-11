@@ -135,12 +135,11 @@ class ProcessWorkspaceRuntimeTest {
             assertEquals("ACKNOWLEDGED", prepare.get("state")); assertEquals(((Number) fixture.worker.identity().get("pid")).longValue(), ((Number) prepare.get("executorPid")).longValue());
             if ("WORKTREE".equals(strategy)) { assertTrue(Files.isRegularFile(Path.of(fixture.workspace).resolve(".git"))); assertEquals(fixture.source.resolve(".git").toRealPath().toString(), ownership.get("commonDirectory")); }
             else { assertTrue(Files.isDirectory(Path.of(fixture.workspace).resolve(".git"))); assertNotEquals(fixture.source.resolve(".git").toRealPath().toString(), ownership.get("commonDirectory")); }
-            fixture.response = (round, request) -> round == 1 ? obj("role", "assistant", "content", null, "tool_calls", List.of(obj("id", "owned-write", "type", "function", "function", obj("name", "write_file", "arguments", "{\"path\":\"app.txt\",\"content\":\"owned task write\\n\"}"))))
-                : obj("role", "assistant", "content", "owned execution complete");
+            fixture.response = (round, request) -> readThenWrite(round, request, "owned-write", "owned task write\n", "owned execution complete");
             assertEquals("SUCCEEDED", fixture.run().get("status")); assertEquals("owned task write\n", Files.readString(Path.of(fixture.workspace).resolve("app.txt")));
             assertEquals("base\n", Files.readString(fixture.source.resolve("app.txt"))); assertArrayEquals(fixture.sourceIndex, Files.readAllBytes(fixture.source.resolve(".git/index"))); assertArrayEquals(fixture.sourceConfig, Files.readAllBytes(fixture.source.resolve(".git/config")));
             Map<String, Object> modelLease = fixture.store.workerLeases("", "root", "").stream().filter(lease -> "MODEL".equals(str(lease, "operationType"))).findFirst().orElseThrow();
-            assertEquals(ownership, map(modelLease, "workspaceOwnership")); assertEquals(2, fixture.httpCalls.get()); assertEquals(2, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", 0));
+            assertEquals(ownership, map(modelLease, "workspaceOwnership")); assertEquals(3, fixture.httpCalls.get()); assertEquals(3, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", 0));
             assertEquals(403, assertThrows(ApiException.class, () -> fixture.runtime.prepareSelected(fixture.source.toString(), "other-task", false, fixture.selection)).status());
             assertFalse(Files.exists(fixture.data.resolve("workspaces/other-task/work"))); assertTrue(fixture.errors.isEmpty(), fixture.errors.toString());
         }
@@ -149,12 +148,11 @@ class ProcessWorkspaceRuntimeTest {
     @Test
     void coreCommitsEachOriginalRequestBeforeHttpAndChildWritesOnlyTheTaskWorkspace() throws Exception {
         try (var fixture = new Fixture()) {
-            fixture.response = (round, request) -> round == 1 ? obj("role", "assistant", "content", null, "tool_calls", List.of(obj("id", "original-write-tool", "type", "function", "function", obj("name", "write_file", "arguments", "{\"path\":\"app.txt\",\"content\":\"written by actual worker\\n\"}"))))
-                : obj("role", "assistant", "content", "completed " + fixture.key);
-            Map<String, Object> result = fixture.run(); assertEquals("SUCCEEDED", result.get("status")); assertEquals(2, fixture.httpCalls.get());
+            fixture.response = (round, request) -> readThenWrite(round, request, "original-write-tool", "written by actual worker\n", "completed " + fixture.key);
+            Map<String, Object> result = fixture.run(); assertEquals("SUCCEEDED", result.get("status")); assertEquals(3, fixture.httpCalls.get());
             assertEquals("base\n", Files.readString(fixture.source.resolve("app.txt"))); assertEquals("written by actual worker\n", Files.readString(Path.of(fixture.workspace).resolve("app.txt")));
-            List<Map<String, Object>> requests = fixture.store.list("modelRequest"); assertEquals(2, requests.size()); assertTrue(requests.stream().allMatch(request -> "SUCCEEDED".equals(str(request, "state")) && !str(request, "id").isBlank()));
-            assertEquals(2, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", 0)); assertEquals(0, fixture.resources.activeModels()); assertTrue(fixture.resources.snapshot().values().stream().allMatch(value -> value == 0));
+            List<Map<String, Object>> requests = fixture.store.list("modelRequest"); assertEquals(3, requests.size()); assertTrue(requests.stream().allMatch(request -> "SUCCEEDED".equals(str(request, "state")) && !str(request, "id").isBlank()));
+            assertEquals(3, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", 0)); assertEquals(0, fixture.resources.activeModels()); assertTrue(fixture.resources.snapshot().values().stream().allMatch(value -> value == 0));
             Map<String, Object> evidence = fixture.store.list("evidence").getFirst(); assertEquals("LOCAL_PROCESS", evidence.get("deployment"));
             assertEquals(((Number) fixture.worker.identity().get("pid")).longValue(), ((Number) evidence.get("executorPid")).longValue()); assertNotEquals(ProcessHandle.current().pid(), ((Number) evidence.get("executorPid")).longValue());
             assertFalse(requests.toString().contains(fixture.key)); assertFalse(evidence.toString().contains(fixture.key)); assertTrue(str(evidence, "output").contains("[REDACTED]"));
@@ -214,6 +212,23 @@ class ProcessWorkspaceRuntimeTest {
             Map<String, Object> after = fixture.store.list("worker").getFirst(); assertEquals(before.get("lastHeartbeatSequence"), after.get("lastHeartbeatSequence")); assertEquals(before.get("heartbeatAt"), after.get("heartbeatAt"));
             assertEquals(before.get("expiresAt"), after.get("expiresAt")); assertEquals("CHILD_PIPE", after.get("heartbeatSource"));
         }
+    }
+
+    /**
+     * 实际独立 Worker 的读取回执授权原覆盖，原 HTTP/SQLite 来源与预算继续核对。
+     */
+    private Map<String, Object> readThenWrite(int round, Map<String, Object> request, String toolId, String content, String completed) {
+        try {
+            if (round == 1) return obj("role", "assistant", "content", null, "tool_calls", List.of(obj("id", toolId + "-read", "type", "function", "function", obj("name", "read_file", "arguments", "{\"path\":\"app.txt\"}"))));
+            if (round == 2) {
+                Map<String, Object> readMessage = objects(request.get("messages")).stream().filter(message -> "tool".equals(str(message, "role"))).toList().getLast();
+                assertEquals(toolId + "-read", readMessage.get("tool_call_id"));
+                Map<String, Object> read = mapper.readValue(str(readMessage, "content"), new com.fasterxml.jackson.core.type.TypeReference<>() {});
+                assertEquals("base\n", read.get("content")); assertTrue(str(read, "readVersion").matches("file-read-[0-9a-f-]{36}"));
+                return obj("role", "assistant", "content", null, "tool_calls", List.of(obj("id", toolId, "type", "function", "function", obj("name", "write_file", "arguments", mapper.writeValueAsString(obj("path", "app.txt", "content", content, "expectedVersion", read.get("readVersion")))))));
+            }
+            assertEquals(3, round); return obj("role", "assistant", "content", completed);
+        } catch (java.io.IOException exception) { throw new AssertionError("Actual file read receipt could not be parsed", exception); }
     }
 
     private static void git(Path workspace, String... arguments) throws Exception {

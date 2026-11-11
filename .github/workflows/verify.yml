@@ -70,6 +70,8 @@ jobs:
         run: npm run test:workspace-writes
         env:
           PLAYWRIGHT_CHANNEL: chromium
+      - name: Actual original Worker file versions and complete history
+        run: npm run test:file-versions
       - name: Standalone browser and attached desktop lifecycle
         if: runner.os != 'Linux'
         run: npm run test:standalone
@@ -120,6 +122,7 @@ jobs:
             docs/qa/dispatch-queue-*.json
             docs/qa/workspace-selection-*.json
             docs/qa/workspace-writes-*.json
+            docs/qa/file-versions-*.json
             docs/qa/bundled-workspace-writer-*.json
             .runtime/bundled-workspace-writer-*/
             .runtime/process-recovery-*/
@@ -137,6 +140,11 @@ jobs:
             .runtime/workspace-writes-*/data/workbench.sqlite*
             .runtime/workspace-writes-*/data/workspaces/
             .runtime/workspace-writes-*/中文 write source/
+            .runtime/file-versions-*/reports/
+            .runtime/file-versions-*/fixture-classes/
+            .runtime/file-versions-*/data/workbench.sqlite*
+            .runtime/file-versions-*/data/workspaces/
+            .runtime/file-versions-*/中文 file version source/
             .runtime/desktop-deps-*.log
             .runtime/desktop-deps-verified.json
             .runtime/desktop-package-*.log

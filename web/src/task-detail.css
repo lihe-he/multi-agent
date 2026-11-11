@@ -1,0 +1,9 @@
+.task-detail-tabs {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.task-detail-tabs > button {
+  flex-shrink: 0;
+}

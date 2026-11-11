@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -673,6 +674,24 @@ public class ExecutionStore implements AutoCloseable {
             try (var rows = query.executeQuery()) { while (rows.next()) requests.add(decode(rows.getString(1))); }
         }
         return requests;
+    }
+
+    /**
+     * 文件回执按已有请求的持久行序关联来源，不用文件时间推断调用顺序。
+     */
+    public synchronized Map<String, Map<String, Object>> modelRequestSources(String taskId) {
+        get("task", taskId);
+        Map<String, Map<String, Object>> result = new LinkedHashMap<>();
+        try (var query = connection.prepareStatement("SELECT rowid,body FROM entities WHERE kind='modelRequest' AND json_extract(body,'$.taskId')=?")) {
+            query.setString(1, taskId);
+            try (var rows = query.executeQuery()) {
+                while (rows.next()) {
+                    Map<String, Object> source = decode(rows.getString(2));
+                    result.put(str(source, "id"), obj("sequence", rows.getLong(1), "request", source));
+                }
+            }
+            return result;
+        } catch (Exception exception) { throw failure(exception); }
     }
 
     public synchronized Map<String, Object> modelRequestPage(String taskId, String runId, long before, int requestedLimit, String state, String queryText) {

@@ -271,14 +271,20 @@ class RuntimeIntegrationTest {
         AtomicInteger requests = new AtomicInteger(), tools = new AtomicInteger();
         AtomicReference<java.nio.channels.SeekableByteChannel> held = new AtomicReference<>();
         java.util.concurrent.CompletableFuture<Void> released = new java.util.concurrent.CompletableFuture<>();
-        Map<String, Object> writeTool = tool("write_file", Map.of("path", "value.txt", "content", "after\n"));
+        Map<String, Object> readTool = tool("read_file", Map.of("path", "value.txt"));
         HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext("/", exchange -> {
             try {
-                exchange.getRequestBody().readAllBytes();
-                Map<String, Object> message = requests.getAndIncrement() == 0
-                    ? Map.of("role", "assistant", "tool_calls", List.of(writeTool))
-                    : Map.of("role", "assistant", "content", "completed");
+                Map<String, Object> incoming = json.readValue(exchange.getRequestBody().readAllBytes(), new TypeReference<>() {});
+                int round = requests.getAndIncrement();
+                Map<String, Object> message;
+                if (round == 0) message = Map.of("role", "assistant", "tool_calls", List.of(readTool));
+                else if (round == 1) {
+                    Map<?, ?> observed = ((List<?>) incoming.get("messages")).stream().filter(item -> item instanceof Map<?, ?> value && "tool".equals(value.get("role")))
+                        .map(item -> (Map<?, ?>) item).findFirst().orElseThrow();
+                    String expectedVersion = json.readTree(observed.get("content").toString()).get("readVersion").asText();
+                    message = Map.of("role", "assistant", "tool_calls", List.of(tool("write_file", Map.of("path", "value.txt", "content", "after\n", "expectedVersion", expectedVersion))));
+                } else message = Map.of("role", "assistant", "content", "completed");
                 byte[] response = json.writeValueAsBytes(Map.of("choices", List.of(Map.of("message", message))));
                 exchange.sendResponseHeaders(200, response.length); exchange.getResponseBody().write(response);
             } finally { exchange.close(); }
@@ -289,7 +295,12 @@ class RuntimeIntegrationTest {
             tools.incrementAndGet();
             try {
                 Path receipt;
-                try (var files = Files.list(root.getParent().resolve("operations"))) { receipt = files.filter(file -> file.toString().endsWith(".json")).findFirst().orElseThrow(); }
+                try (var files = Files.list(root.getParent().resolve("operations"))) {
+                    receipt = files.filter(file -> file.toString().endsWith(".json")).filter(file -> {
+                        try { var entry = json.readTree(file.toFile()); return "write_file".equals(entry.path("tool").asText()) && "SENT".equals(entry.path("state").asText()); }
+                        catch (IOException exception) { throw new IllegalStateException(exception); }
+                    }).findFirst().orElseThrow();
+                }
                 held.set(Files.newByteChannel(receipt, java.util.Set.of(java.nio.file.StandardOpenOption.READ, com.sun.nio.file.ExtendedOpenOption.NOSHARE_DELETE)));
                 if (transientLock) Thread.ofPlatform().daemon(true).start(() -> {
                     try { Thread.sleep(250); held.get().close(); released.complete(null); }
@@ -303,12 +314,15 @@ class RuntimeIntegrationTest {
             assertEquals(transientLock ? "SUCCEEDED" : "UNKNOWN", result.get("status"), result.toString());
             assertEquals("after\n", Files.readString(root.resolve("value.txt")), "the original file effect must remain intact");
             assertEquals(1, tools.get(), "metadata recovery must not replay the completed file tool");
-            assertEquals(transientLock ? 2 : 1, requests.get(), "unknown receipt persistence must prevent a further model request");
+            assertEquals(transientLock ? 3 : 2, requests.get(), "unknown receipt persistence must prevent a further model request");
             assertTrue(System.nanoTime() - started < java.util.concurrent.TimeUnit.SECONDS.toNanos(5), "metadata replacement must remain bounded");
             if (transientLock) released.get(2, java.util.concurrent.TimeUnit.SECONDS);
             try (var files = Files.list(root.getParent().resolve("operations"))) {
-                List<Path> receipts = files.filter(file -> file.toString().endsWith(".json")).toList(); assertEquals(1, receipts.size());
-                String state = json.readTree(receipts.getFirst().toFile()).get("state").asText();
+                List<Path> receipts = files.filter(file -> file.toString().endsWith(".json")).toList(); assertEquals(2, receipts.size());
+                List<com.fasterxml.jackson.databind.JsonNode> entries = new ArrayList<>();
+                for (Path receipt : receipts) entries.add(json.readTree(receipt.toFile()));
+                assertEquals("CONFIRMED", entries.stream().filter(entry -> "read_file".equals(entry.path("tool").asText())).findFirst().orElseThrow().path("state").asText());
+                String state = entries.stream().filter(entry -> "write_file".equals(entry.path("tool").asText())).findFirst().orElseThrow().path("state").asText();
                 if (transientLock) assertEquals("CONFIRMED", state);
                 else assertTrue(java.util.Set.of("SENT", "UNKNOWN").contains(state), "a missing receipt cannot be claimed as confirmed");
             }
@@ -660,7 +674,7 @@ class RuntimeIntegrationTest {
         return output;
     }
 
-    private Map<String, Object> tool(String name, Map<String, Object> arguments) throws Exception {
+    private Map<String, Object> tool(String name, Map<String, Object> arguments) throws IOException {
         return Map.of("id", "fixture-" + name + "-" + arguments.hashCode(), "type", "function",
                 "function", Map.of("name", name, "arguments", json.writeValueAsString(arguments)));
     }

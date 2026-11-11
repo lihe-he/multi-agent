@@ -142,7 +142,11 @@ const model = createServer(async (request, response) => {
     if (prior === 0 && gates.has(marker)) await gates.get(marker).promise;
     for (const result of results) assert.equal(JSON.parse(result.content).error, undefined);
     let message = { role: 'assistant', content: stage === 'REVIEW' ? '{"approved":true,"issues":[]}' : 'Original workspace write stage completed.' };
-    if (stage === 'IMPLEMENT' && !results.length) { assert.ok(names.includes('write_file')); message = { role: 'assistant', content: null, tool_calls: [{ id: `original-write-${marker}`, type: 'function', function: { name: 'write_file', arguments: JSON.stringify({ path: 'app.txt', content: `owned ${marker}\n` }) } }] }; }
+    if (stage === 'IMPLEMENT' && !results.length) { assert.ok(names.includes('read_file')); message = { role: 'assistant', content: null, tool_calls: [{ id: `original-read-${marker}`, type: 'function', function: { name: 'read_file', arguments: JSON.stringify({ path: 'app.txt' }) } }] }; }
+    else if (stage === 'IMPLEMENT' && results.length === 1) {
+      const read = JSON.parse(results[0].content); assert.match(read.readVersion, /^file-read-/); assert.ok(names.includes('write_file'));
+      message = { role: 'assistant', content: null, tool_calls: [{ id: `original-write-${marker}`, type: 'function', function: { name: 'write_file', arguments: JSON.stringify({ path: 'app.txt', content: `owned ${marker}\n`, expectedVersion: read.readVersion }) } }] };
+    }
     response.writeHead(200, { 'Content-Type': 'application/json' }); response.end(JSON.stringify({ id: `original-write-response-${number}`, model: body.model, choices: [{ message, finish_reason: message.tool_calls ? 'tool_calls' : 'stop' }], usage: { prompt_tokens: 10, completion_tokens: 5 } }));
   } catch (error) { modelErrors.push(error.message); response.writeHead(500, { 'Content-Type': 'application/json' }); response.end(JSON.stringify({ error: { message: error.message } })); }
 });
@@ -177,14 +181,14 @@ try {
     pass(`${strategy}: original HTTP request held the actual lock and rejected a second JVM writer`);
     gates.get(marker).release(); gates.delete(marker); const completed = await succeeded(task.id); save(`${strategy}-completed-root.json`, completed); const released = completed.writes[0];
     assert.equal(released.id, original.id); assert.equal(released.state, 'RELEASED'); assert.equal(released.protectionReleased, true); assert.equal(released.release.identity.id, original.id);
-    assert.equal(writeProbe('lock', released, `${strategy}-released-lock`).acquired, true); assert.equal(completed.requests.length, 4); assert.equal(completed.task.budget.usedCalls, 4);
+    assert.equal(writeProbe('lock', released, `${strategy}-released-lock`).acquired, true); assert.equal(completed.requests.length, 5); assert.equal(completed.task.budget.usedCalls, 5);
     assert.equal(readFileSync(join(completed.task.workspace, 'app.txt'), 'utf8'), `owned ${marker}\n`); assert.ok(completed.task.evidence.some(value => value.output?.includes('ORIGINAL_NODE_VERIFICATION')));
     for (const kind of ['operations', 'leases', 'requests']) assert.ok(completed[kind].every(value => value.workspaceWriteLeaseId === original.id));
     assert.equal(completed.executions[0].workspaceWriteProtectionReleased, true); sourceUnchanged(sourceBefore);
     pass(`${strategy}: original file-tool write, Node verification and root release receipts completed before the lock became available`);
     const count = (await options(project)).worktrees.length; await api(`/tasks/${task.id}/revalidate`, {}); await api(`/tasks/${task.id}/resume`, {}); const second = await succeeded(task.id); save(`${strategy}-revalidated-root.json`, second);
     assert.equal(second.writes.length, 2); assert.notEqual(second.writes[0].id, original.id); assert.equal(second.writes[0].attempt, 2); assert.equal(second.writes[0].state, 'RELEASED');
-    assert.equal(second.task.budget.usedCalls, 5); assert.equal(second.operations.filter(operation => operation.kind === 'WORKSPACE_WRITE').length, 1); assert.equal((await options(project)).worktrees.length, count); sourceUnchanged(sourceBefore);
+    assert.equal(second.task.budget.usedCalls, 6); assert.equal(second.operations.filter(operation => operation.kind === 'WORKSPACE_WRITE').length, 1); assert.equal((await options(project)).worktrees.length, count); sourceUnchanged(sourceBefore);
     const exported = await archive(task.id, `${strategy}-normal-and-revalidated.zip`); assert.equal(exported['workspace-write-leases.json'].length, 2); assert.equal(exported['task-executions.json'].length, 2);
     assert.equal(exported['workspace-write-leases.json'][1].id, original.id); assert.ok(exported['model-requests.json'].every(value => exported['workspace-write-leases.json'].some(write => write.id === value.workspaceWriteLeaseId)));
     pass(`${strategy}: revalidation acquired a new writer for the same READY workspace and exported both original roots without another workspace`);
@@ -210,7 +214,7 @@ try {
     databaseFault(`fail-${window}`, task.id); await api(`/tasks/${task.id}/approve`, {}); const parent = join(data, 'workspaces', task.id), manifestPath = join(parent, 'writer.json'), readyPath = join(parent, 'selection.json');
     await until('原实际锁和数据库故障窗口', async () => existsSync(manifestPath) && existsSync(readyPath) && JSON.parse(readFileSync(readyPath)).state === 'READY' && (await api('/health')).status === 'DEGRADED');
     const native = JSON.parse(readFileSync(manifestPath)), readyBytes = readFileSync(readyPath), ready = JSON.parse(readyBytes), original = await facts(task.id), write = original.writes[0];
-    const occurredCalls = window === 'grant' ? 0 : 4; assert.equal(calls.filter(call => call.marker === marker).length, occurredCalls); assert.equal(original.task.budget.usedCalls, occurredCalls); assert.equal(original.executions[0].state, 'RUNNING');
+    const occurredCalls = window === 'grant' ? 0 : 5; assert.equal(calls.filter(call => call.marker === marker).length, occurredCalls); assert.equal(original.task.budget.usedCalls, occurredCalls); assert.equal(original.executions[0].state, 'RUNNING');
     assert.equal(write.state, window === 'grant' ? 'PREPARED' : 'HELD'); assert.equal(write.protectionReleased, false); assert.equal(native.state, window === 'grant' ? 'HELD' : 'RELEASED'); assert.equal(native.identity.id, write.id);
     if (window === 'grant') { assert.equal(original.task.workspace, ''); assert.equal(original.operations[0].state, 'DISPATCHED'); assert.equal(original.leases[0].state, 'ACTIVE'); assert.equal(write.grant, undefined); }
     const beforeProbe = processProbe(currentCore.worker.pid, currentCore.worker.processStartedAt), lockObservation = writeProbe('lock', write, `${strategy}-${window}-before-restart-lock`), afterProbe = processProbe(currentCore.worker.pid, currentCore.worker.processStartedAt);
@@ -233,7 +237,7 @@ try {
     await api(`/tasks/${task.id}/resume`, {}); const recovered = await succeeded(task.id); save(`${strategy}-${window}-recovered.json`, recovered);
     assert.equal(recovered.writes.length, 2); assert.notEqual(recovered.writes[0].id, write.id); assert.equal(recovered.writes[0].state, 'RELEASED'); assert.equal(recovered.writes[0].attempt, 2);
     assert.equal(recovered.writes[1].state, 'UNKNOWN'); assert.equal(recovered.writes[1].protectionReleased, true); assert.ok(recovered.writes[1].reconciliation); assert.equal(recovered.executions[1].state, 'UNKNOWN'); assert.ok(recovered.executions[1].reconciliation);
-    assert.equal(recovered.task.budget.usedCalls, 4); assert.equal(calls.filter(call => call.marker === marker).length, 4); assert.deepEqual(readFileSync(readyPath), readyBytes); assert.deepEqual(recovered.task.workspaceOwnership, ready.facts.workspaceOwnership);
+    assert.equal(recovered.task.budget.usedCalls, 5); assert.equal(calls.filter(call => call.marker === marker).length, 5); assert.deepEqual(readFileSync(readyPath), readyBytes); assert.deepEqual(recovered.task.workspaceOwnership, ready.facts.workspaceOwnership);
     assert.equal((await options(project)).worktrees.length, worktreeCount); sourceUnchanged(sourceAfter); if (window === 'grant') assert.equal(recovered.task.recoveredPreparation, true);
     else assert.equal(recovered.operations.filter(operation => operation.kind === 'WORKSPACE_WRITE').length, 1);
     const exported = await archive(task.id, `${strategy}-${window}-unknown-and-recovered.zip`); assert.equal(exported['workspace-write-leases.json'].length, 2); assert.equal(exported['task-executions.json'].length, 2);

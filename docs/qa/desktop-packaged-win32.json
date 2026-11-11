@@ -1,10 +1,10 @@
 {
   "desktop": "PASS",
   "api": 200,
-  "version": "0.2.0-alpha.14",
+  "version": "0.2.0-alpha.15",
   "application": {
     "packaged": true,
-    "version": "0.2.0-alpha.14"
+    "version": "0.2.0-alpha.15"
   },
   "externalJavaDisabled": true,
   "pageErrors": [],
@@ -34,13 +34,13 @@
       }
     ]
   },
-  "probeEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\desktop-qa-1794361549964\\probe-classes",
+  "probeEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\desktop-qa-1794379356757\\probe-classes",
   "originalIdentitiesVerifiedStopped": 3,
   "originalProcessesStopped": true,
   "originalProcessObservations": [
     {
-      "pid": 25656,
-      "originalStartedAt": "2026-11-11T01:45:50.786Z",
+      "pid": 44212,
+      "originalStartedAt": "2026-11-11T06:42:37.529Z",
       "currentStartedAt": "",
       "alive": false,
       "matchesOriginal": false,
@@ -49,8 +49,8 @@
       "originalStopped": true
     },
     {
-      "pid": 18228,
-      "originalStartedAt": "2026-11-11T01:45:53.007Z",
+      "pid": 29736,
+      "originalStartedAt": "2026-11-11T06:42:38.119Z",
       "currentStartedAt": "",
       "alive": false,
       "matchesOriginal": false,
@@ -59,8 +59,8 @@
       "originalStopped": true
     },
     {
-      "pid": 35988,
-      "originalStartedAt": "2026-11-11T01:45:55.570Z",
+      "pid": 43280,
+      "originalStartedAt": "2026-11-11T06:42:41.637Z",
       "currentStartedAt": "",
       "alive": false,
       "matchesOriginal": false,

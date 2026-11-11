@@ -7,10 +7,10 @@ type RequestPage = { requests: ModelRequest[]; cursor: number; hasMore: boolean 
 const token = (value: number | string | undefined) => typeof value === 'number' ? value.toLocaleString() : '未知';
 const requestLabels: Record<string, string> = { DISPATCHING: '派发中', SUCCEEDED: '已收到结果', FAILED: '请求失败', UNKNOWN: '结果待核对', CANCELLED: '本地已取消' };
 
-export function ModelRequests({ taskId, runId = '' }: { taskId: string; runId?: string }) {
+export function ModelRequests({ taskId, runId = '', initialQuery = '' }: { taskId: string; runId?: string; initialQuery?: string }) {
   const [page, setPage] = useState<RequestPage | null>(null);
   const [state, setState] = useState(''); const [before, setBefore] = useState(0);
-  const [search, setSearch] = useState(''); const [query, setQuery] = useState(''); const [error, setError] = useState('');
+  const [search, setSearch] = useState(initialQuery); const [query, setQuery] = useState(initialQuery); const [error, setError] = useState('');
   useEffect(() => {
     let active = true; let timer: ReturnType<typeof setTimeout>;
     const controller = new AbortController(); setPage(null); setError('');
