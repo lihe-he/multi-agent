@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-11T06:33:31.207Z",
+  "date": "2026-11-11T08:33:28.079Z",
   "version": "0.2.0-alpha.15",
   "platform": "win32",
   "coreIndependentOfWebAndNpm": true,
@@ -16,12 +16,12 @@
   "desktopExitPreservesCore": true,
   "clientExitPreservesRunningTask": true,
   "modelRequestsBeforeAndAfterReconnect": 1,
-  "childRequestPreservedOnReconnect": "f4a32546-7961-49fb-b867-558c335882d7",
-  "workerLeasePreservedOnReconnect": "42dc2536-1225-4e9f-a66b-0a42739c65ca",
-  "workerId": "a28745b7-fb40-408c-a209-c1b2e87a15db",
+  "childRequestPreservedOnReconnect": "f7715258-9f4e-4919-a6d6-e3dbc37c489d",
+  "workerLeasePreservedOnReconnect": "55b2d962-bb10-43bb-ae08-8da3288900df",
+  "workerId": "176808fc-6bec-41fd-b2c3-2f73feb204c9",
   "workerEpoch": 1,
-  "workerPid": 60884,
-  "repositoryBindingId": "735a9765-2d2d-417f-b7d6-497c499a8830",
+  "workerPid": 33904,
+  "repositoryBindingId": "1382220c-bf7b-4c46-921e-a65635fc7482",
   "workerReceiptsVerified": 13,
   "parentWaitReleasesModelCapacity": true,
   "teamDependencyAdoptionThroughProxy": true,
@@ -30,14 +30,14 @@
   "teamRootCalls": 19,
   "teamChildRuns": [
     {
-      "id": "40747976-e85d-4a94-9842-f48422bb0054",
-      "agentRunId": "0cdcd47b-7178-4c2d-8b39-cd2c9bea57d4",
+      "id": "8601bcab-2e6b-4043-abdc-887f1cebddda",
+      "agentRunId": "b8fbc6c1-34af-4cfc-9719-d80ed28a534f",
       "state": "SUCCEEDED",
       "integrationState": "NOT_ADOPTED"
     },
     {
-      "id": "ffeec038-ce0d-4188-a955-f5af2b431758",
-      "agentRunId": "f65079a8-3d67-49f9-8bfd-9b470a729c14",
+      "id": "027a4ae2-5b8d-4e8c-9d94-b617ba08e026",
+      "agentRunId": "49dd2474-acdc-4f76-abb1-8020ef44c11d",
       "state": "SUCCEEDED",
       "integrationState": "ADOPTED"
     }
@@ -45,9 +45,9 @@
   "externalMcpCalls": 1,
   "pageErrors": [],
   "modelErrors": [],
-  "corePid": 38076,
+  "corePid": 64944,
   "workerDeployment": "LOCAL_PROCESS",
-  "workerProcessStartedAt": "2026-11-11T06:32:27.403Z",
+  "workerProcessStartedAt": "2026-11-11T08:32:38.640Z",
   "workerHeartbeatSource": "CHILD_PIPE",
-  "workerHeartbeatSequenceOnReconnect": 10
+  "workerHeartbeatSequenceOnReconnect": 6
 }

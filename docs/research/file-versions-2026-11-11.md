@@ -55,8 +55,20 @@ Windows 8.3/junction 通过固定 Temurin 21.0.13+9 实际 Java 源码入口核�
 
 最终Jar入口进一步要求CLONE/WORKTREE的独立审查副本真实 `read_file`，并在另一任务审查后核对原历史。每个成功任务由11增为12次实际模型请求、8增为9条原请求关联回执；仍加入121条明确旧日志，完整分页/ZIP为130条，总预期模型请求28次。此入口此前尚未执行，最终结果以实际验收为准。第五轮干净核心构建验证全部最终源码。
 
-第五轮干净核心构建实际成功：28套/318项、314通过/4条件跳过、0失败/错误，最终Jar SHA-256为 `0f06b0d7e22a2dbd3ec97cfb07d0788dea11ae9c44746aba650defd3114d82e9`。原源码、全部编译类、报告和Jar在 `.runtime/alpha15-final-core-evidence/`；15份Java的80条原注释保留、全部Jar class对应编译输出。
+第五轮干净核心构建实际成功：28套/318项、314通过/4条件跳过、0失败/错误，最终Jar SHA-256为 `0f06b0d7e22a2dbd3ec97cfb07d0788dea11ae9c44746aba650defd3114d82e9`。原源码、全部编译类、报告和Jar在 `.runtime/alpha15-pre-canonical-core-evidence/`；15份Java的80条原注释保留、全部Jar class对应编译输出。
 
 首次普通Jar入口因夹具请求不存在的 `/tasks/{id}/process-observations` 而退出1，原现场、脚本和停止记录在 `.runtime/file-versions-xX5eIU/reports/`，产物使用回执保留为failed。修正夹具使用现有任务进程会话的带截断事实的界面观察，再从所有原ZIP收集完整进程观察；原预算、超时和产品校验保留。第二次普通最终Jar验收9项/28次原模型请求通过，两份各130条完整历史/ZIP、实际独立审查与跨任务隔离、未解决冲突等待均核对，498个原PID/出生身份独立确认停止。原API错误没有改记为通过，最终Jar/Web/config前后摘要一致。
 
-最终clean verify 28套/318项、314通过/4条件跳过、0失败/错误，Jar 39243679字节、SHA-256 `0f06b0d7e22a2dbd3ec97cfb07d0788dea11ae9c44746aba650defd3114d82e9`，完整源码、类和报告在 `.runtime/alpha15-final-core-evidence/`。普通最终Jar文件版本9项/28次原模型请求、原生命周期、十条顺序产物核对、打包启动和包内JRE通过，全部原进程停止按各自原PID/出生核对。Web 79 / 79通过并目视最终截图，15份Java的80条原注释保留。正式本机结果见[alpha.15验证](../qa/alpha15-validation-win32.json)；准确提交的三端CI结果另行记录，完整目标保持未完成。
+首次生产提交 `f3588639a99c3644c2fa288aa6d5e61e309492c7` 的 [run 42976352869](https://github.com/lihe-he/multi-agent/actions/runs/42976352869) 已终态failure：Ubuntu整条success，macOS核心318项/0失败/1错误/8条件跳过；原请求目录使用 `/var/folders/...` 系统临时目录，规范数据根与未解析祖先别名的目录发生边界误判。原macOS证据ZIP为5,940,818字节，SHA-256 `a39b58a9d08f69f7fdf10eaa46091298aa53f3d2863803a68ae94797311e55cf`，独立核对见 `.runtime/alpha15-ci/artifact-13836235830-run-42976352869-attempt-1/verified-failure.json`。
+
+真实Windows祖先junction在原生产源码与原Jar对应class上复现3项中1错误，两个数据根内重定向用例仍正确拒绝。原340份源码/类/报告及实际临时目录保存在 `.runtime/alpha15-canonical-ancestor-failure1/`；实际路径事实区分 `NOFOLLOW_LINKS` 与规范父目录。修订先定位同一物理数据根，再逐项核对根内组件；指向本数据根和其他任务的链接仍拒绝。23项历史、13项版本及27项原集成共63项定向：61通过、2实际Windows条件跳过，原预算和期限不变。
+
+同一首次CI的Windows核心、UI及旧生命周期通过，前两个文件版本任务也通过；未解决冲突的根尚在收尾时，客户端 `settled()` 先调用完整 `facts()`，读取到更新中的日志而取得409并保留失败。现先检查任务与同一根结束回执，再读取完整日志；不对409进行无条件重试。直接执行原/修订客户端函数的受控HTTP对照保存原提前读取409，修订后提前日志读取为0，原根、4条请求和冲突仍保留，证据在 `.runtime/alpha15-file-settlement-poll-regression1/`。该对照只验证HTTP客户端请求顺序，最终Jar和三端结果须另行实际验证。
+
+首次318项Jar和完整Windows本机QA已迁至 `.runtime/alpha15-pre-canonical-core-evidence/` 与 `.runtime/alpha15-pre-canonical-local-qa/`；原安装器、app.asar与桌面程序另按原SHA保存。第六轮干净构建已成功，321项中317通过/4条件跳过、0失败/错误；Web源码和已通过的79项生产UI未变化。
+
+首次生产提交前的本机汇总：最终clean verify 28套/318项、314通过/4条件跳过、0失败/错误，Jar 39243679字节、SHA-256 `0f06b0d7e22a2dbd3ec97cfb07d0788dea11ae9c44746aba650defd3114d82e9`，完整源码、类和报告在 `.runtime/alpha15-pre-canonical-core-evidence/`。普通最终Jar文件版本9项/28次原模型请求、原生命周期、十条顺序产物核对、打包启动和包内JRE通过，全部原进程停止按各自原PID/出生核对。Web 79 / 79通过并目视最终截图，15份Java的80条原注释保留。该轮原正式QA保存在 `.runtime/alpha15-pre-canonical-local-qa/manifest.json`；准确提交的三端CI结果另行记录，完整目标保持未完成。
+
+打包验收 attempt2 在 `page.screenshot` 处触发原30秒超时，未写入PASS报告；原桌面、核心和Worker三个PID/出生身份均独立确认停止，没有强制关闭。原产物、失败、完整用户数据与探针在 `.runtime/alpha15-packaged-failure1/` 保留，原因仍为UNKNOWN。补核对的辅助清单首次因缺少同目录原夹具文件被探针拒绝，原拒绝和修正输入后的核对分开保留；探针约束未修改。attempt3 使用同一Jar/Web/桌面产物、原脚本和原30秒截图期限通过，包内JRE探针另行通过；后续成功不改写原失败。
+
+修订后的最终clean verify 28套/321项、317通过/4条件跳过、0失败/错误，Jar 39243784字节、SHA-256 `b7fc97e4fcb0f9316c093fad7a22294ed13561a517487c04036290b210004ea8`，完整源码、类和报告在 `.runtime/alpha15-final-core-evidence/`。普通最终Jar文件版本9项/28次原模型请求、原生命周期、十条顺序产物核对、打包启动和包内JRE通过，全部原进程停止按各自原PID/出生核对。Web 79 / 79通过并目视最终截图，15份Java的80条原基线注释及首次alpha.15的99条原注释保留。正式本机结果见[alpha.15验证](../qa/alpha15-validation-win32.json)；准确提交的三端CI结果另行记录，完整目标保持未完成。

@@ -69,8 +69,14 @@ async function facts(taskId) {
 }
 async function settled(taskId, state) {
   return until(`Original ${state} task and root receipt`, async () => {
+    const [task, executions] = await Promise.all([api(`/tasks/${taskId}`), api(`/tasks/${taskId}/task-executions?limit=100`)]);
+    if (['FAILED', 'UNKNOWN', 'CANCELLED'].includes(task.state) || state !== 'WAITING_INPUT' && task.state === 'WAITING_INPUT') throw new Error(`Unexpected original task state ${task.state}: ${redact(task.error || '')}`);
+    const rootReceipt = executions.executions[0];
+    if (task.state !== state || !rootReceipt?.endedAt) return null;
     const value = await facts(taskId);
     if (['FAILED', 'UNKNOWN', 'CANCELLED'].includes(value.task.state) || state !== 'WAITING_INPUT' && value.task.state === 'WAITING_INPUT') throw new Error(`Unexpected original task state ${value.task.state}: ${redact(value.task.error || '')}`);
+    assert.equal(value.executions[0]?.id, rootReceipt.id, 'Complete history must belong to the same original settled root');
+    assert.equal(value.executions[0]?.state, state === 'WAITING_INPUT' ? 'WAITING_INPUT' : 'SUCCEEDED');
     return value.task.state === state && value.executions[0]?.endedAt ? value : null;
   });
 }

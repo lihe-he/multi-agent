@@ -278,12 +278,18 @@ public class WorkspaceRuntime {
     public Map<String, Object> fileToolJournal(String workspace) {
         try {
             Path base = data.toRealPath(), supplied = Path.of(workspace).toAbsolutePath().normalize();
-            Path ancestor = supplied.getParent();
-            while (ancestor != null && !Files.exists(ancestor, LinkOption.NOFOLLOW_LINKS)) ancestor = ancestor.getParent();
-            if (ancestor == null || supplied.getFileName() == null) throw new IllegalArgumentException("文件工具清单不属于本核心数据目录。");
-            Path parent = ancestor.toRealPath(LinkOption.NOFOLLOW_LINKS).resolve(ancestor.relativize(supplied.getParent())).normalize();
-            Path configured = data.toRealPath(LinkOption.NOFOLLOW_LINKS);
-            if (parent.startsWith(configured)) parent = base.resolve(configured.relativize(parent));
+            Path suppliedParent = supplied.getParent();
+            if (suppliedParent == null || supplied.getFileName() == null) throw new IllegalArgumentException("文件工具清单不属于本核心数据目录。");
+            Path prefix = suppliedParent.getRoot(), rootAlias = prefix.toRealPath().equals(base) ? prefix : null;
+            // 先定位实际数据根；只解析根之前的别名，根内各组件仍逐项拒绝重定向。
+            for (Path part : suppliedParent) {
+                if (rootAlias != null) break;
+                prefix = prefix.resolve(part);
+                if (!Files.exists(prefix, LinkOption.NOFOLLOW_LINKS)) break;
+                if (prefix.toRealPath().equals(base)) rootAlias = prefix;
+            }
+            if (rootAlias == null) throw new IllegalArgumentException("文件工具清单目录越界。");
+            Path parent = base.resolve(rootAlias.relativize(suppliedParent)).normalize();
             Path actualWorkspace = parent.resolve(supplied.getFileName());
             if (!parent.startsWith(base)) throw new IllegalArgumentException("文件工具清单目录越界。");
             Path current = base;

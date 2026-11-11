@@ -1,8 +1,8 @@
 {
-  "recordedAt": "2026-11-11T06:47:21.914Z",
+  "recordedAt": "2026-11-11T08:13:37.019Z",
   "version": "0.2.0-alpha.15",
   "sourceBaseCommit": "3069b435afb3d1794d95e5a348cde7cb886e0af4",
-  "jarSha256": "0f06b0d7e22a2dbd3ec97cfb07d0788dea11ae9c44746aba650defd3114d82e9",
+  "jarSha256": "b7fc97e4fcb0f9316c093fad7a22294ed13561a517487c04036290b210004ea8",
   "javaFilesChecked": 15,
   "originalJavaCommentsPreserved": 80,
   "interimSourceBaseCommit": "cff00fb3bca47cf13986928146aa9879f06980f4",
@@ -15,6 +15,8 @@
       "originalCommentsPreserved": true,
       "interimOriginalComments": 1,
       "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 1,
+      "priorProductionOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -25,7 +27,21 @@
       "originalCommentsPreserved": true,
       "interimOriginalComments": 30,
       "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 31,
+      "priorProductionOriginalCommentsPreserved": true,
       "addedComments": 1,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+      "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 0,
+      "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 4,
+      "priorProductionOriginalCommentsPreserved": true,
+      "addedComments": 4,
       "addedJavadocMultiline": true
     },
     {
@@ -35,6 +51,8 @@
       "originalCommentsPreserved": true,
       "interimOriginalComments": 3,
       "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 3,
+      "priorProductionOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -45,6 +63,8 @@
       "originalCommentsPreserved": true,
       "interimOriginalComments": 2,
       "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 2,
+      "priorProductionOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -55,6 +75,8 @@
       "originalCommentsPreserved": true,
       "interimOriginalComments": 1,
       "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 1,
+      "priorProductionOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -65,17 +87,45 @@
       "originalCommentsPreserved": true,
       "interimOriginalComments": 5,
       "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 5,
+      "priorProductionOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
     {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+      "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 0,
+      "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 7,
+      "priorProductionOriginalCommentsPreserved": true,
+      "addedComments": 7,
+      "addedJavadocMultiline": true
+    },
+    {
       "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
-      "sha256": "9c31cbe2181dc6671ba946eff8a1500668391b3d8683568ecca9c2e9e3f61306",
+      "sha256": "5f7aa9f1ef78b7b17c6c021047602b89bea26c3cb93602a0be9fae216c9a78b2",
       "originalComments": 25,
       "originalCommentsPreserved": true,
       "interimOriginalComments": 25,
       "interimOriginalCommentsPreserved": true,
-      "addedComments": 3,
+      "priorProductionOriginalComments": 28,
+      "priorProductionOriginalCommentsPreserved": true,
+      "addedComments": 4,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
+      "sha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 0,
+      "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 1,
+      "priorProductionOriginalCommentsPreserved": true,
+      "addedComments": 1,
       "addedJavadocMultiline": true
     },
     {
@@ -85,6 +135,8 @@
       "originalCommentsPreserved": true,
       "interimOriginalComments": 1,
       "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 2,
+      "priorProductionOriginalCommentsPreserved": true,
       "addedComments": 1,
       "addedJavadocMultiline": true
     },
@@ -95,6 +147,8 @@
       "originalCommentsPreserved": true,
       "interimOriginalComments": 4,
       "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 4,
+      "priorProductionOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -105,6 +159,8 @@
       "originalCommentsPreserved": true,
       "interimOriginalComments": 5,
       "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 5,
+      "priorProductionOriginalCommentsPreserved": true,
       "addedComments": 0,
       "addedJavadocMultiline": true
     },
@@ -115,37 +171,9 @@
       "originalCommentsPreserved": true,
       "interimOriginalComments": 3,
       "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 3,
+      "priorProductionOriginalCommentsPreserved": true,
       "addedComments": 0,
-      "addedJavadocMultiline": true
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
-      "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c",
-      "originalComments": 0,
-      "originalCommentsPreserved": true,
-      "interimOriginalComments": 0,
-      "interimOriginalCommentsPreserved": true,
-      "addedComments": 4,
-      "addedJavadocMultiline": true
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
-      "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931",
-      "originalComments": 0,
-      "originalCommentsPreserved": true,
-      "interimOriginalComments": 0,
-      "interimOriginalCommentsPreserved": true,
-      "addedComments": 7,
-      "addedJavadocMultiline": true
-    },
-    {
-      "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
-      "sha256": "024416740adfdfee7668b98067f57e07257fd65859e01d81d3438b65d0ac06dd",
-      "originalComments": 0,
-      "originalCommentsPreserved": true,
-      "interimOriginalComments": 0,
-      "interimOriginalCommentsPreserved": true,
-      "addedComments": 1,
       "addedJavadocMultiline": true
     },
     {
@@ -155,10 +183,14 @@
       "originalCommentsPreserved": true,
       "interimOriginalComments": 0,
       "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 2,
+      "priorProductionOriginalCommentsPreserved": true,
       "addedComments": 2,
       "addedJavadocMultiline": true
     }
   ],
+  "priorProductionSourceBaseCommit": "f3588639a99c3644c2fa288aa6d5e61e309492c7",
+  "priorProductionOriginalJavaCommentsPreserved": 99,
   "versions": [
     {
       "file": "package.json",
@@ -185,11 +217,11 @@
   "whitespace": "passed",
   "scriptSyntax": "passed",
   "syntaxFiles": [
+    "tools/file-version-smoke.mjs",
     "tools/smoke-test.mjs",
     "tools/team-smoke-fixture.mjs",
     "tools/workspace-selection-smoke.mjs",
-    "tools/workspace-write-smoke.mjs",
-    "tools/file-version-smoke.mjs"
+    "tools/workspace-write-smoke.mjs"
   ],
   "jarMatchesCompiledClasses": true,
   "jarClasses": [
@@ -579,27 +611,27 @@
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$2.class",
-      "sha256": "e720287a883037450dbf9e45c6f92691d7e91687424f6b310ec04468e36bc231"
+      "sha256": "12920df1151b10a95701cac51f18018da783853240e24a5de89dfd54113f141e"
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$3.class",
-      "sha256": "1ca9d68563d130b1f0d3209b2ac2c24d404d40c2f1d87e699205e3cc188cf9b4"
+      "sha256": "1b489f5edb470cda999d2a09d203bde394fef63f78517f2c1c0d71853901cefd"
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$4.class",
-      "sha256": "e8427f38a04530b0efeb2f0892b938948ff2b7f6ac32617aedfcfcf8bdc09425"
+      "sha256": "438f3ea7ebf35894b3da5a6ef3a73cc5e82b2d302ec6b86c5318d0acfbb9d3d2"
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$5.class",
-      "sha256": "684bc85eea48966e5d0a2634fa14e70e97d43e1843cdd84a561269687707bf4d"
+      "sha256": "052ed3e049ac0c4b887cfa7b8ce5e03a89c4c62f49eb24fd894ea553690f658e"
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$6.class",
-      "sha256": "027d6c70931b3df81ac2f72ca247bdef8d887d2234e019680acdb7d951e0132e"
+      "sha256": "72076fa34e793312f13fb20bce8e5a1449b82b639f981f3af4345797b038dbec"
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$7.class",
-      "sha256": "b3d70d261a0b32e93e212d66a10276c522b9668c6b69c8b0f4d40d22bca672ba"
+      "sha256": "022996ba7626cb1662d46706a93f8633b4b2a069f76e3d6bd380b2a22ec2c483"
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$FixedToolInvoker.class",
@@ -607,11 +639,11 @@
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$ModelCallFailure.class",
-      "sha256": "5f45b807a8fcededb8a0fd754e9ac0352edea225292de9ff002cf89646c85fa2"
+      "sha256": "3be300b97ed03f2f264b75961d7f9d1ccb4eeff7b5570a083d917530520e4ed6"
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime.class",
-      "sha256": "17cd3208be062dae6a19062c6422210fd89a940148c88b44219d4739e04d1d75"
+      "sha256": "73c6257203f529761f5f179d07b179a418498df08bb550fd4f49f6125e42b4e0"
     },
     {
       "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceSelectionConflict.class",
@@ -656,6 +688,10 @@
       "sha256": "c4b46bc78a01bcbd95cb55d31dbe903065ee8b5ed134c41fc096054ac0b8598c"
     },
     {
+      "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+      "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+    },
+    {
       "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
       "sha256": "fe49ee3b5489b4502114e388569f1dd075d8138a6b0ade72e92478e61ab26523"
     },
@@ -672,8 +708,16 @@
       "sha256": "0c3c910945987a87653d04cfca815025619c9a29c82d641afc767e0f123a9d2a"
     },
     {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+      "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+    },
+    {
       "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
-      "sha256": "9c31cbe2181dc6671ba946eff8a1500668391b3d8683568ecca9c2e9e3f61306"
+      "sha256": "5f7aa9f1ef78b7b17c6c021047602b89bea26c3cb93602a0be9fae216c9a78b2"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
+      "sha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3"
     },
     {
       "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
@@ -692,12 +736,20 @@
       "sha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3"
     },
     {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/FileVersionRuntimeTest.java",
+      "sha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7"
+    },
+    {
       "file": "package-lock.json",
       "sha256": "c10fa9554da91fcdf7c6619e5415246543d8f9b088f83a6fcd9c024d4e17b13c"
     },
     {
       "file": "package.json",
       "sha256": "daabc5dacc7bc9ac11a14dbd02573147ca3a2c6dff683fe7cb1500eb85028892"
+    },
+    {
+      "file": "tools/file-version-smoke.mjs",
+      "sha256": "bd5b636b157324bfc8be1179de7e4b8dd984a1fe725212c1368a3930fd17991e"
     },
     {
       "file": "tools/smoke-test.mjs",
@@ -724,36 +776,16 @@
       "sha256": "a2beea97ce0e4d17243efb4957b77aa0b2bb96081d8a4584c0dcd7371fe7426c"
     },
     {
+      "file": "web/src/FileToolOperations.tsx",
+      "sha256": "b500d84c0c3ebb0c788836c2133ebb9f40e90df73006e70b145c456322890272"
+    },
+    {
       "file": "web/src/ModelRequests.tsx",
       "sha256": "54397da88e7a3180e576df9e391cb86b545340ced82ca330fd5cbde262e8b7b1"
     },
     {
       "file": "web/src/TaskDetail.tsx",
       "sha256": "142e4f7dedef0d176e48c6c6969c560cb7776a3132740f9fc6f29cac1a8e8b56"
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
-      "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
-    },
-    {
-      "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
-      "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
-    },
-    {
-      "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
-      "sha256": "024416740adfdfee7668b98067f57e07257fd65859e01d81d3438b65d0ac06dd"
-    },
-    {
-      "file": "core/src/test/java/dev/agentworkbench/runtime/FileVersionRuntimeTest.java",
-      "sha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7"
-    },
-    {
-      "file": "tools/file-version-smoke.mjs",
-      "sha256": "652da14121b84ab37c6fb9cecda8a6943463a6de17a805e532d196409284f6d4"
-    },
-    {
-      "file": "web/src/FileToolOperations.tsx",
-      "sha256": "b500d84c0c3ebb0c788836c2133ebb9f40e90df73006e70b145c456322890272"
     },
     {
       "file": "web/src/file-tool-operations.css",

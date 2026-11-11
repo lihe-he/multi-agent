@@ -159,6 +159,47 @@ class FileToolHistoryTest {
     }
 
     @Test
+    void directoryAliasesBeforeDataRootKeepTheOriginalRequestAndJournalTogether() throws Exception {
+        try (Fixture fixture = new Fixture()) {
+            Path alias = directory.resolve("ancestor-alias");
+            directoryLink(alias, directory.toRealPath());
+            try {
+                Path original = alias.resolve("data/workspaces/root/work");
+                Files.write(directory.resolve("canonical-ancestor-fixture.json"), mapper.writeValueAsBytes(obj(
+                    "originalAlias", original.toString(), "canonicalWorkspace", original.toRealPath().toString(), "dataRoot", fixture.data.toString(),
+                    "originalParentNoFollow", original.getParent().toRealPath(java.nio.file.LinkOption.NOFOLLOW_LINKS).toString(),
+                    "originalParentCanonical", original.getParent().toRealPath().toString())));
+                String run = fixture.run("task", original, false), request = fixture.request("task", run, "SUCCEEDED");
+                Path journal = fixture.write(fixture.root, entry(1, "read_file", request, 1, "CONFIRMED"));
+                byte[] before = Files.readAllBytes(journal);
+                List<Map<String, Object>> records = fixture.history.all("task");
+                assertEquals(1, records.size()); assertEquals("REQUEST_BOUND", str(records.getFirst(), "sourceStatus"));
+                assertEquals(fixture.root.toString(), str(records.getFirst(), "journalWorkspace"));
+                assertEquals(original.toString(), str(fixture.store.get("agentRun", run), "workspace"));
+                assertArrayEquals(before, Files.readAllBytes(journal), "Canonical history reads must preserve original journal bytes");
+            } finally { Files.deleteIfExists(alias); }
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "data-root", "other-task" })
+    void directoryAliasesInsideDataRootCannotRedirectHistoryToDataOrAnotherTask(String destination) throws Exception {
+        try (Fixture fixture = new Fixture()) {
+            Path target = destination.equals("data-root") ? fixture.data : Files.createDirectories(fixture.data.resolve("workspaces/foreign-task"));
+            Path journal = fixture.write(target.resolve("work"), entry(1, "read_file", "", 0, "CONFIRMED"));
+            byte[] before = Files.readAllBytes(journal);
+            Path alias = fixture.data.resolve("workspaces/inside-alias");
+            directoryLink(alias, target);
+            try {
+                fixture.store.editTask("task", task -> task.put("workspace", alias.resolve("work").toString()), null, "");
+                assertEquals(409, assertThrows(ApiException.class, () -> fixture.history.all("task")).status());
+                assertEquals(409, assertThrows(ApiException.class, () -> fixture.history.page("task", "", 30, "")).status());
+                assertArrayEquals(before, Files.readAllBytes(journal), "Rejected redirects must preserve the original journal");
+            } finally { Files.deleteIfExists(alias); }
+        }
+    }
+
+    @Test
     void legacySharedReviewJournalFailsRatherThanMixingOtherTasks() throws Exception {
         try (Fixture fixture = new Fixture()) {
             Path review = Files.createDirectories(fixture.data.resolve("reviews/task-original")), otherReview = Files.createDirectories(fixture.data.resolve("reviews/other-original"));
