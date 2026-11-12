@@ -13,7 +13,7 @@
 | Web | 第二轮生产构建与全量79 / 79通过，1440px/430px卡片已目视，跨任务请求焦点与迟到轮询通过；原73通过/6失败仍保留。准确源码/Web/config在 `.runtime/alpha15-ui-final-evidence/`，无关历史截图恢复原字节，实际Jar验收截图另行归档 |
 | 原生命周期与发行物 | 相同最终Jar的根写入22、工作区15、恢复11、派发13、协议29及独立浏览器/附加桌面均通过；四个原回执故障窗口、原预算/UNKNOWN、新尝试、READY与原进程停止继续核对。打包启动和实际内置JRE探针通过，17项下载/连接守卫通过。安装包152636765字节、SHA-256 `3cea3a6e4f408d9af013bcd0a7f986b727e5d0f8b18b7d811743ea5391afe565`，签名状态NotSigned，本轮未重测完整安装/卸载 |
 | 源码审查 | 15份新增/受改Java的80条原基线注释、首次alpha.15提交的99条原注释均保留，新Javadoc为标准多行；版本、语法、whitespace与Jar全部class对应编译输出通过。十个顺序步骤均保存原脚本SHA、退出码和前后Jar/Web/config摘要，正式汇总见[alpha.15本机验证](./qa/alpha15-validation-win32.json)，完整本机归档在 `.runtime/alpha15-final-local-qa/` |
-| CI | 已接入普通最终Jar的原Worker文件版本、完整历史及全部原生命周期步骤。准确生产提交三端终态和实际证据ZIP待推送后核验；本机通过不代替三端结果。整条期限仍为50分钟 |
+| CI | 生产提交 `0663bd463fe049eca4e8c377907a57f81fd4cfc0` 的 [run 42992001214](https://github.com/lihe-he/multi-agent/actions/runs/42992001214) 三端终态success，三份实际证据ZIP大小和GitHub digest均核对。每端28套/321项、载体2 / 2，win32 318通过/3条件跳过，darwin 313通过/8条件跳过，linux 313通过/8条件跳过；UI79、文件版本9项/28次原请求、各130条完整历史/ZIP、独立审查读取及跨任务隔离、原写入/工作区/恢复/派发/协议、独立客户端和包内JRE均核对。原PID/出生停止与准确源码/Jar/Web/config保留，[正式记录](./qa/alpha15-ci-file-versions-receipt.json)包含原条件跳过原因；发行物artifact只保存元数据。整条期限50分钟 |
 
 文件工具日志协议为2，公开API/实体/Worker帧仍为1，SQLite为8。alpha.14的准确Jar、QA和三端CI保留原版本与原结果。外部进程在最后比较至原子替换之间仍有写入窗口；CLI、命令、MCP没有一般文件CAS。当前目录、跨核心现场协调、完整归档恢复及其余F01–F21/M0–M3仍在实施，完整目标未完成。
 

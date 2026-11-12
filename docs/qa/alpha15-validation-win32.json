@@ -2360,8 +2360,13 @@
   ],
   "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha15-final-local-qa",
   "ci": {
-    "status": "AWAITING_EXACT_COMMIT_PUSH",
-    "receipt": "docs/qa/alpha15-ci-file-versions-receipt.json"
+    "status": "VERIFIED_THREE_PLATFORM_CI",
+    "productionCommit": "0663bd463fe049eca4e8c377907a57f81fd4cfc0",
+    "runId": 42992001214,
+    "runAttempt": 1,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/42992001214",
+    "receipt": "docs/qa/alpha15-ci-file-versions-receipt.json",
+    "actualEvidenceDigestsVerified": true
   },
   "initialProductionValidation": {
     "productionCommit": "f3588639a99c3644c2fa288aa6d5e61e309492c7",

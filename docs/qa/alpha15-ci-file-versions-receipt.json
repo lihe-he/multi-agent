@@ -1,0 +1,2048 @@
+{
+  "recordedAt": "2026-11-12T01:15:59.759Z",
+  "version": "0.2.0-alpha.15",
+  "status": "VERIFIED_THREE_PLATFORM_CI",
+  "productionCommit": "0663bd463fe049eca4e8c377907a57f81fd4cfc0",
+  "runId": 42992001214,
+  "runAttempt": 1,
+  "conclusion": "success",
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/42992001214",
+  "verifiedSummarySha256": "38bfcce4d3022b01d7bf56e80f28666bea29fad0b91d1946e8fd11d0e2ef56fe",
+  "originalCollectionSha256": "09287fbe361ce99012a647a164d071ccd3e286b022b60b3e9b2ce576f3c87459",
+  "localValidationBeforeCiReceiptSha256": "1a3e769f8f258620493958d2812a53ff49987383df23eb23c22cef4f9c7515e4",
+  "scope": "Original Worker file versions and complete history; all previous lifecycle/recovery/writer/packaged JRE gates",
+  "platforms": [
+    {
+      "platform": "win32",
+      "runner": "windows-latest",
+      "jobId": 130426877362,
+      "artifactId": 13843711778,
+      "artifactSha256": "c853a538e0b1619ce848d5b76aae96713ac9989a879cbcb7087600a87c30af15",
+      "artifactDigestVerified": true,
+      "jarSha256": "936fd03506523aa41c677aa9350982a7f36292d5dee2fad15f103c474334f713",
+      "freshRuntimeEvidenceVerified": true,
+      "fileVersions": {
+        "checks": 9,
+        "modelCalls": 28,
+        "exports": [
+          {
+            "strategy": "CLONE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "8415011badefdc9c75732272b57e2140e1c438f34bac5313b4492ffa9210e230"
+          },
+          {
+            "strategy": "WORKTREE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "a7eee36a6ad9620a189643daf70cce51c070889473dd153f2d36af006fa0effc"
+          }
+        ],
+        "originalIdentitiesIndependentlyStopped": 465,
+        "protocolVersion": 2,
+        "completeHistoryVerified": true,
+        "fixtureSourceVerified": true
+      },
+      "core": {
+        "suiteCount": 28,
+        "tests": 321,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 3,
+        "passed": 318,
+        "suites": [
+          {
+            "name": "dev.agentworkbench.AgentRunStoreTest",
+            "xmlSha256": "029a726b0a154bc392c0b313587275621a57bc3059446eb236452c512db3b4f0",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ExecutionStoreTest",
+            "xmlSha256": "03be656e8dceacc8fd74bcbf7836eda476d870f124329a6ade493c72abd0c5b0",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.FileToolHistoryTest",
+            "xmlSha256": "aa95b0e2629f2cb736a26b24fd7a90a68ea9c0fa154fb7b0280af8818038b8ac",
+            "tests": 23,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.GitWorkspaceTest",
+            "xmlSha256": "fde691bf61054ea14f84d07edfb0fa3c1ab91551dc9a17568ca3890d06059612",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "xmlSha256": "2c0dea5416974ebbfbba750850f128ead9ee2bb35ee74740308932e142131796",
+            "tests": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: No restricted live PID on this runner"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.LocalAccessFilterTest",
+            "xmlSha256": "4f8b834091ebb3f5daf62f6ec6529c369c06153e49b24e60d208fe64f83c0131",
+            "tests": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.mcp.McpIntegrationTest",
+            "xmlSha256": "ac376c08741bbe24def0f89643a24099cefd5c5c27988c7cca0f8b1a04fa6f3a",
+            "tests": 23,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ModelRequestStoreTest",
+            "xmlSha256": "68f61297294f7a5c2c81be83d0c1747327b4cf5e6e8ce42d3ec1b1f94833f678",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.PlanAndPolicyTest",
+            "xmlSha256": "44ad10c529b21db0835965c0e216147bea35b62d5154dfc0692ff6e0009cd3f3",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+            "xmlSha256": "d9325f3d9fb5b2c53cea1eaf27bd4ed1019c5dc98662c1c4ec1ebd1ef0c90c9e",
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RootDispatchEngineTest",
+            "xmlSha256": "d763ffc8151bf6764899d13b6e710a946252da0cff0af8443f3de55e7b91e56a",
+            "tests": 11,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+            "xmlSha256": "a78c3a2a73bae76ff7b4449e4bfcd56aa38ee8e67efd6dd4c9faba5b76f6953b",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "successfulTextReplacementPreservesPosixPermissions",
+                "className": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.runtime.WorkspaceWriteGuardTest",
+            "xmlSha256": "6166cdc927ea6153b1994247177fe4bc7656452fa688071f3ad71e2179fe3a1a",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeDelegationTest",
+            "xmlSha256": "1ef1c89a79fd81a4f51b7b7c1742071594cd19cba3b14718810f02f041761d14",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeIntegrationTest",
+            "xmlSha256": "2debc717998d9954146b910bc0e0a2fdb4c3c2d408abb54c5e4360e5f6c3bc07",
+            "tests": 27,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging",
+                "className": "dev.agentworkbench.RuntimeIntegrationTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Requires real POSIX executable permissions"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.SessionStoreTest",
+            "xmlSha256": "04ac3f49f3570505a1b3a9cae1f392754a0fe022869245ecaeb7428fdc2f7cbc",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TaskDispatchQueueTest",
+            "xmlSha256": "5f0a6934c7aef072fe3317ae69897108afc79798472934d9265b30b323940559",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamExecutionTest",
+            "xmlSha256": "9da86a7e6ea38a052c58b1438113ba7e05b3da4b3cbdeee92f142db80214d75d",
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamRecordsTest",
+            "xmlSha256": "da575a54af81d88bb4fd941049ad4c157174d5da031d9d20cedb81983475abe8",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WindowsProcessSnapshotTest",
+            "xmlSha256": "5e62bb8da6e5204d97185827d462750c65c4cd4990073e57d18c0593127e6dd7",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkbenchEngineTest",
+            "xmlSha256": "1a9b6bace60db22dc967379f7032863aef769f88a8307535b26f1b139550eabd",
+            "tests": 24,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerLeaseTest",
+            "xmlSha256": "71be714d0c42a81559d412ff06d87e17ec5ab064db011ef43f57900abf30a4cc",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerProcessTest",
+            "xmlSha256": "6f2a5afb3fbd1f242f8e2746eb0eaf60f6075c71d9075ca330bc6b1e49c0b03d",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerRpcTest",
+            "xmlSha256": "f43b6fb4d22303846289da67ede8cd4fbe01935031e9532f1c98f586cd51ee18",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerWireTest",
+            "xmlSha256": "a9a74a1b61df9b7e61806e7c14721f109f7c37637bb56d709db84e6368734466",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceSelectionEngineTest",
+            "xmlSha256": "1a810cc43c04509a4c93e194c35f217f02ed3d997f187ae45c81123542376ba0",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteEngineTest",
+            "xmlSha256": "f50598cc68e8393942607276cb09db8b6e4336588ce54947e76b3fa82e58da84",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+            "xmlSha256": "bf1845e5a16699a214f32147cb052ab4b7e7dbe327aa46007ca7c4ba99ef495b",
+            "tests": 15,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          }
+        ]
+      },
+      "uiTests": 79,
+      "workspaceChecks": 15,
+      "protocolChecks": 29,
+      "recoveryChecks": 11,
+      "dispatchChecks": 13,
+      "standaloneStatus": "passed",
+      "packagedStatus": "passed",
+      "packagedCoreMatchesFinalJar": true,
+      "fixtureSourcesMatchExactCommit": true,
+      "fixtureSourceCheckouts": [
+        {
+          "file": "tools/ControlledDispatchLauncher.java",
+          "rawSha256": "4bbeb4f709a48a59211a7b7f30f340fce3732685cf19736de6fe8e006a1d6f72",
+          "gitBlobSha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+          "lineEndings": "WINDOWS_CRLF_CHECKOUT"
+        },
+        {
+          "file": "tools/WorkspaceDatabaseFixture.java",
+          "rawSha256": "8697a4701cba8cb7a78e8995fead260f1bbad31de3be3c6dd5abc4fcec7caae0",
+          "gitBlobSha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c",
+          "lineEndings": "WINDOWS_CRLF_CHECKOUT"
+        },
+        {
+          "file": "tools/ProcessRecoveryProbe.java",
+          "rawSha256": "a8fcd560a15b327170d91f8921c5f9290ac4c887f354856c9ce7e2583c018da6",
+          "gitBlobSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+          "lineEndings": "WINDOWS_CRLF_CHECKOUT"
+        }
+      ],
+      "originalReadyOwner": "e0b4d4f2-d983-4305-9e0d-b339bf5ff5d6",
+      "readyOriginalTaskExecutionId": "00cb645f-62af-4e32-8f0b-8ff2e6b1a537",
+      "readyRecoveredTaskExecutionId": "c3381904-5ad6-4af3-ac83-22cf432e2959",
+      "modelCalls": 15,
+      "originalIdentitiesIndependentlyStopped": 52,
+      "productionWebHashes": [
+        {
+          "file": "web/dist/index.html",
+          "sha256": "45428117c2dd1c777cea1c69fca03d2cb8a8c37e74ab80586ad2a7cb25a9ea45"
+        },
+        {
+          "file": "web/dist/assets/index-BaUy8ubQ.css",
+          "sha256": "dc6427dbf9e1df58ed99ca17a5afb5d64c0aa3e08ff4fb12dde1a2e4bbf82313"
+        },
+        {
+          "file": "web/dist/assets/index-CYf0tGPM.js",
+          "sha256": "86a9bff9886aa587c03f80b213220882ef4ea1e136c69993e7a7b31e78790474"
+        }
+      ],
+      "runtimeConfigSha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874",
+      "runtimeConfigMatchesExactCommit": true,
+      "actualTaskZipSha256": "3561ff0570b4cea31f9e45adbc025729488bc56f7eb960c090afa831602ac4cd",
+      "workspaceWriteChecks": 22,
+      "workspaceWriteModelCalls": 32,
+      "workspaceWriterIdentitiesStopped": 1280,
+      "actualReleaseGates": 2,
+      "nativeDependencies": [
+        {
+          "file": "jna-5.17.0.jar",
+          "bytes": 2002589,
+          "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        },
+        {
+          "file": "jna-platform-5.17.0.jar",
+          "bytes": 1378617,
+          "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        }
+      ],
+      "actualPackagedJreWriter": {
+        "recordedAt": "2026-11-11T09:27:45.899Z",
+        "version": "0.2.0-alpha.15",
+        "platform": "win32",
+        "status": "passed",
+        "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
+        "jarSha256": "936fd03506523aa41c677aa9350982a7f36292d5dee2fad15f103c474334f713",
+        "packagedJarSha256": "936fd03506523aa41c677aa9350982a7f36292d5dee2fad15f103c474334f713",
+        "packagedJava": "D:\\a\\multi-agent\\multi-agent\\release\\win-unpacked\\resources\\jre\\bin\\java.exe",
+        "packagedJavaSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
+        "javaVersion": "21.0.13",
+        "packagedRuntimeReleaseSha256": "b3f0f2c915151893f679218e30bf445ee6b489681e06457f466744fe89e50e8c",
+        "fixtureClassesCompiledOnce": true,
+        "fixtureClasses": [
+          {
+            "file": "ProcessRecoveryProbe$Identity.class",
+            "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+          },
+          {
+            "file": "ProcessRecoveryProbe$State.class",
+            "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+          },
+          {
+            "file": "ProcessRecoveryProbe$Visibility.class",
+            "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+          },
+          {
+            "file": "ProcessRecoveryProbe.class",
+            "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteDatabaseFixture.class",
+            "sha256": "a588579f7b3a02bb2246c3d3718765c672e72742947a425f774a0cfbb0add75b"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$1.class",
+            "sha256": "e19bcd1e5940a102a8e849b7303b016196bfaf31cf3c132b9f3b2a9f61acebed"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$2.class",
+            "sha256": "a0d4e287e5364f47dab229f62eefdba5c195123bdc4c5540c72d0458d0da7a86"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe.class",
+            "sha256": "17969c48c3e8b6a10357e24eaa8b8a4c1e08d20f723b78c5b0c0842018ad28a6"
+          }
+        ],
+        "productionClasses": [
+          {
+            "file": "dev/agentworkbench/WorkbenchEngine.class",
+            "sha256": "888a353be60c66c4dd960eaf0403c3d5b06b1cb3a01dde986434e08ad9e15410"
+          },
+          {
+            "file": "dev/agentworkbench/WorkerProcessMain.class",
+            "sha256": "3418574b7edd61d7dc694f654688cd31fd9bfe468c81c25fd12264adb68ab016"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+            "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+          },
+          {
+            "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+            "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+            "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+            "sha256": "b275affe510f6773b140a41d5e3d2225bc6f63194c3113db039ef6c3d98050df"
+          }
+        ],
+        "nativeDependencies": [
+          {
+            "file": "jna-5.17.0.jar",
+            "bytes": 2002589,
+            "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          },
+          {
+            "file": "jna-platform-5.17.0.jar",
+            "bytes": 1378617,
+            "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          }
+        ],
+        "nativeFileKey": "WINDOWS:90a67f57a67f3d32:d95e0000000001000000000000000000",
+        "originalPid": 1496,
+        "originalProcessStartedAt": "2026-11-11T09:27:44.586Z",
+        "originalStopped": true,
+        "releaseDuringBorrowRejected": true,
+        "lockAvailableAfterRelease": true,
+        "windowsNativeProcessSnapshotApplicable": true,
+        "windowsNativeProcessSnapshotVerified": true,
+        "nativeProcessBirth": "2026-11-11T09:27:44.586Z",
+        "nativeProcessSnapshotCount": 138,
+        "probeOutputEncoding": "UTF-8",
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2,
+        "evidenceDirectory": "D:\\a\\multi-agent\\multi-agent\\.runtime\\bundled-workspace-writer-fmej58"
+      },
+      "originalWorkspaceWriteUnknownHistoryVerified": true
+    },
+    {
+      "platform": "darwin",
+      "runner": "macos-latest",
+      "jobId": 130426877898,
+      "artifactId": 13843461657,
+      "artifactSha256": "71c8c8aceaa96aa54ba538d56540538ff4fd88ea9f566cab517a245b7e373b23",
+      "artifactDigestVerified": true,
+      "jarSha256": "57c1fe9dfc688b87acc2caebead80db1dcdba1f12d3743bd8afcfb013256e4aa",
+      "freshRuntimeEvidenceVerified": true,
+      "fileVersions": {
+        "checks": 9,
+        "modelCalls": 28,
+        "exports": [
+          {
+            "strategy": "CLONE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "cf7b5b9b4d06386b83e3c55af324ef78b6b8f9c956bc08b527cabb33a3dedbc8"
+          },
+          {
+            "strategy": "WORKTREE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "2990feb3111c7c86708044fc4cec35817f384b8126262c7edcbd31cba6668e24"
+          }
+        ],
+        "originalIdentitiesIndependentlyStopped": 201,
+        "protocolVersion": 2,
+        "completeHistoryVerified": true,
+        "fixtureSourceVerified": true
+      },
+      "core": {
+        "suiteCount": 28,
+        "tests": 321,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8,
+        "passed": 313,
+        "suites": [
+          {
+            "name": "dev.agentworkbench.AgentRunStoreTest",
+            "xmlSha256": "3b45cd53d5886dbf47f48f042e567b678ca98b89f27b65bd9169c0f5df084643",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ExecutionStoreTest",
+            "xmlSha256": "99385ab52ec90f917b4ec16de69342472f37e8b3ddc02eaf4bc4d078bfb0165b",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.FileToolHistoryTest",
+            "xmlSha256": "ce7ed12f01ac0740e95b816a409c3c98e32cb1ac5f4a3efbe0c12c4af584b05b",
+            "tests": 23,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.GitWorkspaceTest",
+            "xmlSha256": "7c46c4932aedf6732761e38223cfb9ae5074353cac42ecfef3b94d6c4e65d75c",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "redirectedWorkspaceRootCannotCreateTaskDirectoriesInsideAForeignJunction",
+                "className": "dev.agentworkbench.GitWorkspaceTest",
+                "reason": "Disabled on operating system: Mac OS X"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.LocalAccessFilterTest",
+            "xmlSha256": "ed59eb359911771896274eee34a2658097beff113973ae7f29d3ccdab3d27cf5",
+            "tests": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "xmlSha256": "d68ffc2ed879bd5fb1c025da8073c75288d3b5e7760b0e41f472d60ba8982133",
+            "tests": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 3,
+            "skippedCases": [
+              {
+                "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows restricted process identity"
+              },
+              {
+                "name": "failedWindowsSnapshotStillRejectsAnUnverifiableLivePid",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity failure"
+              },
+              {
+                "name": "missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity fallback"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ModelRequestStoreTest",
+            "xmlSha256": "f246337869b8573e9a4eaef06269990be9b301e9dd9391e3433d02a4dcfb977c",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.PlanAndPolicyTest",
+            "xmlSha256": "427aa69726c7f4313f44f1091d055e5a7d4baeea7c37f5a54d8b610012a4a021",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+            "xmlSha256": "d07dc1999d2e4aa2a57cfafd953df178a7d22562cbd3e8f6b0dd28605066404a",
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RootDispatchEngineTest",
+            "xmlSha256": "04a76127df644571964f6ce2dcd9e60f3f2d2724fd546ee0a9bfb02fc7064c47",
+            "tests": 11,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeDelegationTest",
+            "xmlSha256": "18a75eff13ac8e69ed782b6bb336f5d1e4e1f8cebdbcfd4663f0433534d3b742",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeIntegrationTest",
+            "xmlSha256": "0de8bbc6292036816607a6ad50894a96d5ee4ea6889a0b28da51f5c3a07725c6",
+            "tests": 27,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 2,
+            "skippedCases": [
+              {
+                "name": "transientWindowsReceiptLockDoesNotReplayCompletedFileTool",
+                "className": "dev.agentworkbench.RuntimeIntegrationTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+              },
+              {
+                "name": "persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay",
+                "className": "dev.agentworkbench.RuntimeIntegrationTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.SessionStoreTest",
+            "xmlSha256": "1c479e152d4b0c00f663fa3443145486d76ef717b32fd628879dbef1a7729e19",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TaskDispatchQueueTest",
+            "xmlSha256": "a44b0fc01014018113b37ae139bc1eef286f354e174dd6a2b3d8d24055c79fe7",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamExecutionTest",
+            "xmlSha256": "c4333a684de1ef746b1a28e4f5acd88d6b37da7d83b39a9230be93fc1146e7c8",
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamRecordsTest",
+            "xmlSha256": "c55fdacbd54c79c48ebada76c4d668b2a94ca93102fbc8d310b70b655966e66a",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WindowsProcessSnapshotTest",
+            "xmlSha256": "b741d15c66d90837bdfeb01c5fa86958c1c159ed2e11a0ec89e27a50161dba6a",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "actualWindowsSnapshotMatchesReadableProcessBirths",
+                "className": "dev.agentworkbench.WindowsProcessSnapshotTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native system process snapshot"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkbenchEngineTest",
+            "xmlSha256": "c7a9727f26669f5f2ba331ec672b6b3e04d630b25cf88ecda835c58de867eafb",
+            "tests": 24,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerLeaseTest",
+            "xmlSha256": "388f0c8da445d7a4bd238bdb96117f426b7db5c1dd9eaf81560576cfb0019f51",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerProcessTest",
+            "xmlSha256": "0f0cfcb381fc88b269e1eb44b257c0b9c804c8c3c8ce8e5734da1c680e87c87f",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerRpcTest",
+            "xmlSha256": "832c4650c6e2bd1b43acd3f17854ed0d8ae76f99849e51a15a840f2dfea3fcf8",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerWireTest",
+            "xmlSha256": "5b19f9fa987704ae3f87df99d4b5232bb415022aae17a45de90b18c30bd040fd",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceSelectionEngineTest",
+            "xmlSha256": "24a3d62d5140ae1bfd9bafc31e8e976e364e7ba1b54213633f9d92573b2935c6",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteEngineTest",
+            "xmlSha256": "b97c09d6a0c6320393739763585696757cdbe2fae2904fd3b473f44694154a9b",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+            "xmlSha256": "004751a5c3f29cfe6d84c047754d260a232b5084153f543a9143213e3528721d",
+            "tests": 15,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "savedWindowsShortWorkspaceKeepsItsPhysicalScopeAfterStoreReopen",
+                "className": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+                "reason": "Disabled on operating system: Mac OS X"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.mcp.McpIntegrationTest",
+            "xmlSha256": "c4efe930f64b8a3f7d4e5caa4f6980db88f38f14d3c22276d544d2c8110a929d",
+            "tests": 23,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+            "xmlSha256": "b36d6314e1f853348681ea6f16daf461c843092b8bc8d91322e37a7e80a8fd9a",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.runtime.WorkspaceWriteGuardTest",
+            "xmlSha256": "6306f353156dcc19e897471d55c4af19e9ed8e271aa991d6b33c04cdd6bda08b",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          }
+        ]
+      },
+      "uiTests": 79,
+      "workspaceChecks": 15,
+      "protocolChecks": 29,
+      "recoveryChecks": 11,
+      "dispatchChecks": 13,
+      "standaloneStatus": "passed",
+      "packagedStatus": "passed",
+      "packagedCoreMatchesFinalJar": true,
+      "fixtureSourcesMatchExactCommit": true,
+      "fixtureSourceCheckouts": [
+        {
+          "file": "tools/ControlledDispatchLauncher.java",
+          "rawSha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+          "gitBlobSha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+          "lineEndings": "GIT_BLOB_BYTES"
+        },
+        {
+          "file": "tools/WorkspaceDatabaseFixture.java",
+          "rawSha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c",
+          "gitBlobSha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c",
+          "lineEndings": "GIT_BLOB_BYTES"
+        },
+        {
+          "file": "tools/ProcessRecoveryProbe.java",
+          "rawSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+          "gitBlobSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+          "lineEndings": "GIT_BLOB_BYTES"
+        }
+      ],
+      "originalReadyOwner": "aa3255cf-9ae2-4e26-99bb-bd7d86748d36",
+      "readyOriginalTaskExecutionId": "5a4c3197-7be1-4bb1-8db9-3ff0ff383835",
+      "readyRecoveredTaskExecutionId": "d1041c93-2e41-468f-bec0-405f7ab0cff8",
+      "modelCalls": 15,
+      "originalIdentitiesIndependentlyStopped": 52,
+      "productionWebHashes": [
+        {
+          "file": "web/dist/index.html",
+          "sha256": "beaf201dbc22771d3f56ac661cefaa2662b085cc7d8bef6f1863880e2f31f29e"
+        },
+        {
+          "file": "web/dist/assets/index-BaUy8ubQ.css",
+          "sha256": "dc6427dbf9e1df58ed99ca17a5afb5d64c0aa3e08ff4fb12dde1a2e4bbf82313"
+        },
+        {
+          "file": "web/dist/assets/index-CYf0tGPM.js",
+          "sha256": "86a9bff9886aa587c03f80b213220882ef4ea1e136c69993e7a7b31e78790474"
+        }
+      ],
+      "runtimeConfigSha256": "3be957fbf2bc4239f17ca04398c552f2214c74caabe1109ee876ddeca9e8f270",
+      "runtimeConfigMatchesExactCommit": true,
+      "actualTaskZipSha256": "0994cb85c25fe18ada149038bf1bb97a1416db1236007e00e0554664f9c44da7",
+      "workspaceWriteChecks": 22,
+      "workspaceWriteModelCalls": 32,
+      "workspaceWriterIdentitiesStopped": 550,
+      "actualReleaseGates": 2,
+      "nativeDependencies": [
+        {
+          "file": "jna-5.17.0.jar",
+          "bytes": 2002589,
+          "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        },
+        {
+          "file": "jna-platform-5.17.0.jar",
+          "bytes": 1378617,
+          "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        }
+      ],
+      "actualPackagedJreWriter": {
+        "recordedAt": "2026-11-11T09:20:13.274Z",
+        "version": "0.2.0-alpha.15",
+        "platform": "darwin",
+        "status": "passed",
+        "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
+        "jarSha256": "57c1fe9dfc688b87acc2caebead80db1dcdba1f12d3743bd8afcfb013256e4aa",
+        "packagedJarSha256": "57c1fe9dfc688b87acc2caebead80db1dcdba1f12d3743bd8afcfb013256e4aa",
+        "packagedJava": "/Users/runner/work/multi-agent/multi-agent/release/mac-arm64/Agent Workbench.app/Contents/Resources/jre/bin/java",
+        "packagedJavaSha256": "0f642542ea1f0be6957557c0db96653ec128113bb5a4aaa7c2534d1d72ddb51f",
+        "javaVersion": "21.0.13",
+        "packagedRuntimeReleaseSha256": "32d77bb26cba44ee2282c8b4fbb6dcf429757ed8b851d9d84863c7342989584d",
+        "fixtureClassesCompiledOnce": true,
+        "fixtureClasses": [
+          {
+            "file": "ProcessRecoveryProbe$Identity.class",
+            "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+          },
+          {
+            "file": "ProcessRecoveryProbe$State.class",
+            "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+          },
+          {
+            "file": "ProcessRecoveryProbe$Visibility.class",
+            "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+          },
+          {
+            "file": "ProcessRecoveryProbe.class",
+            "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteDatabaseFixture.class",
+            "sha256": "a588579f7b3a02bb2246c3d3718765c672e72742947a425f774a0cfbb0add75b"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$1.class",
+            "sha256": "e19bcd1e5940a102a8e849b7303b016196bfaf31cf3c132b9f3b2a9f61acebed"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$2.class",
+            "sha256": "a0d4e287e5364f47dab229f62eefdba5c195123bdc4c5540c72d0458d0da7a86"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe.class",
+            "sha256": "17969c48c3e8b6a10357e24eaa8b8a4c1e08d20f723b78c5b0c0842018ad28a6"
+          }
+        ],
+        "productionClasses": [
+          {
+            "file": "dev/agentworkbench/WorkbenchEngine.class",
+            "sha256": "888a353be60c66c4dd960eaf0403c3d5b06b1cb3a01dde986434e08ad9e15410"
+          },
+          {
+            "file": "dev/agentworkbench/WorkerProcessMain.class",
+            "sha256": "3418574b7edd61d7dc694f654688cd31fd9bfe468c81c25fd12264adb68ab016"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+            "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+          },
+          {
+            "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+            "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+            "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+            "sha256": "b275affe510f6773b140a41d5e3d2225bc6f63194c3113db039ef6c3d98050df"
+          }
+        ],
+        "nativeDependencies": [
+          {
+            "file": "jna-5.17.0.jar",
+            "bytes": 2002589,
+            "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          },
+          {
+            "file": "jna-platform-5.17.0.jar",
+            "bytes": 1378617,
+            "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          }
+        ],
+        "nativeFileKey": "NIO:(dev=100000f,ino=3101014)",
+        "originalPid": 55518,
+        "originalProcessStartedAt": "2026-11-11T09:20:10.767Z",
+        "originalStopped": true,
+        "releaseDuringBorrowRejected": true,
+        "lockAvailableAfterRelease": true,
+        "windowsNativeProcessSnapshotApplicable": false,
+        "windowsNativeProcessSnapshotVerified": null,
+        "probeOutputEncoding": "UTF-8",
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2,
+        "evidenceDirectory": "/Users/runner/work/multi-agent/multi-agent/.runtime/bundled-workspace-writer-ZQSE6g"
+      },
+      "originalWorkspaceWriteUnknownHistoryVerified": true
+    },
+    {
+      "platform": "linux",
+      "runner": "ubuntu-latest",
+      "jobId": 130426877736,
+      "artifactId": 13842452927,
+      "artifactSha256": "520799b96db621a448dd2260b28f83670661406ead1c2bfa5512e1cf1a18b8c3",
+      "artifactDigestVerified": true,
+      "jarSha256": "2b7b1ab3cf19f5946de6b5945cd51f252892b6cc2be7ee2e8c822d07d77b31bf",
+      "freshRuntimeEvidenceVerified": true,
+      "fileVersions": {
+        "checks": 9,
+        "modelCalls": 28,
+        "exports": [
+          {
+            "strategy": "CLONE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "ec4bae41644d14740ff782643896773d148f2d10766519243a11bd3c65130b99"
+          },
+          {
+            "strategy": "WORKTREE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "a478bbfb9d7ebe48144b84236f7ef7af8ded6010d29f88c91b93c26e3379adcb"
+          }
+        ],
+        "originalIdentitiesIndependentlyStopped": 211,
+        "protocolVersion": 2,
+        "completeHistoryVerified": true,
+        "fixtureSourceVerified": true
+      },
+      "core": {
+        "suiteCount": 28,
+        "tests": 321,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8,
+        "passed": 313,
+        "suites": [
+          {
+            "name": "dev.agentworkbench.AgentRunStoreTest",
+            "xmlSha256": "86c99c7da0aac888a2741b4400adb763ed510f53de4c3cfe039dffae11a13e13",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ExecutionStoreTest",
+            "xmlSha256": "b7564285c276f232c06cc739f869b900a959aa039f0bf2f8d59ca130d9e95f9a",
+            "tests": 6,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.FileToolHistoryTest",
+            "xmlSha256": "9f78a73ff57b15efffdc7e93a7e717fb80d730e450d4445b4bfaa620f1f49020",
+            "tests": 23,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.GitWorkspaceTest",
+            "xmlSha256": "1fe2cddbfb00094363c00d377d42d8eee358d31ae82c33e4c5b2311cd2af4327",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "redirectedWorkspaceRootCannotCreateTaskDirectoriesInsideAForeignJunction",
+                "className": "dev.agentworkbench.GitWorkspaceTest",
+                "reason": "Disabled on operating system: Linux"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.LocalAccessFilterTest",
+            "xmlSha256": "170f1178915713bf2e110c699b5fc54df21cff86cd00eb2edf7bba6ddeffd932",
+            "tests": 10,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "xmlSha256": "1c6969a31adcb7558847151e45e6c25d4a239748385ff56c77bdbb708075a4e9",
+            "tests": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 3,
+            "skippedCases": [
+              {
+                "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows restricted process identity"
+              },
+              {
+                "name": "failedWindowsSnapshotStillRejectsAnUnverifiableLivePid",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity failure"
+              },
+              {
+                "name": "missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory",
+                "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity fallback"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ModelRequestStoreTest",
+            "xmlSha256": "6b88e245f92f22d68f49601e8ec22038af9a3fe65afda182be012a215d2f196f",
+            "tests": 3,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.PlanAndPolicyTest",
+            "xmlSha256": "9246dab8c4437f074221048752269f6ccae66df1e7a49113113dde8b153acfad",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+            "xmlSha256": "1b504d77c50399738237acf3363cd04399c5de96b0504f5e708cabfcd73e1bae",
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RootDispatchEngineTest",
+            "xmlSha256": "228ac616bafd85e42f1d2aec08de077e46627c7eb59d2e383e9ed33f9a911985",
+            "tests": 11,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeDelegationTest",
+            "xmlSha256": "2ea6c8159bb33b59cccdf6adce630ce53901d31d63110a9f47ecafc08df0dd48",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.RuntimeIntegrationTest",
+            "xmlSha256": "7e38859ea8f0ad57c50388e4d9c9a36fdc1a954f9eb1250ed923d2c7eb5d34e9",
+            "tests": 27,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 2,
+            "skippedCases": [
+              {
+                "name": "transientWindowsReceiptLockDoesNotReplayCompletedFileTool",
+                "className": "dev.agentworkbench.RuntimeIntegrationTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+              },
+              {
+                "name": "persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay",
+                "className": "dev.agentworkbench.RuntimeIntegrationTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.SessionStoreTest",
+            "xmlSha256": "1ead058e2f5bb0acf58662c5a0fb69607fcb11f744e8eb8b687c436da0e59653",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TaskDispatchQueueTest",
+            "xmlSha256": "be7d418d7d13ebf1da2cf27ffa7e7a77b24446735b6f391e266bf688b5aaecb8",
+            "tests": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamExecutionTest",
+            "xmlSha256": "f0d4765411e10002ddc7c8f8e3606846b29ece3fc165f579682e48b35ab1c1c3",
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.TeamRecordsTest",
+            "xmlSha256": "e8c6bfb435e2cd64798ce2c9096aa8258e4ffdc45db5c57855e2bb0b5a46d5be",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WindowsProcessSnapshotTest",
+            "xmlSha256": "84b1141a9653f7c0b364237b84a06bf10dca1a478f1a3d09390742d9e602003c",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "actualWindowsSnapshotMatchesReadableProcessBirths",
+                "className": "dev.agentworkbench.WindowsProcessSnapshotTest",
+                "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native system process snapshot"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkbenchEngineTest",
+            "xmlSha256": "cae5c6d86f606403f2945ab1a462f93d8217fd2631c35472e1f4c70e0e33af8f",
+            "tests": 24,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerLeaseTest",
+            "xmlSha256": "f969908d7118a7b369139a0679051ab6c7c60fb7440144804da0e82b019dbd33",
+            "tests": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerProcessTest",
+            "xmlSha256": "45decbb022e6aff90ba41cef794fd1b50180fdcb78de0138e7c71cc26c9c2600",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerRpcTest",
+            "xmlSha256": "441ef87bfc27dfeae0ff66661624f960995bd451b35abaf7f7b4c3b0f56c7c83",
+            "tests": 4,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkerWireTest",
+            "xmlSha256": "14c654d65bb9f6ce2aa80c3c842809fd41737a0960fa849320d8b81a67691cc5",
+            "tests": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceSelectionEngineTest",
+            "xmlSha256": "36aeab50fb5ae5a194f2c4264b2d232eb74d67fa198f4cafc397d478a3bb8251",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteEngineTest",
+            "xmlSha256": "4e4ae44254f39eda5c84eaf4c5cbd4f099dbf2acd9b85de879b51fc060a85e1e",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+            "xmlSha256": "e7942eb477c94a935406dc528b04688bff2f898b5437f50957e97f07434627c5",
+            "tests": 15,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 1,
+            "skippedCases": [
+              {
+                "name": "savedWindowsShortWorkspaceKeepsItsPhysicalScopeAfterStoreReopen",
+                "className": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+                "reason": "Disabled on operating system: Linux"
+              }
+            ],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.mcp.McpIntegrationTest",
+            "xmlSha256": "1740b97aaa08d6f3e3d92011f6a2bdf2a5225508a62d98858d15b847a44e07b8",
+            "tests": 23,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+            "xmlSha256": "ad6b8172bca82e6680c2f5bc1b0692c9aa4f3ca4c59773103c260a16d2df3abc",
+            "tests": 13,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          },
+          {
+            "name": "dev.agentworkbench.runtime.WorkspaceWriteGuardTest",
+            "xmlSha256": "4aa0c4e73c5374444db0460d9551d1fde369af124fa308d7bf88506fe42ec104",
+            "tests": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0,
+            "skippedCases": [],
+            "javaVersion": "21.0.13",
+            "carrierParallelism": 2,
+            "carrierMaxPoolSize": 2
+          }
+        ]
+      },
+      "uiTests": 79,
+      "workspaceChecks": 15,
+      "protocolChecks": 29,
+      "recoveryChecks": 11,
+      "dispatchChecks": 13,
+      "standaloneStatus": "passed",
+      "packagedStatus": "passed",
+      "packagedCoreMatchesFinalJar": true,
+      "fixtureSourcesMatchExactCommit": true,
+      "fixtureSourceCheckouts": [
+        {
+          "file": "tools/ControlledDispatchLauncher.java",
+          "rawSha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+          "gitBlobSha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+          "lineEndings": "GIT_BLOB_BYTES"
+        },
+        {
+          "file": "tools/WorkspaceDatabaseFixture.java",
+          "rawSha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c",
+          "gitBlobSha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c",
+          "lineEndings": "GIT_BLOB_BYTES"
+        },
+        {
+          "file": "tools/ProcessRecoveryProbe.java",
+          "rawSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+          "gitBlobSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+          "lineEndings": "GIT_BLOB_BYTES"
+        }
+      ],
+      "originalReadyOwner": "7894cc8e-7262-47df-bd56-350c827dc784",
+      "readyOriginalTaskExecutionId": "7dd2f459-1417-4b8e-b883-29dd09ffde93",
+      "readyRecoveredTaskExecutionId": "b6a4e7e0-f1fe-494d-9be4-f33e85f940ba",
+      "modelCalls": 15,
+      "originalIdentitiesIndependentlyStopped": 52,
+      "productionWebHashes": [
+        {
+          "file": "web/dist/index.html",
+          "sha256": "beaf201dbc22771d3f56ac661cefaa2662b085cc7d8bef6f1863880e2f31f29e"
+        },
+        {
+          "file": "web/dist/assets/index-BaUy8ubQ.css",
+          "sha256": "dc6427dbf9e1df58ed99ca17a5afb5d64c0aa3e08ff4fb12dde1a2e4bbf82313"
+        },
+        {
+          "file": "web/dist/assets/index-CYf0tGPM.js",
+          "sha256": "86a9bff9886aa587c03f80b213220882ef4ea1e136c69993e7a7b31e78790474"
+        }
+      ],
+      "runtimeConfigSha256": "3be957fbf2bc4239f17ca04398c552f2214c74caabe1109ee876ddeca9e8f270",
+      "runtimeConfigMatchesExactCommit": true,
+      "actualTaskZipSha256": "14764dcc89c9a022d6b2304d507267e8e1f8eaedd88d79f52b022cbebff7f454",
+      "workspaceWriteChecks": 22,
+      "workspaceWriteModelCalls": 32,
+      "workspaceWriterIdentitiesStopped": 582,
+      "actualReleaseGates": 2,
+      "nativeDependencies": [
+        {
+          "file": "jna-5.17.0.jar",
+          "bytes": 2002589,
+          "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        },
+        {
+          "file": "jna-platform-5.17.0.jar",
+          "bytes": 1378617,
+          "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ],
+          "licenseChoice": "Apache-2.0"
+        }
+      ],
+      "actualPackagedJreWriter": {
+        "recordedAt": "2026-11-11T09:13:15.598Z",
+        "version": "0.2.0-alpha.15",
+        "platform": "linux",
+        "status": "passed",
+        "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
+        "jarSha256": "2b7b1ab3cf19f5946de6b5945cd51f252892b6cc2be7ee2e8c822d07d77b31bf",
+        "packagedJarSha256": "2b7b1ab3cf19f5946de6b5945cd51f252892b6cc2be7ee2e8c822d07d77b31bf",
+        "packagedJava": "/home/runner/work/multi-agent/multi-agent/release/linux-unpacked/resources/jre/bin/java",
+        "packagedJavaSha256": "9cad3f2620d3ef2ed10b26f922af7e773d54fdaa05f615d6d6df014f3fec4155",
+        "javaVersion": "21.0.13",
+        "packagedRuntimeReleaseSha256": "32d77bb26cba44ee2282c8b4fbb6dcf429757ed8b851d9d84863c7342989584d",
+        "fixtureClassesCompiledOnce": true,
+        "fixtureClasses": [
+          {
+            "file": "ProcessRecoveryProbe$Identity.class",
+            "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+          },
+          {
+            "file": "ProcessRecoveryProbe$State.class",
+            "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+          },
+          {
+            "file": "ProcessRecoveryProbe$Visibility.class",
+            "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+          },
+          {
+            "file": "ProcessRecoveryProbe.class",
+            "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteDatabaseFixture.class",
+            "sha256": "a588579f7b3a02bb2246c3d3718765c672e72742947a425f774a0cfbb0add75b"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$1.class",
+            "sha256": "e19bcd1e5940a102a8e849b7303b016196bfaf31cf3c132b9f3b2a9f61acebed"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$2.class",
+            "sha256": "a0d4e287e5364f47dab229f62eefdba5c195123bdc4c5540c72d0458d0da7a86"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe.class",
+            "sha256": "17969c48c3e8b6a10357e24eaa8b8a4c1e08d20f723b78c5b0c0842018ad28a6"
+          }
+        ],
+        "productionClasses": [
+          {
+            "file": "dev/agentworkbench/WorkbenchEngine.class",
+            "sha256": "888a353be60c66c4dd960eaf0403c3d5b06b1cb3a01dde986434e08ad9e15410"
+          },
+          {
+            "file": "dev/agentworkbench/WorkerProcessMain.class",
+            "sha256": "3418574b7edd61d7dc694f654688cd31fd9bfe468c81c25fd12264adb68ab016"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+            "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+          },
+          {
+            "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+            "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+            "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+            "sha256": "b275affe510f6773b140a41d5e3d2225bc6f63194c3113db039ef6c3d98050df"
+          }
+        ],
+        "nativeDependencies": [
+          {
+            "file": "jna-5.17.0.jar",
+            "bytes": 2002589,
+            "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          },
+          {
+            "file": "jna-platform-5.17.0.jar",
+            "bytes": 1378617,
+            "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          }
+        ],
+        "nativeFileKey": "NIO:(dev=801,ino=5789552)",
+        "originalPid": 39571,
+        "originalProcessStartedAt": "2026-11-11T09:13:13.580Z",
+        "originalStopped": true,
+        "releaseDuringBorrowRejected": true,
+        "lockAvailableAfterRelease": true,
+        "windowsNativeProcessSnapshotApplicable": false,
+        "windowsNativeProcessSnapshotVerified": null,
+        "probeOutputEncoding": "UTF-8",
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2,
+        "evidenceDirectory": "/home/runner/work/multi-agent/multi-agent/.runtime/bundled-workspace-writer-MzQ91x"
+      },
+      "originalWorkspaceWriteUnknownHistoryVerified": true
+    }
+  ],
+  "distributionArtifacts": [
+    {
+      "id": 13843582348,
+      "name": "desktop-windows-latest",
+      "digest": "sha256:71fc36b9d47ab11e4e290161dbba3824c840fc3e46ff673bfd50fed19a423926",
+      "size": 152645939,
+      "downloadedAndByteVerified": false
+    },
+    {
+      "id": 13843302270,
+      "name": "desktop-macos-latest",
+      "digest": "sha256:0559fb7b0acfba3190c1b7a40fdb92f49d9b57e9defd22472a53251251406c82",
+      "size": 175432962,
+      "downloadedAndByteVerified": false
+    },
+    {
+      "id": 13842388106,
+      "name": "desktop-ubuntu-latest",
+      "digest": "sha256:5e4ae28500e0c37d98f872edfdc713dcada760b183234932ac1e72c9ef4cee73",
+      "size": 184808434,
+      "downloadedAndByteVerified": false
+    }
+  ],
+  "evidenceDirectory": ".runtime/alpha15-ci/run-42992001214-attempt-1-retry1",
+  "originalFailuresRetained": [
+    {
+      "file": ".runtime/alpha15-core-clean-failure1/manifest.json",
+      "sha256": "03f6acf2271533e707a8c116e88233f168f0d80cedb4a54a535172aebe50f174"
+    },
+    {
+      "file": ".runtime/alpha15-core-clean-interrupted2/manifest.json",
+      "sha256": "0f6268857f1b78b09b4efd939581823cc3d16cea99e6e373068ff4890d5843cf"
+    },
+    {
+      "file": ".runtime/alpha15-core-clean-failure3/manifest.json",
+      "sha256": "78a0c3cd9eb64eb01d152b98a09f7c0ac192c704787dd90a4b12debd239014bb"
+    },
+    {
+      "file": ".runtime/alpha15-core-clean-failure3/settlement-fixture-supplement.json",
+      "sha256": "5b7a64ade90a9ea65572488ec1364e562d4b17c148ceff5840b9e6b3209e1925"
+    },
+    {
+      "file": ".runtime/alpha15-core-clean-interrupted4/manifest.json",
+      "sha256": "ddd70bcc0295ad72fad1ae3e62922f2c32ce230032b005c1b2e3e813a3507723"
+    },
+    {
+      "file": ".runtime/alpha15-shared-review-failure1/manifest.json",
+      "sha256": "6a3837125b0af1cc8f548b010a20da34be67eae6ae48fc817e192db1ff287d8e"
+    },
+    {
+      "file": ".runtime/alpha15-shared-review-failure1/original-shared-review-fixtures.json",
+      "sha256": "6856417b9fc09a8bb0ba9802df2ec474b49064adfa02b656b43b5fe025f74885"
+    },
+    {
+      "file": ".runtime/alpha15-file-versions-artifact-usage.json",
+      "sha256": "9fda5cbda1e39684d72244bd4b56ec414cd47096ab272e8530eeb31aa0d6456c"
+    },
+    {
+      "file": ".runtime/file-versions-xX5eIU/reports/failure-before-cleanup.json",
+      "sha256": "b37b9b26fbbce0abc7db7059adb507b5fafe60cc1cd297943b4e0dabb63d98f3"
+    },
+    {
+      "file": ".runtime/file-versions-xX5eIU/reports/independent-failure-inspection.json",
+      "sha256": "853450e7fc581d3deb4120d4f8f17cd233ad2a32edc98305cd7f266d55ec90e5"
+    },
+    {
+      "file": ".runtime/alpha15-root-key-redaction-failure1/manifest.json",
+      "sha256": "0df1028fc8c3667088d6e295ccf8b69d2aceaa1f54ec6012a67ce6b0a748c3e7"
+    },
+    {
+      "file": ".runtime/alpha15-short-credential-failure1/manifest.json",
+      "sha256": "6320ffd3f42482ace53f7467647d350425cb0c48c3e9e02ad6101228d282dcac"
+    },
+    {
+      "file": ".runtime/alpha15-ui-full-failure1/failure.json",
+      "sha256": "fc538ffa270cce51a080ecd1ac1b0e598fde321fd621aaf5252a3e210dea4416"
+    },
+    {
+      "file": ".runtime/alpha15-history-targeted-failure4/manifest.json",
+      "sha256": "1fe6a73e044e89a14abcf3de426e80929cf1115ea72c8ee6c2f92ff6bc41230f"
+    },
+    {
+      "file": ".runtime/alpha15-history-targeted-failure5/manifest.json",
+      "sha256": "015f103dbf314b5041ed01b6b4e2d13437a59b635e2491abe064df83e2ab9af1"
+    },
+    {
+      "file": ".runtime/alpha15-canonical-ancestor-failure1/manifest.json",
+      "sha256": "52b6e7e67ae8a365a03e530b43b6ae3ab7250411298f5b8b49fce348d78e9889"
+    },
+    {
+      "file": ".runtime/alpha15-canonical-ancestor-failure1/original-production-identity.json",
+      "sha256": "11829b4fd63888c6d24e72a4237245bf4c17f2d2d0959cd30a6fe4d16a595885"
+    },
+    {
+      "file": ".runtime/alpha15-original-ci-failure.json",
+      "sha256": "abc65d60d76d15db4abf43661d1a46320ff00e21ad727d441e40d25d20720615"
+    },
+    {
+      "file": ".runtime/alpha15-ci/artifact-13836235830-run-42976352869-attempt-1/verified-failure.json",
+      "sha256": "83fe4e842617eed8e929bdc8c378871be5656d3c96a2fcbb28cdb41a52aa2f09"
+    },
+    {
+      "file": ".runtime/alpha15-file-settlement-poll-regression1/manifest.json",
+      "sha256": "c11620ae36ff38d4949393d30a7164c8ef312236980086acd9793f085cf07a20"
+    },
+    {
+      "file": ".runtime/alpha15-packaged-failure1/manifest.json",
+      "sha256": "9a602b214a6275bc602118d0c8486ad9956eee20f4b4e56cda14747c5ea2c800"
+    },
+    {
+      "file": ".runtime/alpha15-packaged-artifact-usage-attempt2.json",
+      "sha256": "14e5737d1e95ccca50e938026ea8023dbddce8c3736d7487cd42ccfe6fe3301e"
+    }
+  ],
+  "publishedDistribution": false,
+  "completeProjectGoal": false
+}
