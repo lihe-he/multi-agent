@@ -1,0 +1,1032 @@
+{
+  "recordedAt": "2026-11-12T07:27:40.034Z",
+  "version": "0.2.0-alpha.16",
+  "platform": "win32",
+  "status": "passed",
+  "sourceBaseCommit": "a7a939fed65881b5e9816a1a994fe8b42e7b890e",
+  "scope": "Short-window sidebar/settings access, local tab scrolling and fully visible keyboard focus; production theme initialization and actual minimum packaged window restart",
+  "sourceAudit": {
+    "sources": [
+      {
+        "file": "web/src/layout.css",
+        "sha256": "cb8c7193828ae98ffbfbd8895ca00c75855dc4b14ae38228f1a658f28ca3f079",
+        "normalizedLfSha256": "cb8c7193828ae98ffbfbd8895ca00c75855dc4b14ae38228f1a658f28ca3f079",
+        "gitBlob": "f6fc16cefd4f3e4f6e3e7cc34d0ff9e3d8da6b0e"
+      },
+      {
+        "file": "web/src/main.tsx",
+        "sha256": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c",
+        "normalizedLfSha256": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c",
+        "gitBlob": "64cccfbd9cc4c096a6b9a701dc448204c94c9041"
+      },
+      {
+        "file": "web/src/App.tsx",
+        "sha256": "d001ac7a35267f0c9ac16c844ac27a7d10568da353235520cb8b705894f40a76",
+        "normalizedLfSha256": "d001ac7a35267f0c9ac16c844ac27a7d10568da353235520cb8b705894f40a76",
+        "gitBlob": "f8df259db30ec9d4b791fcf3c5bd0ea1b938b3a3"
+      },
+      {
+        "file": "web/src/ui.tsx",
+        "sha256": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722",
+        "normalizedLfSha256": "456570058be46b17f4a8c73d123a390f670340d7c8e7e533cd40f1445e31360f",
+        "gitBlob": "594538df4fe223df932373adbf97e6189b4ed72a"
+      },
+      {
+        "file": "web/tests/sidebar.spec.ts",
+        "sha256": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953",
+        "normalizedLfSha256": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953",
+        "gitBlob": "54bef46053108fd8f4c8477985ea293f7e04a5ae"
+      },
+      {
+        "file": "tools/theme-desktop-smoke.cjs",
+        "sha256": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830",
+        "normalizedLfSha256": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830",
+        "gitBlob": "3b97576e607a292ad9535cb9feb2063747ef0b46"
+      }
+    ],
+    "unchangedCoreAndDesktopSourcesSinceBase": true,
+    "originalCoreJarRetained": true
+  },
+  "originalCoreJar": {
+    "file": "core/target/agent-workbench-core-0.2.0-alpha.16.jar",
+    "sha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7"
+  },
+  "ui": {
+    "fullUiTests": 106,
+    "cases": 4,
+    "measurements": 264,
+    "file": "docs/qa/alpha16-ui-validation-win32.json",
+    "sha256": "9840c65e971c919694c00dee781a9289493fab58549ea52cb873880440697ec6"
+  },
+  "productionWeb": {
+    "file": "docs/qa/themes-web-win32.json",
+    "sha256": "55c45f4df1f545109ac3c3eb848a6dd7e73f854aec0365662871bf3b77648c39",
+    "cases": 4,
+    "bootstrapSha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70",
+    "htmlSha256": "d700bf5c1eb28b8d20b814544234c0839d4f7fcd4fc1ff07476771e1e1809749",
+    "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-web-1794466253957"
+  },
+  "desktops": [
+    {
+      "mode": "desktop",
+      "file": "docs/qa/themes-desktop-win32.json",
+      "sha256": "d5eeac8d563b17f61302a214bae2b21aaa156a6c95547dc8ce4d957f59599f04",
+      "checks": 12,
+      "launches": 2,
+      "externalJavaDisabled": false,
+      "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965",
+      "originalLiveAndStoppedIdentitiesVerified": 6,
+      "historicalOriginalIdentitiesVerified": 2,
+      "minimumWindow": {
+        "width": 1000,
+        "height": 680,
+        "applied": {
+          "x": 112,
+          "y": 28,
+          "width": 1002,
+          "height": 682
+        },
+        "content": {
+          "x": 120,
+          "y": 58,
+          "width": 986,
+          "height": 644
+        }
+      },
+      "minimumNavigation": {
+        "observedAt": "2026-11-12T06:57:16.440Z",
+        "viewport": {
+          "width": 986,
+          "height": 644
+        },
+        "document": {
+          "scrollWidth": 971,
+          "clientWidth": 971
+        },
+        "sidebar": {
+          "clientHeight": 644,
+          "scrollHeight": 791,
+          "scrollTop": 147.3333282470703
+        },
+        "settings": {
+          "x": 15,
+          "y": 547,
+          "width": 169.6666717529297,
+          "height": 42,
+          "centerInsideViewport": true
+        }
+      },
+      "minimumScreenshot": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-minimum-navigation.png",
+        "sha256": "dd9e8abdac759e3618f5c2c39100caa1b71515d745369fff2f7ccb463e00e46e"
+      },
+      "screenshots": [
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-pure-white.png",
+          "sha256": "35ccaa201ebc4bdea6ef7c14fb300cbf16fe1205680a784a43ad402ca89de768",
+          "launch": 1,
+          "theme": "pure-white"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-paper-ink.png",
+          "sha256": "636d68ef6515c2b98aca6634e3a172cb7f2d08ffde7e88faa7dc0d554a61bfdf",
+          "launch": 1,
+          "theme": "paper-ink"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-classic-warm.png",
+          "sha256": "05d88c41f776f67205819c75e78d833aa35b96aef855c591a1b2318179e3845e",
+          "launch": 1,
+          "theme": "classic-warm"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-celadon.png",
+          "sha256": "0be0589c25e72d26cd67431ea32b59fb098f1ced73e51773d304b7b3571f9bec",
+          "launch": 1,
+          "theme": "celadon"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-ink-night.png",
+          "sha256": "028294e0f2e779c0310344dd2962f8a6e55ee753425ffc8b15f52095569267e7",
+          "launch": 1,
+          "theme": "ink-night"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-ink-night-blue.png",
+          "sha256": "0cbdd48b822f01385793a34aeff1ff7dd40656b87258f4fe81a901665f4c1faa",
+          "launch": 1,
+          "theme": "ink-night-blue"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-2-pure-white.png",
+          "sha256": "dcf2a118a89bfa94076387b86fa93312752c25cc2131237ec7ddf6a13b46d20f",
+          "launch": 2,
+          "theme": "pure-white"
+        }
+      ]
+    },
+    {
+      "mode": "packaged",
+      "file": "docs/qa/themes-packaged-win32.json",
+      "sha256": "eb927f648bc0230155c10069f7766bf8175bd13b2ef8a6f4fd6d2e9860b2197c",
+      "checks": 12,
+      "launches": 2,
+      "externalJavaDisabled": true,
+      "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876",
+      "originalLiveAndStoppedIdentitiesVerified": 6,
+      "historicalOriginalIdentitiesVerified": 2,
+      "minimumWindow": {
+        "width": 1000,
+        "height": 680,
+        "applied": {
+          "x": 112,
+          "y": 28,
+          "width": 1002,
+          "height": 682
+        },
+        "content": {
+          "x": 120,
+          "y": 58,
+          "width": 986,
+          "height": 644
+        }
+      },
+      "minimumNavigation": {
+        "observedAt": "2026-11-12T07:23:18.345Z",
+        "viewport": {
+          "width": 986,
+          "height": 644
+        },
+        "document": {
+          "scrollWidth": 971,
+          "clientWidth": 971
+        },
+        "sidebar": {
+          "clientHeight": 644,
+          "scrollHeight": 791,
+          "scrollTop": 147.3333282470703
+        },
+        "settings": {
+          "x": 15,
+          "y": 547,
+          "width": 169.6666717529297,
+          "height": 42,
+          "centerInsideViewport": true
+        }
+      },
+      "minimumScreenshot": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-minimum-navigation.png",
+        "sha256": "dd9e8abdac759e3618f5c2c39100caa1b71515d745369fff2f7ccb463e00e46e"
+      },
+      "screenshots": [
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-pure-white.png",
+          "sha256": "62e4cec0fe83f89f20616df74caf11e2bdceaa0d19ceeb8e55e69b212de66e30",
+          "launch": 1,
+          "theme": "pure-white"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-paper-ink.png",
+          "sha256": "fd5cc8cbfe1aa989a752d293a00e686cba4264d14670d76edd05ae05b51ac5c3",
+          "launch": 1,
+          "theme": "paper-ink"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-classic-warm.png",
+          "sha256": "999f60eeabb831048b2e4916886417ea1b62da5958f3b782a2265f9b8d83607b",
+          "launch": 1,
+          "theme": "classic-warm"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-celadon.png",
+          "sha256": "cacd386e667fe2018b5a3ccfeb714d6ef7bb8c4a7a0e88f3ada4ec1aedc776c4",
+          "launch": 1,
+          "theme": "celadon"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-ink-night.png",
+          "sha256": "3d0608390009fab477d26014ca3e79521ad61f6880021a96547216c5b5d18e5e",
+          "launch": 1,
+          "theme": "ink-night"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-ink-night-blue.png",
+          "sha256": "f503e6858090e28fcd945ea08f321ba194af059d9ddc65d5943352e634501f9c",
+          "launch": 1,
+          "theme": "ink-night-blue"
+        },
+        {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-2-pure-white.png",
+          "sha256": "db64c2351ccddb899e4ed32c150f0052369894bec62f5fd6af026a6930ec1f79",
+          "launch": 2,
+          "theme": "pure-white"
+        }
+      ]
+    }
+  ],
+  "packagedAssets": {
+    "asar": {
+      "file": "release/win-unpacked/resources/app.asar",
+      "sha256": "c0acf0e50085491a3eb7f7b6e1989ba128d7f783de839bb5367b810c18ab30de"
+    },
+    "web": [
+      {
+        "file": "web/dist/index.html",
+        "sha256": "d700bf5c1eb28b8d20b814544234c0839d4f7fcd4fc1ff07476771e1e1809749"
+      },
+      {
+        "file": "web/dist/theme-init.js",
+        "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+      },
+      {
+        "file": "web/dist/workbench-config.json",
+        "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+      },
+      {
+        "file": "web/dist/assets/index-IugtPpDq.js",
+        "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+      },
+      {
+        "file": "web/dist/assets/index-r6WkTjdh.css",
+        "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+      }
+    ],
+    "desktop": [
+      {
+        "file": "desktop/connection.cjs",
+        "sha256": "00fde4930d4d17854b0aa06967c6a4bb73814fee8e47f3a136d975957de5677d"
+      },
+      {
+        "file": "desktop/icon.ico",
+        "sha256": "008d29fb170499e344a9356830eb38357c0d0e161c443c18af60eb68597c1007"
+      },
+      {
+        "file": "desktop/icon.png",
+        "sha256": "f93908cae6990902bb7eead381f7330a47ee30c4b4ce497fa367fc78c830c4d6"
+      },
+      {
+        "file": "desktop/main.cjs",
+        "sha256": "5c7211fb26a11a39762baf799b43143764515f4153d743a22dec92eac79e9a84"
+      },
+      {
+        "file": "desktop/preload.cjs",
+        "sha256": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98"
+      }
+    ]
+  },
+  "installer": {
+    "recordedAt": "2026-11-12T07:20:36.8231990Z",
+    "version": "0.2.0-alpha.16",
+    "file": "D:\\Projects\\多Agent研发工作台\\release\\Agent Workbench Setup 0.2.0-alpha.16.exe",
+    "size": 152638855,
+    "sha256": "061380a862d262af76597e35a936fb23364d3d2f285c9c415565d44917fd09f3",
+    "authenticodeStatus": "NotSigned",
+    "authenticodeMeasurement": "Get-AuthenticodeSignature",
+    "fullInstallUninstallRetested": false
+  },
+  "bundledWriter": {
+    "recordedAt": "2026-11-12T07:24:37.264Z",
+    "version": "0.2.0-alpha.16",
+    "platform": "win32",
+    "status": "passed",
+    "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
+    "jarSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+    "packagedJarSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+    "packagedJava": "D:\\Projects\\多Agent研发工作台\\release\\win-unpacked\\resources\\jre\\bin\\java.exe",
+    "packagedJavaSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
+    "javaVersion": "21.0.13",
+    "packagedRuntimeReleaseSha256": "b3f0f2c915151893f679218e30bf445ee6b489681e06457f466744fe89e50e8c",
+    "fixtureClassesCompiledOnce": true,
+    "fixtureClasses": [
+      {
+        "file": "ProcessRecoveryProbe$Identity.class",
+        "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+      },
+      {
+        "file": "ProcessRecoveryProbe$State.class",
+        "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+      },
+      {
+        "file": "ProcessRecoveryProbe$Visibility.class",
+        "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+      },
+      {
+        "file": "ProcessRecoveryProbe.class",
+        "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+      },
+      {
+        "file": "dev/agentworkbench/WorkspaceWriteDatabaseFixture.class",
+        "sha256": "a588579f7b3a02bb2246c3d3718765c672e72742947a425f774a0cfbb0add75b"
+      },
+      {
+        "file": "dev/agentworkbench/WorkspaceWriteProbe$1.class",
+        "sha256": "e19bcd1e5940a102a8e849b7303b016196bfaf31cf3c132b9f3b2a9f61acebed"
+      },
+      {
+        "file": "dev/agentworkbench/WorkspaceWriteProbe$2.class",
+        "sha256": "a0d4e287e5364f47dab229f62eefdba5c195123bdc4c5540c72d0458d0da7a86"
+      },
+      {
+        "file": "dev/agentworkbench/WorkspaceWriteProbe.class",
+        "sha256": "17969c48c3e8b6a10357e24eaa8b8a4c1e08d20f723b78c5b0c0842018ad28a6"
+      }
+    ],
+    "productionClasses": [
+      {
+        "file": "dev/agentworkbench/WorkbenchEngine.class",
+        "sha256": "888a353be60c66c4dd960eaf0403c3d5b06b1cb3a01dde986434e08ad9e15410"
+      },
+      {
+        "file": "dev/agentworkbench/WorkerProcessMain.class",
+        "sha256": "3418574b7edd61d7dc694f654688cd31fd9bfe468c81c25fd12264adb68ab016"
+      },
+      {
+        "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+        "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+      },
+      {
+        "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+        "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+      },
+      {
+        "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+        "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+      },
+      {
+        "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+        "sha256": "b275affe510f6773b140a41d5e3d2225bc6f63194c3113db039ef6c3d98050df"
+      }
+    ],
+    "nativeDependencies": [
+      {
+        "file": "jna-5.17.0.jar",
+        "bytes": 2002589,
+        "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+        "licenseChoice": "Apache-2.0",
+        "licenses": [
+          {
+            "entry": "META-INF/AL2.0",
+            "bytes": 10174,
+            "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+          },
+          {
+            "entry": "META-INF/LICENSE",
+            "bytes": 797,
+            "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+          }
+        ]
+      },
+      {
+        "file": "jna-platform-5.17.0.jar",
+        "bytes": 1378617,
+        "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+        "licenseChoice": "Apache-2.0",
+        "licenses": [
+          {
+            "entry": "META-INF/AL2.0",
+            "bytes": 10174,
+            "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+          },
+          {
+            "entry": "META-INF/LICENSE",
+            "bytes": 797,
+            "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+          }
+        ]
+      }
+    ],
+    "nativeFileKey": "WINDOWS:86ca0064ca0052bb:00e00a00000003000000000000000000",
+    "originalPid": 56280,
+    "originalProcessStartedAt": "2026-11-12T07:24:34.882Z",
+    "originalStopped": true,
+    "releaseDuringBorrowRejected": true,
+    "lockAvailableAfterRelease": true,
+    "windowsNativeProcessSnapshotApplicable": true,
+    "windowsNativeProcessSnapshotVerified": true,
+    "nativeProcessBirth": "2026-11-12T07:24:34.882Z",
+    "nativeProcessSnapshotCount": 515,
+    "probeOutputEncoding": "UTF-8",
+    "schedulerParallelism": 2,
+    "schedulerMaxPoolSize": 2,
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-NL03SJ"
+  },
+  "packagedLifecycle": {
+    "desktop": "PASS",
+    "api": 200,
+    "version": "0.2.0-alpha.16",
+    "application": {
+      "packaged": true,
+      "version": "0.2.0-alpha.16"
+    },
+    "externalJavaDisabled": true,
+    "pageErrors": [],
+    "schedulerParallelism": 2,
+    "schedulerMaxPoolSize": 2,
+    "processCoverage": "OBSERVED_ONLY",
+    "originalProcessProbeCompiledOnce": true,
+    "probeFixture": {
+      "compiledOnce": true,
+      "sourceSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+      "classes": [
+        {
+          "file": "ProcessRecoveryProbe$Identity.class",
+          "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+        },
+        {
+          "file": "ProcessRecoveryProbe$State.class",
+          "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+        },
+        {
+          "file": "ProcessRecoveryProbe$Visibility.class",
+          "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+        },
+        {
+          "file": "ProcessRecoveryProbe.class",
+          "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+        }
+      ]
+    },
+    "probeEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\desktop-qa-1794467941189\\probe-classes",
+    "originalIdentitiesVerifiedStopped": 3,
+    "originalProcessesStopped": true,
+    "originalProcessObservations": [
+      {
+        "pid": 5672,
+        "originalStartedAt": "2026-11-12T07:19:02.007Z",
+        "currentStartedAt": "",
+        "alive": false,
+        "matchesOriginal": false,
+        "stopRequested": false,
+        "beforeStopAlive": false,
+        "originalStopped": true
+      },
+      {
+        "pid": 65332,
+        "originalStartedAt": "2026-11-12T07:19:02.626Z",
+        "currentStartedAt": "",
+        "alive": false,
+        "matchesOriginal": false,
+        "stopRequested": false,
+        "beforeStopAlive": false,
+        "originalStopped": true
+      },
+      {
+        "pid": 15368,
+        "originalStartedAt": "2026-11-12T07:19:05.498Z",
+        "currentStartedAt": "",
+        "alive": false,
+        "matchesOriginal": false,
+        "stopRequested": false,
+        "beforeStopAlive": false,
+        "originalStopped": true
+      }
+    ]
+  },
+  "steps": {
+    "build": {
+      "file": ".runtime/alpha16-sidebar-validation/web-build-retry2/receipt.json",
+      "sha256": "e09de30d8b1cdf31ae982a0402ddf6ec61f886dda06ae21494530eaeb6b814c3",
+      "step": "web-build",
+      "startedAt": "2026-11-12T06:35:16.742Z",
+      "completedAt": "2026-11-12T06:35:20.966Z",
+      "exitCode": 0,
+      "signal": null,
+      "executable": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "& npm.cmd run build --prefix web"
+      ],
+      "cwd": "D:\\Projects\\多Agent研发工作台",
+      "sources": {
+        "web/tests/sidebar.spec.ts": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953",
+        "web/src/layout.css": "cb8c7193828ae98ffbfbd8895ca00c75855dc4b14ae38228f1a658f28ca3f079",
+        "web/src/main.tsx": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c",
+        "web/src/App.tsx": "d001ac7a35267f0c9ac16c844ac27a7d10568da353235520cb8b705894f40a76",
+        "web/src/ui.tsx": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722",
+        "web/src/styles.css": "4d6772ac8f172548eb7858a8ac5f18f73b5a84c926cc8493ed7db68cbe3850e7",
+        "web/src/readability.css": "9c20cee0e4837f1379d919e9af38a8cc205079eeb5fda6370434d3ba79351f19",
+        "tools/theme-desktop-smoke.cjs": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830",
+        "tools/ProcessRecoveryProbe.java": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+        "desktop/main.cjs": "5c7211fb26a11a39762baf799b43143764515f4153d743a22dec92eac79e9a84",
+        "desktop/preload.cjs": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98"
+      },
+      "coreSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+      "beforeWeb": [
+        {
+          "file": "index-9SVYZgqm.css",
+          "sha256": "57f024218a0e17963e4ef41141d095e80db93f8e96eac7caeaf8ff8d2562a60b"
+        },
+        {
+          "file": "index-CN0ffMYQ.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        }
+      ],
+      "afterWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "originalCoreUnchanged": true,
+      "originalTimeoutsAndAssertionsRetained": true,
+      "directory": ".runtime/alpha16-sidebar-validation/web-build-retry2"
+    },
+    "ui": {
+      "file": ".runtime/alpha16-sidebar-validation/ui-full-json-retry1/receipt.json",
+      "sha256": "9233fa53731ef03ef58979622746da1803b1da18b2e1f8073c1bec40587c78b6",
+      "step": "ui-full-json",
+      "startedAt": "2026-11-12T06:37:42.884Z",
+      "completedAt": "2026-11-12T06:38:49.679Z",
+      "exitCode": 0,
+      "signal": null,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "D:\\Projects\\多Agent研发工作台\\web\\node_modules\\@playwright\\test\\cli.js",
+        "test",
+        "--reporter=list,json"
+      ],
+      "cwd": "D:\\Projects\\多Agent研发工作台\\web",
+      "sources": {
+        "web/tests/sidebar.spec.ts": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953",
+        "web/src/layout.css": "cb8c7193828ae98ffbfbd8895ca00c75855dc4b14ae38228f1a658f28ca3f079",
+        "web/src/main.tsx": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c",
+        "web/src/App.tsx": "d001ac7a35267f0c9ac16c844ac27a7d10568da353235520cb8b705894f40a76",
+        "web/src/ui.tsx": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722",
+        "web/src/styles.css": "4d6772ac8f172548eb7858a8ac5f18f73b5a84c926cc8493ed7db68cbe3850e7",
+        "web/src/readability.css": "9c20cee0e4837f1379d919e9af38a8cc205079eeb5fda6370434d3ba79351f19",
+        "tools/theme-desktop-smoke.cjs": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830",
+        "tools/ProcessRecoveryProbe.java": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+        "desktop/main.cjs": "5c7211fb26a11a39762baf799b43143764515f4153d743a22dec92eac79e9a84",
+        "desktop/preload.cjs": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98"
+      },
+      "coreSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+      "beforeWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "afterWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "originalCoreUnchanged": true,
+      "originalTimeoutsAndAssertionsRetained": true,
+      "directory": ".runtime/alpha16-sidebar-validation/ui-full-json-retry1"
+    },
+    "productionWeb": {
+      "file": ".runtime/alpha16-sidebar-validation/themes-web-retry2/receipt.json",
+      "sha256": "d32c0b698ba96ff37486fb9bd9369645384aa3a38dad5021d730d21f1471f6d1",
+      "step": "themes-web",
+      "startedAt": "2026-11-12T06:50:53.618Z",
+      "completedAt": "2026-11-12T06:50:56.832Z",
+      "exitCode": 0,
+      "signal": null,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "D:\\Projects\\多Agent研发工作台\\tools\\theme-web-smoke.mjs"
+      ],
+      "cwd": "D:\\Projects\\多Agent研发工作台",
+      "sources": {
+        "web/tests/sidebar.spec.ts": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953",
+        "web/src/layout.css": "cb8c7193828ae98ffbfbd8895ca00c75855dc4b14ae38228f1a658f28ca3f079",
+        "web/src/main.tsx": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c",
+        "web/src/App.tsx": "d001ac7a35267f0c9ac16c844ac27a7d10568da353235520cb8b705894f40a76",
+        "web/src/ui.tsx": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722",
+        "web/src/styles.css": "4d6772ac8f172548eb7858a8ac5f18f73b5a84c926cc8493ed7db68cbe3850e7",
+        "web/src/readability.css": "9c20cee0e4837f1379d919e9af38a8cc205079eeb5fda6370434d3ba79351f19",
+        "tools/theme-desktop-smoke.cjs": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830",
+        "tools/ProcessRecoveryProbe.java": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+        "desktop/main.cjs": "5c7211fb26a11a39762baf799b43143764515f4153d743a22dec92eac79e9a84",
+        "desktop/preload.cjs": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98"
+      },
+      "coreSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+      "beforeWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "afterWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "originalCoreUnchanged": true,
+      "originalTimeoutsAndAssertionsRetained": true,
+      "directory": ".runtime/alpha16-sidebar-validation/themes-web-retry2"
+    },
+    "developmentDesktop": {
+      "file": ".runtime/alpha16-sidebar-validation/themes-desktop-retry3/receipt.json",
+      "sha256": "2260313c85ed79233f3ba4e0ddb54a73aca91d61837642bc5b694304ad05df7b",
+      "step": "themes-desktop",
+      "startedAt": "2026-11-12T06:57:06.609Z",
+      "completedAt": "2026-11-12T06:57:37.179Z",
+      "exitCode": 0,
+      "signal": null,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "D:\\Projects\\多Agent研发工作台\\tools\\theme-desktop-smoke.cjs"
+      ],
+      "cwd": "D:\\Projects\\多Agent研发工作台",
+      "sources": {
+        "web/tests/sidebar.spec.ts": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953",
+        "web/src/layout.css": "cb8c7193828ae98ffbfbd8895ca00c75855dc4b14ae38228f1a658f28ca3f079",
+        "web/src/main.tsx": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c",
+        "web/src/App.tsx": "d001ac7a35267f0c9ac16c844ac27a7d10568da353235520cb8b705894f40a76",
+        "web/src/ui.tsx": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722",
+        "web/src/styles.css": "4d6772ac8f172548eb7858a8ac5f18f73b5a84c926cc8493ed7db68cbe3850e7",
+        "web/src/readability.css": "9c20cee0e4837f1379d919e9af38a8cc205079eeb5fda6370434d3ba79351f19",
+        "tools/theme-desktop-smoke.cjs": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830",
+        "tools/ProcessRecoveryProbe.java": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+        "desktop/main.cjs": "5c7211fb26a11a39762baf799b43143764515f4153d743a22dec92eac79e9a84",
+        "desktop/preload.cjs": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98"
+      },
+      "coreSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+      "beforeWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "afterWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "originalCoreUnchanged": true,
+      "originalTimeoutsAndAssertionsRetained": true,
+      "directory": ".runtime/alpha16-sidebar-validation/themes-desktop-retry3"
+    },
+    "package": {
+      "file": ".runtime/alpha16-sidebar-validation/package-retry1/receipt.json",
+      "sha256": "74b8731e80cbf6f3b99a6fea7e72fd2f1fe13e0d143e606abda054a13eca7969",
+      "step": "package",
+      "startedAt": "2026-11-12T07:08:27.067Z",
+      "completedAt": "2026-11-12T07:08:52.928Z",
+      "exitCode": 0,
+      "signal": null,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "D:\\Projects\\多Agent研发工作台\\tools\\manage.mjs",
+        "package:prepared"
+      ],
+      "cwd": "D:\\Projects\\多Agent研发工作台",
+      "sources": {
+        "web/tests/sidebar.spec.ts": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953",
+        "web/src/layout.css": "cb8c7193828ae98ffbfbd8895ca00c75855dc4b14ae38228f1a658f28ca3f079",
+        "web/src/main.tsx": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c",
+        "web/src/App.tsx": "d001ac7a35267f0c9ac16c844ac27a7d10568da353235520cb8b705894f40a76",
+        "web/src/ui.tsx": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722",
+        "web/src/styles.css": "4d6772ac8f172548eb7858a8ac5f18f73b5a84c926cc8493ed7db68cbe3850e7",
+        "web/src/readability.css": "9c20cee0e4837f1379d919e9af38a8cc205079eeb5fda6370434d3ba79351f19",
+        "tools/theme-desktop-smoke.cjs": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830",
+        "tools/ProcessRecoveryProbe.java": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+        "desktop/main.cjs": "5c7211fb26a11a39762baf799b43143764515f4153d743a22dec92eac79e9a84",
+        "desktop/preload.cjs": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98"
+      },
+      "coreSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+      "beforeWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "afterWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "originalCoreUnchanged": true,
+      "originalTimeoutsAndAssertionsRetained": true,
+      "directory": ".runtime/alpha16-sidebar-validation/package-retry1"
+    },
+    "packagedLifecycle": {
+      "file": ".runtime/alpha16-sidebar-validation/packaged/receipt.json",
+      "sha256": "021513c9fb84269782facc8874d20983a39130ca92fd2b4ca4766b8ee58aab63",
+      "step": "packaged",
+      "startedAt": "2026-11-12T07:19:00.661Z",
+      "completedAt": "2026-11-12T07:19:14.147Z",
+      "exitCode": 0,
+      "signal": null,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "D:\\Projects\\多Agent研发工作台\\tools\\ci-desktop.mjs"
+      ],
+      "cwd": "D:\\Projects\\多Agent研发工作台",
+      "sources": {
+        "web/tests/sidebar.spec.ts": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953",
+        "web/src/layout.css": "cb8c7193828ae98ffbfbd8895ca00c75855dc4b14ae38228f1a658f28ca3f079",
+        "web/src/main.tsx": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c",
+        "web/src/App.tsx": "d001ac7a35267f0c9ac16c844ac27a7d10568da353235520cb8b705894f40a76",
+        "web/src/ui.tsx": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722",
+        "web/src/styles.css": "4d6772ac8f172548eb7858a8ac5f18f73b5a84c926cc8493ed7db68cbe3850e7",
+        "web/src/readability.css": "9c20cee0e4837f1379d919e9af38a8cc205079eeb5fda6370434d3ba79351f19",
+        "tools/theme-desktop-smoke.cjs": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830",
+        "tools/ProcessRecoveryProbe.java": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+        "desktop/main.cjs": "5c7211fb26a11a39762baf799b43143764515f4153d743a22dec92eac79e9a84",
+        "desktop/preload.cjs": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98"
+      },
+      "coreSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+      "beforeWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "afterWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "originalCoreUnchanged": true,
+      "originalTimeoutsAndAssertionsRetained": true,
+      "directory": ".runtime/alpha16-sidebar-validation/packaged"
+    },
+    "packagedThemes": {
+      "file": ".runtime/alpha16-sidebar-validation/themes-packaged/receipt.json",
+      "sha256": "ab118160721405562c454abfc2a3baa06c6f823b69caf41d155a0b6934fb8bb5",
+      "step": "themes-packaged",
+      "startedAt": "2026-11-12T07:23:06.470Z",
+      "completedAt": "2026-11-12T07:23:37.667Z",
+      "exitCode": 0,
+      "signal": null,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "D:\\Projects\\多Agent研发工作台\\tools\\ci-theme-desktop.mjs"
+      ],
+      "cwd": "D:\\Projects\\多Agent研发工作台",
+      "sources": {
+        "web/tests/sidebar.spec.ts": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953",
+        "web/src/layout.css": "cb8c7193828ae98ffbfbd8895ca00c75855dc4b14ae38228f1a658f28ca3f079",
+        "web/src/main.tsx": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c",
+        "web/src/App.tsx": "d001ac7a35267f0c9ac16c844ac27a7d10568da353235520cb8b705894f40a76",
+        "web/src/ui.tsx": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722",
+        "web/src/styles.css": "4d6772ac8f172548eb7858a8ac5f18f73b5a84c926cc8493ed7db68cbe3850e7",
+        "web/src/readability.css": "9c20cee0e4837f1379d919e9af38a8cc205079eeb5fda6370434d3ba79351f19",
+        "tools/theme-desktop-smoke.cjs": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830",
+        "tools/ProcessRecoveryProbe.java": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+        "desktop/main.cjs": "5c7211fb26a11a39762baf799b43143764515f4153d743a22dec92eac79e9a84",
+        "desktop/preload.cjs": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98"
+      },
+      "coreSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+      "beforeWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "afterWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "originalCoreUnchanged": true,
+      "originalTimeoutsAndAssertionsRetained": true,
+      "directory": ".runtime/alpha16-sidebar-validation/themes-packaged"
+    },
+    "bundledWriter": {
+      "file": ".runtime/alpha16-sidebar-validation/bundled-writer/receipt.json",
+      "sha256": "78c292772fdc5a4acf7c9c83270e33162e20aeb09055dbc70551fdd3215c54cb",
+      "step": "bundled-writer",
+      "startedAt": "2026-11-12T07:24:34.699Z",
+      "completedAt": "2026-11-12T07:24:37.376Z",
+      "exitCode": 0,
+      "signal": null,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "D:\\Projects\\多Agent研发工作台\\tools\\bundled-workspace-write-smoke.mjs"
+      ],
+      "cwd": "D:\\Projects\\多Agent研发工作台",
+      "sources": {
+        "web/tests/sidebar.spec.ts": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953",
+        "web/src/layout.css": "cb8c7193828ae98ffbfbd8895ca00c75855dc4b14ae38228f1a658f28ca3f079",
+        "web/src/main.tsx": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c",
+        "web/src/App.tsx": "d001ac7a35267f0c9ac16c844ac27a7d10568da353235520cb8b705894f40a76",
+        "web/src/ui.tsx": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722",
+        "web/src/styles.css": "4d6772ac8f172548eb7858a8ac5f18f73b5a84c926cc8493ed7db68cbe3850e7",
+        "web/src/readability.css": "9c20cee0e4837f1379d919e9af38a8cc205079eeb5fda6370434d3ba79351f19",
+        "tools/theme-desktop-smoke.cjs": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830",
+        "tools/ProcessRecoveryProbe.java": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+        "desktop/main.cjs": "5c7211fb26a11a39762baf799b43143764515f4153d743a22dec92eac79e9a84",
+        "desktop/preload.cjs": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98"
+      },
+      "coreSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+      "beforeWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "afterWeb": [
+        {
+          "file": "index-IugtPpDq.js",
+          "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+        },
+        {
+          "file": "index-r6WkTjdh.css",
+          "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
+        }
+      ],
+      "originalCoreUnchanged": true,
+      "originalTimeoutsAndAssertionsRetained": true,
+      "directory": ".runtime/alpha16-sidebar-validation/bundled-writer"
+    }
+  },
+  "originalFailures": [
+    {
+      "file": "docs/qa/alpha16-ci-theme-failure.json",
+      "sha256": "3211b71bbac2b5696ead05ab47dee827ae4bf3688284736433667900c69fce78"
+    },
+    {
+      "file": ".runtime/alpha16-short-sidebar-baseline/receipt.json",
+      "sha256": "f220a3df65d0388b9b714329999feb086515c59eac686ac77e39451340a5814f"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/ui-targeted-retry1/receipt.json",
+      "sha256": "9d43dbf794f264b040bef66549306220e9bb33970256296fc673401a1dde26f2"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/ui-targeted-retry2/receipt.json",
+      "sha256": "1b692a816807ceff3bcdac1255676a9d2ddf772857f42d9cffb5e0eba5d1eb41"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/ui-focus-diagnostic/receipt.json",
+      "sha256": "b64106ddba2d291307648a5420eb4cee348e7f3138fbc5e06f46b915205dbae8"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/ui-focus-diagnostic-retry1/receipt.json",
+      "sha256": "589565fd5822f1eea0565cceb0c0660bb0c33a409dfb2f2d8fdf6fe80116fefb"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/ui-targeted-retry1/system-power-observation.json",
+      "sha256": "a5fea3d34373baa13cb1dc4d148465cf056aaa8b692c93eabe7e2e430bb09d9b"
+    },
+    {
+      "file": ".runtime/alpha16-ci/run-43151063170-attempt-1/collection-failure.json",
+      "sha256": "5225a86a5b1726b83d8def54673d740a485b3b7a8a0da6d1683b99a270cdf22c"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/themes-desktop-retry2/receipt.json",
+      "sha256": "78b40c7821af55d05941a093b029713faa4f900129a845bbb47f0c9bc6bfb26c"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/window-size-diagnostic/report.json",
+      "sha256": "58cac9cc224800217bd467a9589af928a23f3c90f10cd5fbdd0ef945b42c47fb"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/minimum-window-failure-verification.json",
+      "sha256": "cb55d8ccb0180a50ae94187e7e1b57ce883d2c03a53d8afa182da140788bc896"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/final-summary-failure1/observation.json",
+      "sha256": "9ccd184ba610a25766c40a61d3b77b86971311e7966c27bec2496ca194c06de7"
+    }
+  ],
+  "originalSidebarBaseline": {
+    "failedCases": 2,
+    "viewport": {
+      "width": 1280,
+      "height": 640
+    },
+    "projectCounts": [
+      0,
+      8
+    ]
+  },
+  "originalHorizontalRun": {
+    "failed": 3,
+    "passed": 1,
+    "deterministicHorizontalFailures": 2,
+    "originalScrollStabilityTimeoutCause": "UNKNOWN",
+    "systemPowerEventsObservedSeparately": true
+  },
+  "originalClippedFocusRun": {
+    "failed": 2,
+    "passed": 2,
+    "furtherFrameObserverRetained": true
+  },
+  "originalMinimumWindowRun": {
+    "status": "failed",
+    "failure": "Original 30-second content-size wait timed out after a 0x0 content observation",
+    "cause": "UNKNOWN",
+    "independentOriginalSizeRequestObserved": true,
+    "sameSourcesAndTimeoutsFullRerunPassed": true,
+    "verification": {
+      "file": ".runtime/alpha16-sidebar-validation/minimum-window-failure-verification.json",
+      "sha256": "cb55d8ccb0180a50ae94187e7e1b57ce883d2c03a53d8afa182da140788bc896"
+    }
+  },
+  "priorValidationSha256": "29f71a669a997ba17132bee4a1888f01cc5bb511a1094131ebb8dc1912db6428",
+  "priorEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-final-local-qa",
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-layout-final-local-qa",
+  "ci": {
+    "status": "FIXED_PRODUCTION_COMMIT_CI_PENDING"
+  },
+  "completeProjectGoal": false
+}

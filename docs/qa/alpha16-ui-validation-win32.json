@@ -1,24 +1,33 @@
 {
-  "recordedAt": "2026-11-12T02:49:17.483Z",
+  "recordedAt": "2026-11-12T07:06:49.218Z",
   "version": "0.2.0-alpha.16",
   "platform": "win32",
   "status": "passed",
-  "scope": "ACTUAL_BROWSER_COMPUTED_STYLES_WITH_UI_FIXTURES_AND_FROZEN_PRODUCTION_WEB",
-  "fullUiTests": 102,
+  "scope": "ACTUAL_BROWSER_COMPUTED_STYLES_WITH_UI_FIXTURES_AND_CURRENT_PRODUCTION_WEB",
+  "fullUiTests": 106,
+  "fullUi": {
+    "file": ".runtime/alpha16-sidebar-validation/ui-full-json-retry1/receipt.json",
+    "sha256": "9233fa53731ef03ef58979622746da1803b1da18b2e1f8073c1bec40587c78b6",
+    "log": ".runtime/alpha16-sidebar-validation/ui-full-json-retry1/command.log",
+    "logSha256": "d2b9b59f5bd526c4125bd19fbe8cc993e2cace814943f104e9db916e935af105",
+    "exitCode": 0,
+    "tests": 106
+  },
   "themeViewportCases": 12,
   "viewsPerThemeViewport": 22,
   "actualViewMeasurements": 264,
   "report": {
-    "file": ".runtime/alpha16-ui-full-attempt2.json",
-    "sha256": "db1f97dda361566b520de1fd9322c6970f4543895fdf4a7d0ce6426b083f3ebb",
+    "file": ".runtime/alpha16-sidebar-validation/ui-full-json-retry1/playwright-report.json",
+    "sha256": "b786b034ef9eaa58a98817b4d91729e4131710869a85302aa3c699dcb366680f",
     "stats": {
-      "startTime": "2026-11-12T02:39:22.382Z",
-      "duration": 80096.46900000001,
-      "expected": 102,
+      "startTime": "2026-11-12T06:37:43.351Z",
+      "duration": 66244.54999999999,
+      "expected": 106,
       "skipped": 0,
       "unexpected": 0,
       "flaky": 0
-    }
+    },
+    "scope": "SAME_FULL_106_TEST_RUN_RETAINING_RAW_THEME_AND_LAYOUT_FOCUS_MEASUREMENTS"
   },
   "themes": [
     {
@@ -159,8 +168,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-纯白-1440px\\attachments\\appearance-8029d7a0411f213001a421e4520be1c551425308.png",
-        "sha256": "03201142c1b50e0bd70effe1e8e9087615b2e5112267f9b9b6e551f141e3f095"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-纯白-1440px\\attachments\\appearance-b4d1d0926cad8a719c5438c616e35a72ade71aab.png",
+        "sha256": "fd1d974e7c769fbc8f9bcb3e95544eb820457e00c5074775a22b08008c4677a9",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-纯白-1440px\\attachments\\appearance-b4d1d0926cad8a719c5438c616e35a72ade71aab.png"
       }
     },
     {
@@ -301,8 +311,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-纯白-430px\\attachments\\appearance-20b5311482fe1c014d92cfa39bbd5d0aa1e99cf3.png",
-        "sha256": "2282f0e36b31f034dfa793ba6c4ad109c48433f704eb9aaeeafcf75514467bc2"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-纯白-430px\\attachments\\appearance-15c857e7c3abbe17a27b69f1020c006c42b81d84.png",
+        "sha256": "1d7fde720e9c4a66e909f3da852b2fc0f975689651ea640b83ff2cc2a409f2ef",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-纯白-430px\\attachments\\appearance-15c857e7c3abbe17a27b69f1020c006c42b81d84.png"
       }
     },
     {
@@ -443,8 +454,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-纸墨-1440px\\attachments\\appearance-af4bdc5d08791d1662ca70f6880beaa99c42e749.png",
-        "sha256": "2ac01b7c8e290e24b74d263457c65219196e6ba751cab8d75ff12eacd2a64bc1"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-纸墨-1440px\\attachments\\appearance-74aab4feed482d24dfc3b71cd69256160cf707f1.png",
+        "sha256": "e2b626c2309ad004b6c0b8709a89031d6bb259277ac49d457464739092c7accd",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-纸墨-1440px\\attachments\\appearance-74aab4feed482d24dfc3b71cd69256160cf707f1.png"
       }
     },
     {
@@ -585,8 +597,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-纸墨-430px\\attachments\\appearance-6f0c6d1792e363777b33e6f7cce4069f18d9ca6d.png",
-        "sha256": "9e926cf9f1fa194d7cc9f29067fa704bc795aad95b92268c651fb047655d6fe1"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-纸墨-430px\\attachments\\appearance-80425c30661bd683e9a17aca3c6cd0f989019b03.png",
+        "sha256": "41d65cd3ccf3ca0a771bc707e66b1cdd081182aad33c032b15e32caf91a65daf",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-纸墨-430px\\attachments\\appearance-80425c30661bd683e9a17aca3c6cd0f989019b03.png"
       }
     },
     {
@@ -727,8 +740,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-经典暖色-1440px\\attachments\\appearance-f6c0b5bc4ce027bb611cedfae5ef401d0085bb22.png",
-        "sha256": "270344606e40afd4d2e6b77bbf4114af0a4463c4e924d995036acf8a866586a7"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-经典暖色-1440px\\attachments\\appearance-ece0d6b6f0708e9d38ac1ae427514002b283a215.png",
+        "sha256": "8ef1e8c1f149766135e67167ed34e63727388cf8b8472c669b9b10fa7cb57ac0",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-经典暖色-1440px\\attachments\\appearance-ece0d6b6f0708e9d38ac1ae427514002b283a215.png"
       }
     },
     {
@@ -869,8 +883,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-经典暖色-430px\\attachments\\appearance-056880a3811084597d4ff77da03b3a9dd14343ef.png",
-        "sha256": "e8f2c3d29b61c56272c005ae8d7a35c20f50b0d258c97de4466d70565f5d9935"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-经典暖色-430px\\attachments\\appearance-6fe1c22525d878d49e5d6651db3006b25424210e.png",
+        "sha256": "6ec7293e157dc75436f12e40b14d64133974e81c31751f836cab8b66b4de211d",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-经典暖色-430px\\attachments\\appearance-6fe1c22525d878d49e5d6651db3006b25424210e.png"
       }
     },
     {
@@ -1011,8 +1026,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-青瓷-1440px\\attachments\\appearance-a9d11d605b07ec2d9c735e45d52ad4d630499d97.png",
-        "sha256": "4130fffa34614345e3fd392127436758b843060f4cf1bed0d791dfc2be35a9eb"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-青瓷-1440px\\attachments\\appearance-b4098488115b4ac658de2c6c24576d21fa8fc546.png",
+        "sha256": "6d7c2c8b82bbe36ea58259ff2ed3faf6da9ec5dfc77d1301e8728ca32455c061",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-青瓷-1440px\\attachments\\appearance-b4098488115b4ac658de2c6c24576d21fa8fc546.png"
       }
     },
     {
@@ -1153,8 +1169,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-青瓷-430px\\attachments\\appearance-e70d26389b1046e43b25862fbc7706c48cefae95.png",
-        "sha256": "1602bd36b791ac3d331b3bca16af3359ff292970494a428e8e1e3a7de0fb6a1f"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-青瓷-430px\\attachments\\appearance-1f8604b75b550a29c73842d2495c2a87ce84a27c.png",
+        "sha256": "8da17e84b8ea909002c936b919c47411a4a0c04303c244b7c3e623abf4f6ea70",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-青瓷-430px\\attachments\\appearance-1f8604b75b550a29c73842d2495c2a87ce84a27c.png"
       }
     },
     {
@@ -1295,8 +1312,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-墨夜-1440px\\attachments\\appearance-05a7867703194a1966a85ae713692c326e20c8a7.png",
-        "sha256": "e73e0df584c402c14bbcf80ea2db0c92cbbe2a1ebe9f207b9f279e87a57a22b8"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜-1440px\\attachments\\appearance-3090f38a6a335e53318e36aecd9d241421e62413.png",
+        "sha256": "aa3ab51c96177c5393ac91c7b707c97fdaf1594dfc1ce5a4b5215271a7b1b6da",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜-1440px\\attachments\\appearance-3090f38a6a335e53318e36aecd9d241421e62413.png"
       }
     },
     {
@@ -1395,8 +1413,8 @@
         },
         {
           "view": "Agent 运行",
-          "measured": 37,
-          "minimumRatio": 8.423073334029436,
+          "measured": 61,
+          "minimumRatio": 7.595007228703185,
           "failures": []
         },
         {
@@ -1437,8 +1455,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-墨夜-430px\\attachments\\appearance-fa5aa94e7aa514eeb5713c99abd629b1329da26b.png",
-        "sha256": "d9b7f3737b88740b67779b22252e6f2777208a1c7b94dd0c2a74503ed6e573db"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜-430px\\attachments\\appearance-708a6e19df1eba0fc4c74acde5a662e76cbcc6f5.png",
+        "sha256": "7d84ffde5349c1ce31dbe639586deffbcc8f26eaed5e2530e3449e81a7300415",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜-430px\\attachments\\appearance-708a6e19df1eba0fc4c74acde5a662e76cbcc6f5.png"
       }
     },
     {
@@ -1537,7 +1556,7 @@
         },
         {
           "view": "Agent 运行",
-          "measured": 59,
+          "measured": 83,
           "minimumRatio": 6.280989059191993,
           "failures": []
         },
@@ -1579,8 +1598,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-墨夜蓝-1440px\\attachments\\appearance-4023bf46d64d1871f3a14eb1f09ff1eb7733ec42.png",
-        "sha256": "62898a8e3914b5f943d0b76373508334b726ee0be47e168973425072bcbb0c6f"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜蓝-1440px\\attachments\\appearance-a10d3e24d551a09fe4e6fed67d1c39cfc575fbe4.png",
+        "sha256": "0f674624217293e91b11ac48cf722bd00321154f33fbed6c468f7b50236b31d4",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜蓝-1440px\\attachments\\appearance-a10d3e24d551a09fe4e6fed67d1c39cfc575fbe4.png"
       }
     },
     {
@@ -1679,8 +1699,8 @@
         },
         {
           "view": "Agent 运行",
-          "measured": 37,
-          "minimumRatio": 7.734761467415383,
+          "measured": 61,
+          "minimumRatio": 7.338081664788156,
           "failures": []
         },
         {
@@ -1721,8 +1741,9 @@
         }
       ],
       "screenshot": {
-        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2\\themes-六主题覆盖实际页面与文字对比度-墨夜蓝-430px\\attachments\\appearance-74f32ffb4365796aaf102728b51761a575806dca.png",
-        "sha256": "40b2ed95435ebabe9eeed00f4397e879aaac79a1973bd6f0c81b24045fb84b5b"
+        "path": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜蓝-430px\\attachments\\appearance-70bf7fd2f1b27be768972b117c46a5f25a594260.png",
+        "sha256": "0fb499f259cb03586c293f516476e54cf45590322944471107a74595cccb1f63",
+        "originalReportedPath": "D:\\Projects\\多Agent研发工作台\\web\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜蓝-430px\\attachments\\appearance-70bf7fd2f1b27be768972b117c46a5f25a594260.png"
       }
     }
   ],
@@ -1806,18 +1827,168 @@
       "ratio": 13.56602300414232
     }
   ],
+  "layoutFocus": [
+    {
+      "title": "较矮窗口中设置入口可鼠标点击和键盘访问，986px/0 个项目",
+      "visible": true,
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineOffset": "-3px",
+      "bounds": {
+        "x": 850.453125,
+        "y": 206.890625,
+        "width": 111,
+        "height": 46,
+        "top": 206.890625,
+        "right": 961.453125,
+        "bottom": 252.890625,
+        "left": 850.453125
+      },
+      "clip": {
+        "x": 240,
+        "y": 206.890625,
+        "width": 721,
+        "height": 47,
+        "top": 206.890625,
+        "right": 961,
+        "bottom": 253.890625,
+        "left": 240
+      },
+      "scrollLeft": 47,
+      "clientWidth": 721,
+      "scrollWidth": 768
+    },
+    {
+      "title": "较矮窗口中设置入口可鼠标点击和键盘访问，986px/8 个项目",
+      "visible": true,
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineOffset": "-3px",
+      "bounds": {
+        "x": 850.453125,
+        "y": 206.890625,
+        "width": 111,
+        "height": 46,
+        "top": 206.890625,
+        "right": 961.453125,
+        "bottom": 252.890625,
+        "left": 850.453125
+      },
+      "clip": {
+        "x": 240,
+        "y": 206.890625,
+        "width": 721,
+        "height": 47,
+        "top": 206.890625,
+        "right": 961,
+        "bottom": 253.890625,
+        "left": 240
+      },
+      "scrollLeft": 47,
+      "clientWidth": 721,
+      "scrollWidth": 768
+    },
+    {
+      "title": "较矮窗口中设置入口可鼠标点击和键盘访问，1280px/0 个项目",
+      "visible": true,
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineOffset": "-3px",
+      "bounds": {
+        "x": 939.453125,
+        "y": 220.390625,
+        "width": 111,
+        "height": 46,
+        "top": 220.390625,
+        "right": 1050.453125,
+        "bottom": 266.390625,
+        "left": 939.453125
+      },
+      "clip": {
+        "x": 282,
+        "y": 220.390625,
+        "width": 960,
+        "height": 47,
+        "top": 220.390625,
+        "right": 1242,
+        "bottom": 267.390625,
+        "left": 282
+      },
+      "scrollLeft": 0,
+      "clientWidth": 960,
+      "scrollWidth": 960
+    },
+    {
+      "title": "较矮窗口中设置入口可鼠标点击和键盘访问，1280px/8 个项目",
+      "visible": true,
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineOffset": "-3px",
+      "bounds": {
+        "x": 939.453125,
+        "y": 220.390625,
+        "width": 111,
+        "height": 46,
+        "top": 220.390625,
+        "right": 1050.453125,
+        "bottom": 266.390625,
+        "left": 939.453125
+      },
+      "clip": {
+        "x": 282,
+        "y": 220.390625,
+        "width": 960,
+        "height": 47,
+        "top": 220.390625,
+        "right": 1242,
+        "bottom": 267.390625,
+        "left": 282
+      },
+      "scrollLeft": 0,
+      "clientWidth": 960,
+      "scrollWidth": 960
+    }
+  ],
   "production": {
     "report": "docs/qa/themes-web-win32.json",
-    "sha256": "b08f015a513421524f105973f321cfaf18f8268a065301802d524328eeed8698",
+    "sha256": "55c45f4df1f545109ac3c3eb848a6dd7e73f854aec0365662871bf3b77648c39",
     "scope": "PRODUCTION_WEB_BYTES_WITH_LOOPBACK_UI_FIXTURE",
     "scenarios": 4,
     "bootstrapSha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70",
-    "htmlSha256": "6c94cafb963834e0e1102af261b8978d82a603b954ad6324d0adef43964410f2",
-    "moduleEntry": "./assets/index-CedIBSBg.js"
+    "htmlSha256": "d700bf5c1eb28b8d20b814544234c0839d4f7fcd4fc1ff07476771e1e1809749",
+    "moduleEntry": "./assets/index-IugtPpDq.js"
+  },
+  "sidebarRegression": {
+    "baselineReceipt": ".runtime/alpha16-short-sidebar-baseline/receipt.json",
+    "baselineReceiptSha256": "f220a3df65d0388b9b714329999feb086515c59eac686ac77e39451340a5814f",
+    "baselineFailed": 2,
+    "passingReceipt": ".runtime/alpha16-sidebar-validation/ui-targeted-retry3/receipt.json",
+    "passingReceiptSha256": "f527d44306fcdefb4995165ef7228e055775d8d3ae805fd53cbbc21a0bb46e01",
+    "passing": 4,
+    "viewports": [
+      {
+        "width": 986,
+        "height": 640
+      },
+      {
+        "width": 1280,
+        "height": 640
+      }
+    ],
+    "projectCounts": [
+      0,
+      8
+    ],
+    "mouseKeyboardAndCollapsedNavigationVerified": true,
+    "horizontalOverflowAndClippedTabFocusFailuresRetained": true
   },
   "visualInspection": {
     "inspectedSixThemes": true,
     "inspectedNarrowCeladon": true,
-    "source": "Actual final UI screenshots individually inspected; untested states and system-native controls remain outside this check"
+    "source": "Current frozen UI screenshots individually inspected; untested states and system-native controls remain outside this check"
   }
 }

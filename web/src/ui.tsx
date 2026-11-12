@@ -39,6 +39,14 @@ export function PageTitle({ eyebrow, title, description, children }: { eyebrow: 
   return <div className="page-title"><div><div className="eyebrow">{eyebrow}</div><h1>{title}</h1>{description && <p>{description}</p>}</div><div className="title-actions">{children}</div></div>;
 }
 
+export function TabBar({ children }: { children: ReactNode }) {
+  return <nav className="tabs" onFocusCapture={event => {
+    if (event.currentTarget.scrollWidth > event.currentTarget.clientWidth && event.target instanceof HTMLElement) {
+      event.target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
+  }}>{children}</nav>;
+}
+
 export function Modal({ title, description, children, onClose, wide = false }: { title: string; description?: string; children: ReactNode; onClose: () => void; wide?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);

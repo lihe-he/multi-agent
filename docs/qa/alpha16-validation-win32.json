@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-11-12T03:49:45.773Z",
+  "recordedAt": "2026-11-12T07:27:40.034Z",
   "version": "0.2.0-alpha.16",
   "platform": "win32",
   "status": "passed",
@@ -7,16 +7,17 @@
   "implementedScope": [
     "F10 six semantic themes, persisted/system preference and storage fallback",
     "F10 production initialization before React and actual desktop/packaged preference restart",
-    "MCP stdio cancellation before request/notification dispatch closes the original transport"
+    "MCP stdio cancellation before request/notification dispatch closes the original transport",
+    "F01/F10 sidebar reachability at short heights and confined tab scrolling with complete keyboard focus"
   ],
   "themes": {
     "productionWeb": {
       "file": "docs/qa/themes-web-win32.json",
-      "sha256": "b08f015a513421524f105973f321cfaf18f8268a065301802d524328eeed8698",
+      "sha256": "55c45f4df1f545109ac3c3eb848a6dd7e73f854aec0365662871bf3b77648c39",
       "scenarios": 4,
       "bootstrapSha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70",
-      "htmlSha256": "6c94cafb963834e0e1102af261b8978d82a603b954ad6324d0adef43964410f2",
-      "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-web-1794451456288",
+      "htmlSha256": "d700bf5c1eb28b8d20b814544234c0839d4f7fcd4fc1ff07476771e1e1809749",
+      "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-web-1794466253957",
       "beforeReactVerified": true,
       "scope": "PRODUCTION_WEB_BYTES_WITH_LOOPBACK_UI_FIXTURE",
       "pageshowScope": "Actual dispatched PageTransitionEvent; complete browser BFCache lifecycle was not tested"
@@ -25,125 +26,212 @@
       {
         "mode": "desktop",
         "file": "docs/qa/themes-desktop-win32.json",
-        "sha256": "4b3cf7a454fd5c19a6eda1308f1bc20b1b3130414318bb6714c6fe30363158da",
+        "sha256": "d5eeac8d563b17f61302a214bae2b21aaa156a6c95547dc8ce4d957f59599f04",
         "checks": 12,
         "launches": 2,
         "externalJavaDisabled": false,
+        "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965",
         "originalLiveAndStoppedIdentitiesVerified": 6,
         "historicalOriginalIdentitiesVerified": 2,
+        "minimumWindow": {
+          "width": 1000,
+          "height": 680,
+          "applied": {
+            "x": 112,
+            "y": 28,
+            "width": 1002,
+            "height": 682
+          },
+          "content": {
+            "x": 120,
+            "y": 58,
+            "width": 986,
+            "height": 644
+          }
+        },
+        "minimumNavigation": {
+          "observedAt": "2026-11-12T06:57:16.440Z",
+          "viewport": {
+            "width": 986,
+            "height": 644
+          },
+          "document": {
+            "scrollWidth": 971,
+            "clientWidth": 971
+          },
+          "sidebar": {
+            "clientHeight": 644,
+            "scrollHeight": 791,
+            "scrollTop": 147.3333282470703
+          },
+          "settings": {
+            "x": 15,
+            "y": 547,
+            "width": 169.6666717529297,
+            "height": 42,
+            "centerInsideViewport": true
+          }
+        },
+        "minimumScreenshot": {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-minimum-navigation.png",
+          "sha256": "dd9e8abdac759e3618f5c2c39100caa1b71515d745369fff2f7ccb463e00e46e"
+        },
         "screenshots": [
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794452508888\\reports\\launch-1-pure-white.png",
-            "sha256": "74d6004f0486ba83ad8cfb3d02420923dbe8a4ec3b550e560509643e9db5123b",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-pure-white.png",
+            "sha256": "35ccaa201ebc4bdea6ef7c14fb300cbf16fe1205680a784a43ad402ca89de768",
             "launch": 1,
             "theme": "pure-white"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794452508888\\reports\\launch-1-paper-ink.png",
-            "sha256": "419bd2f23ad140d7779318221a392b3ff34b6e7e7812da09b2e3cbed73c19aef",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-paper-ink.png",
+            "sha256": "636d68ef6515c2b98aca6634e3a172cb7f2d08ffde7e88faa7dc0d554a61bfdf",
             "launch": 1,
             "theme": "paper-ink"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794452508888\\reports\\launch-1-classic-warm.png",
-            "sha256": "2a630b1315b129f9b154ba8a667e7eb3deb3370df72f46d6023551f0b48f47f7",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-classic-warm.png",
+            "sha256": "05d88c41f776f67205819c75e78d833aa35b96aef855c591a1b2318179e3845e",
             "launch": 1,
             "theme": "classic-warm"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794452508888\\reports\\launch-1-celadon.png",
-            "sha256": "a450b4b91a3c286dd8ccb10d460f92a1a98f4d700bd7e97843b9c439d2851a05",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-celadon.png",
+            "sha256": "0be0589c25e72d26cd67431ea32b59fb098f1ced73e51773d304b7b3571f9bec",
             "launch": 1,
             "theme": "celadon"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794452508888\\reports\\launch-1-ink-night.png",
-            "sha256": "77207f2404b815352e360b070db3b4ff9d8585a9494238917b6a3cd19aa32eb3",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-ink-night.png",
+            "sha256": "028294e0f2e779c0310344dd2962f8a6e55ee753425ffc8b15f52095569267e7",
             "launch": 1,
             "theme": "ink-night"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794452508888\\reports\\launch-1-ink-night-blue.png",
-            "sha256": "fa2eeec44dbdcb74038452322227b636451bf42e704446512aebf95a6cfa4ec8",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-1-ink-night-blue.png",
+            "sha256": "0cbdd48b822f01385793a34aeff1ff7dd40656b87258f4fe81a901665f4c1faa",
             "launch": 1,
             "theme": "ink-night-blue"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794452508888\\reports\\launch-2-pure-white.png",
-            "sha256": "90da1dae91d549167fd96feb2b65688e7e980cb29e83673c80906721d3268a82",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965\\reports\\launch-2-pure-white.png",
+            "sha256": "dcf2a118a89bfa94076387b86fa93312752c25cc2131237ec7ddf6a13b46d20f",
             "launch": 2,
             "theme": "pure-white"
           }
-        ],
-        "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794452508888"
+        ]
       },
       {
         "mode": "packaged",
         "file": "docs/qa/themes-packaged-win32.json",
-        "sha256": "2957bfaf9469f4066229338fabd11d0062f3674a7666fe3f8573aaadff912a99",
+        "sha256": "eb927f648bc0230155c10069f7766bf8175bd13b2ef8a6f4fd6d2e9860b2197c",
         "checks": 12,
         "launches": 2,
         "externalJavaDisabled": true,
+        "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876",
         "originalLiveAndStoppedIdentitiesVerified": 6,
         "historicalOriginalIdentitiesVerified": 2,
+        "minimumWindow": {
+          "width": 1000,
+          "height": 680,
+          "applied": {
+            "x": 112,
+            "y": 28,
+            "width": 1002,
+            "height": 682
+          },
+          "content": {
+            "x": 120,
+            "y": 58,
+            "width": 986,
+            "height": 644
+          }
+        },
+        "minimumNavigation": {
+          "observedAt": "2026-11-12T07:23:18.345Z",
+          "viewport": {
+            "width": 986,
+            "height": 644
+          },
+          "document": {
+            "scrollWidth": 971,
+            "clientWidth": 971
+          },
+          "sidebar": {
+            "clientHeight": 644,
+            "scrollHeight": 791,
+            "scrollTop": 147.3333282470703
+          },
+          "settings": {
+            "x": 15,
+            "y": 547,
+            "width": 169.6666717529297,
+            "height": 42,
+            "centerInsideViewport": true
+          }
+        },
+        "minimumScreenshot": {
+          "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-minimum-navigation.png",
+          "sha256": "dd9e8abdac759e3618f5c2c39100caa1b71515d745369fff2f7ccb463e00e46e"
+        },
         "screenshots": [
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794455323703\\reports\\launch-1-pure-white.png",
-            "sha256": "ba90d1e17e698c0ac72d835966f4f0c711084953d9136ba0bdb1c961c70ed7e9",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-pure-white.png",
+            "sha256": "62e4cec0fe83f89f20616df74caf11e2bdceaa0d19ceeb8e55e69b212de66e30",
             "launch": 1,
             "theme": "pure-white"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794455323703\\reports\\launch-1-paper-ink.png",
-            "sha256": "2d7b099c6acf28dffdff72eb977121135251cb280ce36d753f78e84ee3bf5fb9",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-paper-ink.png",
+            "sha256": "fd5cc8cbfe1aa989a752d293a00e686cba4264d14670d76edd05ae05b51ac5c3",
             "launch": 1,
             "theme": "paper-ink"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794455323703\\reports\\launch-1-classic-warm.png",
-            "sha256": "2a9d7ce8efe3c155d8d95170ccf60a413e5fe813536841295b3b9d8992712e6a",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-classic-warm.png",
+            "sha256": "999f60eeabb831048b2e4916886417ea1b62da5958f3b782a2265f9b8d83607b",
             "launch": 1,
             "theme": "classic-warm"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794455323703\\reports\\launch-1-celadon.png",
-            "sha256": "bc9b9717c0ff9fc98415a029be07ef25c20801a907406492a37c7990c6c4080a",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-celadon.png",
+            "sha256": "cacd386e667fe2018b5a3ccfeb714d6ef7bb8c4a7a0e88f3ada4ec1aedc776c4",
             "launch": 1,
             "theme": "celadon"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794455323703\\reports\\launch-1-ink-night.png",
-            "sha256": "1e0316e6e93d8b6832a3c9fd033da288444bf5015b5381884c9eb88f7cae9b7b",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-ink-night.png",
+            "sha256": "3d0608390009fab477d26014ca3e79521ad61f6880021a96547216c5b5d18e5e",
             "launch": 1,
             "theme": "ink-night"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794455323703\\reports\\launch-1-ink-night-blue.png",
-            "sha256": "f66a1396c2225ed100e122a6241dab5db7215560649d37adf50256253e448c74",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-1-ink-night-blue.png",
+            "sha256": "f503e6858090e28fcd945ea08f321ba194af059d9ddc65d5943352e634501f9c",
             "launch": 1,
             "theme": "ink-night-blue"
           },
           {
-            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794455323703\\reports\\launch-2-pure-white.png",
-            "sha256": "fea39414faad18cbe026b3382453a8517ab3ecd3babf0046b6285c1e0dcd9636",
+            "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794468186876\\reports\\launch-2-pure-white.png",
+            "sha256": "db64c2351ccddb899e4ed32c150f0052369894bec62f5fd6af026a6930ec1f79",
             "launch": 2,
             "theme": "pure-white"
           }
-        ],
-        "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794455323703"
+        ]
       }
     ],
     "measurements": {
       "file": "docs/qa/alpha16-ui-validation-win32.json",
-      "sha256": "841f035ba263967ecc5d990b1ce478de9b994b6af92bbf80ce8d3dcd285f7f50",
-      "fullUiTests": 102,
-      "viewMeasurements": 264
+      "sha256": "9840c65e971c919694c00dee781a9289493fab58549ea52cb873880440697ec6",
+      "fullUiTests": 106,
+      "viewMeasurements": 264,
+      "layoutCases": 4
     },
     "processCoverage": "OBSERVED_ONLY"
   },
   "regressionEvidence": {
     "file": "docs/qa/alpha16-regression-evidence-win32.json",
-    "sha256": "6483e33525d752951fc78d9e6311a01935e5495c68122a15f459b42950c816f0"
+    "sha256": "2672a4fbb96f98542088ef4d6af1ad35bd80b9452fab2b9740043232d0112e22"
   },
   "fileVersions": {
     "report": "docs/qa/file-versions-win32.json",
@@ -837,23 +925,23 @@
     "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-final-core-evidence"
   },
   "ui": {
-    "recordedAt": "2026-11-12T02:40:46.144Z",
+    "recordedAt": "2026-11-12T07:27:40.034Z",
     "version": "0.2.0-alpha.16",
     "status": "passed",
-    "fullUiTests": 102,
+    "fullUiTests": 106,
     "stats": {
-      "startTime": "2026-11-12T02:39:22.382Z",
-      "duration": 80096.46900000001,
-      "expected": 102,
+      "startTime": "2026-11-12T06:37:43.351Z",
+      "duration": 66244.54999999999,
+      "expected": 106,
       "skipped": 0,
       "unexpected": 0,
       "flaky": 0
     },
-    "buildLog": ".runtime/alpha16-web-build-final-attempt3.log",
-    "log": ".runtime/alpha16-ui-full-attempt2.log",
-    "report": ".runtime/alpha16-ui-full-attempt2.json",
-    "beforeEvidence": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-before-final1",
-    "outputDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-ui-full-attempt2",
+    "buildLog": ".runtime/alpha16-sidebar-validation/web-build-retry2/command.log",
+    "log": ".runtime/alpha16-sidebar-validation/ui-full-json-retry1/command.log",
+    "report": ".runtime/alpha16-sidebar-validation/ui-full-json-retry1/playwright-report.json",
+    "beforeEvidence": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-final-local-qa",
+    "outputDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-sidebar-validation\\ui-full-json-retry1",
     "sourceHashes": [
       {
         "file": "web/index.html",
@@ -889,7 +977,7 @@
       },
       {
         "file": "web/src/App.tsx",
-        "sha256": "a0fd563016f49aeb9ff22c807a6360c29fb37975d84660deb06b5ed2bd053297"
+        "sha256": "d001ac7a35267f0c9ac16c844ac27a7d10568da353235520cb8b705894f40a76"
       },
       {
         "file": "web/src/Appearance.tsx",
@@ -985,7 +1073,7 @@
       },
       {
         "file": "web/src/main.tsx",
-        "sha256": "f2a0ce88b28b12cff7c23ba948ec085f54902018dac70fba9f4688fd28f5b369"
+        "sha256": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c"
       },
       {
         "file": "web/src/process-recovery.css",
@@ -1021,7 +1109,7 @@
       },
       {
         "file": "web/src/ui.tsx",
-        "sha256": "9e4c0231c783e2c72bdd6582ea391709a661d4fef9a94c24b7dfbe48cef1937a"
+        "sha256": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722"
       },
       {
         "file": "web/src/workspace-writes.css",
@@ -1078,6 +1166,18 @@
       {
         "file": "web/vite.config.ts",
         "sha256": "87431b20dc47a8c84879cb1e0e2e983c8be637535030cde9c731d7e71a2c8585"
+      },
+      {
+        "file": "web/src/layout.css",
+        "sha256": "cb8c7193828ae98ffbfbd8895ca00c75855dc4b14ae38228f1a658f28ca3f079"
+      },
+      {
+        "file": "web/tests/sidebar.spec.ts",
+        "sha256": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953"
+      },
+      {
+        "file": "tools/theme-desktop-smoke.cjs",
+        "sha256": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830"
       }
     ],
     "restoredUnrelatedTrackedScreenshots": [
@@ -1254,20 +1354,24 @@
     ],
     "productionWebHashes": [
       {
-        "file": "web/dist/assets/index-BT_CwG9l.css",
-        "sha256": "079165731eafc21e6dab612fde6fc0d5b48a33ed823306395cc9207d92e9bc71"
-      },
-      {
-        "file": "web/dist/assets/index-CedIBSBg.js",
-        "sha256": "c6f9b517421f5b267fa113e7ca0cab5c651cf4c4523012ae6a7f0d721a6262ae"
-      },
-      {
         "file": "web/dist/index.html",
-        "sha256": "6c94cafb963834e0e1102af261b8978d82a603b954ad6324d0adef43964410f2"
+        "sha256": "d700bf5c1eb28b8d20b814544234c0839d4f7fcd4fc1ff07476771e1e1809749"
       },
       {
         "file": "web/dist/theme-init.js",
         "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+      },
+      {
+        "file": "web/dist/workbench-config.json",
+        "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+      },
+      {
+        "file": "web/dist/assets/index-IugtPpDq.js",
+        "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
+      },
+      {
+        "file": "web/dist/assets/index-r6WkTjdh.css",
+        "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
       }
     ],
     "runtimeConfig": {
@@ -1476,7 +1580,7 @@
     }
   ],
   "bundledWriter": {
-    "recordedAt": "2026-11-12T03:49:21.696Z",
+    "recordedAt": "2026-11-12T07:24:37.264Z",
     "version": "0.2.0-alpha.16",
     "platform": "win32",
     "status": "passed",
@@ -1586,20 +1690,20 @@
         ]
       }
     ],
-    "nativeFileKey": "WINDOWS:86ca0064ca0052bb:34a00a00000001000000000000000000",
-    "originalPid": 48936,
-    "originalProcessStartedAt": "2026-11-12T03:49:19.414Z",
+    "nativeFileKey": "WINDOWS:86ca0064ca0052bb:00e00a00000003000000000000000000",
+    "originalPid": 56280,
+    "originalProcessStartedAt": "2026-11-12T07:24:34.882Z",
     "originalStopped": true,
     "releaseDuringBorrowRejected": true,
     "lockAvailableAfterRelease": true,
     "windowsNativeProcessSnapshotApplicable": true,
     "windowsNativeProcessSnapshotVerified": true,
-    "nativeProcessBirth": "2026-11-12T03:49:19.414Z",
-    "nativeProcessSnapshotCount": 494,
+    "nativeProcessBirth": "2026-11-12T07:24:34.882Z",
+    "nativeProcessSnapshotCount": 515,
     "probeOutputEncoding": "UTF-8",
     "schedulerParallelism": 2,
     "schedulerMaxPoolSize": 2,
-    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-6oduJf"
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-NL03SJ"
   },
   "workspace": {
     "tests": 15,
@@ -1712,13 +1816,13 @@
         }
       ]
     },
-    "probeEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\desktop-qa-1794455307213\\probe-classes",
+    "probeEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\desktop-qa-1794467941189\\probe-classes",
     "originalIdentitiesVerifiedStopped": 3,
     "originalProcessesStopped": true,
     "originalProcessObservations": [
       {
-        "pid": 51644,
-        "originalStartedAt": "2026-11-12T03:48:27.997Z",
+        "pid": 5672,
+        "originalStartedAt": "2026-11-12T07:19:02.007Z",
         "currentStartedAt": "",
         "alive": false,
         "matchesOriginal": false,
@@ -1727,8 +1831,8 @@
         "originalStopped": true
       },
       {
-        "pid": 50420,
-        "originalStartedAt": "2026-11-12T03:48:28.679Z",
+        "pid": 65332,
+        "originalStartedAt": "2026-11-12T07:19:02.626Z",
         "currentStartedAt": "",
         "alive": false,
         "matchesOriginal": false,
@@ -1737,8 +1841,8 @@
         "originalStopped": true
       },
       {
-        "pid": 24020,
-        "originalStartedAt": "2026-11-12T03:48:31.563Z",
+        "pid": 15368,
+        "originalStartedAt": "2026-11-12T07:19:05.498Z",
         "currentStartedAt": "",
         "alive": false,
         "matchesOriginal": false,
@@ -1753,11 +1857,11 @@
     "sha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7"
   },
   "installer": {
-    "recordedAt": "2026-11-12T03:48:26.4432761Z",
+    "recordedAt": "2026-11-12T07:20:36.8231990Z",
     "version": "0.2.0-alpha.16",
-    "file": "release/Agent Workbench Setup 0.2.0-alpha.16.exe",
-    "size": 152638752,
-    "sha256": "d260b24bdf66c514ff419288e30f58cbe5022bef90ef512c60362f52ad8fa5ff",
+    "file": "D:\\Projects\\多Agent研发工作台\\release\\Agent Workbench Setup 0.2.0-alpha.16.exe",
+    "size": 152638855,
+    "sha256": "061380a862d262af76597e35a936fb23364d3d2f285c9c415565d44917fd09f3",
     "authenticodeStatus": "NotSigned",
     "authenticodeMeasurement": "Get-AuthenticodeSignature",
     "fullInstallUninstallRetested": false
@@ -1774,12 +1878,12 @@
   "packagedAssets": {
     "asar": {
       "file": "release/win-unpacked/resources/app.asar",
-      "sha256": "ab045605e8b2a1918889c97e73d336f5c047a97a49c4131ef22ec4741fdce724"
+      "sha256": "c0acf0e50085491a3eb7f7b6e1989ba128d7f783de839bb5367b810c18ab30de"
     },
     "web": [
       {
         "file": "web/dist/index.html",
-        "sha256": "6c94cafb963834e0e1102af261b8978d82a603b954ad6324d0adef43964410f2"
+        "sha256": "d700bf5c1eb28b8d20b814544234c0839d4f7fcd4fc1ff07476771e1e1809749"
       },
       {
         "file": "web/dist/theme-init.js",
@@ -1790,12 +1894,12 @@
         "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
       },
       {
-        "file": "web/dist/assets/index-BT_CwG9l.css",
-        "sha256": "079165731eafc21e6dab612fde6fc0d5b48a33ed823306395cc9207d92e9bc71"
+        "file": "web/dist/assets/index-IugtPpDq.js",
+        "sha256": "e51206016be52106561c5cdf4627140becb9346fb944a18334d0202ace5ad8dd"
       },
       {
-        "file": "web/dist/assets/index-CedIBSBg.js",
-        "sha256": "c6f9b517421f5b267fa113e7ca0cab5c651cf4c4523012ae6a7f0d721a6262ae"
+        "file": "web/dist/assets/index-r6WkTjdh.css",
+        "sha256": "483ea4ee85f89eeff4060efb2528aac60abfbf0d286916325488569d0528ad2c"
       }
     ],
     "desktop": [
@@ -2955,8 +3059,10 @@
   ],
   "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-final-local-qa",
   "ci": {
-    "status": "AWAITING_EXACT_COMMIT_PUSH",
-    "receipt": "docs/qa/alpha16-ci-themes-receipt.json"
+    "status": "FIXED_PRODUCTION_COMMIT_CI_PENDING",
+    "originalFailedRun": 43151063170,
+    "originalFailedCommit": "a7a939fed65881b5e9816a1a994fe8b42e7b890e",
+    "failureReceipt": "docs/qa/alpha16-ci-theme-failure.json"
   },
   "retainedFailures": [
     {
@@ -3022,6 +3128,54 @@
     {
       "file": ".runtime/alpha16-file-versions-timeout-observation1/receipt.json",
       "sha256": "37bb8418f6696bb4821aea7ad4c03212d4db53b3414532f1687da1dbd327057f"
+    },
+    {
+      "file": "docs/qa/alpha16-ci-theme-failure.json",
+      "sha256": "3211b71bbac2b5696ead05ab47dee827ae4bf3688284736433667900c69fce78"
+    },
+    {
+      "file": ".runtime/alpha16-short-sidebar-baseline/receipt.json",
+      "sha256": "f220a3df65d0388b9b714329999feb086515c59eac686ac77e39451340a5814f"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/ui-targeted-retry1/receipt.json",
+      "sha256": "9d43dbf794f264b040bef66549306220e9bb33970256296fc673401a1dde26f2"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/ui-targeted-retry2/receipt.json",
+      "sha256": "1b692a816807ceff3bcdac1255676a9d2ddf772857f42d9cffb5e0eba5d1eb41"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/ui-focus-diagnostic/receipt.json",
+      "sha256": "b64106ddba2d291307648a5420eb4cee348e7f3138fbc5e06f46b915205dbae8"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/ui-focus-diagnostic-retry1/receipt.json",
+      "sha256": "589565fd5822f1eea0565cceb0c0660bb0c33a409dfb2f2d8fdf6fe80116fefb"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/ui-targeted-retry1/system-power-observation.json",
+      "sha256": "a5fea3d34373baa13cb1dc4d148465cf056aaa8b692c93eabe7e2e430bb09d9b"
+    },
+    {
+      "file": ".runtime/alpha16-ci/run-43151063170-attempt-1/collection-failure.json",
+      "sha256": "5225a86a5b1726b83d8def54673d740a485b3b7a8a0da6d1683b99a270cdf22c"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/themes-desktop-retry2/receipt.json",
+      "sha256": "78b40c7821af55d05941a093b029713faa4f900129a845bbb47f0c9bc6bfb26c"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/window-size-diagnostic/report.json",
+      "sha256": "58cac9cc224800217bd467a9589af928a23f3c90f10cd5fbdd0ef945b42c47fb"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/minimum-window-failure-verification.json",
+      "sha256": "cb55d8ccb0180a50ae94187e7e1b57ce883d2c03a53d8afa182da140788bc896"
+    },
+    {
+      "file": ".runtime/alpha16-sidebar-validation/final-summary-failure1/observation.json",
+      "sha256": "9ccd184ba610a25766c40a61d3b77b86971311e7966c27bec2496ca194c06de7"
     }
   ],
   "historicalProcessIdentityEvidence": {
@@ -3040,5 +3194,12 @@
     "complete historical process trees",
     "other F01-F21 and M0-M3 release gates"
   ],
-  "completeProjectGoal": false
+  "completeProjectGoal": false,
+  "layoutFollowUp": {
+    "file": "docs/qa/alpha16-layout-validation-win32.json",
+    "sha256": "ed6be07a741d8f7c4f8029778d6253d70bf866214eb27fe410e6835a82ff4c81",
+    "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-layout-final-local-qa",
+    "previousValidationSha256": "29f71a669a997ba17132bee4a1888f01cc5bb511a1094131ebb8dc1912db6428",
+    "originalAcceptanceStepsRetained": true
+  }
 }

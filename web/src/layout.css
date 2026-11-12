@@ -1,0 +1,17 @@
+.sidebar {
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
+.sidebar > * {
+  flex-shrink: 0;
+}
+
+.tabs {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.tabs > button:focus-visible {
+  outline-offset: -3px;
+}

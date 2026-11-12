@@ -3,7 +3,7 @@
   "platform": "win32",
   "status": "passed",
   "scope": "ACTUAL_DESKTOP_FILE_ORIGIN_THEME_PERSISTENCE",
-  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794452508888",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794466626965",
   "probeFixture": {
     "compiledOnce": true,
     "sourceSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
@@ -48,9 +48,9 @@
       "pageErrors": [],
       "originalProcessObservationsBeforeClose": [
         {
-          "pid": 58524,
-          "originalStartedAt": "2026-11-12T03:01:49.705Z",
-          "currentStartedAt": "2026-11-12T03:01:49.705Z",
+          "pid": 69800,
+          "originalStartedAt": "2026-11-12T06:57:07.780Z",
+          "currentStartedAt": "2026-11-12T06:57:07.780Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -58,9 +58,9 @@
           "originalStopped": false
         },
         {
-          "pid": 20208,
-          "originalStartedAt": "2026-11-12T03:01:50.147Z",
-          "currentStartedAt": "2026-11-12T03:01:50.147Z",
+          "pid": 70896,
+          "originalStartedAt": "2026-11-12T06:57:08.227Z",
+          "currentStartedAt": "2026-11-12T06:57:08.227Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -68,9 +68,9 @@
           "originalStopped": false
         },
         {
-          "pid": 28864,
-          "originalStartedAt": "2026-11-12T03:01:52.944Z",
-          "currentStartedAt": "2026-11-12T03:01:52.944Z",
+          "pid": 51076,
+          "originalStartedAt": "2026-11-12T06:57:11.115Z",
+          "currentStartedAt": "2026-11-12T06:57:11.115Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -81,17 +81,125 @@
       "historicalOriginalProcessObservations": [],
       "workers": [
         {
-          "id": "09334296-bb93-4326-9a28-105ee4f9aa0b",
+          "id": "707d203e-7ed6-4024-a470-f837e69832e9",
           "state": "RUNNING",
-          "pid": 28864,
-          "processStartedAt": "2026-11-12T03:01:52.944Z",
-          "corePid": 20208,
-          "coreStartedAt": "2026-11-12T03:01:50.147Z"
+          "pid": 51076,
+          "processStartedAt": "2026-11-12T06:57:11.115Z",
+          "corePid": 70896,
+          "coreStartedAt": "2026-11-12T06:57:08.227Z"
         }
       ],
       "application": {
         "packaged": false,
         "version": "0.2.0-alpha.16"
+      },
+      "navigationBefore": {
+        "observedAt": "2026-11-12T06:57:16.303Z",
+        "viewport": {
+          "width": 1466,
+          "height": 923
+        },
+        "document": {
+          "scrollWidth": 1451,
+          "clientWidth": 1451
+        },
+        "sidebar": {
+          "clientHeight": 923,
+          "scrollHeight": 923,
+          "scrollTop": 0
+        },
+        "settings": {
+          "x": 20,
+          "y": 826.6666870117188,
+          "width": 204,
+          "height": 42,
+          "centerInsideViewport": true
+        }
+      },
+      "navigationAfter": {
+        "observedAt": "2026-11-12T06:57:16.342Z",
+        "viewport": {
+          "width": 1466,
+          "height": 923
+        },
+        "document": {
+          "scrollWidth": 1466,
+          "clientWidth": 1466
+        },
+        "sidebar": {
+          "clientHeight": 923,
+          "scrollHeight": 923,
+          "scrollTop": 0
+        },
+        "settings": {
+          "x": 20,
+          "y": 826.6666870117188,
+          "width": 204,
+          "height": 42,
+          "centerInsideViewport": true
+        }
+      },
+      "minimumWindow": {
+        "width": 1000,
+        "height": 680,
+        "applied": {
+          "x": 112,
+          "y": 28,
+          "width": 1002,
+          "height": 682
+        },
+        "content": {
+          "x": 120,
+          "y": 58,
+          "width": 986,
+          "height": 644
+        }
+      },
+      "minimumNavigationBefore": {
+        "observedAt": "2026-11-12T06:57:16.416Z",
+        "viewport": {
+          "width": 986,
+          "height": 644
+        },
+        "document": {
+          "scrollWidth": 971,
+          "clientWidth": 971
+        },
+        "sidebar": {
+          "clientHeight": 644,
+          "scrollHeight": 791,
+          "scrollTop": 0
+        },
+        "settings": {
+          "x": 15,
+          "y": 694.3333740234375,
+          "width": 169.6666717529297,
+          "height": 42,
+          "centerInsideViewport": false
+        }
+      },
+      "minimumNavigationAfter": {
+        "observedAt": "2026-11-12T06:57:16.440Z",
+        "viewport": {
+          "width": 986,
+          "height": 644
+        },
+        "document": {
+          "scrollWidth": 971,
+          "clientWidth": 971
+        },
+        "sidebar": {
+          "clientHeight": 644,
+          "scrollHeight": 791,
+          "scrollTop": 147.3333282470703
+        },
+        "settings": {
+          "x": 15,
+          "y": 547,
+          "width": 169.6666717529297,
+          "height": 42,
+          "centerInsideViewport": true
+        }
       },
       "systemScheme": {
         "source": "ACTUAL_ELECTRON_RENDERER_MEDIA_EMULATION",
@@ -100,8 +208,8 @@
       },
       "originalProcesses": [
         {
-          "pid": 58524,
-          "originalStartedAt": "2026-11-12T03:01:49.705Z",
+          "pid": 69800,
+          "originalStartedAt": "2026-11-12T06:57:07.780Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -110,8 +218,8 @@
           "originalStopped": true
         },
         {
-          "pid": 20208,
-          "originalStartedAt": "2026-11-12T03:01:50.147Z",
+          "pid": 70896,
+          "originalStartedAt": "2026-11-12T06:57:08.227Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -120,8 +228,8 @@
           "originalStopped": true
         },
         {
-          "pid": 28864,
-          "originalStartedAt": "2026-11-12T03:01:52.944Z",
+          "pid": 51076,
+          "originalStartedAt": "2026-11-12T06:57:11.115Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -137,9 +245,9 @@
       "pageErrors": [],
       "originalProcessObservationsBeforeClose": [
         {
-          "pid": 52432,
-          "originalStartedAt": "2026-11-12T03:02:04.714Z",
-          "currentStartedAt": "2026-11-12T03:02:04.714Z",
+          "pid": 61136,
+          "originalStartedAt": "2026-11-12T06:57:22.355Z",
+          "currentStartedAt": "2026-11-12T06:57:22.355Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -147,9 +255,9 @@
           "originalStopped": false
         },
         {
-          "pid": 20708,
-          "originalStartedAt": "2026-11-12T03:02:05.149Z",
-          "currentStartedAt": "2026-11-12T03:02:05.149Z",
+          "pid": 62880,
+          "originalStartedAt": "2026-11-12T06:57:22.792Z",
+          "currentStartedAt": "2026-11-12T06:57:22.792Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -157,9 +265,9 @@
           "originalStopped": false
         },
         {
-          "pid": 28124,
-          "originalStartedAt": "2026-11-12T03:02:08.110Z",
-          "currentStartedAt": "2026-11-12T03:02:08.110Z",
+          "pid": 22048,
+          "originalStartedAt": "2026-11-12T06:57:25.563Z",
+          "currentStartedAt": "2026-11-12T06:57:25.563Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -169,8 +277,8 @@
       ],
       "historicalOriginalProcessObservations": [
         {
-          "pid": 20208,
-          "originalStartedAt": "2026-11-12T03:01:50.147Z",
+          "pid": 70896,
+          "originalStartedAt": "2026-11-12T06:57:08.227Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -180,8 +288,8 @@
           "verifiedAfterLaunch": 1
         },
         {
-          "pid": 28864,
-          "originalStartedAt": "2026-11-12T03:01:52.944Z",
+          "pid": 51076,
+          "originalStartedAt": "2026-11-12T06:57:11.115Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -193,30 +301,76 @@
       ],
       "workers": [
         {
-          "id": "a7864b1f-bb82-42b7-94f5-add3c2af256e",
+          "id": "20a6ebd2-f44a-4907-9837-cbbb151748ee",
           "state": "RUNNING",
-          "pid": 28124,
-          "processStartedAt": "2026-11-12T03:02:08.110Z",
-          "corePid": 20708,
-          "coreStartedAt": "2026-11-12T03:02:05.149Z"
+          "pid": 22048,
+          "processStartedAt": "2026-11-12T06:57:25.563Z",
+          "corePid": 62880,
+          "coreStartedAt": "2026-11-12T06:57:22.792Z"
         },
         {
-          "id": "09334296-bb93-4326-9a28-105ee4f9aa0b",
+          "id": "707d203e-7ed6-4024-a470-f837e69832e9",
           "state": "STOPPED",
-          "pid": 28864,
-          "processStartedAt": "2026-11-12T03:01:52.944Z",
-          "corePid": 20208,
-          "coreStartedAt": "2026-11-12T03:01:50.147Z"
+          "pid": 51076,
+          "processStartedAt": "2026-11-12T06:57:11.115Z",
+          "corePid": 70896,
+          "coreStartedAt": "2026-11-12T06:57:08.227Z"
         }
       ],
       "application": {
         "packaged": false,
         "version": "0.2.0-alpha.16"
       },
+      "navigationBefore": {
+        "observedAt": "2026-11-12T06:57:32.451Z",
+        "viewport": {
+          "width": 1466,
+          "height": 923
+        },
+        "document": {
+          "scrollWidth": 1451,
+          "clientWidth": 1451
+        },
+        "sidebar": {
+          "clientHeight": 923,
+          "scrollHeight": 923,
+          "scrollTop": 0
+        },
+        "settings": {
+          "x": 20,
+          "y": 826.6666870117188,
+          "width": 204,
+          "height": 42,
+          "centerInsideViewport": true
+        }
+      },
+      "navigationAfter": {
+        "observedAt": "2026-11-12T06:57:32.484Z",
+        "viewport": {
+          "width": 1466,
+          "height": 923
+        },
+        "document": {
+          "scrollWidth": 1466,
+          "clientWidth": 1466
+        },
+        "sidebar": {
+          "clientHeight": 923,
+          "scrollHeight": 923,
+          "scrollTop": 0
+        },
+        "settings": {
+          "x": 20,
+          "y": 826.6666870117188,
+          "width": 204,
+          "height": 42,
+          "centerInsideViewport": true
+        }
+      },
       "originalProcesses": [
         {
-          "pid": 52432,
-          "originalStartedAt": "2026-11-12T03:02:04.714Z",
+          "pid": 61136,
+          "originalStartedAt": "2026-11-12T06:57:22.355Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -225,8 +379,8 @@
           "originalStopped": true
         },
         {
-          "pid": 20708,
-          "originalStartedAt": "2026-11-12T03:02:05.149Z",
+          "pid": 62880,
+          "originalStartedAt": "2026-11-12T06:57:22.792Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -235,8 +389,8 @@
           "originalStopped": true
         },
         {
-          "pid": 28124,
-          "originalStartedAt": "2026-11-12T03:02:08.110Z",
+          "pid": 22048,
+          "originalStartedAt": "2026-11-12T06:57:25.563Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -249,6 +403,6 @@
     }
   ],
   "originalProcessesStopped": true,
-  "completedAt": "2026-11-12T03:02:20.451Z",
-  "sourceSha256": "813ed6f2e3da1dc74520cf8e6395452cc1056b1531edb568ceb7ecfc1996f954"
+  "completedAt": "2026-11-12T06:57:37.091Z",
+  "sourceSha256": "672dc787361816b13340cf83131000db953d6ceeb798f9b8c783f364dfd5e830"
 }

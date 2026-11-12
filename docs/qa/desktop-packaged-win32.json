@@ -34,13 +34,13 @@
       }
     ]
   },
-  "probeEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\desktop-qa-1794455307213\\probe-classes",
+  "probeEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\desktop-qa-1794467941189\\probe-classes",
   "originalIdentitiesVerifiedStopped": 3,
   "originalProcessesStopped": true,
   "originalProcessObservations": [
     {
-      "pid": 51644,
-      "originalStartedAt": "2026-11-12T03:48:27.997Z",
+      "pid": 5672,
+      "originalStartedAt": "2026-11-12T07:19:02.007Z",
       "currentStartedAt": "",
       "alive": false,
       "matchesOriginal": false,
@@ -49,8 +49,8 @@
       "originalStopped": true
     },
     {
-      "pid": 50420,
-      "originalStartedAt": "2026-11-12T03:48:28.679Z",
+      "pid": 65332,
+      "originalStartedAt": "2026-11-12T07:19:02.626Z",
       "currentStartedAt": "",
       "alive": false,
       "matchesOriginal": false,
@@ -59,8 +59,8 @@
       "originalStopped": true
     },
     {
-      "pid": 24020,
-      "originalStartedAt": "2026-11-12T03:48:31.563Z",
+      "pid": 15368,
+      "originalStartedAt": "2026-11-12T07:19:05.498Z",
       "currentStartedAt": "",
       "alive": false,
       "matchesOriginal": false,

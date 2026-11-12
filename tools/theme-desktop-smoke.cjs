@@ -28,6 +28,15 @@ const path = require('node:path');
   const save = (file, value) => writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
   save(path.join(classes, 'fixture.json'), probeFixture);
   const checks = [], launches = [], verifiedStopped = new Map();
+  const observeNavigation = page => page.evaluate(() => {
+    const sidebar = document.querySelector('.sidebar'), settings = document.querySelector('.settings-nav');
+    const bounds = settings.getBoundingClientRect(), centerX = bounds.x + bounds.width / 2, centerY = bounds.y + bounds.height / 2;
+    return { observedAt: new Date().toISOString(), viewport: { width: innerWidth, height: innerHeight },
+      document: { scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth },
+      sidebar: { clientHeight: sidebar.clientHeight, scrollHeight: sidebar.scrollHeight, scrollTop: sidebar.scrollTop },
+      settings: { x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height,
+        centerInsideViewport: centerX >= 0 && centerX < innerWidth && centerY >= 0 && centerY < innerHeight } };
+  });
   const record = { version: metadata.version, platform: process.platform, status: 'running', scope: 'ACTUAL_DESKTOP_FILE_ORIGIN_THEME_PERSISTENCE', directory,
     probeFixture, processCoverage: 'OBSERVED_ONLY', externalJavaDisabled: process.env.WORKBENCH_EXPECT_PACKAGED === '1', checks, launches };
   save(path.join(reports, 'report.json'), record);
@@ -50,9 +59,10 @@ const path = require('node:path');
       const electron = await _electron.launch({ args: [root, ...(process.platform === 'linux' ? ['--no-sandbox'] : [])], executablePath: process.env.WORKBENCH_ELECTRON_PATH, env, timeout: 60000 });
       const launch = { attempt, pageErrors: errors, originalProcessObservationsBeforeClose: observationsBeforeClose,
         historicalOriginalProcessObservations: historicalObservations }; launches.push(launch);
+      let page;
       try {
         remember(probe(electron.process().pid, '-', 'identity'));
-        const page = await electron.firstWindow({ timeout: 60000 });
+        page = await electron.firstWindow({ timeout: 60000 });
         page.on('pageerror', error => errors.push(error.message));
         await page.getByRole('button', { name: '本地核心已连接', exact: true }).waitFor({ timeout: 30000 });
         const state = await page.evaluate(async () => {
@@ -79,9 +89,26 @@ const path = require('node:path');
           assert.equal(await page.evaluate(() => localStorage.getItem('workbench-theme')), 'ink-night-blue');
           checks.push('Saved dark theme survived full original desktop/core/Worker shutdown and relaunch');
         }
+        launch.navigationBefore = await observeNavigation(page);
         await page.getByRole('button', { name: '资源与设置', exact: true }).click();
+        launch.navigationAfter = await observeNavigation(page);
+        assert.equal(launch.navigationAfter.settings.centerInsideViewport, true);
+        assert.ok(launch.navigationAfter.document.scrollWidth <= launch.navigationAfter.viewport.width);
         await page.getByRole('button', { name: '外观', exact: true }).click();
         if (attempt === 1) {
+          launch.minimumWindow = await electron.evaluate(({ BrowserWindow }) => {
+            const window = BrowserWindow.getAllWindows()[0], [width, height] = window.getMinimumSize();
+            window.setSize(width, height);
+            return { width, height, applied: window.getBounds(), content: window.getContentBounds() };
+          });
+          await page.waitForFunction(content => Math.abs(innerWidth - content.width) <= 2 && Math.abs(innerHeight - content.height) <= 2, launch.minimumWindow.content);
+          launch.minimumNavigationBefore = await observeNavigation(page);
+          await page.getByRole('button', { name: '资源与设置', exact: true }).click();
+          launch.minimumNavigationAfter = await observeNavigation(page);
+          assert.equal(launch.minimumNavigationAfter.settings.centerInsideViewport, true);
+          assert.ok(launch.minimumNavigationAfter.document.scrollWidth <= launch.minimumNavigationAfter.viewport.width);
+          await page.getByRole('button', { name: '外观', exact: true }).click();
+          await page.screenshot({ path: path.join(reports, 'launch-1-minimum-navigation.png') });
           await page.getByRole('button', { name: '跟随系统' }).click();
           await page.emulateMedia({ colorScheme: 'dark' });
           await page.waitForFunction(() => document.documentElement.dataset.theme === 'ink-night');
@@ -114,6 +141,14 @@ const path = require('node:path');
         await page.getByRole('button', { name: '本地核心已连接', exact: true }).waitFor();
         checks.push(`Launch ${attempt}: ${expected} restored after renderer reload`);
         assert.deepEqual(errors, []);
+      } catch (error) {
+        if (page && !page.isClosed()) {
+          try {
+            launch.failureNavigation = await observeNavigation(page);
+            await page.screenshot({ path: path.join(reports, `launch-${attempt}-failure.png`), fullPage: true });
+          } catch (observationError) { launch.failureObservationError = observationError.message; }
+        }
+        throw error;
       } finally {
         let forced = false;
         const timer = setTimeout(() => {

@@ -1,0 +1,389 @@
+{
+  "verifiedAt": "2026-11-12T06:25:01.327Z",
+  "version": "0.2.0-alpha.16",
+  "status": "VERIFIED_ORIGINAL_FAILED_CI",
+  "productionCommit": "a7a939fed65881b5e9816a1a994fe8b42e7b890e",
+  "runId": 43151063170,
+  "runAttempt": 1,
+  "conclusion": "failure",
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/43151063170",
+  "originalCollectionSha256": "7c478d2693b7e6547e15c1ce19113a8292fb55cae85d21b332d91410b9531853",
+  "directory": ".runtime/alpha16-ci/run-43151063170-attempt-1-retry1",
+  "platforms": [
+    {
+      "platform": "win32",
+      "runner": "windows-latest",
+      "jobId": 130960048359,
+      "conclusion": "failure",
+      "artifactId": 13914573502,
+      "artifactSha256": "fc661fd6ab120ba87f2044eeff37e27a5c7c0c4d7c27982ae5cfcbf023de1163",
+      "artifactBytes": 87718752,
+      "digestVerified": true,
+      "core": {
+        "suiteCount": 28,
+        "tests": 323,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 3,
+        "passed": 320,
+        "carrierParallelism": 2,
+        "carrierMaxPoolSize": 2,
+        "skippedCases": [
+          {
+            "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+            "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: No restricted live PID on this runner"
+          },
+          {
+            "name": "successfulTextReplacementPreservesPosixPermissions",
+            "className": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+          },
+          {
+            "name": "fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging",
+            "className": "dev.agentworkbench.RuntimeIntegrationTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: Requires real POSIX executable permissions"
+          }
+        ]
+      },
+      "uiTests": 102,
+      "jarSha256": "e2b0d7a5b142e54b46175a0f06451d6882725ac2e5a3660feb18c2a3dfed08d5",
+      "packagedCoreMatchesActualJar": true,
+      "fileVersions": {
+        "checks": 9,
+        "modelCalls": 28,
+        "exports": [
+          {
+            "strategy": "CLONE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "849d0e1c9b2d4c62a57f4b2157c7148a9d7433841e1cb8c770f09941df8f4985"
+          },
+          {
+            "strategy": "WORKTREE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "fffe6c663b63ff00e883700c1bf912b629a88324b2a82497801900c6c80911a8"
+          }
+        ],
+        "originalIdentitiesIndependentlyStopped": 454,
+        "protocolVersion": 2,
+        "completeHistoryVerified": true,
+        "fixtureSourceVerified": true
+      },
+      "themes": {
+        "status": "FAILED_ORIGINAL_CLICK_WITH_30_SECOND_TIMEOUT",
+        "reportSha256": "3fc0a5528a0800a0e48a941343abd0690110a3732e3143d58d85bb1ad3f73fb3",
+        "sourceMatchesExactCommit": true,
+        "originalIdentitiesVerifiedStopped": 3,
+        "externalJavaDisabled": true,
+        "pageErrors": [],
+        "originalViewportDimensions": "NOT_RECORDED",
+        "failure": {
+          "name": "TimeoutError",
+          "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '资源与设置', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button aria-label=\"资源与设置\" class=\"settings-nav \">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - element is outside of the viewport\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - element is outside of the viewport\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - element is outside of the viewport\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+          "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '资源与设置', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button aria-label=\"资源与设置\" class=\"settings-nav \">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - element is outside of the viewport\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - element is outside of the viewport\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - element is outside of the viewport\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at D:\\a\\multi-agent\\multi-agent\\tools\\theme-desktop-smoke.cjs:82:72"
+        },
+        "subsequentBundledWriterGate": "SKIPPED_AFTER_THEME_FAILURE_AND_NOT_CLAIMED_AS_FRESH_RUN_EVIDENCE"
+      }
+    },
+    {
+      "platform": "darwin",
+      "runner": "macos-latest",
+      "jobId": 130960048527,
+      "conclusion": "failure",
+      "artifactId": 13914043492,
+      "artifactSha256": "2995c8d78794ca42637bdb9c226dc51c88b2909d1ad1491f2b91fa3037f1d370",
+      "artifactBytes": 93203377,
+      "digestVerified": true,
+      "core": {
+        "suiteCount": 28,
+        "tests": 323,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8,
+        "passed": 315,
+        "carrierParallelism": 2,
+        "carrierMaxPoolSize": 2,
+        "skippedCases": [
+          {
+            "name": "redirectedWorkspaceRootCannotCreateTaskDirectoriesInsideAForeignJunction",
+            "className": "dev.agentworkbench.GitWorkspaceTest",
+            "reason": "Disabled on operating system: Mac OS X"
+          },
+          {
+            "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+            "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows restricted process identity"
+          },
+          {
+            "name": "failedWindowsSnapshotStillRejectsAnUnverifiableLivePid",
+            "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity failure"
+          },
+          {
+            "name": "missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory",
+            "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity fallback"
+          },
+          {
+            "name": "transientWindowsReceiptLockDoesNotReplayCompletedFileTool",
+            "className": "dev.agentworkbench.RuntimeIntegrationTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+          },
+          {
+            "name": "persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay",
+            "className": "dev.agentworkbench.RuntimeIntegrationTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+          },
+          {
+            "name": "actualWindowsSnapshotMatchesReadableProcessBirths",
+            "className": "dev.agentworkbench.WindowsProcessSnapshotTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native system process snapshot"
+          },
+          {
+            "name": "savedWindowsShortWorkspaceKeepsItsPhysicalScopeAfterStoreReopen",
+            "className": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+            "reason": "Disabled on operating system: Mac OS X"
+          }
+        ]
+      },
+      "uiTests": 102,
+      "jarSha256": "d659839bbb06fa2476380bb395956eb1ae33df06c6301f1cb9734457b250b18e",
+      "packagedCoreMatchesActualJar": true,
+      "fileVersions": {
+        "checks": 9,
+        "modelCalls": 28,
+        "exports": [
+          {
+            "strategy": "CLONE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "936a40e0c1149a0fec6d2e49f94a813f890c073ffa22d1ffdec63eda57a2f8c1"
+          },
+          {
+            "strategy": "WORKTREE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "2fd22999a6dd134440f66133835506b29832f06e65adf46dd0d1bd70bba0d6ee"
+          }
+        ],
+        "originalIdentitiesIndependentlyStopped": 197,
+        "protocolVersion": 2,
+        "completeHistoryVerified": true,
+        "fixtureSourceVerified": true
+      },
+      "themes": {
+        "status": "FAILED_ORIGINAL_CLICK_WITH_30_SECOND_TIMEOUT",
+        "reportSha256": "92e6cd495c2619ca045d2146c22aa4cce8a5b6a0d213a3e94f0381b523f3101f",
+        "sourceMatchesExactCommit": true,
+        "originalIdentitiesVerifiedStopped": 3,
+        "externalJavaDisabled": true,
+        "pageErrors": [],
+        "originalViewportDimensions": "NOT_RECORDED",
+        "failure": {
+          "name": "TimeoutError",
+          "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: '资源与设置', exact: true })\n    - locator resolved to <button aria-label=\"资源与设置\" class=\"settings-nav \">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - element is outside of the viewport\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - element is outside of the viewport\n    - retrying click action\n      - waiting 100ms\n    48 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - element is outside of the viewport\n     - retrying click action\n       - waiting 500ms\n",
+          "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: '资源与设置', exact: true })\n    - locator resolved to <button aria-label=\"资源与设置\" class=\"settings-nav \">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - element is outside of the viewport\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - element is outside of the viewport\n    - retrying click action\n      - waiting 100ms\n    48 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - element is outside of the viewport\n     - retrying click action\n       - waiting 500ms\n\n    at /Users/runner/work/multi-agent/multi-agent/tools/theme-desktop-smoke.cjs:82:72"
+        },
+        "subsequentBundledWriterGate": "SKIPPED_AFTER_THEME_FAILURE_AND_NOT_CLAIMED_AS_FRESH_RUN_EVIDENCE"
+      }
+    },
+    {
+      "platform": "linux",
+      "runner": "ubuntu-latest",
+      "jobId": 130960048561,
+      "conclusion": "success",
+      "artifactId": 13913369108,
+      "artifactSha256": "568a551421f09a893a57dfecc1195dff618cb7ff3e72bd305325b2e67799f69b",
+      "artifactBytes": 93759177,
+      "digestVerified": true,
+      "core": {
+        "suiteCount": 28,
+        "tests": 323,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8,
+        "passed": 315,
+        "carrierParallelism": 2,
+        "carrierMaxPoolSize": 2,
+        "skippedCases": [
+          {
+            "name": "redirectedWorkspaceRootCannotCreateTaskDirectoriesInsideAForeignJunction",
+            "className": "dev.agentworkbench.GitWorkspaceTest",
+            "reason": "Disabled on operating system: Linux"
+          },
+          {
+            "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+            "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows restricted process identity"
+          },
+          {
+            "name": "failedWindowsSnapshotStillRejectsAnUnverifiableLivePid",
+            "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity failure"
+          },
+          {
+            "name": "missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory",
+            "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity fallback"
+          },
+          {
+            "name": "transientWindowsReceiptLockDoesNotReplayCompletedFileTool",
+            "className": "dev.agentworkbench.RuntimeIntegrationTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+          },
+          {
+            "name": "persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay",
+            "className": "dev.agentworkbench.RuntimeIntegrationTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+          },
+          {
+            "name": "actualWindowsSnapshotMatchesReadableProcessBirths",
+            "className": "dev.agentworkbench.WindowsProcessSnapshotTest",
+            "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native system process snapshot"
+          },
+          {
+            "name": "savedWindowsShortWorkspaceKeepsItsPhysicalScopeAfterStoreReopen",
+            "className": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+            "reason": "Disabled on operating system: Linux"
+          }
+        ]
+      },
+      "uiTests": 102,
+      "jarSha256": "f1f214b35d4ddf3f98607b06eb4ae9a7e42acc71eac141bb56a708ee781e9862",
+      "packagedCoreMatchesActualJar": true,
+      "fileVersions": {
+        "checks": 9,
+        "modelCalls": 28,
+        "exports": [
+          {
+            "strategy": "CLONE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "1bde9a176aee541d3558d1a757888ccf78d071369623422a186fd0f624cb9925"
+          },
+          {
+            "strategy": "WORKTREE",
+            "operations": 130,
+            "requestBound": 9,
+            "explicitlyLegacy": 121,
+            "independentReviews": 1,
+            "conflicts": 2,
+            "sha256": "2bcc1579df989f2418584f7726d251337047838164b1df02e5d3d55a09ac2881"
+          }
+        ],
+        "originalIdentitiesIndependentlyStopped": 214,
+        "protocolVersion": 2,
+        "completeHistoryVerified": true,
+        "fixtureSourceVerified": true
+      },
+      "themes": {
+        "productionWeb": {
+          "scenarios": 4,
+          "reportSha256": "d85fa453d11638351b8254e77f396d929d3bcb5d2211d9c2c2b96c45222b2ac5",
+          "bootstrapSha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70",
+          "htmlSha256": "6c94cafb963834e0e1102af261b8978d82a603b954ad6324d0adef43964410f2",
+          "moduleSha256": "c6f9b517421f5b267fa113e7ca0cab5c651cf4c4523012ae6a7f0d721a6262ae",
+          "fixtureMatchesExactCommit": true,
+          "beforeReactVerified": true,
+          "unsavedPageShowEventVerified": true
+        },
+        "actualPackagedDesktop": {
+          "checks": 12,
+          "launches": 2,
+          "reportSha256": "902fa34133fa2bffeb0c14c3dbaaf2f9a440d5a755f3c9209443a773550e511d",
+          "fixtureMatchesExactCommit": true,
+          "probeCompiledOnce": true,
+          "originalLiveAndStoppedIdentitiesVerified": 6,
+          "historicalOriginalIdentitiesVerified": 2,
+          "externalJavaDisabled": true,
+          "screenshots": [
+            {
+              "attempt": 1,
+              "theme": "pure-white",
+              "sha256": "567ec4dc67972e01be8de3afb64e8fe5dd482697edc3464b46a4f91178b74fed"
+            },
+            {
+              "attempt": 1,
+              "theme": "paper-ink",
+              "sha256": "4eefe841ffc5c408eda1790c214c564c3d60a8dd480a52f309a67fede7867c4f"
+            },
+            {
+              "attempt": 1,
+              "theme": "classic-warm",
+              "sha256": "084e554e5726d9fbfeb40f3da1f868987bdba8e15b55d46d208f029abab84492"
+            },
+            {
+              "attempt": 1,
+              "theme": "celadon",
+              "sha256": "75f490f8136330e0c87516abd68b57cfcb385433551b57268ae0111e631c404c"
+            },
+            {
+              "attempt": 1,
+              "theme": "ink-night",
+              "sha256": "e82b521af9ab8b1b766ce2d968f778087f7e7887224a8b1cbf202960a6c49ce7"
+            },
+            {
+              "attempt": 1,
+              "theme": "ink-night-blue",
+              "sha256": "ceb96bb230797e2a577c8c2ef97c791e4a63e3dd95ad4439d8d63ee737ac7de1"
+            },
+            {
+              "attempt": 2,
+              "theme": "pure-white",
+              "sha256": "cba57dcc531b5163b1fdaa1ba1f598b89d3740c7b7dbe7bafbf1f7c71d4e4e24"
+            }
+          ],
+          "processCoverage": "OBSERVED_ONLY"
+        }
+      }
+    }
+  ],
+  "localReproduction": {
+    "directory": ".runtime/alpha16-short-sidebar-baseline",
+    "receiptSha256": "f220a3df65d0388b9b714329999feb086515c59eac686ac77e39451340a5814f",
+    "viewport": {
+      "width": 1280,
+      "height": 640
+    },
+    "projectCounts": [
+      0,
+      8
+    ],
+    "baselineFailedCases": 2,
+    "originalProductSourceUnchanged": true,
+    "originalCiViewportDimensionsNotInferredFromLocalReproduction": true
+  },
+  "retainedSlowDownload": {
+    "directory": ".runtime/alpha16-ci/interrupted-slow-artifact-13913369108",
+    "originalPartialFilesPreserved": true,
+    "resumedDownloadMaximumConcurrentReads": 3,
+    "perRangeTimeoutMs": 150000,
+    "perRangeByteSize": 2097152
+  },
+  "retainedCollectionFailure": {
+    "file": ".runtime/alpha16-ci/run-43151063170-attempt-1/collection-failure.json",
+    "sha256": "5225a86a5b1726b83d8def54673d740a485b3b7a8a0da6d1683b99a270cdf22c",
+    "originalMacRangeFailuresPreserved": true,
+    "verifiedWindowsAndUbuntuWholeArchivesReusedAndReverified": true,
+    "missingMacRangesCollectedSeparatelyWithOriginalBounds": true
+  },
+  "failureNotRewrittenByLaterSuccess": true,
+  "completeProjectGoal": false
+}
