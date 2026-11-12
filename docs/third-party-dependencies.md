@@ -2,6 +2,8 @@
 
 本项目业务代码采用 [MIT](../LICENSE)。本页记录 alpha.14 新增的 JNA 依赖及所用 JDK 能力，完整构建依赖由 [Maven POM](../core/pom.xml)、[根锁文件](../package-lock.json)和 [Web 锁文件](../web/package-lock.json)固定。
 
+alpha.16 的主题实现参考固定版本的 MIT 项目 OpenCode 和 next-themes。原源码、Git blob、SHA-256 和许可证已核验，两个项目没有作为运行时依赖加入发行物；来源与独立实现见[六主题研究](./research/themes-2026-11-12.md)。
+
 ## JNA 5.17.0
 
 `net.java.dev.jna:jna:5.17.0` 与 `net.java.dev.jna:jna-platform:5.17.0` 用于 Windows 写入锁文件的原生文件身份，以及只读系统进程快照的动态调用。选择 JNA 提供的 **Apache-2.0** 许可路径，依赖 Jar 保持原字节；未复制或修改上游 Java 实现。

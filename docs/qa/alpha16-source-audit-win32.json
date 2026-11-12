@@ -1,0 +1,690 @@
+{
+  "recordedAt": "2026-11-12T03:36:23.932Z",
+  "version": "0.2.0-alpha.16",
+  "sourceBaseCommit": "6a1650d2a40b9d4d60d1aeba9d191f4ea94da41b",
+  "jarSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+  "javaFilesChecked": 6,
+  "originalJavaCommentsPreserved": 14,
+  "interimSourceBaseCommit": "6a1650d2a40b9d4d60d1aeba9d191f4ea94da41b",
+  "interimOriginalJavaCommentsPreserved": 14,
+  "java": [
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+      "sha256": "1891bb5c24705906e870955393390705b0b1d58dc9d118ebe8feb8af2d0d1f47",
+      "originalComments": 3,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 3,
+      "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 3,
+      "priorProductionOriginalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+      "sha256": "80914b93f654a1e9ab7150b524ed33cf6253a73a101441fb35d90c01e184634d",
+      "originalComments": 2,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 2,
+      "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 2,
+      "priorProductionOriginalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+      "sha256": "f3468af663e17d3a3931282fb98ed08a18eca887c652356995d18f5721a11d60",
+      "originalComments": 1,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 1,
+      "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 1,
+      "priorProductionOriginalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+      "sha256": "5c772dd677acc0f226ddff08610fdc0865d4076046c6b9a6f2fadae36f542285",
+      "originalComments": 5,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 5,
+      "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 5,
+      "priorProductionOriginalCommentsPreserved": true,
+      "addedComments": 0,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+      "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e",
+      "originalComments": 3,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 3,
+      "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 3,
+      "priorProductionOriginalCommentsPreserved": true,
+      "addedComments": 1,
+      "addedJavadocMultiline": true
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
+      "sha256": "5a23d5c113b2b1b6b63f2751bb0b816ad8e5bababd1b4e62b14a1147a09eb202",
+      "originalComments": 0,
+      "originalCommentsPreserved": true,
+      "interimOriginalComments": 0,
+      "interimOriginalCommentsPreserved": true,
+      "priorProductionOriginalComments": 0,
+      "priorProductionOriginalCommentsPreserved": true,
+      "addedComments": 1,
+      "addedJavadocMultiline": true
+    }
+  ],
+  "priorProductionSourceBaseCommit": "0663bd463fe049eca4e8c377907a57f81fd4cfc0",
+  "priorProductionOriginalJavaCommentsPreserved": 14,
+  "versions": [
+    {
+      "file": "package.json",
+      "version": "0.2.0-alpha.16",
+      "sha256": "3d2c40fb997f992542d44202965745360f788298b55ff4c425b1c64e11634936"
+    },
+    {
+      "file": "package-lock.json",
+      "version": "0.2.0-alpha.16",
+      "sha256": "e6ffc4b62631f5a89831698a73fcda6202eb34f599ea782f76b146cb252ade54"
+    },
+    {
+      "file": "web/package.json",
+      "version": "0.2.0-alpha.16",
+      "sha256": "ca955c24d42fbd07b91a3f76ece6a7b430c5fc04eff303c3320c737691158864"
+    },
+    {
+      "file": "web/package-lock.json",
+      "version": "0.2.0-alpha.16",
+      "sha256": "bd3bd9f847785ed0e23c597652a81844b7a4361321d5e15684596a5adb131a2d"
+    }
+  ],
+  "pomVersion": "0.2.0-alpha.16",
+  "whitespace": "passed",
+  "scriptSyntax": "passed",
+  "syntaxFiles": [
+    "tools/ci-theme-desktop.mjs",
+    "tools/theme-desktop-smoke.cjs",
+    "tools/theme-web-smoke.mjs",
+    "web/public/theme-init.js"
+  ],
+  "jarMatchesCompiledClasses": true,
+  "jarClasses": [
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/AgentPermissions.class",
+      "sha256": "acbb9df6538b489df848521ae9e381bd949c2e026744eed483f950cd3f7431a8"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ApiErrors.class",
+      "sha256": "25efdf146ad4fbac0c26c3e4ecd1958799031ee60634d11d76cedd33e586185b"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ApiException.class",
+      "sha256": "2d1b44805b0168c965d1d0d45af96ce5a2ef28da4fb720bbef6b4916617d5644"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/BudgetPolicy.class",
+      "sha256": "5cfe236f19ab58244b8c1deaeaf4796cd9a861372a6e36a978e6ce0aa7e4ce1e"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/CollaborationPolicy.class",
+      "sha256": "31d50c1624ab93b16d07fb7cd64eadf1105334103d73701dbebca0adaaffb102"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ExecutionNodes.class",
+      "sha256": "cf8f55d8ea2941fdb23d9c62774eec09fc84592c28b2d85a2019b23e8c2c191e"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ExecutionStore$1.class",
+      "sha256": "952b6cc3647ab1fe01c22ac6eee8f5cc286da0d3658e5adf0047da262854c55c"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ExecutionStore$2.class",
+      "sha256": "9a74cd99aaeb3f9ce68e2be0e3b59ad09054851f44781949110104eea89db3cc"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ExecutionStore$SqlAction.class",
+      "sha256": "b541b2868a7fbe51e6ac83f2b6c1e0e5808e436e995a32c11ac65b5e9c823bee"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ExecutionStore.class",
+      "sha256": "e68db1f073310f0ed445e2a05adf6b9b6d2a230c4e601a6cee0938cb3c9c999f"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ExecutionWorker.class",
+      "sha256": "1c4e1ef97ed6e5331c229ab58c577ceeb80c53200ab1b40e1ff67ab0447df043"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/FileToolHistory$Fields.class",
+      "sha256": "5f317b80179a9c62fd7e43e9238081f21a4b5779cabe0d176fd9a351bfd06c8c"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/FileToolHistory$Snapshot.class",
+      "sha256": "0cb1b31b69dbf7370b5c9780ecacabbedede5fa2bdc0b49196a710ca4270fdac"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/FileToolHistory.class",
+      "sha256": "8a450f599303bb8381f979734c473a6f05b8dcb2f9174f4f75f2530b17885c79"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/Json.class",
+      "sha256": "19bc9585dc07bd71378a644d4b9ecc3e900c54932ce4ed7f6234f66f0bb97613"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/LocalAccessFilter.class",
+      "sha256": "eca48a736e42c6f72c7dc39f1deb6de5492e7d1107aaa6f3235da1400fb7ebe4"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/LocalExecutionWorker$Pulse.class",
+      "sha256": "b41084603dc42f85d576fe1f400be5eb9e8ea559b5adc337ae43501e8d5b0840"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/LocalExecutionWorker.class",
+      "sha256": "90ba7d32962e6765ec8a20a6a28e286477a8620d76e690b6808f817abd645a07"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ManagedProcessLedger$Inspection.class",
+      "sha256": "eadf4391f53e2369bec7c50e452294d11321f8a75acff2fca9624832b215287a"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ManagedProcessLedger$NativeProcessAccess$VisibleProcesses.class",
+      "sha256": "2fd28bda72486198f6377e34b5ab5530802ffabc106f4527668e2c44a7acf97b"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ManagedProcessLedger$NativeProcessAccess.class",
+      "sha256": "5e1d0c05c9edb468fa862a1cc02659260a2d4a2337028604e5720daa7b4dd06a"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ManagedProcessLedger$ProcessAccess.class",
+      "sha256": "8e1fbd368530d6253fedf4d053b547600d58cc2b620175d15c397b7506bfd887"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ManagedProcessLedger$ProcessSnapshot.class",
+      "sha256": "9f74050b79b5c0086085ae662ea845c4eee26045054cb0021e94b401773d63b9"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ManagedProcessLedger$Tracking.class",
+      "sha256": "3a2ab3f268622ec40984e4c90da6cb7a7295c8cf43b099114cfccf7064d1325c"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ManagedProcessLedger.class",
+      "sha256": "9803c231ce842304c15ad2070b8030d57e7e3bcba12e652448272099a1966aeb"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/PlanValidator.class",
+      "sha256": "171a34348377913407f16c6b01f77786571fef0c506787d33a689960f3dda6e6"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ProcessWorkspaceRuntime$1.class",
+      "sha256": "734142ef04a2db3346f7d5587cb82450221e6144544a59374c39fd9e93e4102f"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ProcessWorkspaceRuntime$Claim.class",
+      "sha256": "49cecbd20cacbc1384b7054932b5458533f4a591a0a362ad1cfcd4ca65406a53"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ProcessWorkspaceRuntime$Invocation.class",
+      "sha256": "3b1a37b026d6d0f82278932fc009b51cac5e0fdba092cbe177cb912d2b0d760b"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ProcessWorkspaceRuntime.class",
+      "sha256": "7120da26ad58ad6096448eed633caa0b77f29b6bc27ce953519feace6a66d151"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/RequestObservation.class",
+      "sha256": "dff34e6ba471e513097862aeff7f465afc195214c7825cd615d0d4c559433e8c"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ResourceManager$Lease.class",
+      "sha256": "d78b22404f5a3234e6cdf48d7c749e9e2e1df3d3c821a89ee660fa1ce5dc62fb"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/ResourceManager.class",
+      "sha256": "0c704d34915d0aa35edb89fd80d2fa3e8720848a9a1d7fc0ab6493cc33141905"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/SessionController.class",
+      "sha256": "8a0e7c604b1932bf01afdd3919966f2496e22df36bb7ffba25b888367d05042c"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/TaskDispatchQueue.class",
+      "sha256": "505c4e31ec83061ed2deecb2681ea6273d6a59b23a4892dcbb9a8ecda45c916b"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/TeamCoordinator$1.class",
+      "sha256": "da5bb6ecb8fd4d5f49ef1426a2678941362ce8cf960cafc6e85d37a43f966d6f"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/TeamCoordinator$Session.class",
+      "sha256": "b8db33a5cb96e7db2e2569e6273267972b32a6c39c7d1ec7cd07d1e8d440f262"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/TeamCoordinator.class",
+      "sha256": "bf51bed4768fd6b60956b15f31d19d09d038fe8735cc10809ff66399cb970030"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WindowsProcessSnapshot.class",
+      "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchApplication.class",
+      "sha256": "b6e3a4a063ee1996d655753596b5f5bd0eba1538a7ca8bdd271f98fd9d0a754e"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchCatalog.class",
+      "sha256": "30fa3e0288773e613996555db41c7736b3d4f96117aabdf60a3fc5dfdefa39d7"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchController.class",
+      "sha256": "1acb22d9f65887197c0b86373ceb2d65e2a63f3a7950b318bdcf6d7d27c13a19"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchEngine$1.class",
+      "sha256": "561e1edbfb1176c57a39fae71712a85ca05322694e7f32161c0e5e70c2419756"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchEngine$2.class",
+      "sha256": "4fbdd2f6a07069a5fb6827fd6b126bce3c3aea817d47a9d0727dc1a13ce5a175"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchEngine$AgentWork.class",
+      "sha256": "7fcfd9fc08c6eabaf76ca0890b8502a649c66922acbb98f8bba49861556db03a"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchEngine$BudgetExhausted.class",
+      "sha256": "697b93dee6f7f87c7b2e15f85f2302440378e7d5d1cd9571a1ce02d5717041e6"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchEngine$Control.class",
+      "sha256": "7ccabf1da89655eb2dbecb0050134455ae617a0bb90799485a20bbcc2a053281"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchEngine$ModelCapacity.class",
+      "sha256": "3f0f0f286d9867d1fddbbf2e53928a2c40733886ba2140a626e9713761f2d176"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchEngine$NeedsInput.class",
+      "sha256": "f015f126b16dd49f8b7e6efbbfe40d736cf53557326e6e2ceb89985ff886243c"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchEngine$UnknownResult.class",
+      "sha256": "8a55d96bc61e09a8f5bc50a781758574c515bd64e2eecb53b3e714a92782d880"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkbenchEngine.class",
+      "sha256": "888a353be60c66c4dd960eaf0403c3d5b06b1cb3a01dde986434e08ad9e15410"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerLedger.class",
+      "sha256": "366fd2928ab717b32b63909aae11e3bc0322c1b793b1b1d5dfd6dd2829a81b0a"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerProcess$CapturedProcess.class",
+      "sha256": "17d5b81d25359f9268acd59a0dcc7b80647195496315b7f80f40eded54e32c81"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerProcess.class",
+      "sha256": "f1baefe00999310c3d99b2ff32f83bd7e0cda119e28ebf4f49210f00cd552da0"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerProcessMain$1.class",
+      "sha256": "867a7ca0457128efd3f819272b8ffd05f37814b185936310622b746fe8414ad8"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerProcessMain$Call$RemoteObserver$1.class",
+      "sha256": "f04c0e8481ed069174fab9e64bd070fa4d0640a95a6b16e1baf0949074bd5dfc"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerProcessMain$Call$RemoteObserver.class",
+      "sha256": "52bac069de28a2465a5557d0a016aedf728c5b535208a5c1d4699c072ea91bec"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerProcessMain$Call.class",
+      "sha256": "a2bb6b6333e1ed164e677f5a20a395d6f1f2ac4b6e36a4f22ab29062678b1dbb"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerProcessMain$Claim.class",
+      "sha256": "f9a5a3f066d2aea1d1f83d3f53c9a85d1b158bbc460b8c5bab517ee0b507f5e7"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerProcessMain.class",
+      "sha256": "3418574b7edd61d7dc694f654688cd31fd9bfe468c81c25fd12264adb68ab016"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerRpc$Handler.class",
+      "sha256": "a2fff8626615d3e9b32bc253828047292baa8b0a8b7c9ab3d3d76d1e3e4d073a"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerRpc$RemoteFailure.class",
+      "sha256": "50a02f988d1766216b49ffd3e1c8778031fdd1010e5ec7072af109596948da02"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerRpc.class",
+      "sha256": "89902dcca140dc0a3ad90bbeace7f4005f59e9785160ea332a5e2ff9b4cc6145"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerWire$1.class",
+      "sha256": "0700cd200874738a7cdccce9b02953dc70faf8fbcd1d66095e3c8ee07e62bb98"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkerWire.class",
+      "sha256": "b3d0bca60ee6d5d291df2574d0bd7f244779be3e71ba2947eedf33dfb3457977"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/WorkspaceWriteLedger.class",
+      "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpAccessRegistry$Grant.class",
+      "sha256": "2540b5e36c530a59800120a168a452ac296af554c9957812ade60a16713edbf0"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpAccessRegistry.class",
+      "sha256": "bc4e99607814f76c38e5891dfd3a1d9452f1a59a844258aa52ec0ee3f034b887"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpController.class",
+      "sha256": "299ee6e7a8ff144bb2c77aa993766329032a6c4446d8b4808a11ad696c595096"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpManager$1.class",
+      "sha256": "8cadae826e4dbcdf112226c11fc99062cbce7bed03d43692624541688cbb3e77"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpManager$2.class",
+      "sha256": "b45b399e0f86ea5cbddbeb45504cfdde75c31b5861c5413cb4d46d3a5e681baa"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpManager$ManagedTransport.class",
+      "sha256": "86057ca95c11141f218acee87a9d1c06f4a2c525515e913fc69d76f27215833e"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpManager$ServiceLease.class",
+      "sha256": "bb113e94e24e2c61b6d9fac610a15664a67fc3f8b186ef42e1584d596d1b0a3f"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpManager$TransportFactory.class",
+      "sha256": "7095e746426d12db02477f783e48e0ffc6f57655a2dc6d0b22aba2955cc637c6"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpManager.class",
+      "sha256": "51c2c4e95f097895e08be250f6523a3edee8349e85acaa62317306c81483d4d0"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpTaskPolicy.class",
+      "sha256": "a86a741113f5e3969bcbac5359a9ecce26afd58c3f20766d70cdceb2213104bf"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpTransport$Base$1.class",
+      "sha256": "0c8c6c0b38f4829f331227b9f151ab26495ec9a9dce2f5479cc8c7789c8b9a86"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpTransport$Base.class",
+      "sha256": "a07f8debefced87aaf1eea058a0e4f17d994db5672bd2c4c5fc2590659daef64"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpTransport$Http.class",
+      "sha256": "1859e4700c53d762e2addfa315dca5cdbb29c3c38f6c8365a31441c6b252e5f4"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpTransport$LaunchFailure.class",
+      "sha256": "b8bf486428b4952dfbbd768d24aae27121e421e79b7968e7f5ac9c17a5eb1b77"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpTransport$McpFailure.class",
+      "sha256": "01b15f300d913381b410cca816d8e511ba54800ad880799655138dff725ddce5"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpTransport$RpcFailure.class",
+      "sha256": "79c85e51ff975b05f7d711fa50fe50abd04ca719d5ac883d46a15f0950b062d4"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpTransport$Stdio$CapturedProcess.class",
+      "sha256": "54b3f6ac462cd849ec1b76ed8d268644f43ba58e2f6a6227841654e3f754f68f"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpTransport$Stdio.class",
+      "sha256": "aa4481976261110c5317d95de4997cd0365ca631c43426306fc7cb3525043917"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/mcp/McpTransport.class",
+      "sha256": "3b9ba282028b947066dc5d008cc7a6db2088d8c25ac0814d6c64992515c9b637"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/AgentToolSession.class",
+      "sha256": "42e29c66c362738f9e36bf583731a1ccc555dc8e97c16e0015beb0f4b2ca036f"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/FileEditSession$Captured.class",
+      "sha256": "54b55a6d251058022ba5ab8d4f6cee5f242dbec80186200767e6aed70eb85349"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/FileEditSession$ReadReceipt.class",
+      "sha256": "afe44129b1d2d9fe8f51b850f4c776af12042b270c84f0ddf03595fea019250d"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/FileEditSession$Version.class",
+      "sha256": "ecb5d574a68f1fcd7a7377dda41f6ff1c9a2021255f83a3e5328f801af5054fe"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/FileEditSession$VersionConflict.class",
+      "sha256": "a8c2b98de2d2a19b15d2f8222d664e3e9eb7fb29a027284d2db8054849eb371d"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/FileEditSession.class",
+      "sha256": "c1cf75e4438b6cff09db6581f119b4f3a5336376e81c1094cd6470262b514697"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/GitWorkspaces$1.class",
+      "sha256": "27217b7e71b9fc09a5d2ba0b97f9630b15bef0f26142a5bbe10c9a45595cf9bc"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/GitWorkspaces.class",
+      "sha256": "8f6a1bce5276988ca52e08406e38b83b34cb5b1e90f0972dc83cc70edaf50774"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/ModelCallObserver.class",
+      "sha256": "0f3f9282d62c52468af3604b7199523482777af6612c9e9ebe16f527411027e8"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+      "sha256": "b275affe510f6773b140a41d5e3d2225bc6f63194c3113db039ef6c3d98050df"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$1.class",
+      "sha256": "c646737d6b6e2394606b14244d2bba5a6f729492c3571ff43c670f0fa60c5520"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$2.class",
+      "sha256": "12920df1151b10a95701cac51f18018da783853240e24a5de89dfd54113f141e"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$3.class",
+      "sha256": "1b489f5edb470cda999d2a09d203bde394fef63f78517f2c1c0d71853901cefd"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$4.class",
+      "sha256": "438f3ea7ebf35894b3da5a6ef3a73cc5e82b2d302ec6b86c5318d0acfbb9d3d2"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$5.class",
+      "sha256": "052ed3e049ac0c4b887cfa7b8ce5e03a89c4c62f49eb24fd894ea553690f658e"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$6.class",
+      "sha256": "72076fa34e793312f13fb20bce8e5a1449b82b639f981f3af4345797b038dbec"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$7.class",
+      "sha256": "022996ba7626cb1662d46706a93f8633b4b2a069f76e3d6bd380b2a22ec2c483"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$FixedToolInvoker.class",
+      "sha256": "f081bab5fa30cf135c7d2b0ad77028a8982b5026b4c58b2a8793da26f3b1d82a"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime$ModelCallFailure.class",
+      "sha256": "3be300b97ed03f2f264b75961d7f9d1ccb4eeff7b5570a083d917530520e4ed6"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceRuntime.class",
+      "sha256": "73c6257203f529761f5f179d07b179a418498df08bb550fd4f49f6125e42b4e0"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceSelectionConflict.class",
+      "sha256": "c2aa2fe22e19bfa2e78913b43719b0793ade8409db4a4ef9480e33efe2d64823"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceWriteGuard$1.class",
+      "sha256": "4f5084517229577cc4b1219f2d2992acdd15872e80622bfb5c1827778c4704ba"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceWriteGuard$Borrow.class",
+      "sha256": "c5ad962511784a7ab28b14d8a7af25bcc3033201f61c9dcf4669a2ac40ea2822"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceWriteGuard$Holder.class",
+      "sha256": "bbd36b5d525347c9ae32f7644ba349850f2ee3855a92e1224fee885c77a2bb13"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceWriteGuard$MetadataWriter.class",
+      "sha256": "88d508a8e82498e96dce4f3cbf1f737e8fe586df056700275da9eaa192933c7f"
+    },
+    {
+      "entry": "BOOT-INF/classes/dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+      "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "file": ".github/workflows/verify.yml",
+      "sha256": "4acbdd0e336e1bca10bd5ae4f9c0701ba6bb998f177c134023b6a25976f381e6"
+    },
+    {
+      "file": "core/pom.xml",
+      "sha256": "f793d939c458e5f0445cc689663ee12e07ab3c570cce254be2abdd423f0aa005"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+      "sha256": "1891bb5c24705906e870955393390705b0b1d58dc9d118ebe8feb8af2d0d1f47"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+      "sha256": "80914b93f654a1e9ab7150b524ed33cf6253a73a101441fb35d90c01e184634d"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+      "sha256": "f3468af663e17d3a3931282fb98ed08a18eca887c652356995d18f5721a11d60"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+      "sha256": "5c772dd677acc0f226ddff08610fdc0865d4076046c6b9a6f2fadae36f542285"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+      "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
+      "sha256": "5a23d5c113b2b1b6b63f2751bb0b816ad8e5bababd1b4e62b14a1147a09eb202"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "e6ffc4b62631f5a89831698a73fcda6202eb34f599ea782f76b146cb252ade54"
+    },
+    {
+      "file": "package.json",
+      "sha256": "3d2c40fb997f992542d44202965745360f788298b55ff4c425b1c64e11634936"
+    },
+    {
+      "file": "web/index.html",
+      "sha256": "fc04605e3012a21e7caacfdd911d8cdc4a851de3b57ba38d32d5a69426bc2e73"
+    },
+    {
+      "file": "web/package-lock.json",
+      "sha256": "bd3bd9f847785ed0e23c597652a81844b7a4361321d5e15684596a5adb131a2d"
+    },
+    {
+      "file": "web/package.json",
+      "sha256": "ca955c24d42fbd07b91a3f76ece6a7b430c5fc04eff303c3320c737691158864"
+    },
+    {
+      "file": "web/src/App.tsx",
+      "sha256": "a0fd563016f49aeb9ff22c807a6360c29fb37975d84660deb06b5ed2bd053297"
+    },
+    {
+      "file": "web/src/SessionWorkspace.tsx",
+      "sha256": "e52ea48d2b7c9c8b401f7022886e4d82d61ca22ca75126ef47affcdcfeaac516"
+    },
+    {
+      "file": "web/src/api.ts",
+      "sha256": "a15a2bf0b33f3d04444f0062ba1dc408644a37d92439be5fe8d028860f553042"
+    },
+    {
+      "file": "web/src/main.tsx",
+      "sha256": "f2a0ce88b28b12cff7c23ba948ec085f54902018dac70fba9f4688fd28f5b369"
+    },
+    {
+      "file": "web/src/process-recovery.css",
+      "sha256": "99a6a4d4c2d78c10ffd42057ea540c90dfa1fb3551234808a4c1c6b3d152c5e4"
+    },
+    {
+      "file": "web/src/readability.css",
+      "sha256": "9c20cee0e4837f1379d919e9af38a8cc205079eeb5fda6370434d3ba79351f19"
+    },
+    {
+      "file": "web/src/sessions.css",
+      "sha256": "66f63710637dd6581a84ddcef8bb9bac7dd436b584a0c43c3346a6376dc81cb0"
+    },
+    {
+      "file": "web/src/styles.css",
+      "sha256": "4d6772ac8f172548eb7858a8ac5f18f73b5a84c926cc8493ed7db68cbe3850e7"
+    },
+    {
+      "file": "tools/ci-theme-desktop.mjs",
+      "sha256": "5e878b5d61c7ac7cd61c14dcdb3b886fe781d9dae6191dcb97f76cc9c1fe7f90"
+    },
+    {
+      "file": "tools/theme-desktop-smoke.cjs",
+      "sha256": "813ed6f2e3da1dc74520cf8e6395452cc1056b1531edb568ceb7ecfc1996f954"
+    },
+    {
+      "file": "tools/theme-web-smoke.mjs",
+      "sha256": "2a2817960b9128f205bc0dfbcf002ad5b0ae51edeec8b2afabd6ac93451b1c3c"
+    },
+    {
+      "file": "web/public/theme-init.js",
+      "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+    },
+    {
+      "file": "web/src/Appearance.tsx",
+      "sha256": "49dcd8aae497830bf48b082c41931589be69cc02054794bea2728b2d69430c0b"
+    },
+    {
+      "file": "web/src/appearance.css",
+      "sha256": "80d77a7b30f327834af70d306b6d5c6206e5c2f067b2f466c4cae20d82a04f4d"
+    },
+    {
+      "file": "web/src/browser-storage.ts",
+      "sha256": "78fbb382c3ff020e2425cf2f23c0967bc4f429290dc20591051244c65e74aa29"
+    },
+    {
+      "file": "web/src/theme.ts",
+      "sha256": "8697ea0b7cf169c7faab94a1e7d5a5d18c225129d0a49998e427ce24189d7965"
+    },
+    {
+      "file": "web/src/themes.css",
+      "sha256": "b497ab3098fa9ae93fd72e501394feb058b6783e31bdc6d0449a6801ffb981b2"
+    },
+    {
+      "file": "web/tests/themes.spec.ts",
+      "sha256": "277ad9956537741d4419d749d3d50bb1862b44d2131ccbf3f1564fbb42b7938c"
+    }
+  ]
+}

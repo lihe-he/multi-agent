@@ -46,6 +46,10 @@ jobs:
         run: npm run test:ui --prefix web
         env:
           PLAYWRIGHT_CHANNEL: chromium
+      - name: Production theme initialization and storage fallback
+        run: npm run test:themes:web
+        env:
+          PLAYWRIGHT_CHANNEL: chromium
       - name: Desktop dependencies
         run: node tools/install-desktop-deps.mjs
         env:
@@ -89,6 +93,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Packaged application lifecycle
         run: npm run test:packaged
+      - name: Actual packaged themes and preference restart
+        run: npm run test:themes:packaged
       - name: Actual packaged Java workspace writer
         run: npm run test:bundled-writer
       - name: Preserve desktop distributions
@@ -124,6 +130,10 @@ jobs:
             docs/qa/workspace-writes-*.json
             docs/qa/file-versions-*.json
             docs/qa/bundled-workspace-writer-*.json
+            docs/qa/themes-*.json
+            .runtime/themes-web-*/
+            .runtime/themes-desktop-*/reports/
+            .runtime/themes-desktop-*/probe-classes/
             .runtime/bundled-workspace-writer-*/
             .runtime/process-recovery-*/
             .runtime/dispatch-queue-*/reports/

@@ -260,6 +260,39 @@ class McpIntegrationTest {
         }
     }
 
+    /**
+     * 派发前取消请求或通知，也必须停止原服务进程。
+     */
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void cancellationBeforeStdioFrameStopsOriginalService(boolean notification) throws Exception {
+        Path marker = directory.resolve("pre-dispatch-pid"), script = directory.resolve("pre-dispatch.mjs");
+        Files.writeString(script, "import {writeFileSync} from 'node:fs'; writeFileSync(process.argv[2], String(process.pid)); process.stdin.pause(); setInterval(()=>{},1000);\n");
+        AtomicBoolean cancelled = new AtomicBoolean();
+        McpTransport transport = McpTransport.open(obj("transport", "STDIO", "command", "node", "args", List.of(script.toString(), marker.toString())), "", mapper, cancelled::get, java.time.Duration.ofSeconds(10));
+        ProcessHandle child = null;
+        String birth = "";
+        try {
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+            while (!Files.exists(marker) && System.nanoTime() < deadline) Thread.sleep(20);
+            assertTrue(Files.exists(marker), "the original service must start before cancellation");
+            child = ProcessHandle.of(Long.parseLong(Files.readString(marker))).orElseThrow();
+            birth = child.info().startInstant().orElseThrow().toString();
+            cancelled.set(true);
+            assertThrows(java.util.concurrent.CancellationException.class, () -> {
+                if (notification) transport.notify("notifications/initialized", obj());
+                else transport.request("initialize", obj());
+            });
+            assertTrue(transport.stopConfirmed(), "pre-dispatch cancellation must confirm the original service exit");
+            assertFalse(child.isAlive());
+        } finally {
+            cancelled.set(true);
+            if (child != null && child.isAlive() && birth.equals(child.info().startInstant().map(Object::toString).orElse(""))) child.destroyForcibly();
+            if (child != null) child.onExit().get(5, TimeUnit.SECONDS);
+            transport.close();
+        }
+    }
+
     @Test
     void unconfirmedStopRetainsCapacityAndBlocksReconciliationDespiteAcknowledgedResult() throws Exception {
         assertUnconfirmedStop(false);

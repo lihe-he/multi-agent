@@ -1,0 +1,85 @@
+{
+  "verifiedAt": "2026-11-12T01:33:54.135Z",
+  "reverifiedAt": "2026-11-12T03:13:13.319Z",
+  "status": "FIXED_GIT_BLOB_AND_LICENSE_BYTES_VERIFIED",
+  "scope": "Fixed OpenCode and next-themes source and original licenses, independently rechecked from preserved original files; no runtime dependency or copied upstream implementation",
+  "sources": [
+    {
+      "path": "packages/ui/src/theme/context.tsx",
+      "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/ui/src/theme/context.tsx",
+      "blobSha": "234a24c35bba708b60319fdc46c8bdc6c01dfdc7",
+      "sha256": "4cb28e7756c85e50a71f42c96486e1fd7757d6c41714f59b405f34e373e92d32",
+      "bytes": 12382
+    },
+    {
+      "path": "packages/ui/src/theme/machine.ts",
+      "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/ui/src/theme/machine.ts",
+      "blobSha": "ac2dd569973277e3761c346e7c86d4160f8d9bb8",
+      "sha256": "d41db89b01e8b8f3c04eec0a23fdabbe73f467ea977e02ad6ebcb326ea4629fb",
+      "bytes": 18449
+    },
+    {
+      "path": "packages/ui/src/theme/resolve.ts",
+      "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/ui/src/theme/resolve.ts",
+      "blobSha": "0ac7357f399c005fd08cf9f00c53b1c9cc82a7ba",
+      "sha256": "7ea25fa9f2404fef45240090948a26695eaa42925f67b81ac9b21713cb2dfa97",
+      "bytes": 24791
+    },
+    {
+      "path": "packages/ui/src/theme/color.ts",
+      "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/ui/src/theme/color.ts",
+      "blobSha": "0a1743bae356bc35e983e9a1a165a0e47a5d9c96",
+      "sha256": "257840946506a059f1c9b9055416a12f8aaa3b8da882e172f92e5868adbf6b74",
+      "bytes": 7731
+    },
+    {
+      "path": "packages/app/src/settings/appearance/appearance.tsx",
+      "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/app/src/settings/appearance/appearance.tsx",
+      "blobSha": "c406494ce5abec1af6d6085dd95ca8bfe01bbda8",
+      "sha256": "ac50758412421bdcb43da3762e2a9f55cc1809885329f2ab6fee2aceab30d279",
+      "bytes": 6700
+    },
+    {
+      "path": "packages/app/src/theme-preload.test.ts",
+      "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/app/src/theme-preload.test.ts",
+      "blobSha": "871eef48ec3d4057f2d1bbdbeed19f178339bfdb",
+      "sha256": "2ae8dba44e7cd0facbd51335f463fa45a2a564f87d7258d39d23915724472b61",
+      "bytes": 2276
+    },
+    {
+      "path": "LICENSE",
+      "url": "https://github.com/anomalyco/opencode/blob/59ed43f0b8da891f03a7333d540a7b0c428049ea/LICENSE",
+      "blobSha": "6439474beed8e0271df9862eff97ffd70ec2464c",
+      "sha256": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+      "bytes": 1065
+    },
+    {
+      "path": "next-themes/src/index.tsx",
+      "url": "https://github.com/pacocoursey/next-themes/blob/a7eeabc39cfb37d74ea3d82eac674d0e1851b1cb/next-themes/src/index.tsx",
+      "blobSha": "0813c493ef7c58acd939859f5c58abb632ee5b08",
+      "sha256": "c506501e78cf7bc66032dff24171edfd36728e7e02c63734debef94de92bf240",
+      "bytes": 7103
+    },
+    {
+      "path": "next-themes/src/script.ts",
+      "url": "https://github.com/pacocoursey/next-themes/blob/a7eeabc39cfb37d74ea3d82eac674d0e1851b1cb/next-themes/src/script.ts",
+      "blobSha": "05bfbc0284a181b7dd34f2d8a87d537d65459b88",
+      "sha256": "db529961b10f3cc1ffd14ea1f48398ee2a61802c0018de6ff6d3297341a114c0",
+      "bytes": 1320
+    },
+    {
+      "path": "next-themes/src/types.ts",
+      "url": "https://github.com/pacocoursey/next-themes/blob/a7eeabc39cfb37d74ea3d82eac674d0e1851b1cb/next-themes/src/types.ts",
+      "blobSha": "07bddffabf001bdee53335c4b63eef2a34077356",
+      "sha256": "922714f757a19808cf4c2630a6394cc2956ca5c57e31b90aaff234aadde0fda5",
+      "bytes": 2519
+    },
+    {
+      "path": "license.md",
+      "url": "https://github.com/pacocoursey/next-themes/blob/a7eeabc39cfb37d74ea3d82eac674d0e1851b1cb/license.md",
+      "blobSha": "76228ccc3abb7a0f1b423f9d3f6815fb7019d3f5",
+      "sha256": "b5acfd21b3b61508365224c40ec1b03ec71091248baaf989d4be916551e7d532",
+      "bytes": 1069
+    }
+  ]
+}

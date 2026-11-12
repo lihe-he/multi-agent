@@ -150,10 +150,11 @@ interface McpTransport extends AutoCloseable {
         @Override
         public Map<String, Object> request(String method, Map<String, Object> params) throws Exception {
             requests.lock();
+            Future<Map<String, Object>> future = null;
             try {
                 check();
                 Map<String, Object> request = message(method, params, false);
-                var future = reader.submit(() -> {
+                future = reader.submit(() -> {
                     check(); write(request);
                     int messages = 0;
                     while (messages++ < 1000) {
@@ -168,8 +169,12 @@ interface McpTransport extends AutoCloseable {
                     }
                     throw new McpFailure("MCP 通知数量超过请求边界", true);
                 });
-                try { return await(future); }
-                catch (Exception exception) { future.cancel(true); close(); throw exception; }
+                return await(future);
+            } catch (Exception exception) {
+                // 派发前的取消或观察失败也必须核对原服务停止。
+                if (future != null) future.cancel(true);
+                try { close(); } catch (RuntimeException cleanup) { exception.addSuppressed(cleanup); }
+                throw exception;
             } finally { requests.unlock(); }
         }
 
@@ -181,9 +186,15 @@ interface McpTransport extends AutoCloseable {
         @Override
         public void notify(String method, Map<String, Object> params) throws Exception {
             requests.lock();
+            Future<?> future = null;
             try {
                 check(); Map<String, Object> notification = message(method, params, true);
-                await(reader.submit(() -> { check(); write(notification); return null; }));
+                future = reader.submit(() -> { check(); write(notification); return null; });
+                await(future);
+            } catch (Exception exception) {
+                if (future != null) future.cancel(true);
+                try { close(); } catch (RuntimeException cleanup) { exception.addSuppressed(cleanup); }
+                throw exception;
             } finally { requests.unlock(); }
         }
 

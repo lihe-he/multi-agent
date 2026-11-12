@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './themes.css';
 import './styles.css';
 import './readability.css';
 

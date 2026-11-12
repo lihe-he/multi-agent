@@ -1,0 +1,254 @@
+{
+  "version": "0.2.0-alpha.16",
+  "platform": "win32",
+  "status": "passed",
+  "scope": "ACTUAL_DESKTOP_FILE_ORIGIN_THEME_PERSISTENCE",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794452508888",
+  "probeFixture": {
+    "compiledOnce": true,
+    "sourceSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+    "classes": [
+      {
+        "file": "ProcessRecoveryProbe$Identity.class",
+        "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+      },
+      {
+        "file": "ProcessRecoveryProbe$State.class",
+        "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+      },
+      {
+        "file": "ProcessRecoveryProbe$Visibility.class",
+        "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+      },
+      {
+        "file": "ProcessRecoveryProbe.class",
+        "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+      }
+    ]
+  },
+  "processCoverage": "OBSERVED_ONLY",
+  "externalJavaDisabled": false,
+  "checks": [
+    "Actual Electron renderer follows dark and light media changes",
+    "Launch 1: 纯白 applied and persisted through actual file origin",
+    "Launch 1: 纸墨 applied and persisted through actual file origin",
+    "Launch 1: 经典暖色 applied and persisted through actual file origin",
+    "Launch 1: 青瓷 applied and persisted through actual file origin",
+    "Launch 1: 墨夜 applied and persisted through actual file origin",
+    "Launch 1: 墨夜蓝 applied and persisted through actual file origin",
+    "Explicit desktop theme remains selected across renderer media changes",
+    "Launch 1: ink-night-blue restored after renderer reload",
+    "Saved dark theme survived full original desktop/core/Worker shutdown and relaunch",
+    "Launch 2: 纯白 applied and persisted through actual file origin",
+    "Launch 2: pure-white restored after renderer reload"
+  ],
+  "launches": [
+    {
+      "attempt": 1,
+      "pageErrors": [],
+      "originalProcessObservationsBeforeClose": [
+        {
+          "pid": 58524,
+          "originalStartedAt": "2026-11-12T03:01:49.705Z",
+          "currentStartedAt": "2026-11-12T03:01:49.705Z",
+          "alive": true,
+          "matchesOriginal": true,
+          "stopRequested": false,
+          "beforeStopAlive": true,
+          "originalStopped": false
+        },
+        {
+          "pid": 20208,
+          "originalStartedAt": "2026-11-12T03:01:50.147Z",
+          "currentStartedAt": "2026-11-12T03:01:50.147Z",
+          "alive": true,
+          "matchesOriginal": true,
+          "stopRequested": false,
+          "beforeStopAlive": true,
+          "originalStopped": false
+        },
+        {
+          "pid": 28864,
+          "originalStartedAt": "2026-11-12T03:01:52.944Z",
+          "currentStartedAt": "2026-11-12T03:01:52.944Z",
+          "alive": true,
+          "matchesOriginal": true,
+          "stopRequested": false,
+          "beforeStopAlive": true,
+          "originalStopped": false
+        }
+      ],
+      "historicalOriginalProcessObservations": [],
+      "workers": [
+        {
+          "id": "09334296-bb93-4326-9a28-105ee4f9aa0b",
+          "state": "RUNNING",
+          "pid": 28864,
+          "processStartedAt": "2026-11-12T03:01:52.944Z",
+          "corePid": 20208,
+          "coreStartedAt": "2026-11-12T03:01:50.147Z"
+        }
+      ],
+      "application": {
+        "packaged": false,
+        "version": "0.2.0-alpha.16"
+      },
+      "systemScheme": {
+        "source": "ACTUAL_ELECTRON_RENDERER_MEDIA_EMULATION",
+        "dark": "ink-night",
+        "light": "celadon"
+      },
+      "originalProcesses": [
+        {
+          "pid": 58524,
+          "originalStartedAt": "2026-11-12T03:01:49.705Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 20208,
+          "originalStartedAt": "2026-11-12T03:01:50.147Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 28864,
+          "originalStartedAt": "2026-11-12T03:01:52.944Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        }
+      ],
+      "originalProcessesStopped": true
+    },
+    {
+      "attempt": 2,
+      "pageErrors": [],
+      "originalProcessObservationsBeforeClose": [
+        {
+          "pid": 52432,
+          "originalStartedAt": "2026-11-12T03:02:04.714Z",
+          "currentStartedAt": "2026-11-12T03:02:04.714Z",
+          "alive": true,
+          "matchesOriginal": true,
+          "stopRequested": false,
+          "beforeStopAlive": true,
+          "originalStopped": false
+        },
+        {
+          "pid": 20708,
+          "originalStartedAt": "2026-11-12T03:02:05.149Z",
+          "currentStartedAt": "2026-11-12T03:02:05.149Z",
+          "alive": true,
+          "matchesOriginal": true,
+          "stopRequested": false,
+          "beforeStopAlive": true,
+          "originalStopped": false
+        },
+        {
+          "pid": 28124,
+          "originalStartedAt": "2026-11-12T03:02:08.110Z",
+          "currentStartedAt": "2026-11-12T03:02:08.110Z",
+          "alive": true,
+          "matchesOriginal": true,
+          "stopRequested": false,
+          "beforeStopAlive": true,
+          "originalStopped": false
+        }
+      ],
+      "historicalOriginalProcessObservations": [
+        {
+          "pid": 20208,
+          "originalStartedAt": "2026-11-12T03:01:50.147Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true,
+          "verifiedAfterLaunch": 1
+        },
+        {
+          "pid": 28864,
+          "originalStartedAt": "2026-11-12T03:01:52.944Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true,
+          "verifiedAfterLaunch": 1
+        }
+      ],
+      "workers": [
+        {
+          "id": "a7864b1f-bb82-42b7-94f5-add3c2af256e",
+          "state": "RUNNING",
+          "pid": 28124,
+          "processStartedAt": "2026-11-12T03:02:08.110Z",
+          "corePid": 20708,
+          "coreStartedAt": "2026-11-12T03:02:05.149Z"
+        },
+        {
+          "id": "09334296-bb93-4326-9a28-105ee4f9aa0b",
+          "state": "STOPPED",
+          "pid": 28864,
+          "processStartedAt": "2026-11-12T03:01:52.944Z",
+          "corePid": 20208,
+          "coreStartedAt": "2026-11-12T03:01:50.147Z"
+        }
+      ],
+      "application": {
+        "packaged": false,
+        "version": "0.2.0-alpha.16"
+      },
+      "originalProcesses": [
+        {
+          "pid": 52432,
+          "originalStartedAt": "2026-11-12T03:02:04.714Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 20708,
+          "originalStartedAt": "2026-11-12T03:02:05.149Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 28124,
+          "originalStartedAt": "2026-11-12T03:02:08.110Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        }
+      ],
+      "originalProcessesStopped": true
+    }
+  ],
+  "originalProcessesStopped": true,
+  "completedAt": "2026-11-12T03:02:20.451Z",
+  "sourceSha256": "813ed6f2e3da1dc74520cf8e6395452cc1056b1531edb568ceb7ecfc1996f954"
+}

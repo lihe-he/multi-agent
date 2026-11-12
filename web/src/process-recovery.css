@@ -1,10 +1,10 @@
 .process-recovery { margin: 22px 0; }
-.process-recovery .agent-run-heading h3 { margin: 0; font-size: 15px; color: #405a4b; }
+.process-recovery .agent-run-heading h3 { margin: 0; font-size: 15px; color: var(--text); }
 .process-recovery-card { margin-top: 12px; padding: 18px; }
 .process-recovery-facts { display: grid; grid-template-columns: minmax(80px, 110px) minmax(0, 1fr); gap: 7px 14px; margin: 15px 0; }
 .process-recovery-facts dt { color: var(--muted); font-size: 12px; }
 .process-recovery-facts dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
-.process-recovery-observation { padding: 10px 0; border-top: 1px solid #e4ebe6; min-width: 0; }
+.process-recovery-observation { padding: 10px 0; border-top: 1px solid var(--border); min-width: 0; }
 .process-recovery-observation > div { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
 .process-recovery-observation .mono { overflow-wrap: anywhere; }
 .process-recovery-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 15px; }

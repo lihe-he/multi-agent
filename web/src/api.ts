@@ -1,8 +1,9 @@
 import type { Connection } from './types';
+import { readBrowserValue, writeBrowserValue } from './browser-storage';
 
 let connection: Connection = {
   baseUrl: import.meta.env.VITE_API_BASE || '',
-  token: sessionStorage.getItem('workbench-token') || '',
+  token: readBrowserValue('sessionStorage', 'workbench-token') || '',
 };
 
 export async function initializeConnection() {
@@ -31,7 +32,7 @@ export function validateApiBase(value: string) {
 export function currentConnection() { return connection; }
 export function setConnection(next: Connection) {
   connection = { baseUrl: validateApiBase(next.baseUrl), token: next.token };
-  sessionStorage.setItem('workbench-token', next.token);
+  writeBrowserValue('sessionStorage', 'workbench-token', next.token);
 }
 
 export async function api<T>(path: string, options: RequestInit = {}): Promise<T> {

@@ -7,15 +7,15 @@
 .session-search-results > header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
 .session-search-results h2 { font-size: 14px; margin: 0; }
 .session-search-result { display: grid; grid-template-columns: minmax(150px, 0.7fr) minmax(0, 2fr); gap: 14px; width: 100%; padding: 13px 10px; border: 0; border-top: 1px solid var(--border); background: transparent; color: inherit; text-align: left; cursor: pointer; }
-.session-search-result:hover { background: var(--surface-muted, #f5f7f5); }
+.session-search-result:hover { background: var(--surface-muted); }
 .session-search-result > span:first-child { display: grid; align-content: start; gap: 5px; }
 .session-search-result small { color: var(--muted); }
 .session-search-preview { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; line-height: 1.6; }
-.session-search-preview mark { background: #dff2a8; color: #243321; }
-.session-records article.search-target { background: #f1f7e9; outline: 2px solid #8fae53; outline-offset: 4px; }
+.session-search-preview mark { background: var(--search-highlight); color: var(--search-highlight-text); }
+.session-records article.search-target { background: var(--accent-soft); outline: 2px solid var(--focus); outline-offset: 4px; }
 .session-tabs { display: flex; gap: 6px; overflow-x: auto; margin: 18px 0; padding-bottom: 4px; }
-.session-tabs > div { display: flex; align-items: center; flex-shrink: 0; border: 1px solid var(--border); border-radius: 10px; background: var(--surface, #fff); padding: 4px; }
-.session-tabs > div.active { border-color: #b6d5c9; background: #eff6f2; }
+.session-tabs > div { display: flex; align-items: center; flex-shrink: 0; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 4px; }
+.session-tabs > div.active { border-color: var(--accent-border); background: var(--accent-soft); }
 .session-tabs [role=tab] { display: flex; align-items: center; gap: 8px; border: 0; background: transparent; padding: 8px 10px; color: inherit; }
 .session-tabs [role=tab] span { max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .session-title { display: flex; align-items: end; gap: 12px; margin-bottom: 18px; }
@@ -55,8 +55,8 @@
 .task-execution-list{display:grid;gap:14px}.task-execution{min-width:0;padding:20px}.task-execution header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.task-execution h3{font-size:15px;margin:0}.task-execution header p{font-size:12px;color:var(--muted);margin:6px 0 0}.task-execution dl{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;font-size:12px;margin:18px 0}.task-execution dt{color:var(--muted)}.task-execution dd{margin:0;overflow-wrap:anywhere}.task-execution-reason{font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}.task-execution-reconciliation{border-top:1px solid var(--border);padding-top:14px;font-size:12px}.task-execution-reconciliation p{white-space:pre-wrap;overflow-wrap:anywhere}.task-execution-reconciliation small{color:var(--muted)}.agent-run>.form-note code{overflow-wrap:anywhere}
 @media(max-width:600px){.agent-run-heading{align-items:flex-start}.agent-run{padding:14px}.agent-run-heading select{max-width:160px}}
 .agent-run-heading h2{font-size:18px;line-height:1.5}.agent-run-heading .form-note{margin:6px 0 0;line-height:1.6}
-.request-filters{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:0 0 16px}.request-filters label{display:grid;gap:5px;font-size:12px}.request-filters>input{flex:1;min-width:180px}.request-filters input,.request-filters select{font:inherit;font-size:12px;padding:8px 10px;border:1px solid #dce5de;border-radius:6px;background:#fff;color:var(--text);min-height:34px}.request-filters input:focus,.request-filters select:focus{outline:2px solid #98c4af;outline-offset:1px}
-.request-card details{font-size:12px}.request-card summary{cursor:pointer;color:var(--green)}.request-output{white-space:pre-wrap;overflow-wrap:anywhere;max-height:320px;overflow:auto;background:#f5f7f7;padding:12px;border-radius:8px}.agent-run>.model-requests{margin-top:18px;padding-top:18px;border-top:1px solid var(--border)}
+.request-filters{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:0 0 16px}.request-filters label{display:grid;gap:5px;font-size:12px}.request-filters>input{flex:1;min-width:180px}.request-filters input,.request-filters select{font:inherit;font-size:12px;padding:8px 10px;border:1px solid var(--input-border);border-radius:6px;background:var(--surface);color:var(--text);min-height:34px}.request-filters input:focus,.request-filters select:focus{outline:2px solid var(--focus);outline-offset:1px}
+.request-card details{font-size:12px}.request-card summary{cursor:pointer;color:var(--green)}.request-output{white-space:pre-wrap;overflow-wrap:anywhere;max-height:320px;overflow:auto;background:var(--code);padding:12px;border-radius:8px}.agent-run>.model-requests{margin-top:18px;padding-top:18px;border-top:1px solid var(--border)}
 @media(max-width:600px){.request-filters label{width:100%}.request-filters select{width:100%}.request-filters>input{min-width:0}}
 .definition-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
 .definition-card, .team-agent { min-width: 0; padding: 20px; }
@@ -84,7 +84,7 @@
 .delegation-contract pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 240px; overflow: auto; font: inherit; }
 .mcp-source { padding: 0 18px 14px; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
 .team-panel code { overflow-wrap: anywhere; }
-.team-summary { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 18px; padding: 16px; margin-bottom: 20px; background: #eff6f2; border: 1px solid #dce8df; border-radius: 8px; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.team-summary { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 18px; padding: 16px; margin-bottom: 20px; background: var(--accent-soft); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
 .team-parent-runs { margin-bottom: 20px; }
 .team-parent-runs h3, .team-lane > h3, .team-messages > h3 { font-size: 14px; margin: 0 0 12px; }
 .team-parent-runs > div { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
@@ -92,7 +92,7 @@
 .team-filter { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; font-size: 12px; }
 .team-filter select { width: auto; min-width: 180px; }
 .team-lanes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 20px; margin-bottom: 22px; }
-.team-lane { min-width: 0; padding-left: 12px; border-left: 2px solid #c8dbcb; }
+.team-lane { min-width: 0; padding-left: 12px; border-left: 2px solid var(--border); }
 .team-agent { padding: 18px; margin-bottom: 12px; }
 .team-agent details { font-size: 12px; line-height: 1.7; }
 .team-agent summary { cursor: pointer; color: var(--green); }
@@ -104,8 +104,8 @@
 .team-messages form { display: grid; grid-template-columns: minmax(160px, 240px) minmax(0, 1fr); gap: 14px; margin: 18px 0; }
 .team-messages form label { display: grid; min-width: 0; gap: 6px; font-size: 12px; }
 .team-messages form > div { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; grid-column: 1 / -1; }
-.team-messages select, .team-messages textarea, .team-filter select { width: 100%; min-width: 0; border: 1px solid #dce5de; border-radius: 6px; padding: 9px 10px; color: var(--text); background: #fff; font: inherit; font-size: 12px; }
-.team-messages select:focus, .team-messages textarea:focus, .team-filter select:focus { outline: 2px solid #98c4af; outline-offset: 1px; }
+.team-messages select, .team-messages textarea, .team-filter select { width: 100%; min-width: 0; border: 1px solid var(--border); border-radius: 6px; padding: 9px 10px; color: var(--text); background: var(--surface); font: inherit; font-size: 12px; }
+.team-messages select:focus, .team-messages textarea:focus, .team-filter select:focus { outline: 2px solid var(--focus); outline-offset: 1px; }
 .team-filter select { width: auto; min-width: 160px; }
 .team-message-list > article { padding: 16px 0; border-bottom: 1px solid var(--border); }
 .team-message-list header { display: flex; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; font-size: 12px; line-height: 1.6; }

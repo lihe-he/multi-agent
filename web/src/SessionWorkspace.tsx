@@ -5,6 +5,7 @@ import type { RunEvent, Session, SessionMessage, SessionSearchResult, Task } fro
 import { Badge, Empty, Field, formatTime, PageTitle } from './ui';
 import './sessions.css';
 import { AgentRuns } from './AgentRuns';
+import { readBrowserValue, writeBrowserValue } from './browser-storage';
 
 type SessionPage = { sessions: Session[]; cursor: number; hasMore: boolean };
 type MessagePage = { messages: SessionMessage[]; cursor: number; latestCursor: number; hasMore: boolean };
@@ -16,7 +17,7 @@ export function SessionWorkspace({ projectId, tasks, connected, focusRequest = 0
   const base = `/projects/${encodeURIComponent(projectId)}/sessions`;
   const selectionKey = `workbench-session:${currentConnection().baseUrl}:${projectId}`;
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [activeId, setActiveId] = useState(() => localStorage.getItem(selectionKey) || '');
+  const [activeId, setActiveId] = useState(() => readBrowserValue('localStorage', selectionKey) || '');
   const [history, setHistory] = useState<SessionPage | null>(null);
   const [showHistory, setShowHistory] = useState(false); const [title, setTitle] = useState('');
   const [searchQuery, setSearchQuery] = useState(''); const [searchResults, setSearchResults] = useState<SessionSearchResult[] | null>(null);
@@ -48,7 +49,7 @@ export function SessionWorkspace({ projectId, tasks, connected, focusRequest = 0
     if (connected) void poll();
     return () => { controller.abort(); clearTimeout(timer); };
   }, [refresh, connected]);
-  useEffect(() => { if (activeId) localStorage.setItem(selectionKey, activeId); }, [activeId, selectionKey]);
+  useEffect(() => { if (activeId) writeBrowserValue('localStorage', selectionKey, activeId); }, [activeId, selectionKey]);
   async function create(event: React.FormEvent) {
     event.preventDefault(); setBusy(true); setError('');
     try { const session = await post<Session>(base, { title }); ++requestGeneration.current; setSessions(items => [session, ...items.filter(item => item.id !== session.id)]); setActiveId(session.id); setTitle(''); }

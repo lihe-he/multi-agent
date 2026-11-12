@@ -1,0 +1,234 @@
+{
+  "recordedAt": "2026-11-12T03:46:46.337Z",
+  "version": "0.2.0-alpha.16",
+  "platform": "win32",
+  "status": "verified",
+  "originalCoreFailure": {
+    "failures": 1,
+    "skipped": 4,
+    "failedCases": [
+      {
+        "name": "cancellingBlockedStdioInputStopsRealProcessWithoutWaitingForPipeWrite",
+        "message": "cancellation must confirm the original local process exit ==> expected: <true> but was: <false>",
+        "suite": "dev.agentworkbench.mcp.McpIntegrationTest"
+      }
+    ],
+    "suites": 28,
+    "tests": 321,
+    "errors": 0,
+    "report": {
+      "file": ".runtime/alpha16-core-clean-failure1/summary.json",
+      "sha256": "7936bea5a3724891f49b452ed2298e64d8d1e0d0a8c5f87f3ad34415554948ce"
+    },
+    "log": {
+      "file": ".runtime/alpha16-core-clean-failure1/command.log",
+      "sha256": "f090f55f961c3be2881e7867b8ea9ec76e7210dfb55ed5820a12fe72711b6d69"
+    }
+  },
+  "mcpCancellation": {
+    "originalProductionSource": {
+      "file": ".runtime/alpha16-mcp-pre-dispatch-baseline/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+      "sha256": "899ee282eac1b777f566e5b2084b56ba478c7b46baaa34aa67aa8d42069a34da"
+    },
+    "fixedProductionSource": {
+      "file": ".runtime/alpha16-mcp-cancel-fixed-directed/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+      "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e"
+    },
+    "baseline": {
+      "report": {
+        "file": ".runtime/alpha16-mcp-pre-dispatch-baseline/surefire-reports/TEST-dev.agentworkbench.mcp.McpIntegrationTest.xml",
+        "sha256": "3870d7f2269eb020acbeff40e3f54e323b006310efbfd659a91361ccae92a9e2"
+      },
+      "tests": 2,
+      "failures": 2
+    },
+    "directedFixed": {
+      "report": {
+        "file": ".runtime/alpha16-mcp-cancel-fixed-directed/surefire-reports/TEST-dev.agentworkbench.mcp.McpIntegrationTest.xml",
+        "sha256": "2deff4c46ca358374047349c365f7bfc47783fc1e09849fb2e0f1f5a17cc99a6"
+      },
+      "tests": 3,
+      "failures": 0
+    },
+    "preDispatchRegressionSourceUnchangedBetweenBaselineAndFix": true,
+    "originalBlockedInputAssertionsUnchanged": true,
+    "readOnlyOriginalClassesDiagnostic": {
+      "report": {
+        "file": ".runtime/alpha16-mcp-cancellation-observe/evidence/report.json",
+        "sha256": "9394a1141baa595c142e040a3594557e1e0cfa83992377f3a36b918364ea8548"
+      },
+      "attempts": 10,
+      "reproducedFailures": 1,
+      "originalProcessesStoppedAfterCleanup": true
+    }
+  },
+  "sidebarFocus": {
+    "originalStableBaseline": {
+      "file": ".runtime/alpha16-sidebar-focus-stable-baseline.json",
+      "sha256": "2cc226b862b8817b3447ade1b09af40defc2774672735f8903c56f5b53873bff"
+    },
+    "insufficient": [
+      {
+        "id": "classic-warm",
+        "ratio": 2.1893843798125356
+      },
+      {
+        "id": "celadon",
+        "ratio": 2.6672040696368726
+      }
+    ],
+    "fixedDirected": {
+      "file": ".runtime/alpha16-sidebar-focus-fixed.json",
+      "sha256": "73de68fdccf3c2b594e80ed7b27419c802871114cd842d3e77d62ccaef676d15"
+    }
+  },
+  "unsavedThemePageShow": {
+    "baseline": {
+      "file": ".runtime/alpha16-storage-pageshow-baseline.json",
+      "sha256": "4837736aba1e1b1bcfde02d39fbbc52dce8391238a0f2aa1c3a1fadd3599c697"
+    },
+    "fixedDirected": {
+      "file": ".runtime/alpha16-storage-pageshow-fixed.json",
+      "sha256": "d8c0411fe2f1d6ec6543beef740fdd5e7d6bb26cb11939219a7cbd4be8e0d13e"
+    },
+    "scope": "Actual browser with dispatched PageTransitionEvent; complete browser back-forward-cache lifecycle is not claimed"
+  },
+  "workspaceWriteCleanup": {
+    "originalCommand": {
+      "file": ".runtime/alpha16-workspace-writes-artifact-usage.json",
+      "sha256": "cb934848647493e8a92908f7ce0be9c4daf5b84581481949cbaae5e8766684f7"
+    },
+    "failureArchive": {
+      "file": ".runtime/alpha16-workspace-writes-failure1/manifest.json",
+      "sha256": "c6acda57253aca1e998e187b05da5e774e35c4fd6f4764372219951219693e97"
+    },
+    "originalIdentities": 1407,
+    "businessChecksPassed": 22,
+    "firstIndependentStopped": 1407,
+    "finalUnresolved": [
+      {
+        "pid": 23960,
+        "originalStartedAt": "2026-11-12T03:17:14.803Z",
+        "currentStartedAt": "",
+        "alive": true,
+        "matchesOriginal": false,
+        "stopRequested": false,
+        "beforeStopAlive": false,
+        "originalStopped": false,
+        "firstObservation": {
+          "pid": 23960,
+          "originalStartedAt": "2026-11-12T03:17:14.803Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        }
+      },
+      {
+        "pid": 23960,
+        "originalStartedAt": "2026-11-12T03:17:47.588Z",
+        "currentStartedAt": "",
+        "alive": true,
+        "matchesOriginal": false,
+        "stopRequested": false,
+        "beforeStopAlive": false,
+        "originalStopped": false,
+        "firstObservation": {
+          "pid": 23960,
+          "originalStartedAt": "2026-11-12T03:17:47.588Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        }
+      }
+    ],
+    "independentCimNewBirth": {
+      "file": "windows-original-pid-metadata-11137513548889115794.tsv",
+      "pid": 23960,
+      "born": "2026-11-12T03:21:18.793Z"
+    },
+    "diagnosis": {
+      "file": ".runtime/alpha16-workspace-writes-failure1/diagnosis-before-changes.json",
+      "sha256": "5b5052fdede2a1d5471c9bb5852eeec1b8e945bb163361e0e9751effa240cf86"
+    },
+    "cause": "UNKNOWN: original final observation could not confirm two identities; later CIM evidence records PID reuse, but the exact enumeration/metadata timing cannot be reconstructed",
+    "supplementaryReadOnlyInspection": {
+      "startedAt": "2026-11-12T03:29:19.230Z",
+      "endedAt": "2026-11-12T03:29:20.184Z",
+      "command": [
+        "D:\\Projects\\多Agent研发工作台\\.runtime\\jdk-21.0.13+9\\bin\\java.exe",
+        "-Dfile.encoding=UTF-8",
+        "-cp",
+        "D:\\Projects\\多Agent研发工作台\\.runtime\\workspace-writes-QbgXrA\\fixture-classes",
+        "ProcessRecoveryProbe",
+        "inspect-all",
+        "D:\\Projects\\多Agent研发工作台\\.runtime\\workspace-writes-QbgXrA\\reports\\fixture-stop-after-report-identities.tsv"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "scope": "Read-only supplementary inspection of the original 1407 identities using the original compiled probe; does not revise the failed command",
+      "probeSourceSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+      "originalInputSha256": "673410abd90318ee1b98cf3b3b9877717696198b1023803ac6806134290f933b",
+      "count": 1407,
+      "stopped": 1407,
+      "unresolved": [],
+      "originalFailedCommandRetained": true,
+      "receipt": {
+        "file": ".runtime/alpha16-workspace-writes-failure1/supplemental-original-identity-inspection.json",
+        "sha256": "daf8cb2bfc3bca0931fe498a1d6cf6661c0f96501ea509d4db3bf1c216d7d115"
+      }
+    },
+    "fullUnchangedRevalidation": {
+      "file": ".runtime/alpha16-workspace-writes-artifact-usage-attempt2.json",
+      "sha256": "71b043098f83513170ba0350873bb2d4f1b61c5b01a4493e1f81c9ac493f02b8"
+    },
+    "productionAssetsAndFixtureUnchanged": true,
+    "originalDeadlinesAndAssertionsUnchanged": true
+  },
+  "fileVersionCreationTimeout": {
+    "originalCommand": {
+      "file": ".runtime/alpha16-file-versions-artifact-usage.json",
+      "sha256": "aa41803edad053ecacd20152ef839a4e28656e3c1c48fa16509829b36625da7f"
+    },
+    "failureArchive": {
+      "file": ".runtime/alpha16-file-versions-failure1/manifest.json",
+      "sha256": "fba0f47abee39dcbdb8db2294ec349dc55005a9bc73222a2acf0a042db69bbc1"
+    },
+    "originalDatabase": {
+      "file": ".runtime/alpha16-file-versions-failure1/read-only-original-database.json",
+      "sha256": "7562a0d99b9171a78f96528b65496515d2acdb9d614809493add3ac6d81a7b45"
+    },
+    "originalFailureAt": "2026-11-12T03:36:19.421Z",
+    "originalWorktreeDraftCreatedAt": "2026-11-12T03:36:23.868206200Z",
+    "worktreeModelCalls": 0,
+    "originalProcessesStoppedAfterFailure": 84,
+    "cause": "UNKNOWN: original task creation exceeded the 15000 ms request deadline; no original thread dump was captured",
+    "unchangedScriptTimingDiagnostic": {
+      "receipt": {
+        "file": ".runtime/alpha16-file-versions-timeout-observation1/receipt.json",
+        "sha256": "37bb8418f6696bb4821aea7ad4c03212d4db53b3414532f1687da1dbd327057f"
+      },
+      "events": {
+        "file": ".runtime/alpha16-file-versions-timeout-observation1/http-events.jsonl",
+        "sha256": "49defa644fff1f2eeba3ad95805572c91f8bb28812fb409fa8b4fe1e9adf65d2"
+      },
+      "taskCreationMilliseconds": [
+        4658,
+        8442,
+        8084
+      ],
+      "originalScriptAndAbortSignalsUnchanged": true,
+      "separateFromFinalPlainAcceptance": true
+    },
+    "finalPlainAcceptance": {
+      "file": ".runtime/alpha16-file-versions-artifact-usage-attempt2.json",
+      "sha256": "bbdae821877d31c6243239c320000975f821ec90a3418f6fb8143a44eb790672"
+    },
+    "originalScriptJarWebAndDeadlinesUnchanged": true
+  }
+}
