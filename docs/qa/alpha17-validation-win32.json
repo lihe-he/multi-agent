@@ -8507,7 +8507,15 @@
   "originalFailedBuildRetained": true,
   "diagnosticOriginalSourcesAndOriginalDeadlinePassedSeparately": true,
   "ci": {
-    "status": "EXACT_CORRECTED_PRODUCTION_COMMIT_CI_PENDING",
+    "status": "VERIFIED_THREE_PLATFORM_CI",
+    "productionCommit": "71743f6cff18e57f93553ddc8e2897411e339548",
+    "runId": 43561584652,
+    "runAttempt": 1,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/43561584652",
+    "receipt": "docs/qa/alpha17-ci-sidebar-receipt.json",
+    "actualEvidenceDigestsVerified": true,
+    "acceptedSourcesMatchExactProductionCommit": true,
+    "actualPackagedSidebarRestartVerifiedOnAllThreePlatforms": true,
     "originalFailure": {
       "file": "docs/qa/alpha17-initial-ci-layout-receipt.json",
       "sha256": "f9674071d75d139675396452f7dcf25102fa9efa3b472597ffae9409c5db3fc5",

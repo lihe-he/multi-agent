@@ -10,6 +10,8 @@
 
 拖动侧栏边缘可调整宽度，分隔器支持方向键、Shift、Home/End 与 Enter 收起恢复。宽度和收起选择保存在此客户端；缩小窗口保留大窗口选择，存储失败保留本次窗口布局。外观设置可恢复默认布局，具体行为与验收边界见[侧栏布局约定](./docs/sidebar-layout-contract.md)。
 
+alpha.17 修订生产提交 `71743f6` 的 Windows、macOS、Linux CI 已通过，三份实际证据 ZIP 的大小和 SHA-256 均核对。每端核心 29 套 / 324 项无失败或错误，UI 129 项通过；实际发行主题 12 项和侧栏 10 项分别验收，包含两次完整重开、最小窗口与原进程停止。条件跳过、原初始 CI 失败及验证边界见[三平台正式回执](./docs/qa/alpha17-ci-sidebar-receipt.json)。
+
 计划确认与显式继续同事务保存根执行尝试和待派发动作。未领取动作可跨重启保留原编号，门禁满足后领取一次；已领取后缺少结果保持 UNKNOWN，核对后继续建立新尝试并沿用累计预算。“任务派发”页和 ZIP 保存完整历史，执行结束与人工验收分别记录。边界见[根派发协议](./docs/task-dispatch-contract.md)。
 
 创建任务可从实际本地或远程分支选择提交，以独立 clone 或锁定的 detached Git worktree 执行。计划保存所选 SHA、源文件与 index 快照，排队期间源变化会要求重新确认；完整 READY 现场在核对原目录、关联、归属和内容后可复用，原未知尝试与规则保留在历史和 ZIP 中。SQLite schema 为 8，API 与 Worker 帧协议仍为 1；旧核心不能打开新库。协议见[启动现场约定](./docs/workspace-selection-contract.md)。
