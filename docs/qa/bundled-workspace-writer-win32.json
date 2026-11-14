@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-11-14T03:29:31.722Z",
+  "recordedAt": "2026-11-14T05:02:06.839Z",
   "version": "0.2.0-alpha.17",
   "platform": "win32",
   "status": "passed",
@@ -109,18 +109,18 @@
       ]
     }
   ],
-  "nativeFileKey": "WINDOWS:86ca0064ca0052bb:5b100b00000001000000000000000000",
-  "originalPid": 50968,
-  "originalProcessStartedAt": "2026-11-14T03:29:29.642Z",
+  "nativeFileKey": "WINDOWS:86ca0064ca0052bb:a73d0b00000003000000000000000000",
+  "originalPid": 61460,
+  "originalProcessStartedAt": "2026-11-14T05:02:04.763Z",
   "originalStopped": true,
   "releaseDuringBorrowRejected": true,
   "lockAvailableAfterRelease": true,
   "windowsNativeProcessSnapshotApplicable": true,
   "windowsNativeProcessSnapshotVerified": true,
-  "nativeProcessBirth": "2026-11-14T03:29:29.642Z",
-  "nativeProcessSnapshotCount": 458,
+  "nativeProcessBirth": "2026-11-14T05:02:04.763Z",
+  "nativeProcessSnapshotCount": 411,
   "probeOutputEncoding": "UTF-8",
   "schedulerParallelism": 2,
   "schedulerMaxPoolSize": 2,
-  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-M3cFED"
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-SIRNlr"
 }

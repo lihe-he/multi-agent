@@ -73,3 +73,15 @@
 真实开发和发行程序分别保留原主题 12 项及新增侧栏 10 项，各在同一独立用户目录完整启动两次。320px 和收起选择在新原桌面/核心/Worker 启动后恢复，Escape、拖动中渲染器重载、键盘展开、实际最小窗口和默认恢复通过；实际最小窗口内容为 986×644，侧栏 250px、主内容 720.666687px，保存意图仍为 320px。每种入口六个原身份先存活核验再确认停止，历史身份另行核验；发行目录禁用外部 Java。开发与发行最终截图已查看。生成的历史 PNG 另行归档后按修改前快照和 HEAD 摘要恢复，避免将原版本图片误写为本次证据。
 
 相同最终 Jar 的协议 29、恢复 11、派发 13、工作区 15、根写入 22、文件版本 9 项及独立客户端通过；文件版本共 28 次原请求、每个 clone/worktree 130 条完整历史/ZIP与 502 条原身份停止均核对。asar 的全部 Web/桌面字节与当前产物一致，包内核心摘要一致，内置 JRE 实际锁探针通过。Windows 安装器 152642732 字节，SHA-256 `1787b04bb272bd4b20267d6dcc9a5e453ee5df10000cb16db7a38110e123bc48`，签名实测 NotSigned，完整安装/卸载未重测。准确提交的三端 CI 继续核验，原未知原因和各轮失败不由本机成功替代。
+
+## 原生产 CI 的缩窗顺序跟进
+
+原生产提交 `a97ca19b76f8f1bf60a5827e2472bd41c49f954d` 的 [run 43553364383](https://github.com/lihe-he/multi-agent/actions/runs/43553364383) 三端终态 failure，三份实际证据 ZIP 大小和 SHA-256 均匹配 GitHub digest。三端核心都是 29 套 / 324 项，Windows 321 通过 / 3 条件跳过，macOS/Ubuntu 各 316 通过 / 8 条件跳过；UI Windows 126 通过 / 1 失败，macOS/Ubuntu 各 125 通过 / 2 失败。三端均在分隔器隐藏后的焦点断言失败，macOS/Ubuntu 另在拖动中改变尺寸后得到 344px，未恢复 215px。原 5 秒等待和状态断言保留，后续桌面与文件门禁未执行。准确结果和原 trace 见[初始 CI 回执](../qa/alpha17-initial-ci-layout-receipt.json)。
+
+复核本机已安装的开源 Playwright 1.64.1（Apache-2.0）视口更新源码：它等待浏览器协议更新，不等待页面的 resize 监听或 ResizeObserver 回调。源码摘录、整份 bundle 摘要与许可证保存在 `.runtime/alpha17-playwright-viewport-reference.json` 和 `.runtime/alpha17-playwright-license.txt`；未复制其实现到产品，也未增加依赖。本机完整 Chromium 首次仍在启动处返回 spawn UNKNOWN，两项 UI 断言尚未执行；同版本 Chromium headless shell 可以启动，原启动失败在 `.runtime/alpha17-layout-ui-baseline-chromium-directed/`。
+
+独立诊断对实际生产 Web 使用真实视口和鼠标操作，仅延后原页面通知交付，复现先松开后通知仍保存 344px 的状态。焦点场景在实际缩窗后执行 DOM 失焦并延后通知，原 5 秒内按钮未得到焦点；这没有重建原 CI 的准确回调顺序。首次诊断还用默认 role 定位已经隐藏的分隔器，定位超时单独保留；改用明确 DOM 引用后两种状态完整复现。原回执分别在 `.runtime/alpha17-layout-event-order-baseline/` 和 `.runtime/alpha17-layout-event-order-baseline-attempt2/`。
+
+新增两项原生视口/鼠标与通知顺序回归，保留原 127 项。修订前四项定向为 1 通过 / 3 失败，其中原普通拖动取消也复现；修订后 4 / 4。松开现在核对实际视口、高度和容器宽度，尺寸已变化时取消提交；分隔器保留焦点归属，在 CSS 隐藏失焦时交给按钮，其他输入已有焦点时不抢占。ResizeObserver 继续观察实际容器，布局更新进入后续动画帧以避免同一轮高度变化的通知错误；取消和卸载仍释放两类动画帧与捕获。
+
+最后生产构建通过，Edge 与 Chromium headless shell 各完整 UI 129 / 129、侧栏 23 项，原 127 项和全部期限保留。每种浏览器均有 264 次主题视图测量，分隔器最低左侧 7.694:1、右侧 11.448:1；独立生产 Web 通知诊断 2 / 2、原生产主题四场景通过。只修改侧栏和回归，核心源码与原 Jar 字节保持；八条顺序跟进验证新的 Web、开发桌面、协议、独立客户端、打包、发行启动、发行布局和内置 JRE 写入。实际两种桌面各主题 12 / 侧栏 10、两次完整原启动及最小窗口通过，最终五张图已查看。当前安装器 152642879 字节，SHA-256 `a3cd42ee366da71f1cb36ceb102bb1b00308ccf3e5cd78a27dc0c5c4bec9c2ce`，NotSigned。准确来源和产物在 `.runtime/alpha17-layout-followup-local-qa/`，见[本机跟进验收](../qa/alpha17-layout-followup-win32.json)；原冻结归档不回写，修订提交的三端 CI 继续核验。

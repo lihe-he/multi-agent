@@ -339,3 +339,96 @@ test('外观设置可恢复默认布局和响应式宽度', async ({ page }) => 
   await page.setViewportSize({ width: 1100, height: 900 });
   await expect.poll(() => sidebarWidth(page)).toBe(215);
 });
+
+async function controlResizeDelivery(page: Page) {
+  await page.addInitScript(() => {
+    const pending: (() => void)[] = [];
+    let hold = false;
+    const originalAdd = window.addEventListener.bind(window), originalRemove = window.removeEventListener.bind(window);
+    const wrappers = new Map<EventListenerOrEventListenerObject, EventListener>();
+    Object.defineProperty(window, 'addEventListener', { value: (type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions) => {
+      if (type !== 'resize') return originalAdd(type, listener, options);
+      const wrapped: EventListener = event => {
+        const deliver = () => typeof listener === 'function' ? listener.call(window, event) : listener.handleEvent(event);
+        if (hold) pending.push(deliver); else deliver();
+      };
+      wrappers.set(listener, wrapped);
+      return originalAdd(type, wrapped, options);
+    } });
+    Object.defineProperty(window, 'removeEventListener', { value: (type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions) =>
+      originalRemove(type, type === 'resize' ? wrappers.get(listener) || listener : listener, options) });
+    const Original = window.ResizeObserver;
+    Object.defineProperty(window, 'ResizeObserver', { value: class extends Original {
+      constructor(callback: ResizeObserverCallback) {
+        super((entries, observer) => {
+          const deliver = () => callback(entries, observer);
+          if (hold) pending.push(deliver); else deliver();
+        });
+      }
+    } });
+    (window as unknown as { layoutResizeTest: { hold: () => void; flush: () => void } }).layoutResizeTest = {
+      hold: () => { hold = true; },
+      flush: () => { hold = false; for (const deliver of pending.splice(0)) deliver(); },
+    };
+  });
+}
+
+const holdResizeDelivery = (page: Page) => page.evaluate(() =>
+  (window as unknown as { layoutResizeTest: { hold: () => void } }).layoutResizeTest.hold());
+const flushResizeDelivery = (page: Page) => page.evaluate(() =>
+  (window as unknown as { layoutResizeTest: { flush: () => void } }).layoutResizeTest.flush());
+
+test('缩窗通知晚于原指针释放时取消临时宽度且恢复样式', async ({ page }) => {
+  const pageErrors: string[] = [];
+  page.on('pageerror', error => pageErrors.push(error.message));
+  await controlResizeDelivery(page);
+  await openWorkbench(page);
+  await page.evaluate(() => {
+    document.body.style.setProperty('cursor', 'crosshair', 'important');
+    document.body.style.setProperty('user-select', 'text', 'important');
+  });
+  const { x } = await pressHandle(page);
+  await page.mouse.move(x + 100, 210, { steps: 5 });
+  await expect.poll(() => sidebarWidth(page)).toBe(344);
+  await holdResizeDelivery(page);
+  await page.setViewportSize({ width: 1100, height: 900 });
+  await page.mouse.up();
+  await expect.poll(() => sidebarWidth(page)).toBe(215);
+  expect(await savedLayout(page)).toBeNull();
+  expect(await page.evaluate(() => ['cursor', 'user-select'].map(property => [document.body.style.getPropertyValue(property), document.body.style.getPropertyPriority(property)])))
+    .toEqual([['crosshair', 'important'], ['text', 'important']]);
+  await flushResizeDelivery(page);
+  expect(await savedLayout(page)).toBeNull();
+  await dragBy(page, 40);
+  expect((await savedLayout(page)).sidebarWidth).toBe(255);
+  expect(pageErrors).toEqual([]);
+});
+
+test('分隔器隐藏先于缩窗通知时交接焦点且保留其他输入', async ({ page }) => {
+  const pageErrors: string[] = [];
+  page.on('pageerror', error => pageErrors.push(error.message));
+  await controlResizeDelivery(page);
+  await openWorkbench(page);
+  const handle = page.getByRole('separator', { name: separatorName, exact: true });
+  await handle.focus();
+  await holdResizeDelivery(page);
+  await page.setViewportSize({ width: 980, height: 640 });
+  await page.evaluate(() => (document.querySelector('.sidebar-resizer') as HTMLElement).blur());
+  await flushResizeDelivery(page);
+  await expect(page.getByRole('button', { name: '收起侧栏', exact: true })).toBeFocused();
+  await expect(handle).toBeHidden();
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await expect(handle).toBeVisible();
+  await page.getByRole('button', { name: '研发任务', exact: true }).click();
+  const search = page.getByRole('textbox', { name: '搜索任务', exact: true });
+  await handle.focus();
+  await search.focus();
+  await holdResizeDelivery(page);
+  await page.setViewportSize({ width: 980, height: 640 });
+  await flushResizeDelivery(page);
+  await expect(search).toBeFocused();
+  await search.fill('输入继续保留');
+  await expect(search).toHaveValue('输入继续保留');
+  expect(await savedLayout(page)).toBeNull();
+  expect(pageErrors).toEqual([]);
+});

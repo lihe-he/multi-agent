@@ -3,10 +3,10 @@
   "version": "0.2.0-alpha.17",
   "platform": "win32",
   "scope": "PRODUCTION_WEB_BYTES_WITH_LOOPBACK_UI_FIXTURE",
-  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-web-1794624442391",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-web-1794631894276",
   "bootstrapSha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70",
-  "htmlSha256": "c4235c620f3202442ddfd6e1b899e97e023c54d930851f6751b807cf170fee55",
-  "moduleEntry": "./assets/index-BkJbTMl-.js",
+  "htmlSha256": "283f7c6c121a443f84b486207bcc3f50bedb1ac0f546bb6000eca09df2a514a1",
+  "moduleEntry": "./assets/index-BWUGQjyY.js",
   "cases": [
     {
       "scenario": "saved-dark",
@@ -56,6 +56,6 @@
       "status": "passed"
     }
   ],
-  "completedAt": "2026-11-14T02:47:26.270Z",
+  "completedAt": "2026-11-14T04:51:40.406Z",
   "sourceSha256": "75609f07112231d4fad0e17e9462678f76ff1e9764e83cd5aaa8987d9669cb5d"
 }

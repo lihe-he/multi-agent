@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties, KeyboardEvent, PointerEvent, ReactNode } from 'react';
+import type { CSSProperties, FocusEvent, KeyboardEvent, PointerEvent, ReactNode } from 'react';
 import { PanelLeftClose, PanelLeftOpen, RotateCcw, TriangleAlert } from 'lucide-react';
 
 const storageKey = 'workbench-layout';
@@ -56,6 +56,7 @@ interface Drag {
   limit: number;
   width: number;
   moved: boolean;
+  viewport: { width: number; height: number; available: number };
   bodyStyles: { property: string; value: string; priority: string }[];
 }
 
@@ -66,6 +67,7 @@ export function SidebarLayout({ children }: { children: ReactNode }) {
   const [viewport, setViewport] = useState(() => window.innerWidth);
   const [available, setAvailable] = useState(() => document.documentElement.clientWidth || window.innerWidth);
   const root = useRef<HTMLDivElement>(null), separator = useRef<HTMLDivElement>(null);
+  const separatorFocused = useRef(false);
   const preferenceRef = useRef(preference), unsaved = useRef(false), pendingStorage = useRef(false);
   const drag = useRef<Drag | null>(null), frame = useRef<number | null>(null);
   const availableRef = useRef(available);
@@ -117,11 +119,21 @@ export function SidebarLayout({ children }: { children: ReactNode }) {
     catch { /* Capture may already be gone after cancellation or removal. */ }
     root.current?.style.removeProperty('--sidebar-drag-size');
     root.current?.removeAttribute('data-sidebar-dragging');
-    const changed = commit && session.moved && session.width !== session.startWidth;
+    const actualAvailable = currentAvailableWidth();
+    // Native geometry can change before resize and observer callbacks are delivered.
+    const sameGeometry = session.viewport.width === window.innerWidth && session.viewport.height === window.innerHeight
+      && session.viewport.available === actualAvailable;
+    if (mounted && !sameGeometry) {
+      availableRef.current = actualAvailable;
+      root.current?.style.setProperty('--sidebar-available-size', `${actualAvailable}px`);
+      setAvailable(actualAvailable);
+      setViewport(window.innerWidth);
+    }
+    const changed = commit && sameGeometry && session.moved && session.width !== session.startWidth;
     if (mounted && changed) persist({ ...preferenceRef.current, sidebarWidth: session.width });
     else if (mounted && pendingStorage.current && !unsaved.current) synchronize();
     pendingStorage.current = false;
-    updateAria(visibleWidth(preferenceRef.current, window.innerWidth, currentAvailableWidth()));
+    updateAria(visibleWidth(preferenceRef.current, window.innerWidth, actualAvailable));
   }, [persist, synchronize, updateAria, currentAvailableWidth]);
 
   useLayoutEffect(() => {
@@ -137,9 +149,14 @@ export function SidebarLayout({ children }: { children: ReactNode }) {
     }
     // The container excludes a native scrollbar or reserved edge; 100vw can include it.
     measure();
-    const observer = new ResizeObserver(measure);
+    let measurementFrame: number | null = null;
+    // Apply layout outside observer delivery so changed content height can settle.
+    const observer = new ResizeObserver(() => {
+      if (measurementFrame !== null) return;
+      measurementFrame = requestAnimationFrame(() => { measurementFrame = null; measure(); });
+    });
     observer.observe(container);
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); if (measurementFrame !== null) cancelAnimationFrame(measurementFrame); };
   }, [currentAvailableWidth, finishDrag]);
 
   const toggle = useCallback(() => {
@@ -148,11 +165,24 @@ export function SidebarLayout({ children }: { children: ReactNode }) {
   }, [finishDrag, persist]);
   const reset = useCallback(() => { finishDrag(false); persist({ ...defaults }); }, [finishDrag, persist]);
 
+  const restoreSeparatorFocus = useCallback(() => {
+    const active = document.activeElement;
+    if (window.innerWidth > compactBreakpoint || (!separatorFocused.current && active !== separator.current)
+      || (active !== separator.current && active !== document.body && active !== document.documentElement)) return;
+    separatorFocused.current = false;
+    root.current?.querySelector<HTMLButtonElement>('[data-sidebar-toggle]')?.focus({ preventScroll: true });
+  }, []);
+
+  function separatorBlur(event: FocusEvent<HTMLDivElement>) {
+    // CSS hiding can remove native focus before the resize listener sees it.
+    if (!event.relatedTarget) restoreSeparatorFocus();
+    separatorFocused.current = false;
+  }
+
   useEffect(() => {
     function resize() {
       finishDrag(false);
-      if (window.innerWidth <= compactBreakpoint && document.activeElement === separator.current)
-        root.current?.querySelector<HTMLButtonElement>('[data-sidebar-toggle]')?.focus({ preventScroll: true });
+      restoreSeparatorFocus();
       setViewport(window.innerWidth);
     }
     function cancel() { finishDrag(false); }
@@ -184,7 +214,7 @@ export function SidebarLayout({ children }: { children: ReactNode }) {
       document.removeEventListener('visibilitychange', visibility);
       finishDrag(false, false);
     };
-  }, [finishDrag, synchronize]);
+  }, [finishDrag, synchronize, restoreSeparatorFocus]);
 
   function pointerDown(event: PointerEvent<HTMLDivElement>) {
     if (drag.current || preferenceRef.current.sidebarCollapsed || window.innerWidth <= compactBreakpoint
@@ -195,8 +225,10 @@ export function SidebarLayout({ children }: { children: ReactNode }) {
     event.preventDefault();
     event.currentTarget.focus({ preventScroll: true });
     const width = Math.round(panel.getBoundingClientRect().width);
+    const actualAvailable = currentAvailableWidth();
     drag.current = { pointerId: event.pointerId, startX: event.clientX, startWidth: width, width,
-      limit: widthLimit(currentAvailableWidth()), moved: false,
+      limit: widthLimit(actualAvailable), moved: false,
+      viewport: { width: window.innerWidth, height: window.innerHeight, available: actualAvailable },
       bodyStyles: ['cursor', 'user-select'].map(property => ({ property,
         value: document.body.style.getPropertyValue(property), priority: document.body.style.getPropertyPriority(property) })) };
     document.body.style.setProperty('cursor', 'col-resize', 'important');
@@ -206,6 +238,7 @@ export function SidebarLayout({ children }: { children: ReactNode }) {
   function pointerMove(event: PointerEvent<HTMLDivElement>) {
     const session = drag.current;
     if (!session || session.pointerId !== event.pointerId) return;
+    if (session.viewport.width !== window.innerWidth || session.viewport.height !== window.innerHeight) { finishDrag(false); return; }
     if (event.pointerType === 'mouse' && event.buttons === 0) { finishDrag(false); return; }
     const delta = event.clientX - session.startX;
     if (!session.moved && Math.abs(delta) < 2) return;
@@ -260,7 +293,8 @@ export function SidebarLayout({ children }: { children: ReactNode }) {
       aria-valuetext={preference.sidebarCollapsed ? '侧栏已收起，按 Enter 展开' : `侧栏宽度 ${width} 像素`}
       title="拖动调整侧栏，或使用方向键；Enter 收起或展开"
       onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp}
-      onPointerCancel={pointerCancel} onLostPointerCapture={pointerCancel} onKeyDown={keyDown}>
+      onPointerCancel={pointerCancel} onLostPointerCapture={pointerCancel} onKeyDown={keyDown}
+      onFocus={() => { separatorFocused.current = true; }} onBlur={separatorBlur}>
       <span className="sidebar-resize-grip" aria-hidden="true" />
     </div>
     <span id="sidebar-resize-help" className="layout-keyboard-help">左右方向键调整宽度，Shift 加速，Home 和 End 到达边界，Enter 收起或展开，Escape 取消拖动。</span>

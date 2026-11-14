@@ -15,7 +15,7 @@
   "platform": "win32",
   "status": "passed",
   "scope": "ACTUAL_FILE_ORIGIN_SIDEBAR_POINTER_KEYBOARD_MINIMUM_WINDOW_AND_COMPLETE_RESTART",
-  "completedAt": "2026-11-14T03:29:29.015Z",
+  "completedAt": "2026-11-14T05:02:03.587Z",
   "externalJavaDisabled": true,
   "originalProcessesStopped": true,
   "probeFixture": {
@@ -44,7 +44,7 @@
     {
       "attempt": 1,
       "restored": {
-        "recordedAt": "2026-11-14T03:29:08.008Z",
+        "recordedAt": "2026-11-14T05:01:39.238Z",
         "viewport": {
           "width": 1466,
           "height": 923
@@ -79,7 +79,7 @@
           }
         },
         "beforeCommit": {
-          "recordedAt": "2026-11-14T03:29:09.457Z",
+          "recordedAt": "2026-11-14T05:01:41.058Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -98,7 +98,7 @@
           "userSelect": "none"
         },
         "committed": {
-          "recordedAt": "2026-11-14T03:29:09.465Z",
+          "recordedAt": "2026-11-14T05:01:41.069Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -117,7 +117,7 @@
           "userSelect": ""
         },
         "cancelled": {
-          "recordedAt": "2026-11-14T03:29:09.702Z",
+          "recordedAt": "2026-11-14T05:01:41.341Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -136,7 +136,7 @@
           "userSelect": ""
         },
         "reloaded": {
-          "recordedAt": "2026-11-14T03:29:09.823Z",
+          "recordedAt": "2026-11-14T05:01:41.524Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -155,7 +155,7 @@
           "userSelect": ""
         },
         "collapsed": {
-          "recordedAt": "2026-11-14T03:29:09.835Z",
+          "recordedAt": "2026-11-14T05:01:41.553Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -186,8 +186,8 @@
       "pageErrors": [],
       "originalProcesses": [
         {
-          "pid": 19592,
-          "originalStartedAt": "2026-11-14T03:28:58.556Z",
+          "pid": 44944,
+          "originalStartedAt": "2026-11-14T05:01:29.256Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -196,8 +196,8 @@
           "originalStopped": true
         },
         {
-          "pid": 46224,
-          "originalStartedAt": "2026-11-14T03:28:58.935Z",
+          "pid": 12592,
+          "originalStartedAt": "2026-11-14T05:01:29.588Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -206,8 +206,8 @@
           "originalStopped": true
         },
         {
-          "pid": 39868,
-          "originalStartedAt": "2026-11-14T03:29:01.817Z",
+          "pid": 18556,
+          "originalStartedAt": "2026-11-14T05:01:32.501Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -222,7 +222,7 @@
     {
       "attempt": 2,
       "restored": {
-        "recordedAt": "2026-11-14T03:29:24.233Z",
+        "recordedAt": "2026-11-14T05:01:57.816Z",
         "viewport": {
           "width": 1466,
           "height": 923
@@ -261,7 +261,7 @@
           }
         },
         "expanded": {
-          "recordedAt": "2026-11-14T03:29:24.556Z",
+          "recordedAt": "2026-11-14T05:01:58.318Z",
           "viewport": {
             "width": 1266,
             "height": 814
@@ -298,7 +298,7 @@
           }
         },
         "minimumLayout": {
-          "recordedAt": "2026-11-14T03:29:24.584Z",
+          "recordedAt": "2026-11-14T05:01:58.348Z",
           "viewport": {
             "width": 986,
             "height": 644
@@ -317,7 +317,7 @@
           "userSelect": ""
         },
         "defaults": {
-          "recordedAt": "2026-11-14T03:29:24.830Z",
+          "recordedAt": "2026-11-14T05:01:58.686Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -348,8 +348,8 @@
       "pageErrors": [],
       "originalProcesses": [
         {
-          "pid": 37828,
-          "originalStartedAt": "2026-11-14T03:29:14.066Z",
+          "pid": 18992,
+          "originalStartedAt": "2026-11-14T05:01:46.518Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -358,8 +358,8 @@
           "originalStopped": true
         },
         {
-          "pid": 53360,
-          "originalStartedAt": "2026-11-14T03:29:14.365Z",
+          "pid": 27108,
+          "originalStartedAt": "2026-11-14T05:01:46.843Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -368,8 +368,8 @@
           "originalStopped": true
         },
         {
-          "pid": 47980,
-          "originalStartedAt": "2026-11-14T03:29:17.031Z",
+          "pid": 20848,
+          "originalStartedAt": "2026-11-14T05:01:49.411Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -381,8 +381,8 @@
       "originalProcessesStopped": true,
       "historicalOriginalProcessObservations": [
         {
-          "pid": 46224,
-          "originalStartedAt": "2026-11-14T03:28:58.935Z",
+          "pid": 12592,
+          "originalStartedAt": "2026-11-14T05:01:29.588Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -392,8 +392,8 @@
           "verifiedAfterLaunch": 1
         },
         {
-          "pid": 39868,
-          "originalStartedAt": "2026-11-14T03:29:01.817Z",
+          "pid": 18556,
+          "originalStartedAt": "2026-11-14T05:01:32.501Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -408,8 +408,8 @@
   "sources": [
     {
       "file": "web/src/SidebarLayout.tsx",
-      "sha256": "a6396d071e6c34e70d18c4f5da8b93030d65b1e63e66b832737c0b8ad3f46a34",
-      "normalizedLfSha256": "a6396d071e6c34e70d18c4f5da8b93030d65b1e63e66b832737c0b8ad3f46a34"
+      "sha256": "744d60fcc502b2fe1053ae0b175f224f74073d52d2e56ecf69c9d79c3d038d0e",
+      "normalizedLfSha256": "744d60fcc502b2fe1053ae0b175f224f74073d52d2e56ecf69c9d79c3d038d0e"
     },
     {
       "file": "web/src/App.tsx",
@@ -444,8 +444,8 @@
   ],
   "assets": [
     {
-      "file": "web/dist/assets/index-BkJbTMl-.js",
-      "sha256": "b39d2336c3a03c038d47e7686d2b44dfd008facef4bbb50aabf4d6392013f264"
+      "file": "web/dist/assets/index-BWUGQjyY.js",
+      "sha256": "db811d5fddf225064537bc57bf4726e68c20e2c5b01cab9e179a34401aca082c"
     },
     {
       "file": "web/dist/assets/index-rZYc-fff.css",
@@ -453,7 +453,7 @@
     },
     {
       "file": "web/dist/index.html",
-      "sha256": "c4235c620f3202442ddfd6e1b899e97e023c54d930851f6751b807cf170fee55"
+      "sha256": "283f7c6c121a443f84b486207bcc3f50bedb1ac0f546bb6000eca09df2a514a1"
     },
     {
       "file": "web/dist/theme-init.js",
