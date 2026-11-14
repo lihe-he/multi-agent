@@ -52,6 +52,10 @@ jobs:
         run: npm run test:themes:web
         env:
           PLAYWRIGHT_CHANNEL: chromium
+      - name: Actual final Jar and production Web file diff review
+        run: npm run test:diff-view
+        env:
+          PLAYWRIGHT_CHANNEL: chromium
       - name: Desktop dependencies
         run: node tools/install-desktop-deps.mjs
         env:
@@ -131,6 +135,7 @@ jobs:
             docs/qa/workspace-selection-*.json
             docs/qa/workspace-writes-*.json
             docs/qa/file-versions-*.json
+            docs/qa/diff-view-*.json
             docs/qa/bundled-workspace-writer-*.json
             docs/qa/themes-*.json
             docs/qa/sidebar-*.json
@@ -158,6 +163,12 @@ jobs:
             .runtime/file-versions-*/data/workbench.sqlite*
             .runtime/file-versions-*/data/workspaces/
             .runtime/file-versions-*/中文 file version source/
+            .runtime/diff-view-*/reports/
+            .runtime/diff-view-*/fixture-classes/
+            .runtime/diff-view-*/data/workbench.sqlite*
+            .runtime/diff-view-*/data/workspaces/
+            .runtime/diff-view-*/中文 diff source/
+            core/target/diff-view-evidence-*/
             .runtime/desktop-deps-*.log
             .runtime/desktop-deps-verified.json
             .runtime/desktop-package-*.log

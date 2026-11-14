@@ -43,7 +43,7 @@ public class WorkbenchController {
     }
 
     @GetMapping("/health")
-    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", WorkbenchVersion.CURRENT, "apiVersion", 1, "schemaVersion", 8, "workspaceSelectionVersion", 1, "fileToolProtocolVersion", 2, "corePid", ProcessHandle.current().pid()); }
+    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", WorkbenchVersion.CURRENT, "apiVersion", 1, "schemaVersion", 8, "workspaceSelectionVersion", 1, "fileToolProtocolVersion", 2, "diffViewProtocolVersion", 1, "corePid", ProcessHandle.current().pid()); }
 
     @PostMapping("/shutdown")
     public Map<String, Object> shutdown() {
@@ -142,6 +142,7 @@ public class WorkbenchController {
      */
     private Map<String, Object> taskSnapshot(Map<String, Object> task) {
         Map<String, Object> snapshot = new java.util.LinkedHashMap<>(task);
+        snapshot.put("diffViewProtocolVersion", 1);
         if (task.containsKey("workspaceSelection")) snapshot.put("workspacePreparationPresent", runtime.hasWorkspacePreparation(str(task, "id")));
         if (!str(task, "workspaceWriteLeaseId").isBlank()) snapshot.put("workspaceWrite", store.get("workspaceWriteLease", str(task, "workspaceWriteLeaseId")));
         snapshot.put("workspaceWriteHistoryPresent", !store.taskDispatchRecords("workspaceWriteLease", str(task, "id")).isEmpty());
@@ -211,7 +212,16 @@ public class WorkbenchController {
     @GetMapping("/tasks/{id}/diff")
     public Map<String, Object> diff(@PathVariable String id) {
         Map<String, Object> task = store.get("task", id); String workspace = str(task, "workspace");
-        return obj("diff", workspace.isBlank() ? "" : runtime.diff(workspace), "version", workspace.isBlank() ? "" : runtime.fingerprint(workspace), "workspace", workspace);
+        return runtime.legacyDiffView(workspace);
+    }
+
+    /**
+     * 返回同一内容版本的完整文件清单和单文件预览，选择文件须保留原版本与基线。
+     */
+    @GetMapping("/tasks/{id}/diff-view")
+    public Map<String, Object> diffView(@PathVariable String id, @RequestParam(defaultValue = "") String path,
+            @RequestParam(defaultValue = "") String expectedVersion, @RequestParam(defaultValue = "") String expectedBase) {
+        return runtime.diffView(str(store.get("task", id), "workspace"), path, expectedVersion, expectedBase);
     }
 
     @GetMapping("/tasks/{id}/operations")

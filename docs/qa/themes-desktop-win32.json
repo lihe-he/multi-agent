@@ -1,9 +1,9 @@
 {
-  "version": "0.2.0-alpha.17",
+  "version": "0.2.0-alpha.18",
   "platform": "win32",
   "status": "passed",
   "scope": "ACTUAL_DESKTOP_FILE_ORIGIN_THEME_PERSISTENCE",
-  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794632194551",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-desktop-1794647127075",
   "probeFixture": {
     "compiledOnce": true,
     "sourceSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
@@ -48,9 +48,9 @@
       "pageErrors": [],
       "originalProcessObservationsBeforeClose": [
         {
-          "pid": 42840,
-          "originalStartedAt": "2026-11-14T04:56:35.707Z",
-          "currentStartedAt": "2026-11-14T04:56:35.707Z",
+          "pid": 32900,
+          "originalStartedAt": "2026-11-14T09:05:27.970Z",
+          "currentStartedAt": "2026-11-14T09:05:27.970Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -58,9 +58,9 @@
           "originalStopped": false
         },
         {
-          "pid": 18800,
-          "originalStartedAt": "2026-11-14T04:56:36.227Z",
-          "currentStartedAt": "2026-11-14T04:56:36.227Z",
+          "pid": 48756,
+          "originalStartedAt": "2026-11-14T09:05:28.250Z",
+          "currentStartedAt": "2026-11-14T09:05:28.250Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -68,9 +68,9 @@
           "originalStopped": false
         },
         {
-          "pid": 56084,
-          "originalStartedAt": "2026-11-14T04:56:39.098Z",
-          "currentStartedAt": "2026-11-14T04:56:39.098Z",
+          "pid": 25440,
+          "originalStartedAt": "2026-11-14T09:05:31.559Z",
+          "currentStartedAt": "2026-11-14T09:05:31.559Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -80,26 +80,26 @@
       ],
       "historicalOriginalProcessObservations": [],
       "apiVersions": {
-        "state": "0.2.0-alpha.17",
-        "health": "0.2.0-alpha.17",
-        "expected": "0.2.0-alpha.17"
+        "state": "0.2.0-alpha.18",
+        "health": "0.2.0-alpha.18",
+        "expected": "0.2.0-alpha.18"
       },
       "workers": [
         {
-          "id": "d85813db-59ff-49f3-84ca-fbff89b17cd7",
+          "id": "dcbb7228-995f-4faa-8a59-6d1563ca7a57",
           "state": "RUNNING",
-          "pid": 56084,
-          "processStartedAt": "2026-11-14T04:56:39.098Z",
-          "corePid": 18800,
-          "coreStartedAt": "2026-11-14T04:56:36.227Z"
+          "pid": 25440,
+          "processStartedAt": "2026-11-14T09:05:31.559Z",
+          "corePid": 48756,
+          "coreStartedAt": "2026-11-14T09:05:28.250Z"
         }
       ],
       "application": {
         "packaged": false,
-        "version": "0.2.0-alpha.17"
+        "version": "0.2.0-alpha.18"
       },
       "sidebarRestored": {
-        "recordedAt": "2026-11-14T04:56:47.542Z",
+        "recordedAt": "2026-11-14T09:05:37.005Z",
         "viewport": {
           "width": 1466,
           "height": 923
@@ -114,7 +114,7 @@
         "userSelect": ""
       },
       "navigationBefore": {
-        "observedAt": "2026-11-14T04:56:47.547Z",
+        "observedAt": "2026-11-14T09:05:37.010Z",
         "viewport": {
           "width": 1466,
           "height": 923
@@ -137,7 +137,7 @@
         }
       },
       "navigationAfter": {
-        "observedAt": "2026-11-14T04:56:47.606Z",
+        "observedAt": "2026-11-14T09:05:37.069Z",
         "viewport": {
           "width": 1466,
           "height": 923
@@ -176,7 +176,7 @@
         }
       },
       "minimumNavigationBefore": {
-        "observedAt": "2026-11-14T04:56:47.691Z",
+        "observedAt": "2026-11-14T09:05:37.165Z",
         "viewport": {
           "width": 986,
           "height": 644
@@ -199,7 +199,7 @@
         }
       },
       "minimumNavigationAfter": {
-        "observedAt": "2026-11-14T04:56:47.730Z",
+        "observedAt": "2026-11-14T09:05:37.200Z",
         "viewport": {
           "width": 986,
           "height": 644
@@ -247,7 +247,7 @@
           }
         },
         "beforeCommit": {
-          "recordedAt": "2026-11-14T04:56:49.153Z",
+          "recordedAt": "2026-11-14T09:05:38.989Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -266,7 +266,7 @@
           "userSelect": "none"
         },
         "committed": {
-          "recordedAt": "2026-11-14T04:56:49.163Z",
+          "recordedAt": "2026-11-14T09:05:39.006Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -285,7 +285,7 @@
           "userSelect": ""
         },
         "cancelled": {
-          "recordedAt": "2026-11-14T04:56:49.426Z",
+          "recordedAt": "2026-11-14T09:05:39.285Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -304,7 +304,7 @@
           "userSelect": ""
         },
         "reloaded": {
-          "recordedAt": "2026-11-14T04:56:49.621Z",
+          "recordedAt": "2026-11-14T09:05:39.458Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -323,7 +323,7 @@
           "userSelect": ""
         },
         "collapsed": {
-          "recordedAt": "2026-11-14T04:56:49.645Z",
+          "recordedAt": "2026-11-14T09:05:39.481Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -344,8 +344,8 @@
       },
       "originalProcesses": [
         {
-          "pid": 42840,
-          "originalStartedAt": "2026-11-14T04:56:35.707Z",
+          "pid": 32900,
+          "originalStartedAt": "2026-11-14T09:05:27.970Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -354,8 +354,8 @@
           "originalStopped": true
         },
         {
-          "pid": 18800,
-          "originalStartedAt": "2026-11-14T04:56:36.227Z",
+          "pid": 48756,
+          "originalStartedAt": "2026-11-14T09:05:28.250Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -364,8 +364,8 @@
           "originalStopped": true
         },
         {
-          "pid": 56084,
-          "originalStartedAt": "2026-11-14T04:56:39.098Z",
+          "pid": 25440,
+          "originalStartedAt": "2026-11-14T09:05:31.559Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -381,9 +381,9 @@
       "pageErrors": [],
       "originalProcessObservationsBeforeClose": [
         {
-          "pid": 24028,
-          "originalStartedAt": "2026-11-14T04:56:54.938Z",
-          "currentStartedAt": "2026-11-14T04:56:54.938Z",
+          "pid": 25972,
+          "originalStartedAt": "2026-11-14T09:05:44.063Z",
+          "currentStartedAt": "2026-11-14T09:05:44.063Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -391,9 +391,9 @@
           "originalStopped": false
         },
         {
-          "pid": 54304,
-          "originalStartedAt": "2026-11-14T04:56:55.288Z",
-          "currentStartedAt": "2026-11-14T04:56:55.288Z",
+          "pid": 44488,
+          "originalStartedAt": "2026-11-14T09:05:44.331Z",
+          "currentStartedAt": "2026-11-14T09:05:44.331Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -401,9 +401,9 @@
           "originalStopped": false
         },
         {
-          "pid": 48240,
-          "originalStartedAt": "2026-11-14T04:56:58.167Z",
-          "currentStartedAt": "2026-11-14T04:56:58.167Z",
+          "pid": 60456,
+          "originalStartedAt": "2026-11-14T09:05:47.353Z",
+          "currentStartedAt": "2026-11-14T09:05:47.353Z",
           "alive": true,
           "matchesOriginal": true,
           "stopRequested": false,
@@ -413,8 +413,8 @@
       ],
       "historicalOriginalProcessObservations": [
         {
-          "pid": 18800,
-          "originalStartedAt": "2026-11-14T04:56:36.227Z",
+          "pid": 48756,
+          "originalStartedAt": "2026-11-14T09:05:28.250Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -424,8 +424,8 @@
           "verifiedAfterLaunch": 1
         },
         {
-          "pid": 56084,
-          "originalStartedAt": "2026-11-14T04:56:39.098Z",
+          "pid": 25440,
+          "originalStartedAt": "2026-11-14T09:05:31.559Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -436,34 +436,34 @@
         }
       ],
       "apiVersions": {
-        "state": "0.2.0-alpha.17",
-        "health": "0.2.0-alpha.17",
-        "expected": "0.2.0-alpha.17"
+        "state": "0.2.0-alpha.18",
+        "health": "0.2.0-alpha.18",
+        "expected": "0.2.0-alpha.18"
       },
       "workers": [
         {
-          "id": "30046ac0-48ba-4978-bd53-ac39a859714b",
+          "id": "e1a0fff3-93c9-44d2-994c-276aaad11800",
           "state": "RUNNING",
-          "pid": 48240,
-          "processStartedAt": "2026-11-14T04:56:58.167Z",
-          "corePid": 54304,
-          "coreStartedAt": "2026-11-14T04:56:55.288Z"
+          "pid": 60456,
+          "processStartedAt": "2026-11-14T09:05:47.353Z",
+          "corePid": 44488,
+          "coreStartedAt": "2026-11-14T09:05:44.331Z"
         },
         {
-          "id": "d85813db-59ff-49f3-84ca-fbff89b17cd7",
+          "id": "dcbb7228-995f-4faa-8a59-6d1563ca7a57",
           "state": "STOPPED",
-          "pid": 56084,
-          "processStartedAt": "2026-11-14T04:56:39.098Z",
-          "corePid": 18800,
-          "coreStartedAt": "2026-11-14T04:56:36.227Z"
+          "pid": 25440,
+          "processStartedAt": "2026-11-14T09:05:31.559Z",
+          "corePid": 48756,
+          "coreStartedAt": "2026-11-14T09:05:28.250Z"
         }
       ],
       "application": {
         "packaged": false,
-        "version": "0.2.0-alpha.17"
+        "version": "0.2.0-alpha.18"
       },
       "sidebarRestored": {
-        "recordedAt": "2026-11-14T04:57:06.952Z",
+        "recordedAt": "2026-11-14T09:05:55.205Z",
         "viewport": {
           "width": 1466,
           "height": 923
@@ -482,7 +482,7 @@
         "userSelect": ""
       },
       "navigationBefore": {
-        "observedAt": "2026-11-14T04:57:06.993Z",
+        "observedAt": "2026-11-14T09:05:55.246Z",
         "viewport": {
           "width": 1466,
           "height": 923
@@ -505,7 +505,7 @@
         }
       },
       "navigationAfter": {
-        "observedAt": "2026-11-14T04:57:07.036Z",
+        "observedAt": "2026-11-14T09:05:55.293Z",
         "viewport": {
           "width": 1466,
           "height": 923
@@ -548,7 +548,7 @@
           }
         },
         "expanded": {
-          "recordedAt": "2026-11-14T04:57:07.409Z",
+          "recordedAt": "2026-11-14T09:05:55.674Z",
           "viewport": {
             "width": 1266,
             "height": 814
@@ -585,7 +585,7 @@
           }
         },
         "minimumLayout": {
-          "recordedAt": "2026-11-14T04:57:07.430Z",
+          "recordedAt": "2026-11-14T09:05:55.707Z",
           "viewport": {
             "width": 986,
             "height": 644
@@ -604,7 +604,7 @@
           "userSelect": ""
         },
         "defaults": {
-          "recordedAt": "2026-11-14T04:57:07.770Z",
+          "recordedAt": "2026-11-14T09:05:56.020Z",
           "viewport": {
             "width": 1266,
             "height": 813
@@ -625,8 +625,8 @@
       },
       "originalProcesses": [
         {
-          "pid": 24028,
-          "originalStartedAt": "2026-11-14T04:56:54.938Z",
+          "pid": 25972,
+          "originalStartedAt": "2026-11-14T09:05:44.063Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -635,8 +635,8 @@
           "originalStopped": true
         },
         {
-          "pid": 54304,
-          "originalStartedAt": "2026-11-14T04:56:55.288Z",
+          "pid": 44488,
+          "originalStartedAt": "2026-11-14T09:05:44.331Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -645,8 +645,8 @@
           "originalStopped": true
         },
         {
-          "pid": 48240,
-          "originalStartedAt": "2026-11-14T04:56:58.167Z",
+          "pid": 60456,
+          "originalStartedAt": "2026-11-14T09:05:47.353Z",
           "currentStartedAt": "",
           "alive": false,
           "matchesOriginal": false,
@@ -673,6 +673,6 @@
     ]
   },
   "originalProcessesStopped": true,
-  "completedAt": "2026-11-14T04:57:12.928Z",
+  "completedAt": "2026-11-14T09:06:00.607Z",
   "sourceSha256": "9ada532891468c3c7c7ce63cb760f51f599d31aa1fd820561e253902ce6cfcc9"
 }

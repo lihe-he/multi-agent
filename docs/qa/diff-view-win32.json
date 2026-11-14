@@ -1,0 +1,110 @@
+{
+  "platform": "win32",
+  "version": "0.2.0-alpha.18",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "Ordinary final Jar and original independent Worker exposed diff protocol 1 with unchanged API/schema/file-tool versions",
+      "status": "passed",
+      "at": "2026-11-14T08:25:18.002Z"
+    },
+    {
+      "name": "CLONE actual Worker read and version-bound write completed with independent review and original request identities",
+      "status": "passed",
+      "at": "2026-11-14T08:25:46.415Z"
+    },
+    {
+      "name": "CLONE actual old/new coordinates, verified legacy text and original delivery patch kept workspace/source bytes and Git metadata",
+      "status": "passed",
+      "at": "2026-11-14T08:25:54.607Z"
+    },
+    {
+      "name": "CLONE real binary/excluded/empty/deleted/literal/no-newline/file-size/row limits and stale version rejected partial or secret text without writes or model charges",
+      "status": "passed",
+      "at": "2026-11-14T08:26:19.146Z"
+    },
+    {
+      "name": "WORKTREE actual Worker read and version-bound write completed with independent review and original request identities",
+      "status": "passed",
+      "at": "2026-11-14T08:26:50.477Z"
+    },
+    {
+      "name": "WORKTREE actual old/new coordinates, verified legacy text and original delivery patch kept workspace/source bytes and Git metadata",
+      "status": "passed",
+      "at": "2026-11-14T08:26:54.387Z"
+    },
+    {
+      "name": "WORKTREE real binary/excluded/empty/deleted/literal/no-newline/file-size/row limits and stale version rejected partial or secret text without writes or model charges",
+      "status": "passed",
+      "at": "2026-11-14T08:27:04.414Z"
+    },
+    {
+      "name": "CLONE production Web rendered real Jar rows and explicit states on desktop/narrow screens with literal text and bounded horizontal scrolling",
+      "status": "passed",
+      "at": "2026-11-14T08:27:12.160Z"
+    },
+    {
+      "name": "CLONE actual 409 cleared old rows and explicit refresh kept selected file before rendering the new content version",
+      "status": "passed",
+      "at": "2026-11-14T08:27:17.002Z"
+    },
+    {
+      "name": "CLONE fixed Git baseline rejected HEAD movement even when the content fingerprint stayed identical",
+      "status": "passed",
+      "at": "2026-11-14T08:27:20.266Z"
+    },
+    {
+      "name": "WORKTREE production Web rendered real Jar rows and explicit states on desktop/narrow screens with literal text and bounded horizontal scrolling",
+      "status": "passed",
+      "at": "2026-11-14T08:27:26.894Z"
+    },
+    {
+      "name": "WORKTREE actual 409 cleared old rows and explicit refresh kept selected file before rendering the new content version",
+      "status": "passed",
+      "at": "2026-11-14T08:27:37.413Z"
+    },
+    {
+      "name": "WORKTREE fixed Git baseline rejected HEAD movement even when the content fingerprint stayed identical",
+      "status": "passed",
+      "at": "2026-11-14T08:27:43.719Z"
+    },
+    {
+      "name": "Original core/Worker and every recorded execution PID/birth were independently confirmed stopped after normal shutdown",
+      "status": "passed",
+      "at": "2026-11-14T08:27:49.003Z"
+    }
+  ],
+  "completedAt": "2026-11-14T08:27:49.100Z",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\diff-view-0A6WVw",
+  "jarSha256": "e82eae779857fe0f7e667d5d3f7f2725196edcf7c18d893361ac09afede2990b",
+  "scriptSha256": "18b9ead31ba38feb403b7ad6daafbc6ad6e781e57d345e97f02e735703dbfb39",
+  "webFiles": [
+    {
+      "file": "web/dist/assets/index-CZL0NsHy.js",
+      "sha256": "5a19367b1c702088249d6fb0a0603a282a358aeca5c09c03bd8b41c32b0a95e1"
+    },
+    {
+      "file": "web/dist/assets/index-DVydT1v8.css",
+      "sha256": "1ad2e46d6745d2041baa36530ff1e54fd9e43c7a4094e4e8431c37fa0904ab7b"
+    },
+    {
+      "file": "web/dist/index.html",
+      "sha256": "0544de487a5b4026123aa2146e609b30171b72811e911e736417c005b3d4835b"
+    },
+    {
+      "file": "web/dist/theme-init.js",
+      "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+    },
+    {
+      "file": "web/dist/workbench-config.json",
+      "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+    }
+  ],
+  "modelCalls": 10,
+  "originalProcessIdentities": 301,
+  "browserVersion": "1.64.1",
+  "evidenceScope": "ACTUAL_ORDINARY_FINAL_JAR_ORIGINAL_WORKER_REAL_GIT_CLONE_WORKTREE_AND_PRODUCTION_WEB",
+  "previewProcessCoverage": "CORE_PREVIEW_NOT_PERSISTED_IN_WORKER_LEDGER; TASK_EXECUTION_OBSERVED_ONLY",
+  "modelErrors": [],
+  "pageErrors": []
+}

@@ -1,6 +1,6 @@
 {
   "name": "multi-agent-workbench",
-  "version": "0.2.0-alpha.17",
+  "version": "0.2.0-alpha.18",
   "description": "本地多 Agent 智能研发工作台",
   "private": true,
   "main": "desktop/main.cjs",
@@ -27,6 +27,7 @@
     "test:workspaces": "node tools/workspace-selection-smoke.mjs",
     "test:workspace-writes": "node tools/workspace-write-smoke.mjs",
     "test:file-versions": "node tools/file-version-smoke.mjs",
+    "test:diff-view": "node tools/diff-view-smoke.mjs",
     "test:themes:web": "node tools/theme-web-smoke.mjs",
     "test:themes:desktop": "node tools/theme-desktop-smoke.cjs",
     "test:themes:packaged": "node tools/ci-theme-desktop.mjs",

@@ -4,6 +4,8 @@
 
 alpha.16 的主题实现参考固定版本的 MIT 项目 OpenCode 和 next-themes。原源码、Git blob、SHA-256 和许可证已核验，两个项目没有作为运行时依赖加入发行物；来源与独立实现见[六主题研究](./research/themes-2026-11-12.md)。
 
+alpha.18 的逐文件差异参考固定 OpenCode `59ed43f0b8da891f03a7333d540a7b0c428049ea`（MIT）与 Git v2.53.0 `67ad42147a7acc2af6074753ebd03d904476118f`（GPL-2.0）文档，十份原文件按 Git blob / SHA-256 核验。业务实现独立编写，没有复制或链接上游实现；Git 沿用用户环境中的外部工具，没有新增运行时依赖。Windows 预览目录身份复用原 JNA。固定来源见[差异研究](./research/file-diff-review-2026-11-14.md)和[清单](./research/file-diff-sources-2026-11-14.json)。
+
 ## JNA 5.17.0
 
 `net.java.dev.jna:jna:5.17.0` 与 `net.java.dev.jna:jna-platform:5.17.0` 用于 Windows 写入锁文件的原生文件身份，以及只读系统进程快照的动态调用。选择 JNA 提供的 **Apache-2.0** 许可路径，依赖 Jar 保持原字节；未复制或修改上游 Java 实现。

@@ -1,12 +1,12 @@
 {
   "status": "passed",
-  "version": "0.2.0-alpha.17",
+  "version": "0.2.0-alpha.18",
   "platform": "win32",
   "scope": "PRODUCTION_WEB_BYTES_WITH_LOOPBACK_UI_FIXTURE",
-  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-web-1794631894276",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\themes-web-1794645050254",
   "bootstrapSha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70",
-  "htmlSha256": "283f7c6c121a443f84b486207bcc3f50bedb1ac0f546bb6000eca09df2a514a1",
-  "moduleEntry": "./assets/index-BWUGQjyY.js",
+  "htmlSha256": "0544de487a5b4026123aa2146e609b30171b72811e911e736417c005b3d4835b",
+  "moduleEntry": "./assets/index-CZL0NsHy.js",
   "cases": [
     {
       "scenario": "saved-dark",
@@ -56,6 +56,6 @@
       "status": "passed"
     }
   ],
-  "completedAt": "2026-11-14T04:51:40.406Z",
+  "completedAt": "2026-11-14T08:30:53.743Z",
   "sourceSha256": "75609f07112231d4fad0e17e9462678f76ff1e9764e83cd5aaa8987d9669cb5d"
 }

@@ -34,6 +34,7 @@ export interface Task {
   mcpAuthorization?: { version?: number; bindings?: { serverId: string; serverName?: string; name: string; actionKey: string; fixedArguments: Record<string, unknown>; timeoutMs: number }[] };
   mcpBudget?: { maxCalls?: number; maxDurationMs?: number; usedCalls?: number; committedDurationMs?: number };
   locks?: Record<string, string>; baseline?: string; workspace?: string; version?: string;
+  diffViewProtocolVersion?: number;
   plan?: Stage[] | { stages?: Stage[] }; evidence?: Evidence[];
   review?: { status?: string; output?: string; version?: string };
   context?: { id?: string; kind?: string; content?: string; source?: string; version?: string | number }[];

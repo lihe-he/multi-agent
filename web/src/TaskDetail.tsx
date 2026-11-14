@@ -9,6 +9,7 @@ import { DelegationContract } from './DelegationContract';
 import { ExecutionContract, WorkerActivity } from './WorkerActivity';
 import { WorkspaceWrites } from './WorkspaceWrites';
 import { FileToolOperations } from './FileToolOperations';
+import { DiffView } from './DiffView';
 import './task-detail.css';
 import type { Evidence, Project, Route, RunEvent, Stage, Task } from './types';
 import { Badge, Checklist, Empty, Field, formatTime, kindLabel, Modal, modeLabel, SaveButton, SectionHeading, shortHash } from './ui';
@@ -51,11 +52,13 @@ export function TaskDetail({ task: initial, project, routes, onBack, onAction, o
     void poll(); return () => { active = false; clearTimeout(timer); };
   }, [initial.id]);
   useEffect(() => {
-    if (tab !== 'diff') return;
-    let active = true; setDiffError('');
-    api<{ diff: string; version?: string; workspace?: string }>(`/tasks/${task.id}/diff`).then(value => { if (active) setDiff(value); }).catch(error => { if (active) setDiffError(error.message); });
-    return () => { active = false; };
-  }, [tab, task.id, task.version]);
+    if (tab !== 'diff' || task.diffViewProtocolVersion === 1) return;
+    let active = true; const controller = new AbortController(); setDiff(null); setDiffError('');
+    api<{ diff: string; version?: string; workspace?: string }>(`/tasks/${task.id}/diff`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(30000)]) }).then(value => {
+      if (active) { if (!value || typeof value.diff !== 'string') throw new Error('代码差异响应格式无效'); setDiff(value); }
+    }).catch(error => { if (active) setDiffError(error.message); });
+    return () => { active = false; controller.abort(); };
+  }, [tab, task.id, task.version, task.diffViewProtocolVersion]);
 
   const stages: Stage[] = Array.isArray(task.plan) ? task.plan : task.plan?.stages || [];
   const route = task.routeSnapshot || routes.find(r => r.id === task.routeId);
@@ -97,7 +100,7 @@ export function TaskDetail({ task: initial, project, routes, onBack, onAction, o
       <section className="card compact activity-preview"><h3>最近活动</h3>{events.length ? events.slice(-4).reverse().map(event => <div className="mini-event" key={event.id}><span /><div><p>{event.message?.slice(0, 180)}</p><small>{formatTime(event.createdAt)}</small></div></div>) : <p className="muted-text">尚无执行事件。确认计划后开始记录。</p>}<button className="text-button" onClick={() => setTab('events')}>查看完整记录<ArrowRight size={14} /></button></section>
     </aside></div>}
     {tab === 'evidence' && <div className="evidence-page"><div className="review-banner"><div className="review-icon"><ShieldCheck size={26} /></div><div><h2>独立审查</h2><p>通过独立会话和审查目录验证交付，保留原始证据。</p></div><Badge state={task.review?.status || 'PENDING'} /></div>{task.review?.output && <pre className="review-output">{task.review.output}</pre>}{task.issues?.length ? <div className="card issue-list"><h3>需要关注的问题</h3>{task.issues.map((issue, i) => <p key={i}><TriangleAlert size={15} />{typeof issue === 'string' ? issue : issue.message || issue.title || JSON.stringify(issue)}</p>)}</div> : null}<SectionHeading title="验证证据" subtitle="失败、复现和后续成功分别保留，不覆盖历史结果。" />{evidence.length ? <div className="evidence-list">{evidence.map(item => <EvidenceCard key={item.id} item={item} target={item.id === evidenceTarget} />)}</div> : <section className="card"><Empty icon={<ListChecks size={28} />} title="尚未产生验证证据" description="基线检查、实现后验证与独立审查将在执行过程中逐条记录。" /></section>}</div>}
-    {tab === 'diff' && <section className="card diff-card"><SectionHeading title="工作目录差异" subtitle={`内容版本 ${shortHash(diff?.version || task.version)} · ${diff?.workspace || task.workspace || '尚未创建工作目录'}`} />{diffError ? <div className="form-error">{diffError}</div> : !diff ? <div className="loading-content">正在读取代码差异…</div> : diff.diff ? <div className="diff-lines">{diff.diff.split('\n').map((line, i) => <div key={i} className={line.startsWith('+++') || line.startsWith('---') || line.startsWith('diff ') || line.startsWith('@@') ? 'diff-header' : line.startsWith('+') ? 'diff-add' : line.startsWith('-') ? 'diff-remove' : ''}><span className="diff-number">{i + 1}</span><code>{line || ' '}</code></div>)}</div> : <Empty icon={<FileCode2 size={27} />} title="当前没有代码差异" description="Agent 对任务工作目录的修改会出现在这里。" />}</section>}
+    {tab === 'diff' && (task.diffViewProtocolVersion === 1 ? <DiffView key={task.id} taskId={task.id} taskVersion={task.version} workspace={task.workspace} /> : <section className="card diff-card"><SectionHeading title="工作目录差异" subtitle={`内容版本 ${shortHash(diff?.version || task.version)} · ${diff?.workspace || task.workspace || '尚未创建工作目录'}`} />{diffError ? <div className="form-error">{diffError}</div> : !diff ? <div className="loading-content">正在读取代码差异…</div> : diff.diff ? <div className="diff-lines">{diff.diff.split('\n').map((line, i) => <div key={i} className={line.startsWith('+++') || line.startsWith('---') || line.startsWith('diff ') || line.startsWith('@@') ? 'diff-header' : line.startsWith('+') ? 'diff-add' : line.startsWith('-') ? 'diff-remove' : ''}><span className="diff-number">{i + 1}</span><code>{line || ' '}</code></div>)}</div> : <Empty icon={<FileCode2 size={27} />} title="当前没有代码差异" description="Agent 对任务工作目录的修改会出现在这里。" />}</section>)}
     {tab === 'runs' && <AgentRuns key={task.id} endpoint={`/tasks/${task.id}/agent-runs`} onEvidence={id => { setEvidenceTarget(id); setTab('evidence'); }} />}
     {tab === 'dispatch' && <TaskExecutions key={task.id} taskId={task.id} />}
     {tab === 'requests' && <ModelRequests key={`${task.id}-${requestFocus}`} taskId={task.id} initialQuery={requestFocus} />}

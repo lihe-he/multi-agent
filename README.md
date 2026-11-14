@@ -4,11 +4,13 @@
 
 平台使用 Java 21、Spring Boot、SQLite、React、TypeScript 和 Electron。任务在独立工作目录中执行，验证和审查记录绑定代码版本，最终由用户验收。验收操作记录用户决定，不会自动提交、推送或改写原项目。
 
-当前开发版本为 **0.2.0-alpha.17**，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
+当前开发版本为 **0.2.0-alpha.18**，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
 
 在“资源与设置 → 外观”选择纯白、纸墨、经典暖色、青瓷、墨夜或墨夜蓝，选择会应用到当前客户端的全部项目和页面。默认跟随系统，浅色使用青瓷、深色使用墨夜；固定选择会跨重新打开保留。浏览器无法保存时，当前窗口仍可切换，并提示未保存。核心离线时也可调整外观，具体来源与验收见[主题研究](./docs/research/themes-2026-11-12.md)。
 
 拖动侧栏边缘可调整宽度，分隔器支持方向键、Shift、Home/End 与 Enter 收起恢复。宽度和收起选择保存在此客户端；缩小窗口保留大窗口选择，存储失败保留本次窗口布局。外观设置可恢复默认布局，具体行为与验收边界见[侧栏布局约定](./docs/sidebar-layout-contract.md)。
+
+任务“代码差异”页按文件树查看变更，显示实际原行/新行、增删高亮、内容版本与固定 Git 基线。读取变化要求刷新，二进制、敏感路径、超限、空文件和仅执行位变化有明确状态；长行在代码区域内滚动，窄窗口上下排列。手动刷新保留仍有变更的选中文件，协议与边界见[逐文件差异约定](./docs/diff-view-contract.md)。轮次撤销与原项目局部采纳继续实施。
 
 alpha.17 修订生产提交 `71743f6` 的 Windows、macOS、Linux CI 已通过，三份实际证据 ZIP 的大小和 SHA-256 均核对。每端核心 29 套 / 324 项无失败或错误，UI 129 项通过；实际发行主题 12 项和侧栏 10 项分别验收，包含两次完整重开、最小窗口与原进程停止。条件跳过、原初始 CI 失败及验证边界见[三平台正式回执](./docs/qa/alpha17-ci-sidebar-receipt.json)。
 
@@ -71,6 +73,8 @@ npm run start
 `npm run test:themes:web` 检查实际生产 Web 在入口加载前应用主题，以及系统变化和存储失败。`npm run test:themes:desktop` 用同一独立用户目录启动桌面两次，检查六主题、渲染器重载和完整退出后的偏好恢复；`npm run test:themes:packaged` 对当前系统发行目录执行同样检查。两次启动分别核验原桌面、核心和 Worker 的停止，发行版同时禁用外部 Java 配置。
 
 `npm run test:layout:desktop` 在同一真实启动中执行原六主题 12 项与独立侧栏检查，覆盖鼠标、键盘、拖动中重载、完整退出重开和最小原生窗口；`npm run test:layout:packaged` 对当前发行目录执行同样验收并禁用外部 Java。侧栏报告另保存为 `docs/qa/sidebar-<desktop|packaged>-<platform>.json`。
+
+`npm run test:diff-view` 使用当前最终 Jar、原独立 Worker、真实 clone/worktree 和生产 Web，检查文件修改、原/新行号、旧接口与交付补丁、实际二进制/排除/大小/行限制、版本及 HEAD 冲突、窄屏和显式刷新，并独立核验原 PID/出生停止。实际集成与浏览器协议夹具证据分别保存。
 
 ![Windows 工作台 · 墨夜蓝](./docs/qa/themes-dark-win32.png)
 

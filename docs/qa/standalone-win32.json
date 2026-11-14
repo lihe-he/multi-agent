@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-14T05:00:03.259Z",
-  "version": "0.2.0-alpha.17",
+  "date": "2026-11-14T09:25:50.215Z",
+  "version": "0.2.0-alpha.18",
   "platform": "win32",
   "coreIndependentOfWebAndNpm": true,
   "runtimeProxyConfiguration": true,
@@ -16,12 +16,12 @@
   "desktopExitPreservesCore": true,
   "clientExitPreservesRunningTask": true,
   "modelRequestsBeforeAndAfterReconnect": 1,
-  "childRequestPreservedOnReconnect": "d1a3082c-8cfc-4849-b05d-2d61b3c0074e",
-  "workerLeasePreservedOnReconnect": "e44462a2-e366-4ad0-bdc2-aae6ab6592e4",
-  "workerId": "66bb0aeb-a5bf-4028-b705-0f74eb8bfd29",
+  "childRequestPreservedOnReconnect": "1ccba87e-4f71-474e-938e-e74799fe5cbc",
+  "workerLeasePreservedOnReconnect": "d0737099-376f-48af-94c5-5ff7b6a42398",
+  "workerId": "ebc4ce7a-d594-4491-ba5d-f61984bf7a2a",
   "workerEpoch": 1,
-  "workerPid": 42884,
-  "repositoryBindingId": "ebdef281-f1a6-4875-98a1-709ec77746b1",
+  "workerPid": 22880,
+  "repositoryBindingId": "921720a0-0649-4646-8439-a5f0760c926d",
   "workerReceiptsVerified": 13,
   "parentWaitReleasesModelCapacity": true,
   "teamDependencyAdoptionThroughProxy": true,
@@ -30,14 +30,14 @@
   "teamRootCalls": 19,
   "teamChildRuns": [
     {
-      "id": "3446b3f9-3571-4351-9ca8-9ef07fcf1870",
-      "agentRunId": "c304ea7a-5daf-40ce-b51b-b67099c202a9",
+      "id": "07322523-44f9-4518-90c6-1c395c9a1d90",
+      "agentRunId": "6fda44fe-db0d-4150-9dee-d6aad0f64e0f",
       "state": "SUCCEEDED",
       "integrationState": "NOT_ADOPTED"
     },
     {
-      "id": "509f2aab-00f8-47a1-9d45-81b1afed519c",
-      "agentRunId": "4904046a-7900-42c5-9ed0-1bf23a82b887",
+      "id": "74212534-30d5-4772-8d7b-c84ca848b23a",
+      "agentRunId": "f174a68d-d89c-4b33-8c50-2c84eceacf71",
       "state": "SUCCEEDED",
       "integrationState": "ADOPTED"
     }
@@ -45,9 +45,9 @@
   "externalMcpCalls": 1,
   "pageErrors": [],
   "modelErrors": [],
-  "corePid": 60136,
+  "corePid": 58580,
   "workerDeployment": "LOCAL_PROCESS",
-  "workerProcessStartedAt": "2026-11-14T04:59:03.888Z",
+  "workerProcessStartedAt": "2026-11-14T09:24:50.983Z",
   "workerHeartbeatSource": "CHILD_PIPE",
   "workerHeartbeatSequenceOnReconnect": 9
 }
