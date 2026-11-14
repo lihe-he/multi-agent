@@ -4,6 +4,7 @@ const { execFileSync } = require('node:child_process');
 const { createHash } = require('node:crypto');
 const { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } = require('node:fs');
 const path = require('node:path');
+const layoutChecks = process.env.WORKBENCH_TEST_LAYOUT === '1' ? require('./layout-desktop-checks.cjs') : null;
 
 (async () => {
   const root = path.resolve(__dirname, '..');
@@ -38,7 +39,8 @@ const path = require('node:path');
         centerInsideViewport: centerX >= 0 && centerX < innerWidth && centerY >= 0 && centerY < innerHeight } };
   });
   const record = { version: metadata.version, platform: process.platform, status: 'running', scope: 'ACTUAL_DESKTOP_FILE_ORIGIN_THEME_PERSISTENCE', directory,
-    probeFixture, processCoverage: 'OBSERVED_ONLY', externalJavaDisabled: process.env.WORKBENCH_EXPECT_PACKAGED === '1', checks, launches };
+    probeFixture, processCoverage: 'OBSERVED_ONLY', externalJavaDisabled: process.env.WORKBENCH_EXPECT_PACKAGED === '1', checks, launches,
+    ...(layoutChecks ? { sidebar: { checks: [] } } : {}) };
   save(path.join(reports, 'report.json'), record);
   try {
     for (let attempt = 1; attempt <= 2; attempt++) {
@@ -69,21 +71,27 @@ const path = require('node:path');
           const connection = await window.workbench.getConnection();
           const response = await fetch(`${connection.baseUrl}/api/state`, { headers: { Authorization: `Bearer ${connection.token}` } });
           const workers = await fetch(`${connection.baseUrl}/api/workers`, { headers: { Authorization: `Bearer ${connection.token}` } });
-          return { status: response.status, state: await response.json(), workersStatus: workers.status, workers: await workers.json() };
+          const health = await fetch(`${connection.baseUrl}/api/health`, { headers: { Authorization: `Bearer ${connection.token}` } });
+          return { status: response.status, state: await response.json(), workersStatus: workers.status, workers: await workers.json(), healthStatus: health.status, health: await health.json() };
         });
-        assert.equal(state.status, 200); assert.equal(state.workersStatus, 200); assert.ok(state.workers.length > 0);
-        assert.equal(state.state.system.version, metadata.version); assert.equal(state.state.system.storageHealthy, true);
+        launch.apiVersions = { state: state.state.system.version, health: state.health.version, expected: metadata.version };
+        assert.equal(state.status, 200); assert.equal(state.healthStatus, 200); assert.equal(state.workersStatus, 200);
+        remember(probe(state.health.corePid, '-', 'identity'));
         launch.workers = state.workers.map(worker => Object.fromEntries(['id', 'state', 'pid', 'processStartedAt', 'corePid', 'coreStartedAt'].map(key => [key, worker[key]])));
         for (const worker of state.workers) {
           remember({ pid: worker.corePid, processStartedAt: worker.coreStartedAt });
           remember({ pid: worker.pid, processStartedAt: worker.processStartedAt });
         }
+        assert.ok(state.workers.length > 0);
+        assert.equal(state.state.system.version, metadata.version); assert.equal(state.health.version, metadata.version);
+        assert.equal(state.state.system.storageHealthy, true);
         launch.application = await electron.evaluate(({ app }) => ({ packaged: app.isPackaged, version: app.getVersion() }));
         assert.equal(launch.application.version, metadata.version);
         if (record.externalJavaDisabled) assert.equal(launch.application.packaged, true);
         assert.ok(page.url().startsWith('file://'));
         assert.equal(await page.evaluate(() => typeof window.require), 'undefined');
         assert.equal(await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content').then(value => value.includes("script-src 'self';")), true);
+        if (layoutChecks) await layoutChecks.checkRestore({ page, attempt, record, launch });
         if (attempt === 2) {
           await page.waitForFunction(() => document.documentElement.dataset.theme === 'ink-night-blue');
           assert.equal(await page.evaluate(() => localStorage.getItem('workbench-theme')), 'ink-night-blue');
@@ -140,8 +148,10 @@ const path = require('node:path');
         await page.waitForFunction(id => document.documentElement.dataset.theme === id, expected);
         await page.getByRole('button', { name: '本地核心已连接', exact: true }).waitFor();
         checks.push(`Launch ${attempt}: ${expected} restored after renderer reload`);
+        if (layoutChecks) await layoutChecks.checkLaunch({ page, electron, attempt, record, launch, reports });
         assert.deepEqual(errors, []);
       } catch (error) {
+        launch.failure = { name: error.name, message: error.message, stack: error.stack };
         if (page && !page.isClosed()) {
           try {
             launch.failureNavigation = await observeNavigation(page);
@@ -158,14 +168,18 @@ const path = require('node:path');
             catch (error) { return { ...identity, originalStopped: false, error: error.message }; }
           }));
         }, 25000);
-        try { await electron.close(); } finally { clearTimeout(timer); }
-        launch.originalProcesses = [...originals.values()].map(identity => probe(identity.pid, identity.processStartedAt));
-        save(path.join(reports, `launch-${attempt}-original-stopped.json`), launch.originalProcesses);
-        assert.equal(forced, false, 'Original desktop must close without forced termination');
-        assert.ok(launch.originalProcesses.length >= 3 && launch.originalProcesses.every(identity => identity.originalStopped));
-        for (const identity of launch.originalProcesses) verifiedStopped.set(`${identity.pid}@${identity.originalStartedAt}`, attempt);
-        launch.originalProcessesStopped = true;
-        save(path.join(reports, 'report.json'), record);
+        try {
+          try { await electron.close(); } finally { clearTimeout(timer); }
+          launch.originalProcesses = [...originals.values()].map(identity => probe(identity.pid, identity.processStartedAt));
+          save(path.join(reports, `launch-${attempt}-original-stopped.json`), launch.originalProcesses);
+          assert.equal(forced, false, 'Original desktop must close without forced termination');
+          assert.ok(launch.originalProcesses.length >= 3 && launch.originalProcesses.every(identity => identity.originalStopped));
+          for (const identity of launch.originalProcesses) verifiedStopped.set(`${identity.pid}@${identity.originalStartedAt}`, attempt);
+          launch.originalProcessesStopped = true;
+        } catch (error) {
+          launch.cleanupFailure = { name: error.name, message: error.message, stack: error.stack };
+          if (!launch.failure) throw error;
+        } finally { save(path.join(reports, 'report.json'), record); }
       }
     }
     record.status = 'passed'; record.originalProcessesStopped = true;
@@ -179,6 +193,7 @@ const path = require('node:path');
     save(path.join(reports, 'report.json'), record);
     mkdirSync(path.join(root, 'docs', 'qa'), { recursive: true });
     save(path.join(root, 'docs', 'qa', `themes-${record.externalJavaDisabled ? 'packaged' : 'desktop'}-${process.platform}.json`), record);
+    if (layoutChecks) layoutChecks.archive({ root, reports, record });
   }
   console.log(JSON.stringify({ status: record.status, version: record.version, checks: checks.length, originalProcessesStopped: true, directory }));
 })().catch(error => { console.error(error); process.exitCode = 1; });

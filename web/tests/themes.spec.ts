@@ -163,7 +163,7 @@ for (const kind of ['localStorage', 'sessionStorage', 'both']) test(`存储被�
   await page.addInitScript(kind => { for (const name of ['localStorage', 'sessionStorage']) if (kind === 'both' || kind === name) Object.defineProperty(window, name, { get() { throw new DOMException('Browser storage blocked by the fixture', 'SecurityError'); } }); }, kind);
   await page.goto('/'); await expect(page.getByRole('heading', { name: '主题验证项目', exact: true })).toBeVisible(); await openAppearance(page);
   await page.getByRole('button', { name: '墨夜蓝', exact: true }).click(); await expect(page.locator('html')).toHaveAttribute('data-theme', 'ink-night-blue');
-  if (kind !== 'sessionStorage') await expect(page.getByRole('status')).toContainText('本次窗口仍可切换主题');
+  if (kind !== 'sessionStorage') await expect(page.getByRole('status').filter({ hasText: '当前外观：' })).toContainText('本次窗口仍可切换主题');
   await page.getByRole('button', { name: '协作会话', exact: true }).click(); await expect(page.getByText('会话消息中的中文、路径与目标都应清晰可读。', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: '资源与设置', exact: true }).click(); await page.getByRole('button', { name: '核心连接', exact: true }).click();
   await page.getByLabel('访问令牌', { exact: true }).fill('memory-connection-fixture');

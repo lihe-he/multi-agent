@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-parent</artifactId><version>3.5.7</version><relativePath/></parent>
-  <groupId>dev.agentworkbench</groupId><artifactId>agent-workbench-core</artifactId><version>0.2.0-alpha.16</version>
+  <groupId>dev.agentworkbench</groupId><artifactId>agent-workbench-core</artifactId><version>0.2.0-alpha.17</version>
   <name>Agent Workbench Core</name>
   <properties><java.version>21</java.version><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding></properties>
   <dependencies>
@@ -12,8 +12,14 @@
     <dependency><groupId>net.java.dev.jna</groupId><artifactId>jna-platform</artifactId><version>5.17.0</version></dependency>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
   </dependencies>
-  <build><plugins>
+  <build>
+    <resources>
+      <resource><directory>src/main/resources</directory><filtering>false</filtering><excludes><exclude>workbench-build.properties</exclude></excludes></resource>
+      <resource><directory>src/main/resources</directory><filtering>true</filtering><includes><include>workbench-build.properties</include></includes></resource>
+    </resources>
+    <plugins>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-resources-plugin</artifactId><configuration><delimiters><delimiter>@</delimiter></delimiters><useDefaultDelimiters>false</useDefaultDelimiters></configuration></plugin>
     <plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId></plugin>
-    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><configuration><argLine>-Dfile.encoding=UTF-8 -Djdk.virtualThreadScheduler.parallelism=2 -Djdk.virtualThreadScheduler.maxPoolSize=2</argLine><systemPropertyVariables><jdk.net.unixdomain.tmpdir>${project.build.directory}</jdk.net.unixdomain.tmpdir></systemPropertyVariables></configuration></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><configuration><argLine>-Dfile.encoding=UTF-8 -Djdk.virtualThreadScheduler.parallelism=2 -Djdk.virtualThreadScheduler.maxPoolSize=2</argLine><systemPropertyVariables><jdk.net.unixdomain.tmpdir>${project.build.directory}</jdk.net.unixdomain.tmpdir><workbench.expected-version>${project.version}</workbench.expected-version></systemPropertyVariables></configuration></plugin>
   </plugins></build>
 </project>

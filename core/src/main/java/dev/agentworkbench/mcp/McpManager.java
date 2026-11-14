@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.agentworkbench.ApiException;
 import dev.agentworkbench.ExecutionStore;
 import dev.agentworkbench.WorkbenchCatalog;
+import dev.agentworkbench.WorkbenchVersion;
 import dev.agentworkbench.ResourceManager;
 import dev.agentworkbench.ManagedProcessLedger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -409,7 +410,7 @@ public class McpManager {
     }
 
     Map<String, Object> discover(Map<String, Object> server, McpTransport transport) throws Exception {
-        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", "0.2.0-alpha.16")));
+        Map<String, Object> initialized = transport.request("initialize", obj("protocolVersion", "2025-06-18", "capabilities", obj(), "clientInfo", obj("name", "agent-workbench", "version", WorkbenchVersion.CURRENT)));
         String protocol = str(initialized, "protocolVersion");
         if (!Set.of("2025-06-18", "2025-03-26").contains(protocol)) { throw new ApiException(409, "此客户端尚未验证服务协商的 MCP 版本：" + protocol); }
         transport.notify("notifications/initialized", obj());

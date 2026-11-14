@@ -1,12 +1,13 @@
 {
   "name": "multi-agent-workbench",
-  "version": "0.2.0-alpha.16",
+  "version": "0.2.0-alpha.17",
   "description": "本地多 Agent 智能研发工作台",
   "private": true,
   "main": "desktop/main.cjs",
   "author": "Lihe",
   "license": "MIT",
   "scripts": {
+    "verify:version": "node tools/verify-version.mjs",
     "setup": "node tools/manage.mjs setup",
     "build": "node tools/manage.mjs build",
     "build:core": "node tools/manage.mjs build:core",
@@ -29,6 +30,8 @@
     "test:themes:web": "node tools/theme-web-smoke.mjs",
     "test:themes:desktop": "node tools/theme-desktop-smoke.cjs",
     "test:themes:packaged": "node tools/ci-theme-desktop.mjs",
+    "test:layout:desktop": "node tools/layout-desktop-smoke.cjs",
+    "test:layout:packaged": "node tools/ci-layout-desktop.mjs",
     "test:bundled-writer": "node tools/bundled-workspace-write-smoke.mjs",
     "package": "node tools/manage.mjs package",
     "package:prepared": "node tools/manage.mjs package:prepared"

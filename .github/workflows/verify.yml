@@ -31,6 +31,8 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             web/package-lock.json
+      - name: Release version declarations
+        run: npm run verify:version
       - name: Core tests and package
         run: mvn -B -ntp -f core/pom.xml verify
       - name: Web dependency install
@@ -55,7 +57,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Desktop dependency download guards
-        run: node --test tools/install-desktop-deps.test.mjs tools/package-desktop.test.mjs
+        run: node --test tools/install-desktop-deps.test.mjs tools/package-desktop.test.mjs tools/verify-version.test.mjs
       - name: Desktop connection policy
         run: node --test tools/connection.test.cjs
       - name: Actual core crash and original process recovery
@@ -93,8 +95,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Packaged application lifecycle
         run: npm run test:packaged
-      - name: Actual packaged themes and preference restart
-        run: npm run test:themes:packaged
+      - name: Actual packaged themes, sidebar and preference restart
+        run: npm run test:layout:packaged
       - name: Actual packaged Java workspace writer
         run: npm run test:bundled-writer
       - name: Preserve desktop distributions
@@ -131,6 +133,7 @@ jobs:
             docs/qa/file-versions-*.json
             docs/qa/bundled-workspace-writer-*.json
             docs/qa/themes-*.json
+            docs/qa/sidebar-*.json
             .runtime/themes-web-*/
             .runtime/themes-desktop-*/reports/
             .runtime/themes-desktop-*/probe-classes/

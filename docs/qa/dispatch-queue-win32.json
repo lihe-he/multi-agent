@@ -1,9 +1,9 @@
 {
-  "recordedAt": "2026-11-12T03:11:34.336Z",
-  "version": "0.2.0-alpha.16",
+  "recordedAt": "2026-11-14T03:17:26.719Z",
+  "version": "0.2.0-alpha.17",
   "platform": "win32",
   "status": "passed",
-  "jarSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+  "jarSha256": "cd19e194627d82d758ac14252f1bc9b89a6ead9de801c55e71eb59215fd6cc85",
   "fixture": "ACTUAL_JAR_WITH_EXTERNAL_CONTROLLED_EXECUTOR",
   "browserModule": "@playwright/test from web/package.json",
   "browserVersion": "1.64.1",
@@ -11,96 +11,96 @@
     {
       "name": "Exact final Jar supplied production classes and the original Worker executable",
       "status": "passed",
-      "at": "2026-11-12T03:09:37.980Z"
+      "at": "2026-11-14T03:15:26.699Z"
     },
     {
       "name": "Actual approval transaction failure rolled back confirmation and ran no Worker operation",
       "status": "passed",
-      "at": "2026-11-12T03:10:02.115Z"
+      "at": "2026-11-14T03:15:50.579Z"
     },
     {
       "name": "Unclaimed pause and cancellation withdrew original actions without task execution",
       "status": "passed",
-      "at": "2026-11-12T03:10:07.969Z"
+      "at": "2026-11-14T03:15:59.338Z"
     },
     {
       "name": "Core exited with the original PENDING action and unchanged budget durably saved",
       "status": "passed",
-      "at": "2026-11-12T03:10:10.758Z"
+      "at": "2026-11-14T03:16:02.181Z"
     },
     {
       "name": "Original unclaimed identity survived reopening and waited for old process coverage",
       "status": "passed",
-      "at": "2026-11-12T03:10:15.271Z"
+      "at": "2026-11-14T03:16:06.932Z"
     },
     {
       "name": "Production browser showed the real unclaimed identity on desktop and narrow screens",
       "status": "passed",
-      "at": "2026-11-12T03:10:16.609Z"
+      "at": "2026-11-14T03:16:08.275Z"
     },
     {
       "name": "New core executed the original pending action once with original root sources",
       "status": "passed",
-      "at": "2026-11-12T03:10:28.283Z"
+      "at": "2026-11-14T03:16:20.249Z"
     },
     {
       "name": "Full task ZIP kept execution completion separate from human acceptance",
       "status": "passed",
-      "at": "2026-11-12T03:10:28.974Z"
+      "at": "2026-11-14T03:16:21.047Z"
     },
     {
       "name": "Core exited after real claim and in-flight HTTP dispatch",
       "status": "passed",
-      "at": "2026-11-12T03:10:35.452Z"
+      "at": "2026-11-14T03:16:29.145Z"
     },
     {
       "name": "Claimed root stayed UNKNOWN with original request and budget, without replay",
       "status": "passed",
-      "at": "2026-11-12T03:10:40.142Z"
+      "at": "2026-11-14T03:16:34.318Z"
     },
     {
       "name": "Human reconciliation kept original UNKNOWN history and cumulative budget",
       "status": "passed",
-      "at": "2026-11-12T03:10:40.410Z"
+      "at": "2026-11-14T03:16:34.586Z"
     },
     {
       "name": "Explicit resume created a fresh attempt and exported both histories without budget reset",
       "status": "passed",
-      "at": "2026-11-12T03:10:46.938Z"
+      "at": "2026-11-14T03:16:38.602Z"
     },
     {
       "name": "All launched cores exited and original Worker identities independently confirmed stop",
       "status": "passed",
-      "at": "2026-11-12T03:11:34.308Z"
+      "at": "2026-11-14T03:17:26.692Z"
     }
   ],
   "schedulerParallelism": 2,
   "schedulerMaxPoolSize": 2,
   "originalProcessProbeCompiledOnce": true,
-  "pendingTaskId": "a4b1d652-e7f6-4596-acbd-2592112cbaa3",
-  "originalPendingTaskExecutionId": "46b85500-ceb9-458b-9b50-70a3d15ea93d",
-  "originalPendingDispatchActionId": "2ac1aa43-90c9-482c-b178-170d4cdbb6cf",
+  "pendingTaskId": "33062ac7-2d9f-4eed-9b07-ab3a477b2adb",
+  "originalPendingTaskExecutionId": "ea3e71ad-aff0-449d-b0ca-565c36a7ef82",
+  "originalPendingDispatchActionId": "513efbcf-5f45-4622-bda3-c1571dec2144",
   "pendingDispatchCount": 1,
-  "heldTaskId": "02bb14cc-7f21-4329-ae7e-e87764fedbab",
-  "originalClaimedTaskExecutionId": "76282e73-3112-4e8c-8829-f2e9473af784",
-  "originalClaimedDispatchActionId": "85ce961a-d67a-4128-a2ad-b64263e28723",
-  "originalModelRequestId": "e6350da8-ae94-44a4-9020-72a139f101ff",
-  "resumedTaskExecutionId": "98da3d1e-8dbd-4dee-9308-ad51c4669d27",
+  "heldTaskId": "09d3618a-1f6c-4272-b8ff-36ac0afd8a04",
+  "originalClaimedTaskExecutionId": "011d37f0-995f-4aae-9e08-f547cbc50765",
+  "originalClaimedDispatchActionId": "9f7eeca3-718c-4351-aec7-f964e3716b5b",
+  "originalModelRequestId": "4d4a7ebd-53ed-4ed9-9c99-f203ad34c0b3",
+  "resumedTaskExecutionId": "a67e7e9d-44b1-4832-9a5e-f90d728f49fe",
   "originalBudget": 1,
   "finalBudget": 4,
   "automaticReplay": false,
   "originalUnknownPreserved": true,
   "corePids": [
-    35596,
-    60280,
-    37252,
-    41452
+    27000,
+    25544,
+    45696,
+    18164
   ],
   "workerPids": [
-    33312,
-    63692,
-    55124,
-    44064
+    4004,
+    59188,
+    24920,
+    58560
   ],
   "pageErrors": [],
   "modelCalls": [
@@ -108,44 +108,44 @@
       "number": 1,
       "goal": "pending",
       "stage": "INVESTIGATE",
-      "at": "2026-11-12T03:10:24.660Z"
+      "at": "2026-11-14T03:16:16.539Z"
     },
     {
       "number": 2,
       "goal": "pending",
       "stage": "IMPLEMENT",
-      "at": "2026-11-12T03:10:25.102Z"
+      "at": "2026-11-14T03:16:16.978Z"
     },
     {
       "number": 3,
       "goal": "pending",
       "stage": "REVIEW",
-      "at": "2026-11-12T03:10:27.583Z"
+      "at": "2026-11-14T03:16:19.525Z"
     },
     {
       "number": 4,
       "goal": "held",
       "stage": "INVESTIGATE",
-      "at": "2026-11-12T03:10:32.405Z"
+      "at": "2026-11-14T03:16:25.130Z"
     },
     {
       "number": 5,
       "goal": "held",
       "stage": "INVESTIGATE",
-      "at": "2026-11-12T03:10:40.749Z"
+      "at": "2026-11-14T03:16:34.926Z"
     },
     {
       "number": 6,
       "goal": "held",
       "stage": "IMPLEMENT",
-      "at": "2026-11-12T03:10:41.119Z"
+      "at": "2026-11-14T03:16:35.257Z"
     },
     {
       "number": 7,
       "goal": "held",
       "stage": "REVIEW",
-      "at": "2026-11-12T03:10:45.505Z"
+      "at": "2026-11-14T03:16:37.373Z"
     }
   ],
-  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\dispatch-queue-oMqDSu\\reports"
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\dispatch-queue-Pi42FV\\reports"
 }

@@ -1,11 +1,11 @@
 {
-  "recordedAt": "2026-11-12T07:24:37.264Z",
-  "version": "0.2.0-alpha.16",
+  "recordedAt": "2026-11-14T03:29:31.722Z",
+  "version": "0.2.0-alpha.17",
   "platform": "win32",
   "status": "passed",
   "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
-  "jarSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
-  "packagedJarSha256": "1dc2dc35d8147e403c988d2215c6cc69471dc75f9fc300e782d7e71f40fc9df7",
+  "jarSha256": "cd19e194627d82d758ac14252f1bc9b89a6ead9de801c55e71eb59215fd6cc85",
+  "packagedJarSha256": "cd19e194627d82d758ac14252f1bc9b89a6ead9de801c55e71eb59215fd6cc85",
   "packagedJava": "D:\\Projects\\多Agent研发工作台\\release\\win-unpacked\\resources\\jre\\bin\\java.exe",
   "packagedJavaSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
   "javaVersion": "21.0.13",
@@ -109,18 +109,18 @@
       ]
     }
   ],
-  "nativeFileKey": "WINDOWS:86ca0064ca0052bb:00e00a00000003000000000000000000",
-  "originalPid": 56280,
-  "originalProcessStartedAt": "2026-11-12T07:24:34.882Z",
+  "nativeFileKey": "WINDOWS:86ca0064ca0052bb:5b100b00000001000000000000000000",
+  "originalPid": 50968,
+  "originalProcessStartedAt": "2026-11-14T03:29:29.642Z",
   "originalStopped": true,
   "releaseDuringBorrowRejected": true,
   "lockAvailableAfterRelease": true,
   "windowsNativeProcessSnapshotApplicable": true,
   "windowsNativeProcessSnapshotVerified": true,
-  "nativeProcessBirth": "2026-11-12T07:24:34.882Z",
-  "nativeProcessSnapshotCount": 515,
+  "nativeProcessBirth": "2026-11-14T03:29:29.642Z",
+  "nativeProcessSnapshotCount": 458,
   "probeOutputEncoding": "UTF-8",
   "schedulerParallelism": 2,
   "schedulerMaxPoolSize": 2,
-  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-NL03SJ"
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-M3cFED"
 }

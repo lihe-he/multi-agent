@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { javaHome } from './java-runtime.mjs';
+import { verifyVersions } from './verify-version.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const windows = process.platform === 'win32';
@@ -39,6 +40,7 @@ async function build() {
 }
 
 async function main() {
+  if (command !== 'setup') verifyVersions(root);
   if (command === 'setup') {
     javaHome(root);
     await run(npm, ['install']);

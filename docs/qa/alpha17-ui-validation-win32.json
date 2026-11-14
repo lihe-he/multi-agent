@@ -1,0 +1,2021 @@
+{
+  "recordedAt": "2026-11-14T02:54:23.826Z",
+  "version": "0.2.0-alpha.17",
+  "status": "passed",
+  "platform": "win32",
+  "fullUiTests": 127,
+  "originalCasesRetained": 106,
+  "sidebarCases": 21,
+  "actualViewMeasurements": 264,
+  "separatorFocus": [
+    {
+      "title": "分隔器焦点在 pure-white 的两侧背景上清晰可见",
+      "focusVisible": true,
+      "leftWidth": "3px",
+      "rightWidth": "3px",
+      "leftContrast": 7.694377170411975,
+      "rightContrast": 13.654600454804969,
+      "bounds": {
+        "x": 248,
+        "y": 0,
+        "width": 12,
+        "height": 1000,
+        "top": 0,
+        "right": 260,
+        "bottom": 1000,
+        "left": 248
+      },
+      "sidebar": "rgb(255, 255, 255)",
+      "canvas": "rgb(245, 247, 251)",
+      "topbar": "rgb(255, 255, 255)"
+    },
+    {
+      "title": "分隔器焦点在 paper-ink 的两侧背景上清晰可见",
+      "focusVisible": true,
+      "leftWidth": "3px",
+      "rightWidth": "3px",
+      "leftContrast": 8.896224708639046,
+      "rightContrast": 12.65609697201396,
+      "bounds": {
+        "x": 248,
+        "y": 0,
+        "width": 12,
+        "height": 1000,
+        "top": 0,
+        "right": 260,
+        "bottom": 1000,
+        "left": 248
+      },
+      "sidebar": "rgb(238, 236, 229)",
+      "canvas": "rgb(244, 242, 235)",
+      "topbar": "rgb(253, 252, 247)"
+    },
+    {
+      "title": "分隔器焦点在 classic-warm 的两侧背景上清晰可见",
+      "focusVisible": true,
+      "leftWidth": "3px",
+      "rightWidth": "3px",
+      "leftContrast": 12.325132968018838,
+      "rightContrast": 12.145464734561353,
+      "bounds": {
+        "x": 248,
+        "y": 0,
+        "width": 12,
+        "height": 1000,
+        "top": 0,
+        "right": 260,
+        "bottom": 1000,
+        "left": 248
+      },
+      "sidebar": "rgb(51, 43, 30)",
+      "canvas": "rgb(247, 242, 231)",
+      "topbar": "rgb(255, 253, 246)"
+    },
+    {
+      "title": "分隔器焦点在 celadon 的两侧背景上清晰可见",
+      "focusVisible": true,
+      "leftWidth": "3px",
+      "rightWidth": "3px",
+      "leftContrast": 13.55802512660903,
+      "rightContrast": 11.447513512517984,
+      "bounds": {
+        "x": 248,
+        "y": 0,
+        "width": 12,
+        "height": 1000,
+        "top": 0,
+        "right": 260,
+        "bottom": 1000,
+        "left": 248
+      },
+      "sidebar": "rgb(21, 42, 36)",
+      "canvas": "rgb(245, 247, 246)",
+      "topbar": "rgb(255, 255, 255)"
+    },
+    {
+      "title": "分隔器焦点在 ink-night 的两侧背景上清晰可见",
+      "focusVisible": true,
+      "leftWidth": "3px",
+      "rightWidth": "3px",
+      "leftContrast": 14.688817903373547,
+      "rightContrast": 12.603037873186784,
+      "bounds": {
+        "x": 248,
+        "y": 0,
+        "width": 12,
+        "height": 1000,
+        "top": 0,
+        "right": 260,
+        "bottom": 1000,
+        "left": 248
+      },
+      "sidebar": "rgb(16, 25, 21)",
+      "canvas": "rgb(20, 30, 25)",
+      "topbar": "rgb(27, 41, 34)"
+    },
+    {
+      "title": "分隔器焦点在 ink-night-blue 的两侧背景上清晰可见",
+      "focusVisible": true,
+      "leftWidth": "3px",
+      "rightWidth": "3px",
+      "leftContrast": 13.56602300414232,
+      "rightContrast": 11.803927911629957,
+      "bounds": {
+        "x": 248,
+        "y": 0,
+        "width": 12,
+        "height": 1000,
+        "top": 0,
+        "right": 260,
+        "bottom": 1000,
+        "left": 248
+      },
+      "sidebar": "rgb(16, 26, 44)",
+      "canvas": "rgb(23, 34, 56)",
+      "topbar": "rgb(30, 44, 67)"
+    }
+  ],
+  "sidebarFocus": [
+    {
+      "id": "pure-white",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": 3,
+      "outlineColor": "rgb(23, 76, 180)",
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "ratio": 7.694377170411975
+    },
+    {
+      "id": "paper-ink",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": 3,
+      "outlineColor": "rgb(53, 67, 48)",
+      "background": [
+        238,
+        236,
+        229
+      ],
+      "ratio": 8.896224708639046
+    },
+    {
+      "id": "classic-warm",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": 3,
+      "outlineColor": "rgb(255, 240, 200)",
+      "background": [
+        51,
+        43,
+        30
+      ],
+      "ratio": 12.325132968018838
+    },
+    {
+      "id": "celadon",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": 3,
+      "outlineColor": "rgb(226, 248, 232)",
+      "background": [
+        21,
+        42,
+        36
+      ],
+      "ratio": 13.55802512660903
+    },
+    {
+      "id": "ink-night",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": 3,
+      "outlineColor": "rgb(182, 247, 209)",
+      "background": [
+        16,
+        25,
+        21
+      ],
+      "ratio": 14.688817903373547
+    },
+    {
+      "id": "ink-night-blue",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": 3,
+      "outlineColor": "rgb(209, 229, 255)",
+      "background": [
+        16,
+        26,
+        44
+      ],
+      "ratio": 13.56602300414232
+    }
+  ],
+  "actualAvailableWidth": {
+    "viewport": 986,
+    "available": 956,
+    "sidebar": 236,
+    "main": 720
+  },
+  "minimumSeparatorLeftContrast": 7.694377170411975,
+  "minimumSeparatorRightContrast": 11.447513512517984,
+  "themeViews": [
+    {
+      "id": "pure-white",
+      "width": 1440,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 107,
+          "minimumRatio": 4.718681163964243,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 89,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 62,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 41,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 78,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 71,
+          "minimumRatio": 4.718681163964243,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 76,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 80,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 50,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 42,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 74,
+          "minimumRatio": 4.718681163964243,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 65,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 134,
+          "minimumRatio": 4.718681163964243,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 70,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 72,
+          "minimumRatio": 4.718681163964243,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 84,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 95,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 79,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 60,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 63,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 62,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 87,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "pure-white",
+      "width": 430,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 77,
+          "minimumRatio": 4.718681163964243,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 67,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 32,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 19,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 55,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 49,
+          "minimumRatio": 4.718681163964243,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 54,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 58,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 28,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 20,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 52,
+          "minimumRatio": 4.718681163964243,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 43,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 112,
+          "minimumRatio": 4.718681163964243,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 48,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 50,
+          "minimumRatio": 4.718681163964243,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 62,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 73,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 57,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 38,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 41,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 40,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 65,
+          "minimumRatio": 4.899217388997385,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "paper-ink",
+      "width": 1440,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 107,
+          "minimumRatio": 4.743977153222544,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 89,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 62,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 41,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 78,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 71,
+          "minimumRatio": 4.743977153222544,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 76,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 80,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 50,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 42,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 74,
+          "minimumRatio": 4.743977153222544,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 65,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 134,
+          "minimumRatio": 4.743977153222544,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 70,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 72,
+          "minimumRatio": 4.743977153222544,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 84,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 95,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 79,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 60,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 63,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 62,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 87,
+          "minimumRatio": 4.772874813692894,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "paper-ink",
+      "width": 430,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 77,
+          "minimumRatio": 4.743977153222544,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 67,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 32,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 19,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 55,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 49,
+          "minimumRatio": 4.743977153222544,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 54,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 58,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 28,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 20,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 52,
+          "minimumRatio": 4.743977153222544,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 43,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 112,
+          "minimumRatio": 4.743977153222544,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 48,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 50,
+          "minimumRatio": 4.743977153222544,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 62,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 73,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 57,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 38,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 41,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 40,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 65,
+          "minimumRatio": 5.009369499597516,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "classic-warm",
+      "width": 1440,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 107,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 89,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 62,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 41,
+          "minimumRatio": 5.3218863528522595,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 78,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 71,
+          "minimumRatio": 5.442187808278207,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 76,
+          "minimumRatio": 5.708257144737407,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 80,
+          "minimumRatio": 5.708257144737407,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 50,
+          "minimumRatio": 5.708257144737407,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 42,
+          "minimumRatio": 5.708257144737407,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 74,
+          "minimumRatio": 5.442187808278207,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 65,
+          "minimumRatio": 5.358458702048808,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 134,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 70,
+          "minimumRatio": 5.3218863528522595,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 72,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 84,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 95,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 79,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 60,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 63,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 62,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 87,
+          "minimumRatio": 5.708257144737407,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "classic-warm",
+      "width": 430,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 77,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 67,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 32,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 19,
+          "minimumRatio": 5.3218863528522595,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 55,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 49,
+          "minimumRatio": 5.442187808278207,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 54,
+          "minimumRatio": 5.708257144737407,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 58,
+          "minimumRatio": 5.708257144737407,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 28,
+          "minimumRatio": 5.708257144737407,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 20,
+          "minimumRatio": 5.708257144737407,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 52,
+          "minimumRatio": 5.442187808278207,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 43,
+          "minimumRatio": 5.358458702048808,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 112,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 48,
+          "minimumRatio": 5.3218863528522595,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 50,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 62,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 73,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 57,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 38,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 41,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 40,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 65,
+          "minimumRatio": 5.708257144737407,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "celadon",
+      "width": 1440,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 107,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 89,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 62,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 41,
+          "minimumRatio": 4.9407547172823945,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 78,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 71,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 76,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 80,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 50,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 42,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 74,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 65,
+          "minimumRatio": 5.0947705079422025,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 134,
+          "minimumRatio": 5.0947705079422025,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 70,
+          "minimumRatio": 4.9407547172823945,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 72,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 84,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 95,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 79,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 60,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 63,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 62,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 87,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "celadon",
+      "width": 430,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 77,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 67,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 32,
+          "minimumRatio": 5.347437317731345,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 19,
+          "minimumRatio": 4.9407547172823945,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 55,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 49,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 54,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 58,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 28,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 20,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 52,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 43,
+          "minimumRatio": 5.0947705079422025,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 112,
+          "minimumRatio": 5.0947705079422025,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 48,
+          "minimumRatio": 4.9407547172823945,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 50,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 62,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 73,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 57,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 38,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 41,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 40,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 65,
+          "minimumRatio": 5.269979591390003,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "ink-night",
+      "width": 1440,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 107,
+          "minimumRatio": 6.687915402681171,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 89,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 62,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 41,
+          "minimumRatio": 6.658711428845498,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 78,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 71,
+          "minimumRatio": 6.687915402681171,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 76,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 80,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 50,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 42,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 74,
+          "minimumRatio": 6.687915402681171,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 65,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 134,
+          "minimumRatio": 6.687915402681171,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 70,
+          "minimumRatio": 6.658711428845498,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 72,
+          "minimumRatio": 6.687915402681171,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 84,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 95,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 79,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 60,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 63,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 62,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 87,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "ink-night",
+      "width": 430,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 77,
+          "minimumRatio": 6.687915402681171,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 67,
+          "minimumRatio": 7.595007228703185,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 32,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 19,
+          "minimumRatio": 6.658711428845498,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 55,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 49,
+          "minimumRatio": 6.687915402681171,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 54,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 58,
+          "minimumRatio": 7.595007228703185,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 28,
+          "minimumRatio": 8.423073334029436,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 20,
+          "minimumRatio": 8.567230688313407,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 52,
+          "minimumRatio": 6.687915402681171,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 43,
+          "minimumRatio": 7.900429298900397,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 112,
+          "minimumRatio": 6.687915402681171,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 48,
+          "minimumRatio": 6.658711428845498,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 50,
+          "minimumRatio": 6.687915402681171,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 62,
+          "minimumRatio": 7.595007228703185,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 73,
+          "minimumRatio": 7.595007228703185,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 57,
+          "minimumRatio": 7.595007228703185,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 38,
+          "minimumRatio": 8.423073334029436,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 41,
+          "minimumRatio": 7.595007228703185,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 40,
+          "minimumRatio": 7.595007228703185,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 65,
+          "minimumRatio": 6.882715756988765,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "ink-night-blue",
+      "width": 1440,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 107,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 89,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 62,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 41,
+          "minimumRatio": 5.28434757771289,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 78,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 71,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 76,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 80,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 50,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 42,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 74,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 65,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 134,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 70,
+          "minimumRatio": 5.28434757771289,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 72,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 84,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 95,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 79,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 60,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 63,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 62,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 87,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "ink-night-blue",
+      "width": 430,
+      "audits": [
+        {
+          "view": "home",
+          "measured": 77,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "sessions",
+          "measured": 67,
+          "minimumRatio": 7.338081664788156,
+          "failures": []
+        },
+        {
+          "view": "tasks",
+          "measured": 32,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "inbox",
+          "measured": 19,
+          "minimumRatio": 5.28434757771289,
+          "failures": []
+        },
+        {
+          "view": "knowledge",
+          "measured": 55,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "appearance",
+          "measured": 49,
+          "minimumRatio": 6.387520694268276,
+          "failures": []
+        },
+        {
+          "view": "运行器与模型",
+          "measured": 54,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "执行节点与仓库",
+          "measured": 58,
+          "minimumRatio": 7.338081664788156,
+          "failures": []
+        },
+        {
+          "view": "职责模板",
+          "measured": 28,
+          "minimumRatio": 7.475848370549842,
+          "failures": []
+        },
+        {
+          "view": "动态副 Agent",
+          "measured": 20,
+          "minimumRatio": 8.304649440459263,
+          "failures": []
+        },
+        {
+          "view": "MCP 工具",
+          "measured": 52,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        },
+        {
+          "view": "资源与运行状态",
+          "measured": 43,
+          "minimumRatio": 6.5074413662139925,
+          "failures": []
+        },
+        {
+          "view": "task-plan",
+          "measured": 112,
+          "minimumRatio": 6.387520694268276,
+          "failures": []
+        },
+        {
+          "view": "验证与审查",
+          "measured": 48,
+          "minimumRatio": 5.28434757771289,
+          "failures": []
+        },
+        {
+          "view": "代码差异",
+          "measured": 50,
+          "minimumRatio": 6.387520694268276,
+          "failures": []
+        },
+        {
+          "view": "Agent 运行",
+          "measured": 62,
+          "minimumRatio": 7.338081664788156,
+          "failures": []
+        },
+        {
+          "view": "模型请求",
+          "measured": 73,
+          "minimumRatio": 7.338081664788156,
+          "failures": []
+        },
+        {
+          "view": "文件操作",
+          "measured": 57,
+          "minimumRatio": 7.338081664788156,
+          "failures": []
+        },
+        {
+          "view": "Worker 执行",
+          "measured": 38,
+          "minimumRatio": 7.734761467415383,
+          "failures": []
+        },
+        {
+          "view": "执行上下文",
+          "measured": 41,
+          "minimumRatio": 7.338081664788156,
+          "failures": []
+        },
+        {
+          "view": "活动记录",
+          "measured": 40,
+          "minimumRatio": 7.338081664788156,
+          "failures": []
+        },
+        {
+          "view": "connection-dialog",
+          "measured": 65,
+          "minimumRatio": 6.280989059191993,
+          "failures": []
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "title": "六主题覆盖实际页面与文字对比度 纯白 1440px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-纯白-1440px\\attachments\\appearance-5c2a8dd5b3a0b0b902fef345f1a4891d8af1f057.png",
+      "sha256": "99ee7331859a0cf987dcb99c5c75f8e54c2eea22390b18512c799fe3547fa134"
+    },
+    {
+      "title": "六主题覆盖实际页面与文字对比度 纯白 430px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-纯白-430px\\attachments\\appearance-d27dbc24f2602eb00c271b0ac0fc63a5fdfeed77.png",
+      "sha256": "65ae2a9d0e40c53e32fccf4215b2b3b42af73d8d9ecea287782cf9187c50a091"
+    },
+    {
+      "title": "六主题覆盖实际页面与文字对比度 纸墨 1440px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-纸墨-1440px\\attachments\\appearance-dce2b949cb1359267b1c5a6541b6ab96afa5f6fd.png",
+      "sha256": "9eb8c926fa5be70e03da07aece15d0c2f0eb9f61dec91122b48b2e3896df5b81"
+    },
+    {
+      "title": "六主题覆盖实际页面与文字对比度 纸墨 430px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-纸墨-430px\\attachments\\appearance-6159467a814a4bddcac077d0244b0583c92bbeb8.png",
+      "sha256": "1189e8ebc16a4da0ad45d1613addcd0484f40cff07d7da6d6f84a3b037fd60c1"
+    },
+    {
+      "title": "六主题覆盖实际页面与文字对比度 经典暖色 1440px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-经典暖色-1440px\\attachments\\appearance-01ca001bceedb303f4632ce9f2321ea901ef65cb.png",
+      "sha256": "674490b38a44157043cdd3a5f3cac1373e7b4c20dd4d3e5476fa0fabf4136fbc"
+    },
+    {
+      "title": "六主题覆盖实际页面与文字对比度 经典暖色 430px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-经典暖色-430px\\attachments\\appearance-59a4da08d0a883ce536ded001ac692941cf58f9e.png",
+      "sha256": "eaf70a4f2ae4a60ebd5831c8816e57641a53daf8c97baefe662b8fbf23340bfe"
+    },
+    {
+      "title": "六主题覆盖实际页面与文字对比度 青瓷 1440px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-青瓷-1440px\\attachments\\appearance-95fcc429b8b71476d54fe5b8bb9ca108f6693bd1.png",
+      "sha256": "c2cca02c3795c30998d05ebacaff97bf5f635ade95dd99fbe3a66c14f5e60e5a"
+    },
+    {
+      "title": "六主题覆盖实际页面与文字对比度 青瓷 430px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-青瓷-430px\\attachments\\appearance-9f90c63507cd268d4625cc5b7f36a62dda07f8cb.png",
+      "sha256": "9c9e0437ab1783f7e42cd8c47bb695906a4245706305fab1ca1369ebf911706c"
+    },
+    {
+      "title": "六主题覆盖实际页面与文字对比度 墨夜 1440px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜-1440px\\attachments\\appearance-7b57003de289082bebe1ccbd2e4761d209cf7e12.png",
+      "sha256": "0dab1586eadf8f5ace83073ba754bbf65638dcd11ab6f0d961e6f00576c19d13"
+    },
+    {
+      "title": "六主题覆盖实际页面与文字对比度 墨夜 430px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜-430px\\attachments\\appearance-e644e78ec19ed4bc61938b7b77e4664e250b937c.png",
+      "sha256": "33c6ab9b4b5400439845e5521b6902de1ba32dcef8a5e759235cce84d04b900d"
+    },
+    {
+      "title": "六主题覆盖实际页面与文字对比度 墨夜蓝 1440px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜蓝-1440px\\attachments\\appearance-e2cc294f410abac964afd70aa3c050c7fbde1376.png",
+      "sha256": "4e42474a8abb0c937d991747eeaf32d6b1440f12becf8d1dd9cab55f342295bd"
+    },
+    {
+      "title": "六主题覆盖实际页面与文字对比度 墨夜蓝 430px",
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha17-ui-final-available-width\\test-results\\themes-六主题覆盖实际页面与文字对比度-墨夜蓝-430px\\attachments\\appearance-98cf44cc511b7c7826234ff0b326502f82c61a37.png",
+      "sha256": "77c5bcf36f005bd2855b4c0cd16e9d845dedeb2886b75e5e901afebef4bf7e32"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "file": "web/src/SidebarLayout.tsx",
+      "sha256": "a6396d071e6c34e70d18c4f5da8b93030d65b1e63e66b832737c0b8ad3f46a34",
+      "normalizedLfSha256": "a6396d071e6c34e70d18c4f5da8b93030d65b1e63e66b832737c0b8ad3f46a34"
+    },
+    {
+      "file": "web/src/App.tsx",
+      "sha256": "fc2a962da27e5e05bad3582deb9bb46482a9f20348cf57352489261002135e82",
+      "normalizedLfSha256": "fc2a962da27e5e05bad3582deb9bb46482a9f20348cf57352489261002135e82"
+    },
+    {
+      "file": "web/src/Appearance.tsx",
+      "sha256": "8aab4b980a71871b0a5a419af08dabeb7f9f6cd742d9a613da6c3b4ab2989cfd",
+      "normalizedLfSha256": "8aab4b980a71871b0a5a419af08dabeb7f9f6cd742d9a613da6c3b4ab2989cfd"
+    },
+    {
+      "file": "web/src/layout.css",
+      "sha256": "d5610e3d1d84fa163a636021ead5999f18e84731490d85f97f33c7344d52fe21",
+      "normalizedLfSha256": "d5610e3d1d84fa163a636021ead5999f18e84731490d85f97f33c7344d52fe21"
+    },
+    {
+      "file": "web/tests/layout-resize.spec.ts",
+      "sha256": "fb019bba29b58ed02d3c5cad5fafaf3b32cb16a06fb8bbf16fa030e38071b188",
+      "normalizedLfSha256": "fb019bba29b58ed02d3c5cad5fafaf3b32cb16a06fb8bbf16fa030e38071b188"
+    },
+    {
+      "file": "web/tests/themes.spec.ts",
+      "sha256": "1378230a0871a5690b6b8822bf71f2f5cd56df5a1af6d6113adcc6cc42a717aa",
+      "normalizedLfSha256": "1378230a0871a5690b6b8822bf71f2f5cd56df5a1af6d6113adcc6cc42a717aa"
+    }
+  ],
+  "productionWebHashes": [
+    {
+      "file": "web/dist/assets/index-BkJbTMl-.js",
+      "sha256": "b39d2336c3a03c038d47e7686d2b44dfd008facef4bbb50aabf4d6392013f264"
+    },
+    {
+      "file": "web/dist/assets/index-rZYc-fff.css",
+      "sha256": "dd7f18c20c78fe639a34dfba7130c104de68a0cc6108b1b6dff1ac2303c4c2f4"
+    },
+    {
+      "file": "web/dist/index.html",
+      "sha256": "c4235c620f3202442ddfd6e1b899e97e023c54d930851f6751b807cf170fee55"
+    },
+    {
+      "file": "web/dist/theme-init.js",
+      "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+    },
+    {
+      "file": "web/dist/workbench-config.json",
+      "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+    }
+  ],
+  "stats": {
+    "startTime": "2026-11-14T02:39:46.264Z",
+    "duration": 61272.318,
+    "expected": 127,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "report": {
+    "file": ".runtime\\alpha17-ui-final-available-width\\playwright.json",
+    "sha256": "a915c8b6ee4044c1a629783b039be2dc818f6cb4476f4d872c6499cdecd0114b"
+  },
+  "receipt": {
+    "file": ".runtime\\alpha17-ui-final-available-width\\receipt.json",
+    "sha256": "aeb46d9916383206e613ff1c33fec58c1c63b68788f642bd461c90c2a66073e8"
+  },
+  "evidenceDirectory": ".runtime/alpha17-ui-final-available-width",
+  "finalGeneratedImages": ".runtime/alpha17-ui-final-generated-images",
+  "scope": "Production build and full UI interactions, pointer/cancellation/keyboard/layout storage, actual available width, six-theme focus and view measurements",
+  "dispatchedCancellationAndPageShowEventsAreHandlerChecks": true,
+  "realTouchPenAndCompleteBfCacheNotVerified": true
+}

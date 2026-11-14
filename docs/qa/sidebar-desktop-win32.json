@@ -1,0 +1,468 @@
+{
+  "checks": [
+    "Actual file-origin pointer drag commits only on release and aligns the content",
+    "Escape restores actual desktop width, body styles and persisted intent",
+    "Renderer reload during actual captured drag restores the last committed layout",
+    "Keyboard collapse retains the expanded width for complete desktop restart",
+    "Saved width and collapse restored in a new original desktop/core/Worker launch",
+    "Keyboard expansion after full original restart restores the saved width",
+    "Actual minimum native window clamps layout while retaining the larger intent",
+    "Unmoved click in the minimum native window preserves the saved width",
+    "Re-enlarging the native window restores the intended width",
+    "Appearance reset restores the responsive desktop defaults"
+  ],
+  "version": "0.2.0-alpha.17",
+  "platform": "win32",
+  "status": "passed",
+  "scope": "ACTUAL_FILE_ORIGIN_SIDEBAR_POINTER_KEYBOARD_MINIMUM_WINDOW_AND_COMPLETE_RESTART",
+  "completedAt": "2026-11-14T03:10:39.350Z",
+  "externalJavaDisabled": false,
+  "originalProcessesStopped": true,
+  "probeFixture": {
+    "compiledOnce": true,
+    "sourceSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+    "classes": [
+      {
+        "file": "ProcessRecoveryProbe$Identity.class",
+        "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+      },
+      {
+        "file": "ProcessRecoveryProbe$State.class",
+        "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+      },
+      {
+        "file": "ProcessRecoveryProbe$Visibility.class",
+        "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+      },
+      {
+        "file": "ProcessRecoveryProbe.class",
+        "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+      }
+    ]
+  },
+  "launches": [
+    {
+      "attempt": 1,
+      "restored": {
+        "recordedAt": "2026-11-14T03:10:19.162Z",
+        "viewport": {
+          "width": 1466,
+          "height": 923
+        },
+        "sidebarWidth": 244,
+        "mainLeft": 244,
+        "mainWidth": 1206.666748046875,
+        "documentWidth": 1451,
+        "saved": null,
+        "separatorValue": "244",
+        "cursor": "",
+        "userSelect": ""
+      },
+      "layout": {
+        "attempt": 1,
+        "largeWindow": {
+          "requested": {
+            "width": 1280,
+            "height": 850
+          },
+          "bounds": {
+            "x": 112,
+            "y": 28,
+            "width": 1280,
+            "height": 850
+          },
+          "content": {
+            "x": 119,
+            "y": 58,
+            "width": 1266,
+            "height": 813
+          }
+        },
+        "beforeCommit": {
+          "recordedAt": "2026-11-14T03:10:20.677Z",
+          "viewport": {
+            "width": 1266,
+            "height": 813
+          },
+          "sidebarWidth": 320,
+          "mainLeft": 320,
+          "mainWidth": 930.6666870117188,
+          "documentWidth": 1251,
+          "saved": {
+            "version": 1,
+            "sidebarWidth": 200,
+            "sidebarCollapsed": false
+          },
+          "separatorValue": "320",
+          "cursor": "col-resize",
+          "userSelect": "none"
+        },
+        "committed": {
+          "recordedAt": "2026-11-14T03:10:20.686Z",
+          "viewport": {
+            "width": 1266,
+            "height": 813
+          },
+          "sidebarWidth": 320,
+          "mainLeft": 320,
+          "mainWidth": 930.6666870117188,
+          "documentWidth": 1251,
+          "saved": {
+            "version": 1,
+            "sidebarWidth": 320,
+            "sidebarCollapsed": false
+          },
+          "separatorValue": "320",
+          "cursor": "",
+          "userSelect": ""
+        },
+        "cancelled": {
+          "recordedAt": "2026-11-14T03:10:20.921Z",
+          "viewport": {
+            "width": 1266,
+            "height": 813
+          },
+          "sidebarWidth": 320,
+          "mainLeft": 320,
+          "mainWidth": 930.6666870117188,
+          "documentWidth": 1251,
+          "saved": {
+            "version": 1,
+            "sidebarWidth": 320,
+            "sidebarCollapsed": false
+          },
+          "separatorValue": "320",
+          "cursor": "",
+          "userSelect": ""
+        },
+        "reloaded": {
+          "recordedAt": "2026-11-14T03:10:21.050Z",
+          "viewport": {
+            "width": 1266,
+            "height": 813
+          },
+          "sidebarWidth": 320,
+          "mainLeft": 320,
+          "mainWidth": 930.6666870117188,
+          "documentWidth": 1251,
+          "saved": {
+            "version": 1,
+            "sidebarWidth": 320,
+            "sidebarCollapsed": false
+          },
+          "separatorValue": "320",
+          "cursor": "",
+          "userSelect": ""
+        },
+        "collapsed": {
+          "recordedAt": "2026-11-14T03:10:21.061Z",
+          "viewport": {
+            "width": 1266,
+            "height": 813
+          },
+          "sidebarWidth": 75,
+          "mainLeft": 75,
+          "mainWidth": 1175.666748046875,
+          "documentWidth": 1251,
+          "saved": {
+            "version": 1,
+            "sidebarWidth": 320,
+            "sidebarCollapsed": true
+          },
+          "separatorValue": "75",
+          "cursor": "",
+          "userSelect": ""
+        }
+      },
+      "application": {
+        "packaged": false,
+        "version": "0.2.0-alpha.17"
+      },
+      "apiVersions": {
+        "state": "0.2.0-alpha.17",
+        "health": "0.2.0-alpha.17",
+        "expected": "0.2.0-alpha.17"
+      },
+      "pageErrors": [],
+      "originalProcesses": [
+        {
+          "pid": 37476,
+          "originalStartedAt": "2026-11-14T03:10:09.021Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 33128,
+          "originalStartedAt": "2026-11-14T03:10:09.443Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 16560,
+          "originalStartedAt": "2026-11-14T03:10:12.479Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        }
+      ],
+      "originalProcessesStopped": true,
+      "historicalOriginalProcessObservations": []
+    },
+    {
+      "attempt": 2,
+      "restored": {
+        "recordedAt": "2026-11-14T03:10:34.667Z",
+        "viewport": {
+          "width": 1466,
+          "height": 923
+        },
+        "sidebarWidth": 75,
+        "mainLeft": 75,
+        "mainWidth": 1375.666748046875,
+        "documentWidth": 1451,
+        "saved": {
+          "version": 1,
+          "sidebarWidth": 320,
+          "sidebarCollapsed": true
+        },
+        "separatorValue": "75",
+        "cursor": "",
+        "userSelect": ""
+      },
+      "layout": {
+        "attempt": 2,
+        "largeWindow": {
+          "requested": {
+            "width": 1280,
+            "height": 850
+          },
+          "bounds": {
+            "x": 112,
+            "y": 28,
+            "width": 1282,
+            "height": 852
+          },
+          "content": {
+            "x": 120,
+            "y": 58,
+            "width": 1266,
+            "height": 814
+          }
+        },
+        "expanded": {
+          "recordedAt": "2026-11-14T03:10:34.983Z",
+          "viewport": {
+            "width": 1266,
+            "height": 814
+          },
+          "sidebarWidth": 320,
+          "mainLeft": 320,
+          "mainWidth": 930.6666870117188,
+          "documentWidth": 1251,
+          "saved": {
+            "version": 1,
+            "sidebarWidth": 320,
+            "sidebarCollapsed": false
+          },
+          "separatorValue": "320",
+          "cursor": "",
+          "userSelect": ""
+        },
+        "minimumWindow": {
+          "requested": {
+            "width": 1000,
+            "height": 680
+          },
+          "bounds": {
+            "x": 112,
+            "y": 28,
+            "width": 1000,
+            "height": 681
+          },
+          "content": {
+            "x": 119,
+            "y": 58,
+            "width": 986,
+            "height": 644
+          }
+        },
+        "minimumLayout": {
+          "recordedAt": "2026-11-14T03:10:35.000Z",
+          "viewport": {
+            "width": 986,
+            "height": 644
+          },
+          "sidebarWidth": 250,
+          "mainLeft": 250,
+          "mainWidth": 720.6666870117188,
+          "documentWidth": 971,
+          "saved": {
+            "version": 1,
+            "sidebarWidth": 320,
+            "sidebarCollapsed": false
+          },
+          "separatorValue": "250",
+          "cursor": "",
+          "userSelect": ""
+        },
+        "defaults": {
+          "recordedAt": "2026-11-14T03:10:35.229Z",
+          "viewport": {
+            "width": 1266,
+            "height": 813
+          },
+          "sidebarWidth": 244,
+          "mainLeft": 244,
+          "mainWidth": 1006.6666870117188,
+          "documentWidth": 1251,
+          "saved": {
+            "version": 1,
+            "sidebarWidth": null,
+            "sidebarCollapsed": false
+          },
+          "separatorValue": "244",
+          "cursor": "",
+          "userSelect": ""
+        }
+      },
+      "application": {
+        "packaged": false,
+        "version": "0.2.0-alpha.17"
+      },
+      "apiVersions": {
+        "state": "0.2.0-alpha.17",
+        "health": "0.2.0-alpha.17",
+        "expected": "0.2.0-alpha.17"
+      },
+      "pageErrors": [],
+      "originalProcesses": [
+        {
+          "pid": 10164,
+          "originalStartedAt": "2026-11-14T03:10:25.325Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 18184,
+          "originalStartedAt": "2026-11-14T03:10:25.633Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 60348,
+          "originalStartedAt": "2026-11-14T03:10:28.387Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        }
+      ],
+      "originalProcessesStopped": true,
+      "historicalOriginalProcessObservations": [
+        {
+          "pid": 33128,
+          "originalStartedAt": "2026-11-14T03:10:09.443Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true,
+          "verifiedAfterLaunch": 1
+        },
+        {
+          "pid": 16560,
+          "originalStartedAt": "2026-11-14T03:10:12.479Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true,
+          "verifiedAfterLaunch": 1
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "file": "web/src/SidebarLayout.tsx",
+      "sha256": "a6396d071e6c34e70d18c4f5da8b93030d65b1e63e66b832737c0b8ad3f46a34",
+      "normalizedLfSha256": "a6396d071e6c34e70d18c4f5da8b93030d65b1e63e66b832737c0b8ad3f46a34"
+    },
+    {
+      "file": "web/src/App.tsx",
+      "sha256": "fc2a962da27e5e05bad3582deb9bb46482a9f20348cf57352489261002135e82",
+      "normalizedLfSha256": "fc2a962da27e5e05bad3582deb9bb46482a9f20348cf57352489261002135e82"
+    },
+    {
+      "file": "web/src/Appearance.tsx",
+      "sha256": "8aab4b980a71871b0a5a419af08dabeb7f9f6cd742d9a613da6c3b4ab2989cfd",
+      "normalizedLfSha256": "8aab4b980a71871b0a5a419af08dabeb7f9f6cd742d9a613da6c3b4ab2989cfd"
+    },
+    {
+      "file": "web/src/layout.css",
+      "sha256": "d5610e3d1d84fa163a636021ead5999f18e84731490d85f97f33c7344d52fe21",
+      "normalizedLfSha256": "d5610e3d1d84fa163a636021ead5999f18e84731490d85f97f33c7344d52fe21"
+    },
+    {
+      "file": "tools/layout-desktop-checks.cjs",
+      "sha256": "bc296a25b95a4b81f11db4d4d632f791d24931efd89f09a7c979d421c6238a4d",
+      "normalizedLfSha256": "bc296a25b95a4b81f11db4d4d632f791d24931efd89f09a7c979d421c6238a4d"
+    },
+    {
+      "file": "tools/layout-desktop-smoke.cjs",
+      "sha256": "710b2fdad47b764b0eb3839a355895a5291be2080a71b5c6abe9a39ada6611b9",
+      "normalizedLfSha256": "710b2fdad47b764b0eb3839a355895a5291be2080a71b5c6abe9a39ada6611b9"
+    },
+    {
+      "file": "tools/theme-desktop-smoke.cjs",
+      "sha256": "9ada532891468c3c7c7ce63cb760f51f599d31aa1fd820561e253902ce6cfcc9",
+      "normalizedLfSha256": "9ada532891468c3c7c7ce63cb760f51f599d31aa1fd820561e253902ce6cfcc9"
+    }
+  ],
+  "assets": [
+    {
+      "file": "web/dist/assets/index-BkJbTMl-.js",
+      "sha256": "b39d2336c3a03c038d47e7686d2b44dfd008facef4bbb50aabf4d6392013f264"
+    },
+    {
+      "file": "web/dist/assets/index-rZYc-fff.css",
+      "sha256": "dd7f18c20c78fe639a34dfba7130c104de68a0cc6108b1b6dff1ac2303c4c2f4"
+    },
+    {
+      "file": "web/dist/index.html",
+      "sha256": "c4235c620f3202442ddfd6e1b899e97e023c54d930851f6751b807cf170fee55"
+    },
+    {
+      "file": "web/dist/theme-init.js",
+      "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+    },
+    {
+      "file": "web/dist/workbench-config.json",
+      "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+    }
+  ],
+  "coreJarSha256": "cd19e194627d82d758ac14252f1bc9b89a6ead9de801c55e71eb59215fd6cc85"
+}

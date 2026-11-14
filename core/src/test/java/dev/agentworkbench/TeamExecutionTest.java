@@ -144,6 +144,13 @@ class TeamExecutionTest {
      * 子请求未按时到达时保留原派发、进程与线程事实，不放宽启动期限。
      */
     private String childStartFailure(String taskId) {
+        return childStartFailure(taskId, "node revocation");
+    }
+
+    /**
+     * 不同撤回检查共用失败现场，原等待期限保持不变。
+     */
+    private String childStartFailure(String taskId, String withdrawal) {
         Path evidence = Path.of("target", "team-child-start-failure-" + System.nanoTime()).toAbsolutePath();
         try {
             Files.createDirectories(evidence);
@@ -153,7 +160,7 @@ class TeamExecutionTest {
                 "executions", store.taskDispatchRecords("taskExecution", taskId), "actions", store.taskDispatchRecords("dispatchAction", taskId),
                 "agentRuns", store.list("agentRun"), "subtasks", store.list("subtask"), "modelRequests", store.list("modelRequest"),
                 "operations", store.list("operation"), "leases", store.workerLeases("", taskId, ""), "errors", errors, "prompts", prompts));
-            return "child request must reach the fixture before node revocation; evidence=" + evidence;
+            return "child request must reach the fixture before " + withdrawal + "; evidence=" + evidence;
         } catch (Exception error) { return "child request did not reach the fixture; diagnostic=" + error.getClass().getSimpleName(); }
     }
 
@@ -393,7 +400,7 @@ class TeamExecutionTest {
             if (stage(prompt, "INVESTIGATE") && results.size() == 1) return call("wait_agent", obj("subtaskId", map(result(results, 0), "agent").get("subtaskId")));
             return ordinary(prompt);
         });
-        Map<String, Object> task = task("WITHDRAW_DEFINITION", 24); String taskId = str(task, "id"); engine.action(taskId, "approve", obj()); assertTrue(entered.await(20, TimeUnit.SECONDS));
+        Map<String, Object> task = task("WITHDRAW_DEFINITION", 24); String taskId = str(task, "id"); engine.action(taskId, "approve", obj()); assertTrue(entered.await(20, TimeUnit.SECONDS), () -> childStartFailure(taskId, "definition withdrawal"));
         Map<String, Object> update = new java.util.LinkedHashMap<>(store.get("agentDefinition", "agent-research")); update.put("expectedVersion", 1); update.put("enabled", false); catalog.saveAgentDefinition(update);
         awaitTask(taskId, Set.of("UNKNOWN")); int before = calls.get(); Thread.sleep(150); assertEquals(before, calls.get());
         Map<String, Object> child = store.list("subtask").getFirst(); assertEquals(1, num(child, "definitionVersion", 0)); assertEquals("UNKNOWN", str(child, "state")); assertEquals(2, num(store.get("agentDefinition", "agent-research"), "version", 0));

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Activity, ArrowDownToLine, ArrowRight, ArrowUpRight, Bell, BookOpen, Bot, Boxes, Check, CheckCheck, ChevronDown, ChevronRight, CircleHelp, Clock3, Code2, Command, Database, FileCode2, FolderGit2, FolderOpen, GitBranch, Layers3, LayoutDashboard, Link2, ListTodo, LoaderCircle, Network, PanelLeftClose, PanelLeftOpen, Pencil, Play, Plus, Power, RefreshCw, Search, Settings2, ShieldCheck, SlidersHorizontal, Sparkles, Terminal, Trash2, TriangleAlert, Upload, UsersRound, X } from 'lucide-react';
+import { Activity, ArrowDownToLine, ArrowRight, ArrowUpRight, Bell, BookOpen, Bot, Boxes, Check, CheckCheck, ChevronDown, ChevronRight, CircleHelp, Clock3, Code2, Command, Database, FileCode2, FolderGit2, FolderOpen, GitBranch, Layers3, LayoutDashboard, Link2, ListTodo, LoaderCircle, Network, Pencil, Play, Plus, Power, RefreshCw, Search, Settings2, ShieldCheck, SlidersHorizontal, Sparkles, Terminal, Trash2, TriangleAlert, Upload, UsersRound, X } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { api, currentConnection, initializeConnection, post } from './api';
 import type { Memory, Profile, Project, Route, Task, WorkbenchState } from './types';
@@ -12,6 +12,7 @@ import { SessionWorkspace } from './SessionWorkspace';
 import { AgentDefinitions } from './AgentDefinitions';
 import { ExecutionResources } from './ExecutionResources';
 import Appearance from './Appearance';
+import { SidebarLayout, SidebarToggle } from './SidebarLayout';
 import { readBrowserValue, writeBrowserValue } from './browser-storage';
 import { version as clientVersion } from '../package.json';
 
@@ -27,7 +28,7 @@ export default function App() {
   const [page, setPage] = useState<Page>('home'); const [projectId, setProjectId] = useState(() => readBrowserValue('localStorage', 'workbench-project') || '');
   const [taskId, setTaskId] = useState(''); const [dialog, setDialog] = useState<Dialog>(null);
   const [connected, setConnected] = useState(false); const [connecting, setConnecting] = useState(true); const [connectionError, setConnectionError] = useState('');
-  const [notice, setNotice] = useState<Notice | null>(null); const [collapsed, setCollapsed] = useState(false);
+  const [notice, setNotice] = useState<Notice | null>(null);
   const [taskSearch, setTaskSearch] = useState(''); const [taskFilter, setTaskFilter] = useState('all');
   const [searchFocus, setSearchFocus] = useState(0);
   const openSearch = useCallback(() => {
@@ -79,14 +80,15 @@ export default function App() {
     { id: 'home', title: '项目总览', icon: LayoutDashboard }, { id: 'sessions', title: '协作会话', icon: Network }, { id: 'tasks', title: '研发任务', icon: Layers3 },
     { id: 'inbox', title: '需要我处理', icon: ListTodo, count: inbox.length }, { id: 'knowledge', title: '上下文与记忆', icon: BookOpen },
   ];
-  return <div className={`app-shell ${collapsed ? 'sidebar-collapsed' : ''}`}>
-    <aside className="sidebar"><div className="brand"><div className="brand-mark"><Network size={23} strokeWidth={1.9} /></div><div className="brand-word"><strong>Agent Studio<span>BETA</span></strong><small>多 Agent 研发工作台</small></div></div>
+  const connectionLabel = connecting ? '正在连接核心…' : connected ? '本地核心已连接' : '本地核心未连接';
+  return <SidebarLayout>
+    <aside id="workbench-sidebar" className="sidebar" aria-label="工作空间侧栏"><div className="brand"><div className="brand-mark"><Network size={23} strokeWidth={1.9} /></div><div className="brand-word"><strong>Agent Studio<span>BETA</span></strong><small>多 Agent 研发工作台</small></div></div>
       <div className="workspace-switch"><div className="workspace-avatar">{selectedProject?.name?.slice(0, 1) || 'W'}</div><div className="workspace-info"><span>当前工作空间</span><select aria-label="选择项目" value={projectId} onChange={e => { setProjectId(e.target.value); setTaskId(''); }}>{state.projects.length ? state.projects.map(p => <option value={p.id} key={p.id}>{p.name}</option>) : <option value="">尚未导入项目</option>}</select></div><ChevronDown size={14} /></div>
-      <div className="nav-label">工作空间</div><nav className="main-nav">{navigation.map(item => <button key={item.id} aria-label={item.title} className={page === item.id ? 'active' : ''} title={collapsed ? item.title : undefined} onClick={() => navigate(item.id)}><item.icon size={19} /><span>{item.title}</span>{!!item.count && <b>{item.count}</b>}</button>)}</nav>
+      <div className="nav-label">工作空间</div><nav className="main-nav">{navigation.map(item => <button key={item.id} aria-label={item.title} className={page === item.id ? 'active' : ''} title={item.title} onClick={() => navigate(item.id)}><item.icon size={19} /><span>{item.title}</span>{!!item.count && <b>{item.count}</b>}</button>)}</nav>
       <div className="sidebar-projects"><div className="nav-label">我的项目<button aria-label="导入项目" title="导入项目" disabled={!connected} onClick={() => setDialog({ type: 'project' })}><Plus size={15} /></button></div>{state.projects.length ? state.projects.slice(0, 8).map((project, i) => <button key={project.id} className={project.id === projectId ? 'selected' : ''} onClick={() => { setProjectId(project.id); navigate('home'); }}><i className={`project-dot tone-${i % 4}`} /><span>{project.name}</span>{project.id === projectId && <span className="selected-dot" />}</button>) : <p>导入你的第一个项目<br />开始构建持续的项目上下文</p>}</div>
-      <div className="sidebar-bottom"><div className="local-mode"><div><ShieldCheck size={17} /><b>本地优先，成果可追溯</b></div><p>项目隔离 · 明确授权 · 独立审查</p></div><button aria-label="资源与设置" className={`settings-nav ${page === 'settings' ? 'active' : ''}`} onClick={() => navigate('settings')}><Settings2 size={18} /><span>资源与设置</span></button><button className="connection-status" onClick={() => setDialog({ type: 'connection' })}><span className={`connection-dot ${connected ? 'online' : ''}`} /><span>{connecting ? '正在连接核心…' : connected ? '本地核心已连接' : '本地核心未连接'}</span><Link2 size={13} /></button></div>
+      <div className="sidebar-bottom"><div className="local-mode"><div><ShieldCheck size={17} /><b>本地优先，成果可追溯</b></div><p>项目隔离 · 明确授权 · 独立审查</p></div><button aria-label="资源与设置" className={`settings-nav ${page === 'settings' ? 'active' : ''}`} onClick={() => navigate('settings')}><Settings2 size={18} /><span>资源与设置</span></button><button className="connection-status" aria-label={connectionLabel} title={connectionLabel} onClick={() => setDialog({ type: 'connection' })}><span className={`connection-dot ${connected ? 'online' : ''}`} /><span>{connectionLabel}</span><Link2 size={13} /></button></div>
     </aside>
-    <div className="main-shell"><header className="topbar"><div className="breadcrumb"><button className="icon-button" aria-label={collapsed ? '展开侧栏' : '收起侧栏'} onClick={() => setCollapsed(!collapsed)}>{collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}</button><span>工作空间</span><ChevronRight size={13} /><strong>{selectedProject?.name || '项目工作台'}</strong></div><div className="topbar-right"><button className="icon-button" aria-label="全局搜索会话" title="搜索当前项目会话 (Ctrl/⌘ K)" disabled={!connected || !selectedProject || !!dialog} onClick={openSearch}><Search size={18} /></button><span className="local-pill"><span />本地运行</span><button className="icon-button" title="需要我处理" aria-label="需要我处理" onClick={() => navigate('inbox')}><Bell size={18} />{!!inbox.length && <i className="notification-dot" />}</button><span className="user-avatar">你</span></div></header>
+    <div className="main-shell"><header className="topbar"><div className="breadcrumb"><SidebarToggle /><span>工作空间</span><ChevronRight size={13} /><strong>{selectedProject?.name || '项目工作台'}</strong></div><div className="topbar-right"><button className="icon-button" aria-label="全局搜索会话" title="搜索当前项目会话 (Ctrl/⌘ K)" disabled={!connected || !selectedProject || !!dialog} onClick={openSearch}><Search size={18} /></button><span className="local-pill"><span />本地运行</span><button className="icon-button" title="需要我处理" aria-label="需要我处理" onClick={() => navigate('inbox')}><Bell size={18} />{!!inbox.length && <i className="notification-dot" />}</button><span className="user-avatar">你</span></div></header>
     <main className="main-content">
       {!connected && <div className="connection-banner"><div><span className="connection-dot" /><b>{connecting ? '正在连接本地执行核心' : '连接本地核心后，开始你的研发任务'}</b><p>{connecting ? '正在读取项目、任务与运行器状态…' : connectionError || '请启动 Java 核心，或在连接设置中输入访问令牌。'}</p></div><button className="button secondary small" onClick={() => setDialog({ type: 'connection' })}><Link2 size={14} />连接设置</button></div>}
       {page === 'home' && <Home state={state} project={selectedProject} tasks={projectTasks} connected={connected} onImport={() => setDialog({ type: 'project' })} onCreate={() => setDialog({ type: 'task' })} onTask={openTask} onTasks={() => navigate('tasks')} onSettings={() => navigate('settings')} onScan={async () => { if (!selectedProject) return; try { await post(`/projects/${selectedProject.id}/scan`); await refresh(); notify('项目索引已更新'); } catch (e) { notify((e as Error).message, true); } }} />}
@@ -104,7 +106,7 @@ export default function App() {
     {dialog?.type === 'memory' && <MemoryDialog memory={dialog.memory} projectId={projectId} onClose={onClose} onSaved={saved} />}
     {dialog?.type === 'profile' && <ProfileDialog profile={dialog.profile} onClose={onClose} onSaved={saved} />}
     {dialog?.type === 'connection' && <ConnectionDialog onClose={onClose} onSaved={saved} />}
-  </div>;
+  </SidebarLayout>;
 }
 
 function Home({ state, project, tasks, connected, onImport, onCreate, onTask, onTasks, onSettings, onScan }: { state: WorkbenchState; project?: Project; tasks: Task[]; connected: boolean; onImport: () => void; onCreate: () => void; onTask: (task: Task) => void; onTasks: () => void; onSettings: () => void; onScan: () => void }) {

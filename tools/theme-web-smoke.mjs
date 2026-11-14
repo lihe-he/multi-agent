@@ -74,11 +74,12 @@ try {
       await page.getByRole('button', { name: '墨夜蓝', exact: true }).click();
       await page.waitForFunction(() => document.documentElement.dataset.theme === 'ink-night-blue');
       if (scenario === 'blocked-storage' || scenario === 'quota') {
-        assert.ok((await page.getByRole('status').textContent()).includes('本次窗口仍可切换主题'));
+        const themeStatus = page.getByRole('status').filter({ hasText: '当前外观：' });
+        assert.ok((await themeStatus.textContent()).includes('本次窗口仍可切换主题'));
         current.inMemoryFallback = true;
         await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })));
         await page.waitForFunction(() => document.documentElement.dataset.theme === 'ink-night-blue');
-        assert.ok((await page.getByRole('status').textContent()).includes('本次窗口仍可切换主题'));
+        assert.ok((await themeStatus.textContent()).includes('本次窗口仍可切换主题'));
         current.inMemoryPreservedAfterPageShowEvent = true;
       } else {
         await page.reload(); await page.waitForFunction(() => document.documentElement.dataset.theme === 'ink-night-blue');
