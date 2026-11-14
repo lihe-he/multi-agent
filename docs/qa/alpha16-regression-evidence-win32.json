@@ -266,7 +266,7 @@
     },
     "finalAcceptance": {
       "file": "docs/qa/alpha16-layout-validation-win32.json",
-      "sha256": "ed6be07a741d8f7c4f8029778d6253d70bf866214eb27fe410e6835a82ff4c81"
+      "sha256": "70e7959dfa9becb2a3dfcea9d8a30e7c87b8e4bf81194e7c21ba2dc477869495"
     },
     "minimumWindowRun": {
       "file": ".runtime/alpha16-sidebar-validation/themes-desktop-retry2/receipt.json",

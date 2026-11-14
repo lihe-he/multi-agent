@@ -231,7 +231,7 @@
   },
   "regressionEvidence": {
     "file": "docs/qa/alpha16-regression-evidence-win32.json",
-    "sha256": "2672a4fbb96f98542088ef4d6af1ad35bd80b9452fab2b9740043232d0112e22"
+    "sha256": "d69db3c2754ee9317b21fad4541d80b66eaa03d358a516834a04a019efd18b50"
   },
   "fileVersions": {
     "report": "docs/qa/file-versions-win32.json",
@@ -3059,10 +3059,13 @@
   ],
   "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-final-local-qa",
   "ci": {
-    "status": "FIXED_PRODUCTION_COMMIT_CI_PENDING",
-    "originalFailedRun": 43151063170,
-    "originalFailedCommit": "a7a939fed65881b5e9816a1a994fe8b42e7b890e",
-    "failureReceipt": "docs/qa/alpha16-ci-theme-failure.json"
+    "status": "VERIFIED_THREE_PLATFORM_CI",
+    "productionCommit": "045f72b913370e5249508c140226e66e630bdd99",
+    "runId": 43177701330,
+    "runAttempt": 1,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/43177701330",
+    "receipt": "docs/qa/alpha16-ci-themes-receipt.json",
+    "actualEvidenceDigestsVerified": true
   },
   "retainedFailures": [
     {
@@ -3197,7 +3200,7 @@
   "completeProjectGoal": false,
   "layoutFollowUp": {
     "file": "docs/qa/alpha16-layout-validation-win32.json",
-    "sha256": "ed6be07a741d8f7c4f8029778d6253d70bf866214eb27fe410e6835a82ff4c81",
+    "sha256": "70e7959dfa9becb2a3dfcea9d8a30e7c87b8e4bf81194e7c21ba2dc477869495",
     "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-layout-final-local-qa",
     "previousValidationSha256": "29f71a669a997ba17132bee4a1888f01cc5bb511a1094131ebb8dc1912db6428",
     "originalAcceptanceStepsRetained": true

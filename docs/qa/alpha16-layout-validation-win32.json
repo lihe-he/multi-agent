@@ -1026,7 +1026,15 @@
   "priorEvidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-final-local-qa",
   "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha16-layout-final-local-qa",
   "ci": {
-    "status": "FIXED_PRODUCTION_COMMIT_CI_PENDING"
+    "status": "VERIFIED_THREE_PLATFORM_CI",
+    "productionCommit": "045f72b913370e5249508c140226e66e630bdd99",
+    "runId": 43177701330,
+    "runAttempt": 1,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/43177701330",
+    "receipt": "docs/qa/alpha16-ci-themes-receipt.json",
+    "actualEvidenceDigestsVerified": true,
+    "minimumWindowNavigationVerifiedOnAllThreePlatforms": true,
+    "acceptedSourcesMatchExactProductionCommit": true
   },
   "completeProjectGoal": false
 }
