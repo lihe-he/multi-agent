@@ -16349,7 +16349,16 @@
   "independentDescendantDiagnosisDoesNotReconstructOriginalFailureTimeline": true,
   "independentPointerObservationDoesNotDetermineOriginalDesktopFailureCauses": true,
   "ci": {
-    "status": "EXACT_PRODUCTION_COMMIT_CI_PENDING"
+    "status": "VERIFIED_THREE_PLATFORM_CI",
+    "productionCommit": "1ead6b29d9532a7d31f89b040bd73fdb6ed4a1b9",
+    "runId": 43583094529,
+    "runAttempt": 1,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/43583094529",
+    "receipt": "docs/qa/alpha18-ci-diff-receipt.json",
+    "actualEvidenceDigestsVerified": true,
+    "acceptedSourcesMatchExactProductionCommit": true,
+    "actualDiffViewVerifiedOnAllThreePlatforms": true,
+    "actualPackagedSidebarRestartVerifiedOnAllThreePlatforms": true
   },
   "publishedDistribution": false,
   "completeProjectGoal": false,
