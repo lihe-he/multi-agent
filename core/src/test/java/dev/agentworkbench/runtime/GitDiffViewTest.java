@@ -2,13 +2,18 @@ package dev.agentworkbench.runtime;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.agentworkbench.ApiException;
+import dev.agentworkbench.CheckpointFailureEvidence;
 import dev.agentworkbench.ExecutionStore;
 import dev.agentworkbench.ManagedProcessLedger;
 import dev.agentworkbench.WorkbenchController;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -16,6 +21,7 @@ import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -26,6 +32,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * 真实 Git 基线、实际文件改写及原进程身份验证逐文件只读差异。
  */
+@ExtendWith(CheckpointFailureEvidence.class)
 class GitDiffViewTest {
     @TempDir(cleanup = CleanupMode.ON_SUCCESS) Path temporary;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -417,6 +425,21 @@ class GitDiffViewTest {
         Files.writeString(root.resolve("\t\n"), "unsupported whitespace name\n"); assertEquals(400, assertThrows(ApiException.class, () -> view(runtime(), root, "")).status());
     }
 
+    @Test
+    @EnabledOnOs({OS.LINUX, OS.MAC})
+    void ordinaryWorkspaceSnapshotDoesNotEnterAnUnreadableGitObjectDirectory() throws Exception {
+        Path root = root("snapshot-pruning"), ordinary = Files.createDirectories(root.resolve("nested/.git-kept")).resolve("中文.txt");
+        Files.writeString(ordinary, "complete ordinary workspace bytes\n");
+        SourceState before = source(root); assertEquals(sha(Files.readAllBytes(ordinary)), before.files.get(root.relativize(ordinary).toString()));
+        Path objects = root.resolve(".git/objects"); Set<PosixFilePermission> permissions = Files.getPosixFilePermissions(objects);
+        try {
+            Files.setPosixFilePermissions(objects, Set.of());
+            Assumptions.assumeFalse(Files.isReadable(objects), "平台仍可读取禁止访问的目录，不能验证实际遍历拒绝");
+            assertEquals(before.files, sourceFiles(root));
+        } finally { Files.setPosixFilePermissions(objects, permissions); }
+        assertSource(root, before);
+    }
+
     private Map<String, Object> view(WorkspaceRuntime runtime, Path root, String path) { return runtime.diffView(root.toString(), path, "", ""); }
     private Map<String, Object> selected(WorkspaceRuntime runtime, Path root, Map<String, Object> view, String path) { return map(runtime.diffView(root.toString(), path, str(view, "version"), str(view, "baseline")), "preview"); }
     private List<Map<String, Object>> lines(Map<String, Object> preview) { return objects(preview.get("hunks")).stream().flatMap(hunk -> objects(hunk.get("lines")).stream()).toList(); }
@@ -442,9 +465,27 @@ class GitDiffViewTest {
     }
     private record SourceState(String head, byte[] index, byte[] config, Map<String, String> files) {}
     private SourceState source(Path root) throws Exception {
-        Map<String, String> files = new LinkedHashMap<>();
-        try (var entries = Files.walk(root)) { for (Path path : entries.filter(Files::isRegularFile).toList()) if (!path.startsWith(root.resolve(".git"))) files.put(root.relativize(path).toString(), sha(Files.readAllBytes(path))); }
+        Map<String, String> files = sourceFiles(root);
         return new SourceState(git(root, "rev-parse", "HEAD"), Files.readAllBytes(root.resolve(".git/index")), Files.readAllBytes(root.resolve(".git/config")), files);
+    }
+
+    /**
+     * 遍历前排除顶层 Git 内部目录；普通工作区读取失败仍保留原异常。
+     */
+    private Map<String, String> sourceFiles(Path root) throws Exception {
+        Map<String, String> files = new LinkedHashMap<>();
+        Path gitDirectory = root.resolve(".git"); List<Path> paths = new ArrayList<>();
+        Files.walkFileTree(root, new SimpleFileVisitor<>() {
+            @Override public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attributes) {
+                return path.equals(gitDirectory) ? FileVisitResult.SKIP_SUBTREE : FileVisitResult.CONTINUE;
+            }
+            @Override public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) {
+                if (!path.startsWith(gitDirectory) && Files.isRegularFile(path)) paths.add(path);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        for (Path path : paths) files.put(root.relativize(path).toString(), sha(Files.readAllBytes(path)));
+        return files;
     }
     private void assertSource(Path root, SourceState before) throws Exception {
         SourceState after = source(root); assertEquals(before.head, after.head); assertArrayEquals(before.index, after.index); assertArrayEquals(before.config, after.config); assertEquals(before.files, after.files);

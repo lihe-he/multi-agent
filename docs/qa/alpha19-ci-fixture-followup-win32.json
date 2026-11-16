@@ -1,0 +1,1896 @@
+{
+  "recordedAt": "2026-11-16T04:31:05.593Z",
+  "version": "0.2.0-alpha.19",
+  "platform": "win32",
+  "status": "passed",
+  "baseCommit": "40e98fa9a1e134ec75608681c5fc654d97f1f474",
+  "scope": "Two complete affected test suites after original macOS CI failure; prior full local product acceptance retained. This is not a new full clean build or final three-platform CI receipt.",
+  "local": {
+    "directory": ".runtime/alpha19-core-ci-fixtures-attempt1",
+    "startedAt": "2026-11-16T04:18:38.946Z",
+    "completedAt": "2026-11-16T04:26:26.526Z",
+    "command": [
+      "D:/JAVA/Apahce-Maven/apache-maven-3.9.11/bin/mvn.cmd",
+      "-B",
+      "-ntp",
+      "-Dtest=GitDiffViewTest,WorkspaceCheckpointArchiveTest",
+      "test"
+    ],
+    "commandLogSha256": "ffecdf9f60366fd00712879b3ead07ab2742fcd4fdc36128d7d8fc1d64886ccf",
+    "receiptSha256": "30e7390015ffb6c81ccf3d43762fac5af688ccf4467b44e3139a2b828b4d379f",
+    "totals": {
+      "tests": 65,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 6,
+      "passed": 59
+    },
+    "suites": [
+      {
+        "name": "dev.agentworkbench.runtime.GitDiffViewTest",
+        "xmlFile": "TEST-dev.agentworkbench.runtime.GitDiffViewTest.xml",
+        "xmlSha256": "ff7a8fa5ff48c6304bacb2daa93c270168a7e975d21c85ece1215561e57d8f3e",
+        "tests": 33,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 3,
+        "passed": 30,
+        "originalCasesRetained": 32,
+        "addedCaseKeys": [
+          "dev.agentworkbench.runtime.GitDiffViewTest#ordinaryWorkspaceSnapshotDoesNotEnterAnUnreadableGitObjectDirectory"
+        ],
+        "skippedCases": [
+          {
+            "name": "ordinaryWorkspaceSnapshotDoesNotEnterAnUnreadableGitObjectDirectory",
+            "reason": "Disabled on operating system: Windows 11"
+          },
+          {
+            "name": "posixTabsNewlinesAndBackslashesStayLiteralAndWhitespaceOnlyNamesAreRejected",
+            "reason": "Disabled on operating system: Windows 11"
+          },
+          {
+            "name": "redirectedPreviewRootCannotWriteIntoAForeignOrInternalLinkedDirectory",
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "name": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+        "xmlFile": "TEST-dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.xml",
+        "xmlSha256": "15cf486302efcd2c1d0a41240b987005367abf236c06f3a86495f793cbe0bd1a",
+        "tests": 32,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 3,
+        "passed": 29,
+        "originalCasesRetained": 31,
+        "addedCaseKeys": [
+          "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest#symbolicDirectoryAliasesCannotAuthorizeCheckpointCapture(String)"
+        ],
+        "skippedCases": [
+          {
+            "name": "fileExecutionPermissionsAreRestoredAlongWithTheBytes",
+            "reason": ""
+          },
+          {
+            "name": "readOnlyTargetPermissionsAreRestoredWithoutReopeningTheFileForWrite",
+            "reason": ""
+          },
+          {
+            "name": "symbolicDirectoryAliasesCannotAuthorizeCheckpointCapture(String)",
+            "reason": "Disabled on operating system: Windows 11"
+          }
+        ]
+      }
+    ],
+    "originalAffectedCasesRetained": 63,
+    "sourcesUnchanged": true,
+    "allOtherCopiedXmlExcludedFromCounts": true
+  },
+  "expectedFullCiTests": {
+    "win32": 449,
+    "darwin": 451,
+    "linux": 451
+  },
+  "conditionalCaseCountExplanation": "JUnit disables the POSIX parameterized template on Windows before creating its three invocations, so Windows records one skipped template plus one skipped directory-access test. macOS/Linux create all three symbolic-alias cases plus the directory-access test.",
+  "originalMacosFailure": {
+    "runId": 43800367811,
+    "runAttempt": 1,
+    "productionCommit": "40e98fa9a1e134ec75608681c5fc654d97f1f474",
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/43800367811",
+    "artifact": {
+      "id": 14195454554,
+      "directory": ".runtime/alpha19-ci/artifact-14195454554-run-43800367811-attempt-1",
+      "sha256": "7627a561c0af9c9008863a5d47de4c1b5194141a4282778af9804d1ddc08b406",
+      "bytes": 7411479,
+      "digestVerified": true
+    },
+    "totals": {
+      "tests": 447,
+      "failures": 1,
+      "errors": 1,
+      "skipped": 9
+    },
+    "failedSuites": [
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitDiffViewTest.xml",
+        "sha256": "f77be8fbe4efb2b8ce1a4477f9c57df005288bd0e41c485a311b959bca2fae70",
+        "name": "dev.agentworkbench.runtime.GitDiffViewTest",
+        "tests": 32,
+        "failures": 0,
+        "errors": 1,
+        "skipped": 1,
+        "failedCases": [
+          {
+            "name": "evenWellFormedGitRowsMustReconstructTheCapturedBeforeAndAfterBytes(String)[1]",
+            "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+            "originalXmlBody": "\n    <error message=\"java.nio.file.NoSuchFileException: /var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-11832987018459397993/row-binding 中文 repo/.git/objects/maintenance.lock\" type=\"java.io.UncheckedIOException\"><![CDATA[java.io.UncheckedIOException: java.nio.file.NoSuchFileException: /var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-11832987018459397993/row-binding 中文 repo/.git/objects/maintenance.lock\n\tat java.base/java.nio.file.FileTreeIterator.fetchNextIfNeeded(FileTreeIterator.java:87)\n\tat java.base/java.nio.file.FileTreeIterator.hasNext(FileTreeIterator.java:103)\n\tat java.base/java.util.Iterator.forEachRemaining(Iterator.java:132)\n\tat java.base/java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1939)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:575)\n\tat java.base/java.util.stream.AbstractPipeline.evaluateToArrayNode(AbstractPipeline.java:260)\n\tat java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:616)\n\tat java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:622)\n\tat java.base/java.util.stream.ReferencePipeline.toList(ReferencePipeline.java:627)\n\tat dev.agentworkbench.runtime.GitDiffViewTest.source(GitDiffViewTest.java:446)\n\tat dev.agentworkbench.runtime.GitDiffViewTest.evenWellFormedGitRowsMustReconstructTheCapturedBeforeAndAfterBytes(GitDiffViewTest.java:364)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:178)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)\n\tat java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)\n\tat java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\nCaused by: java.nio.file.NoSuchFileException: /var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-11832987018459397993/row-binding 中文 repo/.git/objects/maintenance.lock\n\tat java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)\n\tat java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106)\n\tat java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)\n\tat java.base/sun.nio.fs.UnixFileAttributeViews$Basic.readAttributes(UnixFileAttributeViews.java:55)\n\tat java.base/sun.nio.fs.UnixFileSystemProvider.readAttributes(UnixFileSystemProvider.java:171)\n\tat java.base/java.nio.file.Files.readAttributes(Files.java:1854)\n\tat java.base/java.nio.file.FileTreeWalker.getAttributes(FileTreeWalker.java:220)\n\tat java.base/java.nio.file.FileTreeWalker.visit(FileTreeWalker.java:277)\n\tat java.base/java.nio.file.FileTreeWalker.next(FileTreeWalker.java:374)\n\tat java.base/java.nio.file.FileTreeIterator.fetchNextIfNeeded(FileTreeIterator.java:94)\n\t... 47 more\n]]></error>\n  "
+          }
+        ]
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.xml",
+        "sha256": "8097e9355d4822d8898e88cf9a2970a75a8310740a49aa2df59a2d9dfaf795f2",
+        "name": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+        "tests": 31,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "failedCases": [
+          {
+            "name": "legacyPreparationWithUnresolvedDataPathPublishesAndRecoversTheCanonicalOwnedWorkspace",
+            "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+            "originalXmlBody": "\n    <failure message=\"expected: &lt;true&gt; but was: &lt;false&gt;\" type=\"org.opentest4j.AssertionFailedError\"><![CDATA[org.opentest4j.AssertionFailedError: expected: <true> but was: <false>\n\tat org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)\n\tat org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)\n\tat org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)\n\tat org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)\n\tat org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)\n\tat org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)\n\tat dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.legacyPreparationWithUnresolvedDataPathPublishesAndRecoversTheCanonicalOwnedWorkspace(WorkspaceCheckpointArchiveTest.java:63)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></failure>\n  "
+          }
+        ]
+      }
+    ],
+    "checkpoint": {
+      "originalFixture": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-8550386149371748017",
+      "jvmTemporaryRoot": "/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/",
+      "publishedWorkspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-8550386149371748017/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work",
+      "reconstructedOldPath": "/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-8550386149371748017/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work",
+      "reconstructedFromOriginalSourcesAndCanonicalManifest": true,
+      "literalOldPathNotIndependentlySavedAtAssertion": true,
+      "actualPrivateVarSymlinkMetadataNotUploaded": true,
+      "publishedManifestSha256": "9edb8604708b25dbc4ce1a0a37a8b2209b255feee4c25a4a2729a57248dfb384",
+      "sourceAndIndexFilesVerified": true,
+      "decision": "Preserve lexical unresolved data-path preparation coverage; use canonical task path on POSIX and retain ordinary Windows short-path coverage. Add explicit symbolic alias refusal."
+    },
+    "gitDiff": {
+      "exception": "NoSuchFileException for .git/objects/maintenance.lock during Files.walk fixture enumeration",
+      "originalGitDiffFixtureUploaded": false,
+      "gap": "ON_SUCCESS kept the runner temporary fixture but the workflow uploaded no GitDiff TempDir copy; no original lock bytes, actor or disappearance timeline available.",
+      "decision": "Prune top-level .git subtree before enumeration; preserve original HEAD/index/config and complete non-Git file hashing. Do not swallow workspace IO failures."
+    },
+    "verifiedOriginalFixtureFiles": [
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/empty.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/b.txt",
+        "bytes": 11,
+        "sha256": "1896468176c48ad4ec287394037bc8d4eb1704cfa0f3059305b8d6bf7a1799db"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/binary.dat",
+        "bytes": 5,
+        "sha256": "5b67fc778b067e90ba58cc6b058f2295d0e48f1e8a23651a78b73ec256d8eb49"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/a.txt",
+        "bytes": 11,
+        "sha256": "ae3a34637248346a38bb2798377746429731b1068467d81e5ee4ea643ef5914e"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/config",
+        "bytes": 198,
+        "sha256": "f2b1e490c6bfa3c40676f5e740c7dd322610004330be497cfed0a52e14f42096"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/objects/9d/b15449c66738154825d953eba86a7e8dc50065",
+        "bytes": 20,
+        "sha256": "dc84e3f2eeafda9c14c00627dcb9a9a43ed673a4efb426019133f0b72698bdd8"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/objects/b5/153d8a725ee1a1d4dac716801e34aa71a2039c",
+        "bytes": 27,
+        "sha256": "165e822758208fe622417917c25b84529451a32bf1434d6301e9a0391f76725e"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/objects/43/5375d1a6295b16077f86b40c04b4af40f0ce66",
+        "bytes": 141,
+        "sha256": "596b28569e5826f5398d3d5ca2da6b0d22c2b15734f80cbafdd704d2164e637e"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/objects/31/6b1422ca1ffacc9281794e695fcc9d5815e929",
+        "bytes": 132,
+        "sha256": "b60cfe5e0e89d27c4aa3e6f383fe6d2d31b8725fd12075927f0cd860ec034a89"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/objects/37/c76c2545896e3138a4b271eab3fd9df648a1dd",
+        "bytes": 27,
+        "sha256": "9a2e5b4ef3b009ae4ffd5e690a961edb17dcb12714f5e8404c469650647c1f0c"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "bytes": 15,
+        "sha256": "164c5fa8067facf1a43f09ce3d0e35ebf53a7f5723ecbf15a8667cfc53c26f6c"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/HEAD",
+        "bytes": 23,
+        "sha256": "f6f2b945f6c411b02ba3da9c7ace88dcf71b6af65ba2e0d89aa82900042b5a10"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/info/exclude",
+        "bytes": 240,
+        "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/logs/HEAD",
+        "bytes": 165,
+        "sha256": "c276f37db8dbd9df614831a60d345c1fba44e89472bffe88c7938be417ef9e9c"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/logs/refs/heads/master",
+        "bytes": 165,
+        "sha256": "c276f37db8dbd9df614831a60d345c1fba44e89472bffe88c7938be417ef9e9c"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/description",
+        "bytes": 73,
+        "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/commit-msg.sample",
+        "bytes": 1972,
+        "sha256": "efc1401b0e99d1ff51494d154d98b46c1e99059bcd8bf9f73cecde19fd3eb23b"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/pre-rebase.sample",
+        "bytes": 4898,
+        "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/sendemail-validate.sample",
+        "bytes": 2308,
+        "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/pre-commit.sample",
+        "bytes": 1649,
+        "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/applypatch-msg.sample",
+        "bytes": 478,
+        "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/fsmonitor-watchman.sample",
+        "bytes": 4611,
+        "sha256": "9159720099ad5595b8e66645cbfd47763c1e920f46e0b50ae75e642bbec57ef0"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/pre-receive.sample",
+        "bytes": 544,
+        "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/prepare-commit-msg.sample",
+        "bytes": 1492,
+        "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/post-update.sample",
+        "bytes": 189,
+        "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/pre-merge-commit.sample",
+        "bytes": 416,
+        "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/pre-applypatch.sample",
+        "bytes": 424,
+        "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/pre-push.sample",
+        "bytes": 1374,
+        "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/update.sample",
+        "bytes": 3650,
+        "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/hooks/push-to-checkout.sample",
+        "bytes": 2783,
+        "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/refs/heads/master",
+        "bytes": 41,
+        "sha256": "2f7189a338210fa21f8719c3a2c7d9cd8fc2d9a6fd96393c73119c1955ac578e"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/index",
+        "bytes": 361,
+        "sha256": "bb768ab811ce104d9fc1d2c7d10a45f18bd81fc7982f9988442e1e685882dea6"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/source/.git/COMMIT_EDITMSG",
+        "bytes": 9,
+        "sha256": "4b654bd1437066b13498661f3ca14774daf1066d072036beffaf06f0c014250e"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/checkpoints/tasks/0303ce77-c0bb-492a-bc84-33b39259fa8f/b6752975-f251-47bb-ad85-8815e337acd1/manifest.json",
+        "bytes": 3878,
+        "sha256": "9edb8604708b25dbc4ce1a0a37a8b2209b255feee4c25a4a2729a57248dfb384"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/checkpoints/objects/ae/ae3a34637248346a38bb2798377746429731b1068467d81e5ee4ea643ef5914e",
+        "bytes": 11,
+        "sha256": "ae3a34637248346a38bb2798377746429731b1068467d81e5ee4ea643ef5914e"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/checkpoints/objects/e3/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/checkpoints/objects/18/1896468176c48ad4ec287394037bc8d4eb1704cfa0f3059305b8d6bf7a1799db",
+        "bytes": 11,
+        "sha256": "1896468176c48ad4ec287394037bc8d4eb1704cfa0f3059305b8d6bf7a1799db"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/checkpoints/objects/5b/5b67fc778b067e90ba58cc6b058f2295d0e48f1e8a23651a78b73ec256d8eb49",
+        "bytes": 5,
+        "sha256": "5b67fc778b067e90ba58cc6b058f2295d0e48f1e8a23651a78b73ec256d8eb49"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/checkpoints/objects/22/223a5da1cabad6f9b79a5ba72f4ba509cc715f93288a4c7a32912d83ac0ec547",
+        "bytes": 361,
+        "sha256": "223a5da1cabad6f9b79a5ba72f4ba509cc715f93288a4c7a32912d83ac0ec547"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/preparation.json",
+        "bytes": 345,
+        "sha256": "6639de8329aeda547f8b0442ab476ddf7240e09bd5c1dd9e2e2843dbffb4aebf"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/empty.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/b.txt",
+        "bytes": 11,
+        "sha256": "1896468176c48ad4ec287394037bc8d4eb1704cfa0f3059305b8d6bf7a1799db"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/binary.dat",
+        "bytes": 5,
+        "sha256": "5b67fc778b067e90ba58cc6b058f2295d0e48f1e8a23651a78b73ec256d8eb49"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/a.txt",
+        "bytes": 11,
+        "sha256": "ae3a34637248346a38bb2798377746429731b1068467d81e5ee4ea643ef5914e"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/config",
+        "bytes": 221,
+        "sha256": "eb5fd4c3e5c6a82369480e4ccbeb12c8942576d9c1056813b8fd436c6485783c"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/objects/pack/pack-636ffe8e745e8e4200ef7d7392c32b889c601168.idx",
+        "bytes": 1240,
+        "sha256": "486793c9d417ea2d6a96b37733ea023b15eb5b998e5f10229fc9a64757669f60"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/objects/pack/pack-636ffe8e745e8e4200ef7d7392c32b889c601168.pack",
+        "bytes": 358,
+        "sha256": "49bef59fbc8766a98be3b54e007be9477372d674509109c2c397bf02d186f8b0"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/objects/pack/pack-636ffe8e745e8e4200ef7d7392c32b889c601168.rev",
+        "bytes": 76,
+        "sha256": "edd3dbb1a0db5416d03646d9774262a00376f18bd63a078ed35d7712424a25d6"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/HEAD",
+        "bytes": 41,
+        "sha256": "2f7189a338210fa21f8719c3a2c7d9cd8fc2d9a6fd96393c73119c1955ac578e"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/info/exclude",
+        "bytes": 240,
+        "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/logs/HEAD",
+        "bytes": 565,
+        "sha256": "ba1ceb1d3b036b519c7a3cc1385be57e5edf23fa92a03f9d7eb9553d4de94552"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/logs/refs/heads/master",
+        "bytes": 311,
+        "sha256": "bc2b1133ba961a679c31be070267f5941b49fbe54ac33dbaaaaa5881a49afc37"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/description",
+        "bytes": 73,
+        "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/commit-msg.sample",
+        "bytes": 1972,
+        "sha256": "efc1401b0e99d1ff51494d154d98b46c1e99059bcd8bf9f73cecde19fd3eb23b"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/pre-rebase.sample",
+        "bytes": 4898,
+        "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/sendemail-validate.sample",
+        "bytes": 2308,
+        "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/pre-commit.sample",
+        "bytes": 1649,
+        "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/applypatch-msg.sample",
+        "bytes": 478,
+        "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/fsmonitor-watchman.sample",
+        "bytes": 4611,
+        "sha256": "9159720099ad5595b8e66645cbfd47763c1e920f46e0b50ae75e642bbec57ef0"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/pre-receive.sample",
+        "bytes": 544,
+        "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/prepare-commit-msg.sample",
+        "bytes": 1492,
+        "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/post-update.sample",
+        "bytes": 189,
+        "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/pre-merge-commit.sample",
+        "bytes": 416,
+        "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/pre-applypatch.sample",
+        "bytes": 424,
+        "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/pre-push.sample",
+        "bytes": 1374,
+        "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/update.sample",
+        "bytes": 3650,
+        "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/hooks/push-to-checkout.sample",
+        "bytes": 2783,
+        "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/refs/heads/master",
+        "bytes": 41,
+        "sha256": "2f7189a338210fa21f8719c3a2c7d9cd8fc2d9a6fd96393c73119c1955ac578e"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/index",
+        "bytes": 361,
+        "sha256": "223a5da1cabad6f9b79a5ba72f4ba509cc715f93288a4c7a32912d83ac0ec547"
+      },
+      {
+        "entry": "core/target/checkpoint-evidence-test-283a7d8b-46d3-45a8-883f-46f54927ac61/original-fixture/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work/.git/packed-refs",
+        "bytes": 46,
+        "sha256": "6110899c7adc374885f9552bddfb76fa28a7f7ca3c05fb8b74471a457e1e57c8"
+      }
+    ],
+    "originalAuditFile": ".runtime/alpha19-ci-original-macos-audit-attempt1/receipt.json",
+    "originalAuditSha256": "48f9cbc9ca2cb9cbea2e254afc12b39324e721a1d651ed02ce49e687315820e8",
+    "originalResultsRetained": true
+  },
+  "changes": [
+    "Prune the top-level .git directory before ordinary file enumeration; preserve original HEAD/index/config and all ordinary file hashes, including nested similarly named directories.",
+    "Keep unresolved data-path preparation; select canonical POSIX task paths and retain ordinary Windows short-path acceptance.",
+    "Explicitly reject LEGACY/CLONE/WORKTREE symbolic workspace aliases without publishing a checkpoint or changing original manifest, ownership, index or source HEAD.",
+    "Preserve future GitDiff failed TempDir fixtures with the existing evidence extension before JUnit cleanup."
+  ],
+  "testSources": [
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+      "sha256": "cd626f66c1e3f2608351c0965b82d38a8d7d8bed0ab183a46ddc758b91a4b81c",
+      "normalizedLfSha256": "cd626f66c1e3f2608351c0965b82d38a8d7d8bed0ab183a46ddc758b91a4b81c",
+      "originalGitBlobSha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87",
+      "originalTimingExpressionsRetained": [
+        ".get(20, TimeUnit.SECONDS)",
+        ".get(20, TimeUnit.SECONDS)",
+        "waitFor(20, TimeUnit.SECONDS)",
+        "waitFor(5, TimeUnit.SECONDS)",
+        "waitFor(20, TimeUnit.SECONDS)",
+        "waitFor(5, TimeUnit.SECONDS)",
+        ".join(3_000)"
+      ]
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+      "sha256": "8361be46fd87695848f485dbfc927cf5ddb1240316756b821a0ce59cc9e0a793",
+      "normalizedLfSha256": "8361be46fd87695848f485dbfc927cf5ddb1240316756b821a0ce59cc9e0a793",
+      "originalGitBlobSha256": "19ee2d272c6eb067caf6754fdf395aa0728d6d9261bac420cb97dda06e976f48",
+      "originalTimingExpressionsRetained": []
+    }
+  ],
+  "acceptedSources": [
+    {
+      "file": "core/pom.xml",
+      "sha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598",
+      "normalizedLfSha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/AgentPermissions.java",
+      "sha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8",
+      "normalizedLfSha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ApiErrors.java",
+      "sha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c",
+      "normalizedLfSha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ApiException.java",
+      "sha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c",
+      "normalizedLfSha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/BudgetPolicy.java",
+      "sha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7",
+      "normalizedLfSha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CheckpointExportHistory.java",
+      "sha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c",
+      "normalizedLfSha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CheckpointLedger.java",
+      "sha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8",
+      "normalizedLfSha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CollaborationPolicy.java",
+      "sha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277",
+      "normalizedLfSha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionNodes.java",
+      "sha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba",
+      "normalizedLfSha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+      "sha256": "1044d948da7e20a08377fe9b4c23140607473d04ebf6e55c2a7e1c493605ee32",
+      "normalizedLfSha256": "29663610aa1c73e07dbf018e6e748f25888b3701e6e30cb9375b86b70502e600"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionWorker.java",
+      "sha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5",
+      "normalizedLfSha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+      "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c",
+      "normalizedLfSha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/Json.java",
+      "sha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62",
+      "normalizedLfSha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/LocalAccessFilter.java",
+      "sha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08",
+      "normalizedLfSha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+      "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998",
+      "normalizedLfSha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+      "sha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85",
+      "normalizedLfSha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/PlanValidator.java",
+      "sha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091",
+      "normalizedLfSha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+      "sha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e",
+      "normalizedLfSha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+      "sha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2",
+      "normalizedLfSha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ResourceManager.java",
+      "sha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c",
+      "normalizedLfSha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/SessionController.java",
+      "sha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1",
+      "normalizedLfSha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+      "sha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa",
+      "normalizedLfSha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TeamCoordinator.java",
+      "sha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e",
+      "normalizedLfSha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+      "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c",
+      "normalizedLfSha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchApplication.java",
+      "sha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961",
+      "normalizedLfSha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+      "sha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc",
+      "normalizedLfSha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+      "sha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af",
+      "normalizedLfSha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+      "sha256": "ca2505cea9318bdeeea7462d438109240efbde2daab82ea48b1ebd71a7716caa",
+      "normalizedLfSha256": "b738afd2cfb92cf643f61bc1c3ccfa4e08770851e2e10c2da7d06ace4ef52aa3"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchVersion.java",
+      "sha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45",
+      "normalizedLfSha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+      "sha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28",
+      "normalizedLfSha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerProcess.java",
+      "sha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837",
+      "normalizedLfSha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+      "sha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d",
+      "normalizedLfSha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerRpc.java",
+      "sha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572",
+      "normalizedLfSha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerWire.java",
+      "sha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61",
+      "normalizedLfSha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+      "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c",
+      "normalizedLfSha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpAccessRegistry.java",
+      "sha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f",
+      "normalizedLfSha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+      "sha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e",
+      "normalizedLfSha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+      "sha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906",
+      "normalizedLfSha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpTaskPolicy.java",
+      "sha256": "9e649ae1c9a378deb9ed90bc24dd0339245c0b447c30e0a17794056d8b409018",
+      "normalizedLfSha256": "69f4156d5f0c9f79ed287265ec3bea9284eaf0e004712151c7bf2de244afcdb6"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+      "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e",
+      "normalizedLfSha256": "cdc7e2c231f314f08639cd617011a35c3092e4724989af522411f7efdde34d87"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/AgentToolSession.java",
+      "sha256": "39ad743bcbb0e966a126061ac9676f693f75cbcf814eac26090dd3412a7a88a2",
+      "normalizedLfSha256": "df85816da5746660a2c6567959f602c88012024f79f02aafa36e14dd134a641b"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/CheckpointRestoreRejected.java",
+      "sha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434",
+      "normalizedLfSha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+      "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931",
+      "normalizedLfSha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitBlobBatch.java",
+      "sha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa",
+      "normalizedLfSha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+      "sha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423",
+      "normalizedLfSha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+      "sha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242",
+      "normalizedLfSha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/ModelCallObserver.java",
+      "sha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a",
+      "normalizedLfSha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+      "sha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846",
+      "normalizedLfSha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+      "sha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448",
+      "normalizedLfSha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceContentSnapshot.java",
+      "sha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79",
+      "normalizedLfSha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+      "sha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3",
+      "normalizedLfSha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+      "sha256": "c4c864bf554e2405244376b1fc428b3d4d516ba0ff090b62257a57d41ecda1b1",
+      "normalizedLfSha256": "29c28a1c622b98fd810850e740b2e08215ad08a1d2227c29dd347b3c6776a267"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceSelectionConflict.java",
+      "sha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195",
+      "normalizedLfSha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+      "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360",
+      "normalizedLfSha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
+    },
+    {
+      "file": "core/src/main/resources/application.properties",
+      "sha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39",
+      "normalizedLfSha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39"
+    },
+    {
+      "file": "core/src/main/resources/workbench-build.properties",
+      "sha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458",
+      "normalizedLfSha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/AgentRunStoreTest.java",
+      "sha256": "b89ee4f4f690f0aeaf622ba857fe4999fbc1698cac5d8377d09b953f919b7ff0",
+      "normalizedLfSha256": "15b1a49b869828416a01f5cbccb99ca26169d1789451d649cc256546391afd7f"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/CheckpointEngineTest.java",
+      "sha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4",
+      "normalizedLfSha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/CheckpointExportHistoryTest.java",
+      "sha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6",
+      "normalizedLfSha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/CheckpointFailureEvidence.java",
+      "sha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3",
+      "normalizedLfSha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ExecutionStoreTest.java",
+      "sha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6",
+      "normalizedLfSha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
+      "sha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3",
+      "normalizedLfSha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/GitWorkspaceTest.java",
+      "sha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83",
+      "normalizedLfSha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/LocalAccessFilterTest.java",
+      "sha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2",
+      "normalizedLfSha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
+      "sha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406",
+      "normalizedLfSha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ModelRequestStoreTest.java",
+      "sha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603",
+      "normalizedLfSha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/PlanAndPolicyTest.java",
+      "sha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c",
+      "normalizedLfSha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
+      "sha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c",
+      "normalizedLfSha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/RootDispatchEngineTest.java",
+      "sha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c",
+      "normalizedLfSha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/RuntimeDelegationTest.java",
+      "sha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7",
+      "normalizedLfSha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+      "sha256": "409cc2ef7d95a36128b325870607708751f953f27892235d3231a4f7c7de57e3",
+      "normalizedLfSha256": "1ce30cc4ff41d2e67095ee183c358b4841ec1531564b1b920d642c5362fd4733"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/SessionStoreTest.java",
+      "sha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62",
+      "normalizedLfSha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TaskDispatchQueueTest.java",
+      "sha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88",
+      "normalizedLfSha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+      "sha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409",
+      "normalizedLfSha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TeamRecordsTest.java",
+      "sha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef",
+      "normalizedLfSha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WindowsProcessSnapshotTest.java",
+      "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1",
+      "normalizedLfSha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkbenchEngineTest.java",
+      "sha256": "14601d8e0087715b1328ffb19faedc5948c334bd341175525d5011d748fa0e69",
+      "normalizedLfSha256": "a3f3fbe3eaf7ad3fbbb68a97a49adef6001bd4e3cbd46ac27f1723b3647cb8f9"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkbenchVersionTest.java",
+      "sha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28",
+      "normalizedLfSha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkerLeaseTest.java",
+      "sha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a",
+      "normalizedLfSha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkerProcessTest.java",
+      "sha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1",
+      "normalizedLfSha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkerRpcTest.java",
+      "sha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb",
+      "normalizedLfSha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkerWireTest.java",
+      "sha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4",
+      "normalizedLfSha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkspaceSelectionEngineTest.java",
+      "sha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015",
+      "normalizedLfSha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteEngineTest.java",
+      "sha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3",
+      "normalizedLfSha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteLedgerTest.java",
+      "sha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0",
+      "normalizedLfSha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
+      "sha256": "5a23d5c113b2b1b6b63f2751bb0b816ad8e5bababd1b4e62b14a1147a09eb202",
+      "normalizedLfSha256": "0ac9317ff6db7404c9d1c3169f7f9f34fcb11da408719316bb0a43b37ce55869"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/FileVersionRuntimeTest.java",
+      "sha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7",
+      "normalizedLfSha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/GitBlobBatchTest.java",
+      "sha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295",
+      "normalizedLfSha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+      "sha256": "cd626f66c1e3f2608351c0965b82d38a8d7d8bed0ab183a46ddc758b91a4b81c",
+      "normalizedLfSha256": "cd626f66c1e3f2608351c0965b82d38a8d7d8bed0ab183a46ddc758b91a4b81c"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+      "sha256": "8361be46fd87695848f485dbfc927cf5ddb1240316756b821a0ce59cc9e0a793",
+      "normalizedLfSha256": "8361be46fd87695848f485dbfc927cf5ddb1240316756b821a0ce59cc9e0a793"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceWriteGuardTest.java",
+      "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9",
+      "normalizedLfSha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9"
+    }
+  ],
+  "productionSourcesUnchanged": [
+    {
+      "file": "core/pom.xml",
+      "sha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598",
+      "normalizedLfSha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/AgentPermissions.java",
+      "sha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8",
+      "normalizedLfSha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ApiErrors.java",
+      "sha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c",
+      "normalizedLfSha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ApiException.java",
+      "sha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c",
+      "normalizedLfSha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/BudgetPolicy.java",
+      "sha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7",
+      "normalizedLfSha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CheckpointExportHistory.java",
+      "sha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c",
+      "normalizedLfSha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CheckpointLedger.java",
+      "sha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8",
+      "normalizedLfSha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CollaborationPolicy.java",
+      "sha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277",
+      "normalizedLfSha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionNodes.java",
+      "sha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba",
+      "normalizedLfSha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+      "sha256": "1044d948da7e20a08377fe9b4c23140607473d04ebf6e55c2a7e1c493605ee32",
+      "normalizedLfSha256": "29663610aa1c73e07dbf018e6e748f25888b3701e6e30cb9375b86b70502e600"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionWorker.java",
+      "sha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5",
+      "normalizedLfSha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+      "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c",
+      "normalizedLfSha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/Json.java",
+      "sha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62",
+      "normalizedLfSha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/LocalAccessFilter.java",
+      "sha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08",
+      "normalizedLfSha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+      "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998",
+      "normalizedLfSha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+      "sha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85",
+      "normalizedLfSha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/PlanValidator.java",
+      "sha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091",
+      "normalizedLfSha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+      "sha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e",
+      "normalizedLfSha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+      "sha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2",
+      "normalizedLfSha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ResourceManager.java",
+      "sha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c",
+      "normalizedLfSha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/SessionController.java",
+      "sha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1",
+      "normalizedLfSha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+      "sha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa",
+      "normalizedLfSha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TeamCoordinator.java",
+      "sha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e",
+      "normalizedLfSha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+      "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c",
+      "normalizedLfSha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchApplication.java",
+      "sha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961",
+      "normalizedLfSha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+      "sha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc",
+      "normalizedLfSha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+      "sha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af",
+      "normalizedLfSha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+      "sha256": "ca2505cea9318bdeeea7462d438109240efbde2daab82ea48b1ebd71a7716caa",
+      "normalizedLfSha256": "b738afd2cfb92cf643f61bc1c3ccfa4e08770851e2e10c2da7d06ace4ef52aa3"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchVersion.java",
+      "sha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45",
+      "normalizedLfSha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+      "sha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28",
+      "normalizedLfSha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerProcess.java",
+      "sha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837",
+      "normalizedLfSha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+      "sha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d",
+      "normalizedLfSha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerRpc.java",
+      "sha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572",
+      "normalizedLfSha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerWire.java",
+      "sha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61",
+      "normalizedLfSha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+      "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c",
+      "normalizedLfSha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpAccessRegistry.java",
+      "sha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f",
+      "normalizedLfSha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+      "sha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e",
+      "normalizedLfSha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+      "sha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906",
+      "normalizedLfSha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpTaskPolicy.java",
+      "sha256": "9e649ae1c9a378deb9ed90bc24dd0339245c0b447c30e0a17794056d8b409018",
+      "normalizedLfSha256": "69f4156d5f0c9f79ed287265ec3bea9284eaf0e004712151c7bf2de244afcdb6"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+      "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e",
+      "normalizedLfSha256": "cdc7e2c231f314f08639cd617011a35c3092e4724989af522411f7efdde34d87"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/AgentToolSession.java",
+      "sha256": "39ad743bcbb0e966a126061ac9676f693f75cbcf814eac26090dd3412a7a88a2",
+      "normalizedLfSha256": "df85816da5746660a2c6567959f602c88012024f79f02aafa36e14dd134a641b"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/CheckpointRestoreRejected.java",
+      "sha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434",
+      "normalizedLfSha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+      "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931",
+      "normalizedLfSha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitBlobBatch.java",
+      "sha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa",
+      "normalizedLfSha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+      "sha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423",
+      "normalizedLfSha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+      "sha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242",
+      "normalizedLfSha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/ModelCallObserver.java",
+      "sha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a",
+      "normalizedLfSha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+      "sha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846",
+      "normalizedLfSha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+      "sha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448",
+      "normalizedLfSha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceContentSnapshot.java",
+      "sha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79",
+      "normalizedLfSha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+      "sha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3",
+      "normalizedLfSha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+      "sha256": "c4c864bf554e2405244376b1fc428b3d4d516ba0ff090b62257a57d41ecda1b1",
+      "normalizedLfSha256": "29c28a1c622b98fd810850e740b2e08215ad08a1d2227c29dd347b3c6776a267"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceSelectionConflict.java",
+      "sha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195",
+      "normalizedLfSha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+      "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360",
+      "normalizedLfSha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
+    },
+    {
+      "file": "core/src/main/resources/application.properties",
+      "sha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39",
+      "normalizedLfSha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39"
+    },
+    {
+      "file": "core/src/main/resources/workbench-build.properties",
+      "sha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458",
+      "normalizedLfSha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458"
+    }
+  ],
+  "productionClasses": [
+    {
+      "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+      "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerWire.class",
+      "sha256": "b3d0bca60ee6d5d291df2574d0bd7f244779be3e71ba2947eedf33dfb3457977"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerWire$1.class",
+      "sha256": "0700cd200874738a7cdccce9b02953dc70faf8fbcd1d66095e3c8ee07e62bb98"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerRpc.class",
+      "sha256": "89902dcca140dc0a3ad90bbeace7f4005f59e9785160ea332a5e2ff9b4cc6145"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerRpc$RemoteFailure.class",
+      "sha256": "50a02f988d1766216b49ffd3e1c8778031fdd1010e5ec7072af109596948da02"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerRpc$Handler.class",
+      "sha256": "a2fff8626615d3e9b32bc253828047292baa8b0a8b7c9ab3d3d76d1e3e4d073a"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerProcessMain.class",
+      "sha256": "cc73f7de2edc901a5e0ee38a541abaf04d9f0fe62f4fc5c1335e39fea01b2647"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerProcessMain$Claim.class",
+      "sha256": "da1384e13acd54bc29d93a717c78d7e931bf64250d9a875bc47ec238203b5ccb"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerProcessMain$Call.class",
+      "sha256": "62c981512c6ca0e6654054f3bdf8249d26e1bb077dba510b4f097207e9e60477"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerProcessMain$Call$RemoteObserver.class",
+      "sha256": "6d96a21b94f52e7a120cf11751d739721cd5edb8b59b901bce9b7c59b400966c"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerProcessMain$Call$RemoteObserver$1.class",
+      "sha256": "a8654f0d1698f3f20b2d7ca02f8b280621ba04552226bf3a7eddb4ed93d0159a"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerProcessMain$1.class",
+      "sha256": "34aeecb28259139441e4d48c901bb4f93e42e1842262f8d70d7c59f53995a96a"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerProcess.class",
+      "sha256": "f1baefe00999310c3d99b2ff32f83bd7e0cda119e28ebf4f49210f00cd552da0"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerProcess$CapturedProcess.class",
+      "sha256": "17d5b81d25359f9268acd59a0dcc7b80647195496315b7f80f40eded54e32c81"
+    },
+    {
+      "file": "dev/agentworkbench/WorkerLedger.class",
+      "sha256": "366fd2928ab717b32b63909aae11e3bc0322c1b793b1b1d5dfd6dd2829a81b0a"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchVersion.class",
+      "sha256": "192a63c2f390b67c4a4eff04ef9cc9a67fce38d1115daac3adecb6046a1767d6"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchEngine.class",
+      "sha256": "869054f463789e63994d0a9cd0d3b1c6ad9ee9a3df8a2c7a89dbfa59f13a80ce"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchEngine$UnknownResult.class",
+      "sha256": "a1a68553a0023af697845839940555b99cfa706d173851eefcfa4b12089fdbdc"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchEngine$NeedsInput.class",
+      "sha256": "80ec59701e1025230274e598148b3408f4add0bc4b4b0b23e5c896a933edad70"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchEngine$ModelCapacity.class",
+      "sha256": "e5828b4d5729e161b096ac79b9fcbbea9b35e02d9632c3013d4e32843b6fe624"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchEngine$Control.class",
+      "sha256": "504f91023bc815e01dea0515d2ad46831fc39c9ae744647b015ca3a3dbb44fd8"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchEngine$BudgetExhausted.class",
+      "sha256": "980ebb14e91d86dcc452c1cb5932e840da47b08c79abce0e6c477986f6997162"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchEngine$AgentWork.class",
+      "sha256": "7fcfd9fc08c6eabaf76ca0890b8502a649c66922acbb98f8bba49861556db03a"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchEngine$2.class",
+      "sha256": "5f90ad83be372bd15a60a8c051f29fe681722a19ff4c5dfd73b04760afcc4323"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchEngine$1.class",
+      "sha256": "975d22edca0fd539a949921f4b7d6eab3308ed8987410d2bd9274d171f9bd58a"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchController.class",
+      "sha256": "2a01932a55b1d8cec80ad5de5c6e1b97d9d9d3d62dca07088d3704f422f40afe"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchCatalog.class",
+      "sha256": "428398d258ed200f237cee57b1c8682a994b97abc48e6c5d2258aa72c6c88d04"
+    },
+    {
+      "file": "dev/agentworkbench/WorkbenchApplication.class",
+      "sha256": "b6e3a4a063ee1996d655753596b5f5bd0eba1538a7ca8bdd271f98fd9d0a754e"
+    },
+    {
+      "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+      "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+    },
+    {
+      "file": "dev/agentworkbench/TeamCoordinator.class",
+      "sha256": "bf51bed4768fd6b60956b15f31d19d09d038fe8735cc10809ff66399cb970030"
+    },
+    {
+      "file": "dev/agentworkbench/TeamCoordinator$Session.class",
+      "sha256": "b8db33a5cb96e7db2e2569e6273267972b32a6c39c7d1ec7cd07d1e8d440f262"
+    },
+    {
+      "file": "dev/agentworkbench/TeamCoordinator$1.class",
+      "sha256": "da5bb6ecb8fd4d5f49ef1426a2678941362ce8cf960cafc6e85d37a43f966d6f"
+    },
+    {
+      "file": "dev/agentworkbench/TaskDispatchQueue.class",
+      "sha256": "a7c90f38f5efa28d989789a399600ed14c054b102272a1bdbff884c7f73e55d6"
+    },
+    {
+      "file": "dev/agentworkbench/SessionController.class",
+      "sha256": "8a0e7c604b1932bf01afdd3919966f2496e22df36bb7ffba25b888367d05042c"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+      "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard$MetadataWriter.class",
+      "sha256": "88d508a8e82498e96dce4f3cbf1f737e8fe586df056700275da9eaa192933c7f"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard$Holder.class",
+      "sha256": "bbd36b5d525347c9ae32f7644ba349850f2ee3855a92e1224fee885c77a2bb13"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard$Borrow.class",
+      "sha256": "c5ad962511784a7ab28b14d8a7af25bcc3033201f61c9dcf4669a2ac40ea2822"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard$1.class",
+      "sha256": "4f5084517229577cc4b1219f2d2992acdd15872e80622bfb5c1827778c4704ba"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceSelectionConflict.class",
+      "sha256": "c2aa2fe22e19bfa2e78913b43719b0793ade8409db4a4ef9480e33efe2d64823"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime.class",
+      "sha256": "328d72a29b768ca1d720f2fb2832660005ecd2734f22b28b0b7b15600fc1dcf5"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime$ObservedChild.class",
+      "sha256": "24f2d4e30ba82a9045b0be90e803466b8fa61f9eb439d8038ab0ace7a9cf00cb"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime$ModelCallFailure.class",
+      "sha256": "fac2d90a7e1faca961038c5f94146da9ef4bf72cc09ca219af74d82ef691862a"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime$GitFiles.class",
+      "sha256": "e67ed2f91e7a4e79436176af4b1e023a0e2a5444bd17fd0294ba60318d4c77a0"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime$FixedToolInvoker.class",
+      "sha256": "3c8ce249179d604ed5e066eeeda63e1119a5673c5299faaf143ef9c674b6504a"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime$7.class",
+      "sha256": "b03f593cf12b179365c0bac3b8bfedb4f43aefcfb7df6284d37f5bb94d015f8a"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime$6.class",
+      "sha256": "4f7434d3448b961778bb3993337ccd0f6ce44be58d17c83a7e63bc6949e27bbb"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime$5.class",
+      "sha256": "1048575f6c8f7d18e5aac6d4167813f14d515b2a43e66f505a34c43f14f92a63"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime$4.class",
+      "sha256": "5a988a42b7b154db3ea2ca956425915870b9c52a5ecd2f4e1c0a61938278977f"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime$3.class",
+      "sha256": "1e083c912770beb1bc7627f3c77ecf5e86fa9640ff823de50633e8d8f9c6e6e8"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime$2.class",
+      "sha256": "1103fd0c08e2cf7bffdf492f342d88b3a2a851e14cfe037523e64d0bd336fc5b"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceRuntime$1.class",
+      "sha256": "fbd798ea707d7eee9b3236a91c94359e4fdf0a931783287baa53c1c0831e55f1"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+      "sha256": "42c57b0db8d5780cbc971acbf7c44362deb326f764f840472c41cb2e17eee222"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceContentSnapshot.class",
+      "sha256": "758c208c18ff578e9687e456ce969a2c27f2b7f582b976e37ef191f44d2adeeb"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceContentSnapshot$File.class",
+      "sha256": "70d7905e5129e7c5409f1973e36525ecc0bea32dc5dbe8e86373d2f0be88e2be"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.class",
+      "sha256": "e2fdf45e4e73b7530349ba1991fb3b9f929747b83dbc484ea42fa7a055557fc9"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceCheckpointArchive.class",
+      "sha256": "5dde3b83bb397dfe2dd8dc13d9c382af7407d2a96823ef34054d263346dc7ed3"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceCheckpointArchive$Owner.class",
+      "sha256": "aa6b6da152717d4af11463430a37abdf39d68f2a909af4367e7dfeec37ecc878"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceCheckpointArchive$Listing.class",
+      "sha256": "f135fe67e9149b5a448b1cd0e036d1c2c1d4fe9737177e753d1de3808675a883"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceCheckpointArchive$GitState.class",
+      "sha256": "b79676689a78841a749fe6f4c399896991251e515364440290d2738372e945f9"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceCheckpointArchive$BlobFacts.class",
+      "sha256": "8bcb5ff3530b0d95513d642c2157b1e97756ec613068a856f7a7efbc84c36232"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceCheckpointArchive$4.class",
+      "sha256": "ee33aa0e98abb12df7ffbe6427fb07d87637e68a3e620be141cccc341c3c23b4"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceCheckpointArchive$3.class",
+      "sha256": "9342f1cd0826274db15071c0671934937dcf00c264b437a420d6a59d15db16b8"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceCheckpointArchive$2.class",
+      "sha256": "be2f8aa3f0fc8a58f426f4e0158b1b0262db81a82be33e05e2dde92fc2e05800"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/WorkspaceCheckpointArchive$1.class",
+      "sha256": "aff502cc661df3f2a264ee2bf7c27787b3a7301b29406c09ff3784a625be983a"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/ModelCallObserver.class",
+      "sha256": "712eaec9f2400c5031956959b9f3575013cbd20e530b20ae82e62744ae2deb23"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/GitWorkspaces.class",
+      "sha256": "564d91029fa13e15cba31a18574705f7ea8d30757c7f440c6c5eb48b3619c83c"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/GitWorkspaces$GitDirectories.class",
+      "sha256": "ba5896e4da8f9765efd51ea658aa1b2c5a65e9ac5b56acd08f5bdca39dc0509b"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/GitWorkspaces$1.class",
+      "sha256": "fc884e26f486535c6dab69116850e0d0dd67b4b4057455326e6eaaff66ffd3aa"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/GitDiffView.class",
+      "sha256": "c2c0e6e900e8d8940a33483cb944bd334f4bff5ee4c6e3aa746aa3ae9f7a3383"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/GitDiffView$TextLines.class",
+      "sha256": "ef927df7b86b8a3b64dbbe31c6027889d6daa132b3c98b573a12e8febfa3656d"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/GitDiffView$Entry.class",
+      "sha256": "320dd88147e6220b235fc3ac492e45a8984c33cdc14a4c9292f2ec012a72701a"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/GitDiffView$Copies.class",
+      "sha256": "0c931592ee928a8c8bf3f847bda40ee2570ffa53a63045eab6ccb4c395622402"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/GitBlobBatch.class",
+      "sha256": "cdeabe7d5c75b4a2531acf6f853e9fb2c74a73aaa85f34d2349e2dc0906afb43"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/GitBlobBatch$Cursor.class",
+      "sha256": "187c2a81c53f69265c25425bd42245dbb2aeef352e8e05e2dc6fe80c4fc397e6"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/FileEditSession.class",
+      "sha256": "c1cf75e4438b6cff09db6581f119b4f3a5336376e81c1094cd6470262b514697"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/FileEditSession$VersionConflict.class",
+      "sha256": "a8c2b98de2d2a19b15d2f8222d664e3e9eb7fb29a027284d2db8054849eb371d"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/FileEditSession$Version.class",
+      "sha256": "ecb5d574a68f1fcd7a7377dda41f6ff1c9a2021255f83a3e5328f801af5054fe"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/FileEditSession$ReadReceipt.class",
+      "sha256": "afe44129b1d2d9fe8f51b850f4c776af12042b270c84f0ddf03595fea019250d"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/FileEditSession$Captured.class",
+      "sha256": "54b55a6d251058022ba5ab8d4f6cee5f242dbec80186200767e6aed70eb85349"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/CheckpointRestoreRejected.class",
+      "sha256": "3230fcedd76965bcf513b22bd10a3e30ecf9b1d5acd1905164af8d4acf80f5fd"
+    },
+    {
+      "file": "dev/agentworkbench/runtime/AgentToolSession.class",
+      "sha256": "42e29c66c362738f9e36bf583731a1ccc555dc8e97c16e0015beb0f4b2ca036f"
+    },
+    {
+      "file": "dev/agentworkbench/ResourceManager.class",
+      "sha256": "0c704d34915d0aa35edb89fd80d2fa3e8720848a9a1d7fc0ab6493cc33141905"
+    },
+    {
+      "file": "dev/agentworkbench/ResourceManager$Lease.class",
+      "sha256": "d78b22404f5a3234e6cdf48d7c749e9e2e1df3d3c821a89ee660fa1ce5dc62fb"
+    },
+    {
+      "file": "dev/agentworkbench/RequestObservation.class",
+      "sha256": "3ae8e114adaa7c2ea8088112eec37c45277ef99e636bd24117870df8cd9fe1d1"
+    },
+    {
+      "file": "dev/agentworkbench/ProcessWorkspaceRuntime.class",
+      "sha256": "cbbf355dfe8741a4572175e8bf47c1b3f280ae3e58fb1e6803d5731a89f2d04b"
+    },
+    {
+      "file": "dev/agentworkbench/ProcessWorkspaceRuntime$Invocation.class",
+      "sha256": "c94eba558103a88ae9acf414f6c4b07d6c14768427a787448d2969d912253679"
+    },
+    {
+      "file": "dev/agentworkbench/ProcessWorkspaceRuntime$Claim.class",
+      "sha256": "954b0b71995166a13c84eaa96d2d03861c59ba0292323a846e378ec9bc07362f"
+    },
+    {
+      "file": "dev/agentworkbench/ProcessWorkspaceRuntime$1.class",
+      "sha256": "699cf38ae69996dc50513b4124688ec7ae5853108748de6a91deb942859eab6f"
+    },
+    {
+      "file": "dev/agentworkbench/PlanValidator.class",
+      "sha256": "171a34348377913407f16c6b01f77786571fef0c506787d33a689960f3dda6e6"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpTransport.class",
+      "sha256": "3b9ba282028b947066dc5d008cc7a6db2088d8c25ac0814d6c64992515c9b637"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpTransport$Stdio.class",
+      "sha256": "aa4481976261110c5317d95de4997cd0365ca631c43426306fc7cb3525043917"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpTransport$Stdio$CapturedProcess.class",
+      "sha256": "54b3f6ac462cd849ec1b76ed8d268644f43ba58e2f6a6227841654e3f754f68f"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpTransport$RpcFailure.class",
+      "sha256": "79c85e51ff975b05f7d711fa50fe50abd04ca719d5ac883d46a15f0950b062d4"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpTransport$McpFailure.class",
+      "sha256": "01b15f300d913381b410cca816d8e511ba54800ad880799655138dff725ddce5"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpTransport$LaunchFailure.class",
+      "sha256": "b8bf486428b4952dfbbd768d24aae27121e421e79b7968e7f5ac9c17a5eb1b77"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpTransport$Http.class",
+      "sha256": "1859e4700c53d762e2addfa315dca5cdbb29c3c38f6c8365a31441c6b252e5f4"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpTransport$Base.class",
+      "sha256": "a07f8debefced87aaf1eea058a0e4f17d994db5672bd2c4c5fc2590659daef64"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpTransport$Base$1.class",
+      "sha256": "0c8c6c0b38f4829f331227b9f151ab26495ec9a9dce2f5479cc8c7789c8b9a86"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpTaskPolicy.class",
+      "sha256": "a86a741113f5e3969bcbac5359a9ecce26afd58c3f20766d70cdceb2213104bf"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpManager.class",
+      "sha256": "b872fc7484b59a951af19fdcb1d89ae6f68909de50cca5d9d7a1d0c7cfa54c27"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpManager$TransportFactory.class",
+      "sha256": "7095e746426d12db02477f783e48e0ffc6f57655a2dc6d0b22aba2955cc637c6"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpManager$ServiceLease.class",
+      "sha256": "e0e59f87b78166d12fe70c42575d8c4db6dec4e43a356a1c6fe9acd80c8aa69c"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpManager$ManagedTransport.class",
+      "sha256": "943ee65408867c2a632ae4363461a56da7e7bfa2c6fc1f3717deb5451e10df9e"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpManager$2.class",
+      "sha256": "057434dd1d9a801fb70bd72e10c0159f3b1d1ed1da08b5a780d66d294d0118ed"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpManager$1.class",
+      "sha256": "e8dc760b93f34ba9ca4ae005c6babcb95800d364f27a4242ae4227aab290009d"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpController.class",
+      "sha256": "9248ec3e067f1e7dc964ce9b8e300f0ecfe36efe70cd044b153c6e4d91ce549b"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpAccessRegistry.class",
+      "sha256": "bc4e99607814f76c38e5891dfd3a1d9452f1a59a844258aa52ec0ee3f034b887"
+    },
+    {
+      "file": "dev/agentworkbench/mcp/McpAccessRegistry$Grant.class",
+      "sha256": "2540b5e36c530a59800120a168a452ac296af554c9957812ade60a16713edbf0"
+    },
+    {
+      "file": "dev/agentworkbench/ManagedProcessLedger.class",
+      "sha256": "9803c231ce842304c15ad2070b8030d57e7e3bcba12e652448272099a1966aeb"
+    },
+    {
+      "file": "dev/agentworkbench/ManagedProcessLedger$Tracking.class",
+      "sha256": "3a2ab3f268622ec40984e4c90da6cb7a7295c8cf43b099114cfccf7064d1325c"
+    },
+    {
+      "file": "dev/agentworkbench/ManagedProcessLedger$ProcessSnapshot.class",
+      "sha256": "9f74050b79b5c0086085ae662ea845c4eee26045054cb0021e94b401773d63b9"
+    },
+    {
+      "file": "dev/agentworkbench/ManagedProcessLedger$ProcessAccess.class",
+      "sha256": "8e1fbd368530d6253fedf4d053b547600d58cc2b620175d15c397b7506bfd887"
+    },
+    {
+      "file": "dev/agentworkbench/ManagedProcessLedger$NativeProcessAccess.class",
+      "sha256": "5e1d0c05c9edb468fa862a1cc02659260a2d4a2337028604e5720daa7b4dd06a"
+    },
+    {
+      "file": "dev/agentworkbench/ManagedProcessLedger$NativeProcessAccess$VisibleProcesses.class",
+      "sha256": "2fd28bda72486198f6377e34b5ab5530802ffabc106f4527668e2c44a7acf97b"
+    },
+    {
+      "file": "dev/agentworkbench/ManagedProcessLedger$Inspection.class",
+      "sha256": "eadf4391f53e2369bec7c50e452294d11321f8a75acff2fca9624832b215287a"
+    },
+    {
+      "file": "dev/agentworkbench/LocalExecutionWorker.class",
+      "sha256": "90ba7d32962e6765ec8a20a6a28e286477a8620d76e690b6808f817abd645a07"
+    },
+    {
+      "file": "dev/agentworkbench/LocalExecutionWorker$Pulse.class",
+      "sha256": "b41084603dc42f85d576fe1f400be5eb9e8ea559b5adc337ae43501e8d5b0840"
+    },
+    {
+      "file": "dev/agentworkbench/LocalAccessFilter.class",
+      "sha256": "eca48a736e42c6f72c7dc39f1deb6de5492e7d1107aaa6f3235da1400fb7ebe4"
+    },
+    {
+      "file": "dev/agentworkbench/Json.class",
+      "sha256": "19bc9585dc07bd71378a644d4b9ecc3e900c54932ce4ed7f6234f66f0bb97613"
+    },
+    {
+      "file": "dev/agentworkbench/FileToolHistory.class",
+      "sha256": "8a450f599303bb8381f979734c473a6f05b8dcb2f9174f4f75f2530b17885c79"
+    },
+    {
+      "file": "dev/agentworkbench/FileToolHistory$Snapshot.class",
+      "sha256": "0cb1b31b69dbf7370b5c9780ecacabbedede5fa2bdc0b49196a710ca4270fdac"
+    },
+    {
+      "file": "dev/agentworkbench/FileToolHistory$Fields.class",
+      "sha256": "5f317b80179a9c62fd7e43e9238081f21a4b5779cabe0d176fd9a351bfd06c8c"
+    },
+    {
+      "file": "dev/agentworkbench/ExecutionWorker.class",
+      "sha256": "1c4e1ef97ed6e5331c229ab58c577ceeb80c53200ab1b40e1ff67ab0447df043"
+    },
+    {
+      "file": "dev/agentworkbench/ExecutionStore.class",
+      "sha256": "927d6313b3aee5bf990648184661a0d1304e8a504c295e4d7b24e91eba9a0d44"
+    },
+    {
+      "file": "dev/agentworkbench/ExecutionStore$SqlAction.class",
+      "sha256": "b541b2868a7fbe51e6ac83f2b6c1e0e5808e436e995a32c11ac65b5e9c823bee"
+    },
+    {
+      "file": "dev/agentworkbench/ExecutionStore$2.class",
+      "sha256": "c1cc900c21a597b53f1bde235e948db178b18d9e89d39e12093055d6fd57ab4f"
+    },
+    {
+      "file": "dev/agentworkbench/ExecutionStore$1.class",
+      "sha256": "952b6cc3647ab1fe01c22ac6eee8f5cc286da0d3658e5adf0047da262854c55c"
+    },
+    {
+      "file": "dev/agentworkbench/ExecutionNodes.class",
+      "sha256": "cf8f55d8ea2941fdb23d9c62774eec09fc84592c28b2d85a2019b23e8c2c191e"
+    },
+    {
+      "file": "dev/agentworkbench/CollaborationPolicy.class",
+      "sha256": "31d50c1624ab93b16d07fb7cd64eadf1105334103d73701dbebca0adaaffb102"
+    },
+    {
+      "file": "dev/agentworkbench/CheckpointLedger.class",
+      "sha256": "781d2d4477eddc6b3b127638c076f22a60c76eabd50af5c97d23ead23a9df594"
+    },
+    {
+      "file": "dev/agentworkbench/CheckpointExportHistory.class",
+      "sha256": "da7ddc44eb91c931d25e2e2563b7962dff6588ab179775f8bd00b476ad7e40a7"
+    },
+    {
+      "file": "dev/agentworkbench/CheckpointExportHistory$Snapshot.class",
+      "sha256": "50a9dcba472ace353f310ca9eeac46fd8cf82218ffa5e9346236d9b5f0739f0d"
+    },
+    {
+      "file": "dev/agentworkbench/CheckpointExportHistory$1.class",
+      "sha256": "5f5d721444cc1e8fb441d9775bcce57f998402f2ebc6cdf4680507db29cac894"
+    },
+    {
+      "file": "dev/agentworkbench/BudgetPolicy.class",
+      "sha256": "5cfe236f19ab58244b8c1deaeaf4796cd9a861372a6e36a978e6ce0aa7e4ce1e"
+    },
+    {
+      "file": "dev/agentworkbench/ApiException.class",
+      "sha256": "2d1b44805b0168c965d1d0d45af96ce5a2ef28da4fb720bbef6b4916617d5644"
+    },
+    {
+      "file": "dev/agentworkbench/ApiErrors.class",
+      "sha256": "25efdf146ad4fbac0c26c3e4ecd1958799031ee60634d11d76cedd33e586185b"
+    },
+    {
+      "file": "dev/agentworkbench/AgentPermissions.class",
+      "sha256": "acbb9df6538b489df848521ae9e381bd949c2e026744eed483f950cd3f7431a8"
+    }
+  ],
+  "originalAssertionsRemoved": [],
+  "originalTimingExpressionsRetained": true,
+  "javaComments": {
+    "recordedAt": "2026-11-16T04:20:44.398Z",
+    "baseCommit": "40e98fa9a1e134ec75608681c5fc654d97f1f474",
+    "status": "passed",
+    "method": "Java lexical boundaries exclude quoted strings, characters and text blocks; original text and opening indentation retained in order",
+    "retained": [
+      {
+        "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+        "originalCommentsRetained": 1,
+        "newStandardMultilineJavadocs": 1,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "cd626f66c1e3f2608351c0965b82d38a8d7d8bed0ab183a46ddc758b91a4b81c"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+        "originalCommentsRetained": 1,
+        "newStandardMultilineJavadocs": 0,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "8361be46fd87695848f485dbfc927cf5ddb1240316756b821a0ce59cc9e0a793"
+      }
+    ],
+    "added": [],
+    "originalCommentCount": 2,
+    "newMultilineJavadocs": 1
+  },
+  "priorFullLocalAcceptance": {
+    "file": "docs/qa/alpha19-validation-win32.json",
+    "sha256": "16e901ed0b5ccb763e5cc4fa4dea17631f81d44eb36dc4e864006217965c28b1",
+    "manifestFile": ".runtime/alpha19-final-local-qa/manifest.json",
+    "manifestSha256": "16e901ed0b5ccb763e5cc4fa4dea17631f81d44eb36dc4e864006217965c28b1",
+    "tests": 447,
+    "uiTestsPerBrowser": 196,
+    "checkpointChecks": 16,
+    "originalJar": {
+      "file": ".runtime/alpha19-final-core-evidence/agent-workbench-core-0.2.0-alpha.19.jar",
+      "sha256": "c912bf2dbbbcf7d3900762ef00a55acd3978923867d87259f4736cb9984ca40e",
+      "classes": 138
+    }
+  },
+  "ci": {
+    "status": "PENDING_FOLLOWUP_EXACT_COMMIT",
+    "originalRunNotCancelled": true
+  },
+  "caveats": [
+    "No original GitDiff fixture or exact maintenance-lock disappearance timeline was uploaded.",
+    "The macOS literal old task path is reconstructed from original sources, the JVM temporary root and the saved canonical manifest; the symlink metadata was not independently captured.",
+    "POSIX-only checks remain conditional skips in the local Windows run and require actual macOS/Linux CI."
+  ],
+  "completeProjectGoal": false
+}

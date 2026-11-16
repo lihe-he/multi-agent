@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
@@ -59,11 +61,35 @@ class WorkspaceCheckpointArchiveTest {
         assertEquals("READY", descriptor.get("status")); assertEquals(fixture.work.toRealPath().toString(), descriptor.get("workspace"));
         Map<String, Object> recovered = fixture.runtime.prepare(fixture.source.toString(), fixture.task, false);
         assertEquals(true, recovered.get("recoveredPreparation")); assertEquals(descriptor.get("workspace"), recovered.get("workspace"));
-        Path oldPath = temporary.resolve(temporary.toRealPath().relativize(fixture.work.toRealPath()));
+        Path taskRoot = System.getProperty("os.name", "").startsWith("Windows") ? temporary : temporary.toRealPath();
+        Path oldPath = taskRoot.resolve(temporary.toRealPath().relativize(fixture.work.toRealPath()));
         assertTrue(fixture.runtime.checkpointWorkspaceMatches(str(descriptor, "workspace"), oldPath.toString()));
         assertFalse(fixture.runtime.checkpointWorkspaceMatches(str(descriptor, "workspace"), fixture.source.toString()));
         assertEquals(descriptor.get("workspace"), fixture.runtime.captureCheckpoint(oldPath.toString(), fixture.task, obj("kind", "OLD_TASK_PATH")).get("workspace"));
         assertArrayEquals(index, fixture.index()); assertEquals(fixture.head, fixture.sourceGit("rev-parse", "HEAD").strip());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "LEGACY", "CLONE", "WORKTREE" })
+    @EnabledOnOs({OS.LINUX, OS.MAC})
+    void symbolicDirectoryAliasesCannotAuthorizeCheckpointCapture(String strategy) throws Exception {
+        Fixture fixture = fixture(strategy); Map<String, Object> original = fixture.capture(); byte[] index = fixture.index();
+        Path alias = temporary.toRealPath().resolve("symbolic-workspace-" + strategy);
+        Files.createSymbolicLink(alias, fixture.work);
+        assertEquals(fixture.work.toRealPath(), alias.toRealPath());
+        assertFalse(fixture.runtime.checkpointWorkspaceMatches(str(original, "workspace"), alias.toString()));
+        Path manifests = fixture.data.resolve("checkpoints/tasks").resolve(fixture.task);
+        Path manifest = manifests.resolve(str(original, "id")).resolve("manifest.json"); byte[] manifestBytes = Files.readAllBytes(manifest);
+        Path ownership = fixture.work.getParent().resolve(strategy.equals("LEGACY") ? "preparation.json" : "selection.json");
+        byte[] ownershipBytes = Files.readAllBytes(ownership);
+        long count;
+        try (var files = Files.list(manifests)) { count = files.count(); }
+        assertEquals(409, assertThrows(ApiException.class, () -> fixture.runtime.captureCheckpoint(alias.toString(), fixture.task, obj("kind", "SYMBOLIC_ALIAS"))).status());
+        try (var files = Files.list(manifests)) { assertEquals(count, files.count()); }
+        assertEquals(fixture.work, Files.readSymbolicLink(alias)); assertArrayEquals(index, fixture.index());
+        assertEquals("original a\n", Files.readString(fixture.work.resolve("a.txt"))); assertEquals(fixture.head, fixture.sourceGit("rev-parse", "HEAD").strip());
+        assertEquals(original.get("id"), fixture.runtime.checkpointManifest(fixture.task, str(original, "id"), str(original, "manifestSha256")).get("id"));
+        assertArrayEquals(manifestBytes, Files.readAllBytes(manifest)); assertArrayEquals(ownershipBytes, Files.readAllBytes(ownership));
     }
 
     @Test
