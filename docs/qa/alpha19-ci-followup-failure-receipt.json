@@ -1,0 +1,3040 @@
+{
+  "recordedAt": "2026-11-16T05:41:07.371Z",
+  "version": "0.2.0-alpha.19",
+  "headSha": "41a5145b8578fb55f5db8b2e31023c8685298d46",
+  "originalProductionCommit": "40e98fa9a1e134ec75608681c5fc654d97f1f474",
+  "runId": 43805087356,
+  "runAttempt": 1,
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/43805087356",
+  "status": "completed",
+  "conclusion": "failure",
+  "scope": "THIS_EXACT_TEST_FIXTURE_FOLLOWUP_RUN; ONLY_WINDOWS_COMPLETE_PLATFORM_ACCEPTANCE_PASSED",
+  "jobs": [
+    {
+      "id": 133093895272,
+      "name": "verify (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 133093895354,
+      "name": "verify (windows-latest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 133093895408,
+      "name": "verify (macos-latest)",
+      "status": "completed",
+      "conclusion": "failure"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 14198117136,
+      "name": "evidence-ubuntu-latest",
+      "bytes": 7801031,
+      "sha256": "ad897b3170a44fd76e030e3c354b01c2aa46f3b0f877ab447b8ffff0220ffc41",
+      "githubDigestVerified": true
+    },
+    {
+      "id": 14198112531,
+      "name": "evidence-macos-latest",
+      "bytes": 7735922,
+      "sha256": "020bb6106e9ac01bd43578f9fb0c02d293a7ba8042ac579c7ca2e45570877780",
+      "githubDigestVerified": true
+    },
+    {
+      "id": 14199502664,
+      "name": "evidence-windows-latest",
+      "bytes": 98644015,
+      "sha256": "1e798dfb481a32ffbb810d0bf17b32dc5dc22c631f624aa9d482e64d93edb736",
+      "githubDigestVerified": true
+    }
+  ],
+  "logs": [
+    {
+      "jobId": 133093895272,
+      "bytes": 58768,
+      "sha256": "4b6bf436b1d4b8c1ae83e1cfd517c6ff6976d77b38d141d73ec7b1f40530624e"
+    },
+    {
+      "jobId": 133093895354,
+      "bytes": 168537,
+      "sha256": "8a43c5dc4e6560f8b907adf7cff2753a7b25fb80507f370f54e91b85a89a0742"
+    },
+    {
+      "jobId": 133093895408,
+      "bytes": 54666,
+      "sha256": "53d5e50080567ee41199e16248c95bd36d0215473667582986fa556637f8a5a2"
+    }
+  ],
+  "successfulWindows": {
+    "jobId": 133093895354,
+    "core": {
+      "suiteCount": 34,
+      "tests": 449,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 8,
+      "passed": 441
+    },
+    "skippedCases": [
+      {
+        "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+        "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+        "reason": "org.opentest4j.TestAbortedException: Assumption failed: No restricted live PID on this runner"
+      },
+      {
+        "name": "successfulTextReplacementPreservesPosixPermissions",
+        "className": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+        "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+      },
+      {
+        "name": "ordinaryWorkspaceSnapshotDoesNotEnterAnUnreadableGitObjectDirectory",
+        "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+        "reason": "Disabled on operating system: Windows Server 2025"
+      },
+      {
+        "name": "posixTabsNewlinesAndBackslashesStayLiteralAndWhitespaceOnlyNamesAreRejected",
+        "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+        "reason": "Disabled on operating system: Windows Server 2025"
+      },
+      {
+        "name": "fileExecutionPermissionsAreRestoredAlongWithTheBytes",
+        "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+        "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not false"
+      },
+      {
+        "name": "readOnlyTargetPermissionsAreRestoredWithoutReopeningTheFileForWrite",
+        "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+        "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not false"
+      },
+      {
+        "name": "symbolicDirectoryAliasesCannotAuthorizeCheckpointCapture(String)",
+        "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+        "reason": "Disabled on operating system: Windows Server 2025"
+      },
+      {
+        "name": "fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging",
+        "className": "dev.agentworkbench.RuntimeIntegrationTest",
+        "reason": "org.opentest4j.TestAbortedException: Assumption failed: Requires real POSIX executable permissions"
+      }
+    ],
+    "originalAlpha19CasesRetained": 447,
+    "originalAlpha18CasesRetained": 356,
+    "uiTests": 196,
+    "jarSha256": "0d7ffb7a56c0f4248e6add363c3e1d489a02d4ba4ca876f9fb3b1ebbc3e7b64f",
+    "protocolChecks": 29,
+    "recoveryChecks": 11,
+    "dispatchChecks": 13,
+    "workspaceChecks": 15,
+    "workspaceWriteChecks": 22,
+    "fileVersionChecks": 9,
+    "checkpoints": {
+      "checks": 16,
+      "protocolVersion": 1,
+      "schemaVersion": 9,
+      "actualProductionWebAndJar": true,
+      "fixtureSourceMatchesAcceptedSources": true,
+      "fixtureSourceMatchesExactCommit": true,
+      "exactCommit": "41a5145b8578fb55f5db8b2e31023c8685298d46",
+      "originalWorkerTaskRequestsBound": true,
+      "strategies": [
+        {
+          "strategy": "CLONE",
+          "taskId": "641ad216-ec3f-4105-bf4a-d109a7cef9f4",
+          "originalExecutionId": "071b121b-560d-440e-9e85-f3c28ed72fcd",
+          "restoreExecutionId": "8c46cb8a-89ee-4d02-abf0-4ac6fd8d2c6f",
+          "toolCheckpoints": 5,
+          "modelRequests": 8,
+          "originalIndexRestored": true,
+          "userLaterFileRetained": true,
+          "originalEvidenceAndBudgetRetained": true
+        },
+        {
+          "strategy": "WORKTREE",
+          "taskId": "b1a8c9d7-0993-4232-95fb-78901fa7d6d0",
+          "originalExecutionId": "ae320ccc-5837-44e7-9db7-e2b7baf59787",
+          "restoreExecutionId": "05cee81d-8786-4e75-954e-71ba78123474",
+          "toolCheckpoints": 5,
+          "modelRequests": 8,
+          "originalIndexRestored": true,
+          "userLaterFileRetained": true,
+          "originalEvidenceAndBudgetRetained": true
+        }
+      ],
+      "faults": [
+        {
+          "fault": "ack",
+          "taskId": "c644ba84-a588-4c00-92ce-1736a3dc288d",
+          "originalOperationId": "0c4bd9f3-f9ed-4a70-bc1c-9ff60ca05795",
+          "sqliteOperationState": "UNKNOWN",
+          "originalRestoreState": "UNKNOWN",
+          "originalObservedReceiptState": "ACKNOWLEDGED",
+          "unpublishedResultIncluded": true,
+          "oldVersionExportAfterReconcileRejected": true,
+          "originalModelRequests": 8,
+          "unconfirmedLeaseRetained": true,
+          "originalLockHeldAtProbe": false,
+          "originalWorkerStoppedAfterLockProbe": true,
+          "originalOwnerLockGateVerified": true
+        },
+        {
+          "fault": "publish",
+          "taskId": "c3322a51-4b31-452b-8eb3-5084f5a28574",
+          "originalOperationId": "6fba15b2-5f48-4be0-8642-4233ccfb245b",
+          "sqliteOperationState": "ACKNOWLEDGED",
+          "originalRestoreState": "UNKNOWN",
+          "originalObservedReceiptState": "ACKNOWLEDGED",
+          "unpublishedResultIncluded": true,
+          "oldVersionExportAfterReconcileRejected": true,
+          "originalModelRequests": 8,
+          "unconfirmedLeaseRetained": true,
+          "originalLockHeldAtProbe": false,
+          "originalWorkerStoppedAfterLockProbe": true,
+          "originalOwnerLockGateVerified": true
+        }
+      ],
+      "archives": [
+        {
+          "file": "CLONE-actual-undo.zip",
+          "bytes": 120958,
+          "sha256": "802a87ad1c7a66149cf80e8175ae4a7ae8606677d048f2b6fcddf6b3e7bf2c86",
+          "references": 25,
+          "deduplicatedObjects": 11
+        },
+        {
+          "file": "WORKTREE-actual-undo.zip",
+          "bytes": 138854,
+          "sha256": "e2f4bb2c279a684cd5bd7d076f8f3f8cd429972a90356dafbd91ee0c5a370d5d",
+          "references": 25,
+          "deduplicatedObjects": 11
+        },
+        {
+          "file": "ack-unknown-original.zip",
+          "bytes": 140983,
+          "sha256": "396f5badc2934179cb9c7c4cc3f49461f8110e790048787172f6574bdf9ffd24",
+          "references": 21,
+          "deduplicatedObjects": 9
+        },
+        {
+          "file": "publish-unknown-original.zip",
+          "bytes": 110007,
+          "sha256": "72788ba3a42a9870505aee9c9bdc6943499ee58f484ff99ad0b457b6599b3718",
+          "references": 21,
+          "deduplicatedObjects": 9
+        }
+      ],
+      "screenshots": [
+        {
+          "file": "CLONE-production-preview-1440.png",
+          "bytes": 139135,
+          "sha256": "ada526bf5114c1d03ebc39066d983f2d77f12893f9e7289fe4d1e99ad74bb5af"
+        },
+        {
+          "file": "CLONE-production-preview-430.png",
+          "bytes": 86055,
+          "sha256": "9f37f664508d9ebf5bb1d9352a624dc6271d3454deb2fef2ebed63044304085a"
+        },
+        {
+          "file": "WORKTREE-production-preview-1440.png",
+          "bytes": 134157,
+          "sha256": "4f7bf082218a94ef1f82a8d2dd114c9813d92c2a77483b7077a954641050248e"
+        },
+        {
+          "file": "WORKTREE-production-preview-430.png",
+          "bytes": 84340,
+          "sha256": "eb5441a4939202b666056b312ad9d3e769734341e974663c1effd726cbdcfaae"
+        }
+      ],
+      "modelRequests": 32,
+      "coreStarts": 3,
+      "originalRecordedIdentitiesStopped": 937,
+      "completeOriginalReferenceBytesVerified": true,
+      "actualOriginalSourceAndRestoredWorkspacesVerified": true,
+      "originalAppliedAndUnknownFactsRetained": true,
+      "processCoverage": "OBSERVED_ONLY; CORE_CHECKPOINT_READS_NOT_FULL_HISTORICAL_PROCESS_COVERAGE"
+    },
+    "diffView": {
+      "status": "passed",
+      "platform": "win32",
+      "version": "0.2.0-alpha.19",
+      "checks": 14,
+      "jarSha256": "0d7ffb7a56c0f4248e6add363c3e1d489a02d4ba4ca876f9fb3b1ebbc3e7b64f",
+      "originalWorkerTaskRequestsBound": true,
+      "actualProductionWebAndJar": true,
+      "actualReadOnlySourceAndWorkspaceFactsVerified": true,
+      "tasks": [
+        {
+          "strategy": "CLONE",
+          "taskId": "fabfdbc7-4989-49bc-bd78-acb5030808f3",
+          "taskExecutionId": "ebb1ccdf-0894-4bce-979b-e4061f2b49b4",
+          "modelRequests": 5,
+          "initialVersion": "1117c779d6ed538e7c348c0cc21c9e281ffff9d6f421df10737446e8b65b93d4",
+          "capturedVersion": "af5cc31ce2916b48d152e94c9725721b3de605dff8a07d84c31f22d55f9b8329",
+          "states": 7,
+          "deliverySha256": "7527a4ab99b85974ceb41e6b595d1f5c76224222f78d59a5a5016bbe5cf4ff58",
+          "originalProcessObservations": 125
+        },
+        {
+          "strategy": "WORKTREE",
+          "taskId": "cfef0ff2-56ef-422d-be2f-fe039cb6af16",
+          "taskExecutionId": "977f61f4-b673-436b-850a-77a07e42a208",
+          "modelRequests": 5,
+          "initialVersion": "1117c779d6ed538e7c348c0cc21c9e281ffff9d6f421df10737446e8b65b93d4",
+          "capturedVersion": "af5cc31ce2916b48d152e94c9725721b3de605dff8a07d84c31f22d55f9b8329",
+          "states": 7,
+          "deliverySha256": "5ee11bb7b26b6afd9b798d9d50d9f6e603f47b1678be9f42d9c853e58668c151",
+          "originalProcessObservations": 287
+        }
+      ],
+      "modelCalls": 10,
+      "originalIdentitiesStopped": 288,
+      "screenshots": [
+        {
+          "file": "CLONE-production-diff-1440.png",
+          "bytes": 109593,
+          "sha256": "685462c1993ff7156b083e0db53e2f93628c1f62eac34f75e31ed45d08ba54a4"
+        },
+        {
+          "file": "CLONE-production-diff-430.png",
+          "bytes": 64496,
+          "sha256": "d243598406a19b38f9d72363e5aa38f4e39309d4f05368a41cb9fd4e87bfc68b"
+        },
+        {
+          "file": "CLONE-production-refreshed.png",
+          "bytes": 73513,
+          "sha256": "58c848a792ef3b061655232ae366e2e01178a25c29071dc10c23b616db5b2e41"
+        },
+        {
+          "file": "WORKTREE-production-diff-1440.png",
+          "bytes": 107981,
+          "sha256": "6f2ea22f90b53928bff78ed4ca3b3545bf0aad7d9b86be300cbf29b0ee44e721"
+        },
+        {
+          "file": "WORKTREE-production-diff-430.png",
+          "bytes": 62695,
+          "sha256": "5b4dad579da2c2ec7332220182839aa2bdcbd8b27e00720b406d13206cd2c219"
+        },
+        {
+          "file": "WORKTREE-production-refreshed.png",
+          "bytes": 74466,
+          "sha256": "19c1748d200e032831a33fd7bca51cf9a56399de4c18d411e72710ee70f7552d"
+        }
+      ],
+      "servedFiles": [
+        {
+          "file": "/index.html",
+          "sha256": "9accda73d7e4f67f8ae4c0d5528991369c7d90a5ed594bd1eaa3714c15057249"
+        },
+        {
+          "file": "/theme-init.js",
+          "sha256": "cba14173c20c5925a449979c68ffc281111bc1c116481894277e1747833765e0"
+        },
+        {
+          "file": "/assets/index-lpN8oTSv.js",
+          "sha256": "4538d88879ee893ac18cdaef6240c8becdd5b2da1e8a4306247c0669ae60e4fd"
+        },
+        {
+          "file": "/assets/index-C6FUt5I0.css",
+          "sha256": "b7b832a24fd25a9bbbb184f1224896a726bbc81897b1f3c4ce9eb4548272b333"
+        }
+      ],
+      "previewProcessCoverage": "CORE_PREVIEW_NOT_PERSISTED_IN_WORKER_LEDGER; TASK_EXECUTION_OBSERVED_ONLY",
+      "fixtureSourceMatchesVerifiedSource": true,
+      "fixtureSourceMatchesExactCommit": true,
+      "exactCommit": "41a5145b8578fb55f5db8b2e31023c8685298d46"
+    },
+    "nativeDependencyVerification": [
+      {
+        "file": "jna-5.17.0.jar",
+        "bytes": 2002589,
+        "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+        "licenses": [
+          {
+            "entry": "META-INF/AL2.0",
+            "bytes": 10174,
+            "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+          },
+          {
+            "entry": "META-INF/LICENSE",
+            "bytes": 797,
+            "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+          }
+        ],
+        "licenseChoice": "Apache-2.0"
+      },
+      {
+        "file": "jna-platform-5.17.0.jar",
+        "bytes": 1378617,
+        "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+        "licenses": [
+          {
+            "entry": "META-INF/AL2.0",
+            "bytes": 10174,
+            "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+          },
+          {
+            "entry": "META-INF/LICENSE",
+            "bytes": 797,
+            "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+          }
+        ],
+        "licenseChoice": "Apache-2.0"
+      }
+    ],
+    "packagedJreWriter": {
+      "recordedAt": "2026-11-16T05:15:37.747Z",
+      "version": "0.2.0-alpha.19",
+      "platform": "win32",
+      "status": "passed",
+      "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
+      "jarSha256": "0d7ffb7a56c0f4248e6add363c3e1d489a02d4ba4ca876f9fb3b1ebbc3e7b64f",
+      "packagedJarSha256": "0d7ffb7a56c0f4248e6add363c3e1d489a02d4ba4ca876f9fb3b1ebbc3e7b64f",
+      "packagedJava": "D:\\a\\multi-agent\\multi-agent\\release\\win-unpacked\\resources\\jre\\bin\\java.exe",
+      "packagedJavaSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
+      "javaVersion": "21.0.13",
+      "packagedRuntimeReleaseSha256": "b3f0f2c915151893f679218e30bf445ee6b489681e06457f466744fe89e50e8c",
+      "fixtureClassesCompiledOnce": true,
+      "fixtureClasses": [
+        {
+          "file": "ProcessRecoveryProbe$Identity.class",
+          "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+        },
+        {
+          "file": "ProcessRecoveryProbe$State.class",
+          "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+        },
+        {
+          "file": "ProcessRecoveryProbe$Visibility.class",
+          "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+        },
+        {
+          "file": "ProcessRecoveryProbe.class",
+          "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+        },
+        {
+          "file": "dev/agentworkbench/WorkspaceWriteDatabaseFixture.class",
+          "sha256": "a588579f7b3a02bb2246c3d3718765c672e72742947a425f774a0cfbb0add75b"
+        },
+        {
+          "file": "dev/agentworkbench/WorkspaceWriteProbe$1.class",
+          "sha256": "e19bcd1e5940a102a8e849b7303b016196bfaf31cf3c132b9f3b2a9f61acebed"
+        },
+        {
+          "file": "dev/agentworkbench/WorkspaceWriteProbe$2.class",
+          "sha256": "a0d4e287e5364f47dab229f62eefdba5c195123bdc4c5540c72d0458d0da7a86"
+        },
+        {
+          "file": "dev/agentworkbench/WorkspaceWriteProbe.class",
+          "sha256": "17969c48c3e8b6a10357e24eaa8b8a4c1e08d20f723b78c5b0c0842018ad28a6"
+        }
+      ],
+      "productionClasses": [
+        {
+          "file": "dev/agentworkbench/WorkbenchEngine.class",
+          "sha256": "869054f463789e63994d0a9cd0d3b1c6ad9ee9a3df8a2c7a89dbfa59f13a80ce"
+        },
+        {
+          "file": "dev/agentworkbench/WorkerProcessMain.class",
+          "sha256": "cc73f7de2edc901a5e0ee38a541abaf04d9f0fe62f4fc5c1335e39fea01b2647"
+        },
+        {
+          "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+          "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+        },
+        {
+          "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+          "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+        },
+        {
+          "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+          "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+        },
+        {
+          "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+          "sha256": "42c57b0db8d5780cbc971acbf7c44362deb326f764f840472c41cb2e17eee222"
+        }
+      ],
+      "nativeDependencies": [
+        {
+          "file": "jna-5.17.0.jar",
+          "bytes": 2002589,
+          "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+          "licenseChoice": "Apache-2.0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ]
+        },
+        {
+          "file": "jna-platform-5.17.0.jar",
+          "bytes": 1378617,
+          "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+          "licenseChoice": "Apache-2.0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ]
+        }
+      ],
+      "nativeFileKey": "WINDOWS:9260c73360c71cbb:ff6a0000000001000000000000000000",
+      "originalPid": 3280,
+      "originalProcessStartedAt": "2026-11-16T05:15:36.316Z",
+      "originalStopped": true,
+      "releaseDuringBorrowRejected": true,
+      "lockAvailableAfterRelease": true,
+      "windowsNativeProcessSnapshotApplicable": true,
+      "windowsNativeProcessSnapshotVerified": true,
+      "nativeProcessBirth": "2026-11-16T05:15:36.316Z",
+      "nativeProcessSnapshotCount": 141,
+      "probeOutputEncoding": "UTF-8",
+      "schedulerParallelism": 2,
+      "schedulerMaxPoolSize": 2,
+      "evidenceDirectory": "D:\\a\\multi-agent\\multi-agent\\.runtime\\bundled-workspace-writer-Tkk6Ui"
+    },
+    "packagedCoreMatchesFinalJar": true,
+    "exactCommitFixtureSourcesVerified": true,
+    "originalUnknownAndCompleteHistoryVerified": true,
+    "previewProcessCoverageLimitsRetained": true
+  },
+  "failedPlatforms": [
+    {
+      "platform": "ubuntu-latest",
+      "core": {
+        "suiteCount": 34,
+        "tests": 451,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 9,
+        "passed": 441
+      },
+      "failedCases": [
+        {
+          "name": "twoParentsWaitingForChildrenMakeProgressAtCapacityTwo",
+          "className": "dev.agentworkbench.TeamExecutionTest",
+          "originalXmlFile": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamExecutionTest.xml",
+          "originalXmlSha256": "25b3bb866af9d2dbfbe8deac913aae6c2ac41f97ca6253535a4f5e9bcbd7ecc2",
+          "originalFailureBodySha256": "b301720db48ad156d23873751ec5da2f728d19c55b215d361fc367ba85fd6024",
+          "originalFailureExcerpt": "\n    <failure message=\"Unexpected state: FAILED / 运行器执行失败：模型接口返回 HTTP 500；未自动重试，避免重复费用。 / [org.opentest4j.AssertionFailedError: both original parent requests must arrive before delegation ==&gt; expected: &lt;true&gt; but was: &lt;false&gt;] / children=[] / operations=[{id=e3879f0b-4690-48d9-bb7b-65666e9f92b1, taskId=df4bc122-38f4-4426-91c8-982a30e55ef5, stage=analysis, kind=MODEL, target=/tmp/junit-11466238113873553451/data/workspaces/df4bc122-38f4-4426-91c8-982a30e55ef5/work, state=ACKNOWLEDGED, createdAt=2026-11-16T04:39:57.615718114Z, taskExecutionId=1926c4a1-85a9-485c-86ca-318b3fde193b, dispatchActionId=bbf4b391-c05f-4507-83a9-4dde278790fc, workspaceWriteLeaseId=a5877d2e-d7fd-4110-ae01-a74ffc2b13e8, agentRunId=890a6cf4-4efe-45fb-84a7-ddc2e46d6376, routeId=dfe25adc-8e98-433f-b4e0-0ce4a1451c3a, routeVersion=1, updatedAt=2026-11-16T04:40:12.706566970Z, workerLeaseId=d2980688-0f7d-45fc-b496-a359106832a4, workerId=cf331817-5aa5-499e-a333-dac9675da92f, executionNodeId=af3b7d79-52b7-4f77-82a3-8d7f4e77386e, workerEpoch=1, repositoryBindingId=b512f158-0224-48f3-a828-a173a9e29e76, bindingVersion=1, workingDirectory=/tmp/junit-11466238113873553451/data/workspaces/df4bc122-38f4-4426-91c8-982a30e55ef5/work, dispatchCount=1, deployment=LOCAL_PROCESS, executorPid=22281, processStartedAt=2026-11-16T04:39:56.300Z, corePid=2357, processSessionId=4522a38d-b772-4cd7-b6ed-2441b2b25b41, evidenceId=9a5b3e87-beb4-4dc1-bb48-e69e2b36dc40}, {id=be1931d4-6344-472b-9504-26e4d2d4b818, taskId=df4bc122-38f4-4426-91c8-982a30e55ef5, stage=baseline, kind=VERIFICATION, target=node verify.mjs, state=ACKNOWLEDGED, createdAt=2026-11-16T04:39:57.503121191Z, taskExecutionId=1926c4a1-85a9-485c-86ca-318b3fde193b, dispatchActionId=bbf4b391-c05f-4507-83a9-4dde278790fc, workspaceWriteLeaseId=a5877d2e-d7fd-4110-ae01-a74ffc2b13e8, version=4df486ba75aa5fbf598c20e5af395825636c9e0a06be05ab57638ea6736e8e66, updatedAt=2026-11-16T04:39:57.545790366Z, workerLeaseId=a28a55c8-ac1a-4652-ae8a-6d42720c95e9, workerId=cf331817-5aa5-499e-a333-dac9675da92f, executionNodeId=af3b7d79-52b7-4f77-82a3-8d7f4e77386e, workerEpoch=1, repositoryBindingId=b512f158-0224-48f3-a828-a173a9e29e76, bindingVersion=1, workingDirectory=/tmp/junit-11466238113873553451/data/workspaces/df4bc122-38f4-4426-91c8-982a30e55ef5/work, dispatchCount=1, deployment=LOCAL_PROCESS, executorPid=22281, processStartedAt=2026-11-16T04:39:56.300Z, corePid=2357, processSessionId=4522a38d-b772-4cd7-b6ed-2441b2b25b41, evidenceId=c35200c2-9395-45e9-9d3b-638"
+        }
+      ],
+      "verifiedOriginalFixtureFiles": 112,
+      "fixtureCopies": [
+        {
+          "test": "twoParentsWaitingForChildrenMakeProgressAtCapacityTwo()",
+          "originalFixture": "/tmp/junit-11466238113873553451",
+          "completeCopyVerified": true,
+          "files": 112
+        }
+      ],
+      "previouslyCorrectedSuitesPassed": true,
+      "parallelCheckpoint": {
+        "originalGenericIOFailureRetained": true,
+        "originalExceptionCauseAndDirectoryCreationTimelineNotUploaded": true,
+        "candidateOnly": "safeDirectory exists/createDirectory race in shared checkpoint directories; independent reproduction is still required."
+      },
+      "allOriginalFailuresAndMissingExceptionTimingRetained": true
+    },
+    {
+      "platform": "macos-latest",
+      "core": {
+        "suiteCount": 34,
+        "tests": 451,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 9,
+        "passed": 440
+      },
+      "failedCases": [
+        {
+          "name": "originalUnclaimedUndoCanBeStoppedAndItsPreviewCannotReplay(String)[3]",
+          "className": "dev.agentworkbench.CheckpointEngineTest",
+          "originalXmlFile": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointEngineTest.xml",
+          "originalXmlSha256": "9cfa1be7e8ef6c98b86deeccfede197c11db96f13a3d6ad54967beec48eb0a84",
+          "originalFailureBodySha256": "31c020a8d381e8a1fa6a4a5cc4890a123d8138e076112d5a25d11baf76f1d428",
+          "originalFailureExcerpt": "\n    <failure message=\"expected: &lt;CANCELLED&gt; but was: &lt;QUEUED&gt;\" type=\"org.opentest4j.AssertionFailedError\"><![CDATA[org.opentest4j.AssertionFailedError: expected: <CANCELLED> but was: <QUEUED>\n\tat org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)\n\tat org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)\n\tat org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)\n\tat org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)\n\tat org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)\n\tat org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)\n\tat dev.agentworkbench.CheckpointEngineTest.originalUnclaimedUndoCanBeStoppedAndItsPreviewCannotReplay(CheckpointEngineTest.java:335)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:178)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)\n\tat java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)\n\tat java.base/java.util.stream.ForEachOp"
+        },
+        {
+          "name": "twoParentsWaitingForChildrenMakeProgressAtCapacityTwo",
+          "className": "dev.agentworkbench.TeamExecutionTest",
+          "originalXmlFile": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamExecutionTest.xml",
+          "originalXmlSha256": "5ab9835cb456b24acd1715fac130a9fdccc2b0a0c9d2614db91f0e9ecd8bc790",
+          "originalFailureBodySha256": "5e6a14a0ac169802c9c2b0c5e55b013791881f5dfb7f143530cf29285cd85886",
+          "originalFailureExcerpt": "\n    <failure message=\"Unexpected state: FAILED / 检查点文件未完整保存，不会发布可恢复引用。 / [] / children=[] / operations=[{id=33a6f8f7-625a-47c3-b71e-49f500382079, taskId=50c51b2d-1601-4f02-91c0-78354b8479d1, stage=prepare, kind=WORKSPACE, target=/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-3258269659272840745/中文 source project, state=ACKNOWLEDGED, createdAt=2026-11-16T04:42:52.773228Z, taskExecutionId=812debae-5f77-45a3-a82f-2eab198777bb, dispatchActionId=da934044-f9c7-425e-a441-2c6a37b0bbc1, workspaceWriteLeaseId=27ecb3fa-607e-43fe-ab3f-d3cdd1e81479, updatedAt=2026-11-16T04:42:52.981958Z, workerLeaseId=db6d1dce-2fa7-462c-a480-56ae120cb29e, workerId=fb6d0245-cf60-4fb9-be67-1dab6817a908, executionNodeId=c129cd6b-9f5f-4307-aef4-9852eebf9ab6, workerEpoch=1, repositoryBindingId=9ca9deac-8dc0-4bdc-bdfb-792d0b415bf2, bindingVersion=1, workingDirectory=/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-3258269659272840745/中文 source project, dispatchCount=1, deployment=LOCAL_PROCESS, executorPid=22680, processStartedAt=2026-11-16T04:42:52.384Z, corePid=1730, processSessionId=0eac2d2c-007d-45dc-a4c6-eae51103ffe0, workspace=/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-3258269659272840745/data/workspaces/50c51b2d-1601-4f02-91c0-78354b8479d1/work, baseline=4a3f2950e6d193966bf675b32a16efb0202de94c, version=4df486ba75aa5fbf598c20e5af395825636c9e0a06be05ab57638ea6736e8e66, sourceDirty=false, workspaceWriteGrant={schemaVersion=1, state=HELD, identity={schemaVersion=1, id=27ecb3fa-607e-43fe-ab3f-d3cdd1e81479, taskId=50c51b2d-1601-4f02-91c0-78354b8479d1, projectId=8357bc9f-43ea-4f1f-9477-60d649a03788, taskExecutionId=812debae-5f77-45a3-a82f-2eab198777bb, dispatchActionId=da934044-f9c7-425e-a441-2c6a37b0bbc1, attempt=1, scopePath=/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-3258269659272840745/data/workspaces/50c51b2d-1601-4f02-91c0-78354b8479d1/work, scopeKey=/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-3258269659272840745/data/workspaces/50c51b2d-1601-4f02-91c0-78354b8479d1/work, workerId=fb6d0245-cf60-4fb9-be67-1dab6817a908, executionNodeId=c129cd6b-9f5f-4307-aef4-9852eebf9ab6, workerEpoch=1, executorPid=22680, processStartedAt=2026-11-16T04:42:52.384Z, ownerCoreSessionId=da02e2f1-1181-4ccc-8538-8bf6b147d1df, ownerCorePid=1730, ownerCoreStartedAt=2026-11-16T04:36:27.766Z, authorizationVersion=1, workspaceSelectionVersion=0, strategy=CLONE, baseline=}, lockPath=/private/var/folders/h5/t85nd63d71x27_8gl5gw3"
+        }
+      ],
+      "verifiedOriginalFixtureFiles": 188,
+      "fixtureCopies": [
+        {
+          "test": "[3] action=restart-pause",
+          "originalFixture": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456",
+          "completeCopyVerified": true,
+          "files": 82
+        },
+        {
+          "test": "twoParentsWaitingForChildrenMakeProgressAtCapacityTwo()",
+          "originalFixture": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-3258269659272840745",
+          "completeCopyVerified": true,
+          "files": 106
+        }
+      ],
+      "previouslyCorrectedSuitesPassed": true,
+      "parallelCheckpoint": {
+        "originalGenericIOFailureRetained": true,
+        "originalExceptionCauseAndDirectoryCreationTimelineNotUploaded": true,
+        "candidateOnly": "safeDirectory exists/createDirectory race in shared checkpoint directories; independent reproduction is still required."
+      },
+      "restartPause": {
+        "original": {
+          "entry": "core/target/checkpoint-evidence-d3c61ce7-c205-4aa9-83d0-5d155574cfa5/before-close-3a60c784-78d7-41b8-b596-fb6635ebd32f.json",
+          "sha256": "865de6b7fdb2556baba5e59fe275282064f32b6904102a30fe5f1f642889798d",
+          "worker": {
+            "id": "c3acc956-b3ed-41c4-a7f6-a0c60e5699d3",
+            "executionNodeId": "f35b46bb-5b6a-4cf7-9455-3a7ccb46a229",
+            "epoch": 1,
+            "protocolVersion": 1,
+            "deployment": "LOCAL_PROCESS",
+            "pid": 11844,
+            "processStartedAt": "2026-11-16T04:38:55.227Z",
+            "startedAt": "2026-11-16T04:38:55.479351Z",
+            "heartbeatAt": "2026-11-16T04:38:55.479351Z",
+            "expiresAt": "2026-11-16T04:39:25.479351Z",
+            "state": "RUNNING",
+            "platform": "Mac OS X",
+            "architecture": "aarch64",
+            "parentPid": 1730,
+            "corePid": 1730,
+            "coreStartedAt": "2026-11-16T04:36:27.766Z",
+            "processSessionId": "c003b824-d7f0-4e27-9e13-42df01c4c8a5",
+            "controlEnvironmentPresent": false,
+            "jvmOptionsEnvironmentPresent": false,
+            "controlPropertiesPresent": false,
+            "heartbeatSource": "STARTUP_HANDSHAKE",
+            "lastHeartbeatSequence": 0
+          },
+          "restoreInvocations": 0,
+          "tasks": [
+            {
+              "id": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "schemaVersion": 1,
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "title": "Actual checkpoint root",
+              "goal": "Preserve original receipts and file versions",
+              "mode": "LEAD",
+              "modeReason": "由用户指定协作模式",
+              "state": "QUEUED",
+              "outcome": "FAILED",
+              "createdAt": "2026-11-16T04:38:56.103988Z",
+              "updatedAt": "2026-11-16T04:38:57.327232Z",
+              "contract": {
+                "id": "cb5279bb-e616-491f-b3e9-bb641a1d5f9b",
+                "version": 1,
+                "scope": [
+                  "**"
+                ],
+                "acceptance": [
+                  "original file receipts"
+                ],
+                "commands": [
+                  "node verify.mjs"
+                ],
+                "permissions": [
+                  "read",
+                  "search",
+                  "write",
+                  "verify"
+                ],
+                "createdAt": "2026-11-16T04:38:55.887820Z",
+                "confirmed": true
+              },
+              "budget": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "locks": {},
+              "routeId": "6a100aa2-0f68-4e07-8c65-668b76062677",
+              "routeSnapshot": {
+                "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                "name": "checkpoint local HTTP",
+                "engine": "API",
+                "model": "fixture",
+                "provider": "",
+                "baseUrl": "http://127.0.0.1:49266/v1",
+                "executable": "",
+                "enabled": true,
+                "version": 1,
+                "updatedAt": "2026-11-16T04:38:55.753068Z",
+                "budgetType": "REQUEST_COUNT",
+                "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+              },
+              "profileSnapshot": [
+                {
+                  "id": "builtin-reviewer",
+                  "name": "独立审查者",
+                  "role": "reviewer",
+                  "instructions": "独立核对需求、差异和验证证据。不能只依赖实现者自报。报告阻断问题及证据。",
+                  "capabilities": [
+                    "read",
+                    "search"
+                  ],
+                  "version": 1,
+                  "builtin": true,
+                  "createdAt": "2026-11-16T04:38:55.221320Z"
+                },
+                {
+                  "id": "builtin-tester",
+                  "name": "质量工程师",
+                  "role": "tester",
+                  "instructions": "关注边界、失败路径和回归。检查结果必须绑定版本，不能用偶然成功覆盖失败。",
+                  "capabilities": [
+                    "read",
+                    "search"
+                  ],
+                  "version": 1,
+                  "builtin": true,
+                  "createdAt": "2026-11-16T04:38:55.220904Z"
+                },
+                {
+                  "id": "builtin-developer",
+                  "name": "实现工程师",
+                  "role": "developer",
+                  "instructions": "在授权范围内完成需求，尊重项目规则，保持测试与验收完整性。",
+                  "capabilities": [
+                    "read",
+                    "search",
+                    "write"
+                  ],
+                  "version": 1,
+                  "builtin": true,
+                  "createdAt": "2026-11-16T04:38:55.220567Z"
+                },
+                {
+                  "id": "builtin-architect",
+                  "name": "架构分析",
+                  "role": "architect",
+                  "instructions": "审视模块边界、兼容性与取舍。区分观察、假设、偏好并说明反证条件。",
+                  "capabilities": [
+                    "read",
+                    "search"
+                  ],
+                  "version": 1,
+                  "builtin": true,
+                  "createdAt": "2026-11-16T04:38:55.220235Z"
+                },
+                {
+                  "id": "builtin-lead",
+                  "name": "研发负责人",
+                  "role": "lead",
+                  "instructions": "基于证据规划工作，保留未知、失败与交接信息。不得自行降低验收条件。",
+                  "capabilities": [
+                    "read",
+                    "search"
+                  ],
+                  "version": 1,
+                  "builtin": true,
+                  "createdAt": "2026-11-16T04:38:55.219871Z"
+                }
+              ],
+              "policyVersion": "1.1/0.2.0-alpha.19",
+              "includeChanges": false,
+              "execution": {
+                "version": 1,
+                "protocolVersion": 1,
+                "executionNodeId": "f35b46bb-5b6a-4cf7-9455-3a7ccb46a229",
+                "nodeVersion": 1,
+                "nodeName": "本机执行节点",
+                "repositoryBindingId": "67f07ce0-3921-45d9-84ba-f97daf4ef439",
+                "bindingVersion": 1,
+                "bindingName": "original checkpoint source",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "deployment": "LOCAL_PROCESS",
+                "createdAt": "2026-11-16T04:38:55.754092Z"
+              },
+              "plan": [
+                {
+                  "id": "baseline",
+                  "title": "隔离基线检查",
+                  "role": "tester",
+                  "dependencies": [],
+                  "kind": "BASELINE",
+                  "readOnly": true,
+                  "inputs": [
+                    "contract"
+                  ],
+                  "outputs": [
+                    "baseline:result"
+                  ],
+                  "acceptance": [
+                    "有可追溯的阶段成果，未确认项明确保留"
+                  ],
+                  "termination": "完成、根取消、预算或 15 分钟工具超时",
+                  "resources": [],
+                  "permissions": [
+                    "read",
+                    "search"
+                  ],
+                  "state": "COMPLETED",
+                  "updatedAt": "2026-11-16T04:38:56.864247Z"
+                }
+              ],
+              "context": [],
+              "evidence": [
+                {
+                  "id": "37ce4e4e-cada-4ee6-a3fe-24b33506966b",
+                  "stage": "baseline",
+                  "kind": "BASELINE",
+                  "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+                  "command": "node verify.mjs",
+                  "exitCode": 0,
+                  "output": "ORIGINAL_CHECKPOINT_VERIFICATION 12046\n",
+                  "status": "PASSED",
+                  "usage": {},
+                  "createdAt": "2026-11-16T04:38:56.860715Z",
+                  "environment": {
+                    "os": "Mac OS X",
+                    "java": "21.0.13",
+                    "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work"
+                  },
+                  "resultVersion": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+                  "operationId": "f939811e-4e97-44b9-b136-6e14fe79143c",
+                  "workerLeaseId": "10b90cf4-f74e-433e-b441-939da41256b1",
+                  "workerId": "c3acc956-b3ed-41c4-a7f6-a0c60e5699d3",
+                  "executionNodeId": "f35b46bb-5b6a-4cf7-9455-3a7ccb46a229",
+                  "workerEpoch": 1,
+                  "repositoryBindingId": "67f07ce0-3921-45d9-84ba-f97daf4ef439",
+                  "bindingVersion": 1,
+                  "deployment": "LOCAL_PROCESS",
+                  "executorPid": 11844,
+                  "processStartedAt": "2026-11-16T04:38:55.227Z",
+                  "corePid": 1730,
+                  "processSessionId": "c003b824-d7f0-4e27-9e13-42df01c4c8a5",
+                  "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+                  "dispatchActionId": "dcaf1ee8-0ee9-4b9f-866f-79d91842bfa2",
+                  "workspaceWriteLeaseId": "c13e51d0-e244-4777-b9f0-7809d9772c58"
+                }
+              ],
+              "issues": [],
+              "review": {
+                "status": "NOT_RUN"
+              },
+              "planValidation": {
+                "valid": true,
+                "errors": []
+              },
+              "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+              "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+              "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+              "repairRounds": 0,
+              "workspaceSelection": {
+                "schemaVersion": 1,
+                "version": 1,
+                "strategy": "CLONE",
+                "ref": "HEAD",
+                "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "source": {
+                  "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                  "branch": "main",
+                  "statusDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "dirty": false,
+                  "index": "e4ab90ef059b340be564269d925ae307b364ceb8e583836b913ed691ad7199c6",
+                  "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2"
+                },
+                "includeChanges": false,
+                "createdAt": "2026-11-16T04:38:55.887350Z"
+              },
+              "mcpAuthorization": {
+                "version": 1,
+                "mode": "FIXED_ARGUMENTS",
+                "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+                "bindings": [],
+                "createdAt": "2026-11-16T04:38:56.104192Z"
+              },
+              "mcpBudget": {
+                "maxCalls": 8,
+                "maxDurationMs": 240000,
+                "usedCalls": 0,
+                "committedDurationMs": 0
+              },
+              "collaboration": {
+                "enabled": false,
+                "version": 1,
+                "maxActive": 6,
+                "maxDepth": 3,
+                "maxTotal": 24,
+                "spawned": 0,
+                "definitions": [
+                  {
+                    "id": "agent-reviewer",
+                    "name": "核对副 Agent",
+                    "role": "reviewer",
+                    "instructions": "只读检查委派成果与原始资料，报告证据、缺口和反证条件；不能把自报完成视为验证。",
+                    "capabilities": [
+                      "read",
+                      "search"
+                    ],
+                    "version": 1,
+                    "builtin": true,
+                    "projectId": "",
+                    "routeId": "",
+                    "scope": [
+                      "**"
+                    ],
+                    "maxCalls": 8,
+                    "enabled": true,
+                    "createdAt": "2026-11-16T04:38:55.219082Z",
+                    "updatedAt": "2026-11-16T04:38:55.219088Z",
+                    "routeSnapshot": {
+                      "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                      "name": "checkpoint local HTTP",
+                      "engine": "API",
+                      "model": "fixture",
+                      "provider": "",
+                      "baseUrl": "http://127.0.0.1:49266/v1",
+                      "executable": "",
+                      "enabled": true,
+                      "version": 1,
+                      "updatedAt": "2026-11-16T04:38:55.753068Z",
+                      "budgetType": "REQUEST_COUNT",
+                      "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                    }
+                  },
+                  {
+                    "id": "agent-developer",
+                    "name": "实现副 Agent",
+                    "role": "developer",
+                    "instructions": "在独立现场完成有边界的实现，保留已有注释、失败和验证记录。结果由父 Agent 核对采纳，不能代替独立审查。",
+                    "capabilities": [
+                      "read",
+                      "search",
+                      "write",
+                      "verify",
+                      "delegate",
+                      "mcp"
+                    ],
+                    "version": 1,
+                    "builtin": true,
+                    "projectId": "",
+                    "routeId": "",
+                    "scope": [
+                      "**"
+                    ],
+                    "maxCalls": 8,
+                    "enabled": true,
+                    "createdAt": "2026-11-16T04:38:55.217953Z",
+                    "updatedAt": "2026-11-16T04:38:55.217960Z",
+                    "routeSnapshot": {
+                      "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                      "name": "checkpoint local HTTP",
+                      "engine": "API",
+                      "model": "fixture",
+                      "provider": "",
+                      "baseUrl": "http://127.0.0.1:49266/v1",
+                      "executable": "",
+                      "enabled": true,
+                      "version": 1,
+                      "updatedAt": "2026-11-16T04:38:55.753068Z",
+                      "budgetType": "REQUEST_COUNT",
+                      "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                    }
+                  },
+                  {
+                    "id": "agent-research",
+                    "name": "调查副 Agent",
+                    "role": "researcher",
+                    "instructions": "调查委派范围中的资料，保留原始路径、版本和未知。需要进一步调查时可在根限制内委派。",
+                    "capabilities": [
+                      "read",
+                      "search",
+                      "delegate"
+                    ],
+                    "version": 1,
+                    "builtin": true,
+                    "projectId": "",
+                    "routeId": "",
+                    "scope": [
+                      "**"
+                    ],
+                    "maxCalls": 8,
+                    "enabled": true,
+                    "createdAt": "2026-11-16T04:38:55.216354Z",
+                    "updatedAt": "2026-11-16T04:38:55.216368Z",
+                    "routeSnapshot": {
+                      "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                      "name": "checkpoint local HTTP",
+                      "engine": "API",
+                      "model": "fixture",
+                      "provider": "",
+                      "baseUrl": "http://127.0.0.1:49266/v1",
+                      "executable": "",
+                      "enabled": true,
+                      "version": 1,
+                      "updatedAt": "2026-11-16T04:38:55.753068Z",
+                      "budgetType": "REQUEST_COUNT",
+                      "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                    }
+                  }
+                ]
+              },
+              "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+              "confirmedAt": "2026-11-16T04:38:56.107517Z",
+              "taskExecutionId": "149e1e1d-519f-4aa8-8bf2-19c48bb6f7b1",
+              "dispatchActionId": "7b52fbe1-af57-4dd2-9a84-8fca2ec173d0",
+              "taskExecution": {
+                "id": "149e1e1d-519f-4aa8-8bf2-19c48bb6f7b1",
+                "attempt": 2,
+                "state": "QUEUED",
+                "createdAt": "2026-11-16T04:38:57.327232Z",
+                "endedAt": "",
+                "reconciled": false
+              },
+              "dispatch": {
+                "id": "7b52fbe1-af57-4dd2-9a84-8fca2ec173d0",
+                "state": "PENDING",
+                "dispatchCount": 0,
+                "createdAt": "2026-11-16T04:38:57.327232Z",
+                "claimedAt": "",
+                "waitReason": ""
+              },
+              "sourceDirty": false,
+              "workspaceOwnership": {
+                "schemaVersion": 1,
+                "owner": "b2c3927a-88b3-440a-9c81-fc7b06ee2d21",
+                "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+                "strategy": "CLONE",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "gitDirectory": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work/.git",
+                "commonDirectory": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work/.git",
+                "lockReason": ""
+              },
+              "latestCheckpointId": "e6c7637b-655d-412f-9c15-74bf7319f04f",
+              "lastCheckpoint": {
+                "id": "e6c7637b-655d-412f-9c15-74bf7319f04f",
+                "version": "b6101f629b2ea83a78f421ee1b3a2b369f17a0de9fa47dbda4984ef4cbeeac25",
+                "stage": "baseline",
+                "createdAt": "2026-11-16T04:38:57.184924Z",
+                "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+                "manifestSha256": "1cb940e3dd3d3cc2aad0655d662bb68cfa52c7ad427b6a7d982212394407c548"
+              },
+              "currentStage": "baseline",
+              "baselineCheck": "PASSED",
+              "baselineVersion": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+              "pendingCheckpointRestoreId": "620ae5f1-2245-488a-9cfb-2d4407a88f1e"
+            }
+          ],
+          "previews": [
+            {
+              "schemaVersion": 1,
+              "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+              "target": {
+                "schemaVersion": 1,
+                "id": "5cbbcf56-58e5-4df6-ac22-a5c04bd38fa8",
+                "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+                "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+                "createdAt": "2026-11-16T04:38:57.107092Z",
+                "captureExecutorPid": 1730,
+                "captureProcessStartedAt": "2026-11-16T04:36:27.766Z",
+                "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+                "indexVersion": "7416a989aeb0c722e431d699f86b1275827e0ee9d9c23f9ff17e28caec807ce0",
+                "status": "READY",
+                "manifestSha256": "3fa5cb1ce89411d488373d8059c7212597ca5c617858bde94e774ba297d8da43",
+                "fileCount": 4,
+                "storedBytes": 450,
+                "excludedCount": 0,
+                "limitedCount": 0,
+                "metadata": {
+                  "kind": "MANUAL",
+                  "stage": "baseline",
+                  "title": "隔离基线检查",
+                  "taskState": "FAILED",
+                  "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+                  "planStates": {
+                    "baseline": "COMPLETED"
+                  },
+                  "context": [],
+                  "evidenceIds": [
+                    "37ce4e4e-cada-4ee6-a3fe-24b33506966b"
+                  ],
+                  "budgetSnapshot": {
+                    "maxCalls": 16,
+                    "reserveCalls": 4,
+                    "usedCalls": 0,
+                    "usedDevelopmentCalls": 0,
+                    "usedReservedCalls": 0,
+                    "developmentAvailable": 12,
+                    "type": "REQUEST_COUNT"
+                  },
+                  "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+                  "dispatchActionId": "dcaf1ee8-0ee9-4b9f-866f-79d91842bfa2",
+                  "unknownOperationIds": []
+                },
+                "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+                "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+                "visible": true,
+                "observedAt": "2026-11-16T04:38:57.113185Z",
+                "coreObservation": {
+                  "taskState": "FAILED",
+                  "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+                  "coreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f"
+                },
+                "sequence": 66
+              },
+              "source": {
+                "schemaVersion": 1,
+                "id": "e6c7637b-655d-412f-9c15-74bf7319f04f",
+                "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+                "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+                "createdAt": "2026-11-16T04:38:57.184924Z",
+                "captureExecutorPid": 1730,
+                "captureProcessStartedAt": "2026-11-16T04:36:27.766Z",
+                "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "version": "b6101f629b2ea83a78f421ee1b3a2b369f17a0de9fa47dbda4984ef4cbeeac25",
+                "indexVersion": "7416a989aeb0c722e431d699f86b1275827e0ee9d9c23f9ff17e28caec807ce0",
+                "status": "READY",
+                "manifestSha256": "1cb940e3dd3d3cc2aad0655d662bb68cfa52c7ad427b6a7d982212394407c548",
+                "fileCount": 4,
+                "storedBytes": 443,
+                "excludedCount": 0,
+                "limitedCount": 0,
+                "metadata": {
+                  "kind": "MANUAL",
+                  "stage": "baseline",
+                  "title": "隔离基线检查",
+                  "taskState": "FAILED",
+                  "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+                  "planStates": {
+                    "baseline": "COMPLETED"
+                  },
+                  "context": [],
+                  "evidenceIds": [
+                    "37ce4e4e-cada-4ee6-a3fe-24b33506966b"
+                  ],
+                  "budgetSnapshot": {
+                    "maxCalls": 16,
+                    "reserveCalls": 4,
+                    "usedCalls": 0,
+                    "usedDevelopmentCalls": 0,
+                    "usedReservedCalls": 0,
+                    "developmentAvailable": 12,
+                    "type": "REQUEST_COUNT"
+                  },
+                  "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+                  "dispatchActionId": "dcaf1ee8-0ee9-4b9f-866f-79d91842bfa2",
+                  "unknownOperationIds": []
+                },
+                "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+                "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+                "visible": true,
+                "observedAt": "2026-11-16T04:38:57.191271Z",
+                "coreObservation": {
+                  "taskState": "FAILED",
+                  "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+                  "coreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f"
+                },
+                "sequence": 67
+              },
+              "current": {
+                "schemaVersion": 1,
+                "id": "d67151a1-d368-4e7e-9987-10909b56efdc",
+                "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+                "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+                "createdAt": "2026-11-16T04:38:57.272529Z",
+                "captureExecutorPid": 1730,
+                "captureProcessStartedAt": "2026-11-16T04:36:27.766Z",
+                "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "version": "b6101f629b2ea83a78f421ee1b3a2b369f17a0de9fa47dbda4984ef4cbeeac25",
+                "indexVersion": "7416a989aeb0c722e431d699f86b1275827e0ee9d9c23f9ff17e28caec807ce0",
+                "status": "READY",
+                "manifestSha256": "f914324032164c659ad028a7136cd3b6b05d2a29fd5906d4dee5e536dcc5e041",
+                "fileCount": 4,
+                "storedBytes": 443,
+                "excludedCount": 0,
+                "limitedCount": 0,
+                "metadata": {
+                  "kind": "UNDO_PREFLIGHT"
+                }
+              },
+              "changes": [
+                {
+                  "path": "app.txt",
+                  "action": "MODIFY",
+                  "beforeSha256": "5d022a8891e39d9eba6ccb74a8403e128d617dc1e2422a899c18dac11b89e680",
+                  "afterSha256": "05184e201c2d222e182b91be0e02aea365d814d75fb67a45c3241f155377f52a",
+                  "bytes": 13
+                },
+                {
+                  "path": "binary.dat",
+                  "action": "CREATE",
+                  "beforeSha256": "",
+                  "afterSha256": "e9489f37fb3051e9efa1dc916004d7274e7b63975e3209708947267f2393a9be",
+                  "bytes": 4
+                }
+              ],
+              "conflicts": [],
+              "indexChanges": false,
+              "canRestore": true,
+              "createdAt": "2026-11-16T04:38:57.278242Z",
+              "id": "620ae5f1-2245-488a-9cfb-2d4407a88f1e",
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "state": "QUEUED",
+              "targetCheckpointId": "5cbbcf56-58e5-4df6-ac22-a5c04bd38fa8",
+              "sourceCheckpointId": "e6c7637b-655d-412f-9c15-74bf7319f04f",
+              "expiresAt": "2026-11-16T04:53:57.281347Z",
+              "taskStateAtPreview": "FAILED",
+              "budgetAtPreview": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "requestedAt": "2026-11-16T04:38:57.326755Z",
+              "requestedBy": "USER"
+            }
+          ],
+          "actions": [
+            {
+              "id": "7b52fbe1-af57-4dd2-9a84-8fca2ec173d0",
+              "schemaVersion": 1,
+              "kind": "ROOT_TASK",
+              "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+              "taskExecutionId": "149e1e1d-519f-4aa8-8bf2-19c48bb6f7b1",
+              "attempt": 2,
+              "state": "PENDING",
+              "version": 1,
+              "dispatchCount": 0,
+              "createdAt": "2026-11-16T04:38:57.327232Z",
+              "enqueuedCoreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f",
+              "authorization": {
+                "contract": {
+                  "id": "cb5279bb-e616-491f-b3e9-bb641a1d5f9b",
+                  "version": 1,
+                  "scope": [
+                    "**"
+                  ],
+                  "acceptance": [
+                    "original file receipts"
+                  ],
+                  "commands": [
+                    "node verify.mjs"
+                  ],
+                  "permissions": [
+                    "read",
+                    "search",
+                    "write",
+                    "verify"
+                  ],
+                  "createdAt": "2026-11-16T04:38:55.887820Z",
+                  "confirmed": true
+                },
+                "execution": {
+                  "version": 1,
+                  "protocolVersion": 1,
+                  "executionNodeId": "f35b46bb-5b6a-4cf7-9455-3a7ccb46a229",
+                  "nodeVersion": 1,
+                  "nodeName": "本机执行节点",
+                  "repositoryBindingId": "67f07ce0-3921-45d9-84ba-f97daf4ef439",
+                  "bindingVersion": 1,
+                  "bindingName": "original checkpoint source",
+                  "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                  "deployment": "LOCAL_PROCESS",
+                  "createdAt": "2026-11-16T04:38:55.754092Z"
+                },
+                "workspaceSelection": {
+                  "schemaVersion": 1,
+                  "version": 1,
+                  "strategy": "CLONE",
+                  "ref": "HEAD",
+                  "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                  "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                  "source": {
+                    "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                    "branch": "main",
+                    "statusDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                    "dirty": false,
+                    "index": "e4ab90ef059b340be564269d925ae307b364ceb8e583836b913ed691ad7199c6",
+                    "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2"
+                  },
+                  "includeChanges": false,
+                  "createdAt": "2026-11-16T04:38:55.887350Z"
+                },
+                "routeId": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                "routeSnapshot": {
+                  "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                  "name": "checkpoint local HTTP",
+                  "engine": "API",
+                  "model": "fixture",
+                  "provider": "",
+                  "baseUrl": "http://127.0.0.1:49266/v1",
+                  "executable": "",
+                  "enabled": true,
+                  "version": 1,
+                  "updatedAt": "2026-11-16T04:38:55.753068Z",
+                  "budgetType": "REQUEST_COUNT",
+                  "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                },
+                "locks": {},
+                "mcpAuthorization": {
+                  "version": 1,
+                  "mode": "FIXED_ARGUMENTS",
+                  "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+                  "bindings": [],
+                  "createdAt": "2026-11-16T04:38:56.104192Z"
+                },
+                "collaboration": {
+                  "enabled": false,
+                  "version": 1,
+                  "maxActive": 6,
+                  "maxDepth": 3,
+                  "maxTotal": 24,
+                  "spawned": 0,
+                  "definitions": [
+                    {
+                      "id": "agent-reviewer",
+                      "name": "核对副 Agent",
+                      "role": "reviewer",
+                      "instructions": "只读检查委派成果与原始资料，报告证据、缺口和反证条件；不能把自报完成视为验证。",
+                      "capabilities": [
+                        "read",
+                        "search"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.219082Z",
+                      "updatedAt": "2026-11-16T04:38:55.219088Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    },
+                    {
+                      "id": "agent-developer",
+                      "name": "实现副 Agent",
+                      "role": "developer",
+                      "instructions": "在独立现场完成有边界的实现，保留已有注释、失败和验证记录。结果由父 Agent 核对采纳，不能代替独立审查。",
+                      "capabilities": [
+                        "read",
+                        "search",
+                        "write",
+                        "verify",
+                        "delegate",
+                        "mcp"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.217953Z",
+                      "updatedAt": "2026-11-16T04:38:55.217960Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    },
+                    {
+                      "id": "agent-research",
+                      "name": "调查副 Agent",
+                      "role": "researcher",
+                      "instructions": "调查委派范围中的资料，保留原始路径、版本和未知。需要进一步调查时可在根限制内委派。",
+                      "capabilities": [
+                        "read",
+                        "search",
+                        "delegate"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.216354Z",
+                      "updatedAt": "2026-11-16T04:38:55.216368Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    }
+                  ]
+                },
+                "policyVersion": "1.1/0.2.0-alpha.19"
+              }
+            },
+            {
+              "id": "dcaf1ee8-0ee9-4b9f-866f-79d91842bfa2",
+              "schemaVersion": 1,
+              "kind": "ROOT_TASK",
+              "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+              "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+              "attempt": 1,
+              "state": "SETTLED",
+              "version": 3,
+              "dispatchCount": 1,
+              "createdAt": "2026-11-16T04:38:56.107506Z",
+              "enqueuedCoreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f",
+              "authorization": {
+                "contract": {
+                  "id": "cb5279bb-e616-491f-b3e9-bb641a1d5f9b",
+                  "version": 1,
+                  "scope": [
+                    "**"
+                  ],
+                  "acceptance": [
+                    "original file receipts"
+                  ],
+                  "commands": [
+                    "node verify.mjs"
+                  ],
+                  "permissions": [
+                    "read",
+                    "search",
+                    "write",
+                    "verify"
+                  ],
+                  "createdAt": "2026-11-16T04:38:55.887820Z",
+                  "confirmed": true
+                },
+                "execution": {
+                  "version": 1,
+                  "protocolVersion": 1,
+                  "executionNodeId": "f35b46bb-5b6a-4cf7-9455-3a7ccb46a229",
+                  "nodeVersion": 1,
+                  "nodeName": "本机执行节点",
+                  "repositoryBindingId": "67f07ce0-3921-45d9-84ba-f97daf4ef439",
+                  "bindingVersion": 1,
+                  "bindingName": "original checkpoint source",
+                  "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                  "deployment": "LOCAL_PROCESS",
+                  "createdAt": "2026-11-16T04:38:55.754092Z"
+                },
+                "workspaceSelection": {
+                  "schemaVersion": 1,
+                  "version": 1,
+                  "strategy": "CLONE",
+                  "ref": "HEAD",
+                  "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                  "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                  "source": {
+                    "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                    "branch": "main",
+                    "statusDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                    "dirty": false,
+                    "index": "e4ab90ef059b340be564269d925ae307b364ceb8e583836b913ed691ad7199c6",
+                    "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2"
+                  },
+                  "includeChanges": false,
+                  "createdAt": "2026-11-16T04:38:55.887350Z"
+                },
+                "routeId": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                "routeSnapshot": {
+                  "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                  "name": "checkpoint local HTTP",
+                  "engine": "API",
+                  "model": "fixture",
+                  "provider": "",
+                  "baseUrl": "http://127.0.0.1:49266/v1",
+                  "executable": "",
+                  "enabled": true,
+                  "version": 1,
+                  "updatedAt": "2026-11-16T04:38:55.753068Z",
+                  "budgetType": "REQUEST_COUNT",
+                  "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                },
+                "locks": {},
+                "mcpAuthorization": {
+                  "version": 1,
+                  "mode": "FIXED_ARGUMENTS",
+                  "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+                  "bindings": [],
+                  "createdAt": "2026-11-16T04:38:56.104192Z"
+                },
+                "collaboration": {
+                  "enabled": false,
+                  "version": 1,
+                  "maxActive": 6,
+                  "maxDepth": 3,
+                  "maxTotal": 24,
+                  "spawned": 0,
+                  "definitions": [
+                    {
+                      "id": "agent-reviewer",
+                      "name": "核对副 Agent",
+                      "role": "reviewer",
+                      "instructions": "只读检查委派成果与原始资料，报告证据、缺口和反证条件；不能把自报完成视为验证。",
+                      "capabilities": [
+                        "read",
+                        "search"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.219082Z",
+                      "updatedAt": "2026-11-16T04:38:55.219088Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    },
+                    {
+                      "id": "agent-developer",
+                      "name": "实现副 Agent",
+                      "role": "developer",
+                      "instructions": "在独立现场完成有边界的实现，保留已有注释、失败和验证记录。结果由父 Agent 核对采纳，不能代替独立审查。",
+                      "capabilities": [
+                        "read",
+                        "search",
+                        "write",
+                        "verify",
+                        "delegate",
+                        "mcp"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.217953Z",
+                      "updatedAt": "2026-11-16T04:38:55.217960Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    },
+                    {
+                      "id": "agent-research",
+                      "name": "调查副 Agent",
+                      "role": "researcher",
+                      "instructions": "调查委派范围中的资料，保留原始路径、版本和未知。需要进一步调查时可在根限制内委派。",
+                      "capabilities": [
+                        "read",
+                        "search",
+                        "delegate"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.216354Z",
+                      "updatedAt": "2026-11-16T04:38:55.216368Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    }
+                  ]
+                },
+                "policyVersion": "1.1/0.2.0-alpha.19"
+              },
+              "ownerCoreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f",
+              "ownerCorePid": 1730,
+              "ownerCoreStartedAt": "2026-11-16T04:36:27.766Z",
+              "claimedAt": "2026-11-16T04:38:56.111233Z",
+              "workspaceWriteLeaseId": "c13e51d0-e244-4777-b9f0-7809d9772c58",
+              "endedAt": "2026-11-16T04:38:57.013388Z",
+              "executionState": "FAILED"
+            }
+          ],
+          "executions": [
+            {
+              "id": "149e1e1d-519f-4aa8-8bf2-19c48bb6f7b1",
+              "schemaVersion": 1,
+              "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "rootTaskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+              "attempt": 2,
+              "trigger": "USER_CHECKPOINT_RESTORE",
+              "state": "QUEUED",
+              "createdAt": "2026-11-16T04:38:57.327232Z",
+              "dispatchActionId": "7b52fbe1-af57-4dd2-9a84-8fca2ec173d0",
+              "sourceTaskState": "FAILED",
+              "policyVersion": "1.1/0.2.0-alpha.19",
+              "budgetAtEnqueue": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "contractVersion": 1,
+              "authorizationVersion": 1,
+              "workspaceSelection": {
+                "schemaVersion": 1,
+                "version": 1,
+                "strategy": "CLONE",
+                "ref": "HEAD",
+                "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "source": {
+                  "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                  "branch": "main",
+                  "statusDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "dirty": false,
+                  "index": "e4ab90ef059b340be564269d925ae307b364ceb8e583836b913ed691ad7199c6",
+                  "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2"
+                },
+                "includeChanges": false,
+                "createdAt": "2026-11-16T04:38:55.887350Z"
+              }
+            },
+            {
+              "id": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+              "schemaVersion": 1,
+              "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "rootTaskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+              "attempt": 1,
+              "trigger": "USER_APPROVAL",
+              "state": "FAILED",
+              "createdAt": "2026-11-16T04:38:56.107506Z",
+              "dispatchActionId": "dcaf1ee8-0ee9-4b9f-866f-79d91842bfa2",
+              "sourceTaskState": "DRAFT",
+              "policyVersion": "1.1/0.2.0-alpha.19",
+              "budgetAtEnqueue": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "contractVersion": 1,
+              "authorizationVersion": 1,
+              "workspaceSelection": {
+                "schemaVersion": 1,
+                "version": 1,
+                "strategy": "CLONE",
+                "ref": "HEAD",
+                "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "source": {
+                  "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                  "branch": "main",
+                  "statusDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "dirty": false,
+                  "index": "e4ab90ef059b340be564269d925ae307b364ceb8e583836b913ed691ad7199c6",
+                  "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2"
+                },
+                "includeChanges": false,
+                "createdAt": "2026-11-16T04:38:55.887350Z"
+              },
+              "ownerCoreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f",
+              "ownerCorePid": 1730,
+              "ownerCoreStartedAt": "2026-11-16T04:36:27.766Z",
+              "startedAt": "2026-11-16T04:38:56.111233Z",
+              "budgetAtStart": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "workspaceWriteLeaseId": "c13e51d0-e244-4777-b9f0-7809d9772c58",
+              "workspaceWriteStateAtEnd": "RELEASED",
+              "workspaceWriteProtectionReleased": true,
+              "endedAt": "2026-11-16T04:38:57.013321Z",
+              "reason": "当前内容与验证或审查版本不符，请重新验证",
+              "taskStateAtEnd": "FAILED",
+              "taskOutcomeAtEnd": "FAILED",
+              "budgetAtEnd": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+              "resultVersion": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+              "elapsedMs": 905,
+              "workspaceOwnership": {
+                "schemaVersion": 1,
+                "owner": "b2c3927a-88b3-440a-9c81-fc7b06ee2d21",
+                "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+                "strategy": "CLONE",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "gitDirectory": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work/.git",
+                "commonDirectory": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work/.git",
+                "lockReason": ""
+              }
+            }
+          ]
+        },
+        "reopened": {
+          "entry": "core/target/checkpoint-evidence-d3c61ce7-c205-4aa9-83d0-5d155574cfa5/before-close-04ee063e-0512-4097-ab73-dbc0032b1424.json",
+          "sha256": "12bcb7038e4fd4ac13500c658085c70b092d1c592dfaf8c47708ea88490e4d04",
+          "worker": {
+            "id": "ebcb6395-6bf0-4878-9fe3-0cd98b8eb842",
+            "executionNodeId": "f35b46bb-5b6a-4cf7-9455-3a7ccb46a229",
+            "epoch": 2,
+            "protocolVersion": 1,
+            "deployment": "LOCAL_PROCESS",
+            "pid": 12444,
+            "processStartedAt": "2026-11-16T04:39:13.602Z",
+            "startedAt": "2026-11-16T04:39:13.824126Z",
+            "heartbeatAt": "2026-11-16T04:39:13.824126Z",
+            "expiresAt": "2026-11-16T04:39:43.824126Z",
+            "state": "RUNNING",
+            "platform": "Mac OS X",
+            "architecture": "aarch64",
+            "parentPid": 1730,
+            "corePid": 1730,
+            "coreStartedAt": "2026-11-16T04:36:27.766Z",
+            "processSessionId": "28c3f01d-ed0a-44d7-9696-4829a4bd1837",
+            "controlEnvironmentPresent": false,
+            "jvmOptionsEnvironmentPresent": false,
+            "controlPropertiesPresent": false,
+            "heartbeatSource": "STARTUP_HANDSHAKE",
+            "lastHeartbeatSequence": 0
+          },
+          "restoreInvocations": 0,
+          "tasks": [
+            {
+              "id": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "schemaVersion": 1,
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "title": "Actual checkpoint root",
+              "goal": "Preserve original receipts and file versions",
+              "mode": "LEAD",
+              "modeReason": "由用户指定协作模式",
+              "state": "PAUSING",
+              "outcome": "FAILED",
+              "createdAt": "2026-11-16T04:38:56.103988Z",
+              "updatedAt": "2026-11-16T04:39:14.015011Z",
+              "contract": {
+                "id": "cb5279bb-e616-491f-b3e9-bb641a1d5f9b",
+                "version": 1,
+                "scope": [
+                  "**"
+                ],
+                "acceptance": [
+                  "original file receipts"
+                ],
+                "commands": [
+                  "node verify.mjs"
+                ],
+                "permissions": [
+                  "read",
+                  "search",
+                  "write",
+                  "verify"
+                ],
+                "createdAt": "2026-11-16T04:38:55.887820Z",
+                "confirmed": true
+              },
+              "budget": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "locks": {},
+              "routeId": "6a100aa2-0f68-4e07-8c65-668b76062677",
+              "routeSnapshot": {
+                "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                "name": "checkpoint local HTTP",
+                "engine": "API",
+                "model": "fixture",
+                "provider": "",
+                "baseUrl": "http://127.0.0.1:49266/v1",
+                "executable": "",
+                "enabled": true,
+                "version": 1,
+                "updatedAt": "2026-11-16T04:38:55.753068Z",
+                "budgetType": "REQUEST_COUNT",
+                "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+              },
+              "profileSnapshot": [
+                {
+                  "id": "builtin-reviewer",
+                  "name": "独立审查者",
+                  "role": "reviewer",
+                  "instructions": "独立核对需求、差异和验证证据。不能只依赖实现者自报。报告阻断问题及证据。",
+                  "capabilities": [
+                    "read",
+                    "search"
+                  ],
+                  "version": 1,
+                  "builtin": true,
+                  "createdAt": "2026-11-16T04:38:55.221320Z"
+                },
+                {
+                  "id": "builtin-tester",
+                  "name": "质量工程师",
+                  "role": "tester",
+                  "instructions": "关注边界、失败路径和回归。检查结果必须绑定版本，不能用偶然成功覆盖失败。",
+                  "capabilities": [
+                    "read",
+                    "search"
+                  ],
+                  "version": 1,
+                  "builtin": true,
+                  "createdAt": "2026-11-16T04:38:55.220904Z"
+                },
+                {
+                  "id": "builtin-developer",
+                  "name": "实现工程师",
+                  "role": "developer",
+                  "instructions": "在授权范围内完成需求，尊重项目规则，保持测试与验收完整性。",
+                  "capabilities": [
+                    "read",
+                    "search",
+                    "write"
+                  ],
+                  "version": 1,
+                  "builtin": true,
+                  "createdAt": "2026-11-16T04:38:55.220567Z"
+                },
+                {
+                  "id": "builtin-architect",
+                  "name": "架构分析",
+                  "role": "architect",
+                  "instructions": "审视模块边界、兼容性与取舍。区分观察、假设、偏好并说明反证条件。",
+                  "capabilities": [
+                    "read",
+                    "search"
+                  ],
+                  "version": 1,
+                  "builtin": true,
+                  "createdAt": "2026-11-16T04:38:55.220235Z"
+                },
+                {
+                  "id": "builtin-lead",
+                  "name": "研发负责人",
+                  "role": "lead",
+                  "instructions": "基于证据规划工作，保留未知、失败与交接信息。不得自行降低验收条件。",
+                  "capabilities": [
+                    "read",
+                    "search"
+                  ],
+                  "version": 1,
+                  "builtin": true,
+                  "createdAt": "2026-11-16T04:38:55.219871Z"
+                }
+              ],
+              "policyVersion": "1.1/0.2.0-alpha.19",
+              "includeChanges": false,
+              "execution": {
+                "version": 1,
+                "protocolVersion": 1,
+                "executionNodeId": "f35b46bb-5b6a-4cf7-9455-3a7ccb46a229",
+                "nodeVersion": 1,
+                "nodeName": "本机执行节点",
+                "repositoryBindingId": "67f07ce0-3921-45d9-84ba-f97daf4ef439",
+                "bindingVersion": 1,
+                "bindingName": "original checkpoint source",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "deployment": "LOCAL_PROCESS",
+                "createdAt": "2026-11-16T04:38:55.754092Z"
+              },
+              "plan": [
+                {
+                  "id": "baseline",
+                  "title": "隔离基线检查",
+                  "role": "tester",
+                  "dependencies": [],
+                  "kind": "BASELINE",
+                  "readOnly": true,
+                  "inputs": [
+                    "contract"
+                  ],
+                  "outputs": [
+                    "baseline:result"
+                  ],
+                  "acceptance": [
+                    "有可追溯的阶段成果，未确认项明确保留"
+                  ],
+                  "termination": "完成、根取消、预算或 15 分钟工具超时",
+                  "resources": [],
+                  "permissions": [
+                    "read",
+                    "search"
+                  ],
+                  "state": "COMPLETED",
+                  "updatedAt": "2026-11-16T04:38:56.864247Z"
+                }
+              ],
+              "context": [],
+              "evidence": [
+                {
+                  "id": "37ce4e4e-cada-4ee6-a3fe-24b33506966b",
+                  "stage": "baseline",
+                  "kind": "BASELINE",
+                  "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+                  "command": "node verify.mjs",
+                  "exitCode": 0,
+                  "output": "ORIGINAL_CHECKPOINT_VERIFICATION 12046\n",
+                  "status": "PASSED",
+                  "usage": {},
+                  "createdAt": "2026-11-16T04:38:56.860715Z",
+                  "environment": {
+                    "os": "Mac OS X",
+                    "java": "21.0.13",
+                    "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work"
+                  },
+                  "resultVersion": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+                  "operationId": "f939811e-4e97-44b9-b136-6e14fe79143c",
+                  "workerLeaseId": "10b90cf4-f74e-433e-b441-939da41256b1",
+                  "workerId": "c3acc956-b3ed-41c4-a7f6-a0c60e5699d3",
+                  "executionNodeId": "f35b46bb-5b6a-4cf7-9455-3a7ccb46a229",
+                  "workerEpoch": 1,
+                  "repositoryBindingId": "67f07ce0-3921-45d9-84ba-f97daf4ef439",
+                  "bindingVersion": 1,
+                  "deployment": "LOCAL_PROCESS",
+                  "executorPid": 11844,
+                  "processStartedAt": "2026-11-16T04:38:55.227Z",
+                  "corePid": 1730,
+                  "processSessionId": "c003b824-d7f0-4e27-9e13-42df01c4c8a5",
+                  "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+                  "dispatchActionId": "dcaf1ee8-0ee9-4b9f-866f-79d91842bfa2",
+                  "workspaceWriteLeaseId": "c13e51d0-e244-4777-b9f0-7809d9772c58"
+                }
+              ],
+              "issues": [],
+              "review": {
+                "status": "NOT_RUN"
+              },
+              "planValidation": {
+                "valid": true,
+                "errors": []
+              },
+              "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+              "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+              "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+              "repairRounds": 0,
+              "workspaceSelection": {
+                "schemaVersion": 1,
+                "version": 1,
+                "strategy": "CLONE",
+                "ref": "HEAD",
+                "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "source": {
+                  "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                  "branch": "main",
+                  "statusDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "dirty": false,
+                  "index": "e4ab90ef059b340be564269d925ae307b364ceb8e583836b913ed691ad7199c6",
+                  "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2"
+                },
+                "includeChanges": false,
+                "createdAt": "2026-11-16T04:38:55.887350Z"
+              },
+              "mcpAuthorization": {
+                "version": 1,
+                "mode": "FIXED_ARGUMENTS",
+                "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+                "bindings": [],
+                "createdAt": "2026-11-16T04:38:56.104192Z"
+              },
+              "mcpBudget": {
+                "maxCalls": 8,
+                "maxDurationMs": 240000,
+                "usedCalls": 0,
+                "committedDurationMs": 0
+              },
+              "collaboration": {
+                "enabled": false,
+                "version": 1,
+                "maxActive": 6,
+                "maxDepth": 3,
+                "maxTotal": 24,
+                "spawned": 0,
+                "definitions": [
+                  {
+                    "id": "agent-reviewer",
+                    "name": "核对副 Agent",
+                    "role": "reviewer",
+                    "instructions": "只读检查委派成果与原始资料，报告证据、缺口和反证条件；不能把自报完成视为验证。",
+                    "capabilities": [
+                      "read",
+                      "search"
+                    ],
+                    "version": 1,
+                    "builtin": true,
+                    "projectId": "",
+                    "routeId": "",
+                    "scope": [
+                      "**"
+                    ],
+                    "maxCalls": 8,
+                    "enabled": true,
+                    "createdAt": "2026-11-16T04:38:55.219082Z",
+                    "updatedAt": "2026-11-16T04:38:55.219088Z",
+                    "routeSnapshot": {
+                      "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                      "name": "checkpoint local HTTP",
+                      "engine": "API",
+                      "model": "fixture",
+                      "provider": "",
+                      "baseUrl": "http://127.0.0.1:49266/v1",
+                      "executable": "",
+                      "enabled": true,
+                      "version": 1,
+                      "updatedAt": "2026-11-16T04:38:55.753068Z",
+                      "budgetType": "REQUEST_COUNT",
+                      "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                    }
+                  },
+                  {
+                    "id": "agent-developer",
+                    "name": "实现副 Agent",
+                    "role": "developer",
+                    "instructions": "在独立现场完成有边界的实现，保留已有注释、失败和验证记录。结果由父 Agent 核对采纳，不能代替独立审查。",
+                    "capabilities": [
+                      "read",
+                      "search",
+                      "write",
+                      "verify",
+                      "delegate",
+                      "mcp"
+                    ],
+                    "version": 1,
+                    "builtin": true,
+                    "projectId": "",
+                    "routeId": "",
+                    "scope": [
+                      "**"
+                    ],
+                    "maxCalls": 8,
+                    "enabled": true,
+                    "createdAt": "2026-11-16T04:38:55.217953Z",
+                    "updatedAt": "2026-11-16T04:38:55.217960Z",
+                    "routeSnapshot": {
+                      "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                      "name": "checkpoint local HTTP",
+                      "engine": "API",
+                      "model": "fixture",
+                      "provider": "",
+                      "baseUrl": "http://127.0.0.1:49266/v1",
+                      "executable": "",
+                      "enabled": true,
+                      "version": 1,
+                      "updatedAt": "2026-11-16T04:38:55.753068Z",
+                      "budgetType": "REQUEST_COUNT",
+                      "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                    }
+                  },
+                  {
+                    "id": "agent-research",
+                    "name": "调查副 Agent",
+                    "role": "researcher",
+                    "instructions": "调查委派范围中的资料，保留原始路径、版本和未知。需要进一步调查时可在根限制内委派。",
+                    "capabilities": [
+                      "read",
+                      "search",
+                      "delegate"
+                    ],
+                    "version": 1,
+                    "builtin": true,
+                    "projectId": "",
+                    "routeId": "",
+                    "scope": [
+                      "**"
+                    ],
+                    "maxCalls": 8,
+                    "enabled": true,
+                    "createdAt": "2026-11-16T04:38:55.216354Z",
+                    "updatedAt": "2026-11-16T04:38:55.216368Z",
+                    "routeSnapshot": {
+                      "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                      "name": "checkpoint local HTTP",
+                      "engine": "API",
+                      "model": "fixture",
+                      "provider": "",
+                      "baseUrl": "http://127.0.0.1:49266/v1",
+                      "executable": "",
+                      "enabled": true,
+                      "version": 1,
+                      "updatedAt": "2026-11-16T04:38:55.753068Z",
+                      "budgetType": "REQUEST_COUNT",
+                      "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                    }
+                  }
+                ]
+              },
+              "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+              "confirmedAt": "2026-11-16T04:38:56.107517Z",
+              "taskExecutionId": "149e1e1d-519f-4aa8-8bf2-19c48bb6f7b1",
+              "dispatchActionId": "7b52fbe1-af57-4dd2-9a84-8fca2ec173d0",
+              "taskExecution": {
+                "id": "149e1e1d-519f-4aa8-8bf2-19c48bb6f7b1",
+                "attempt": 2,
+                "state": "RUNNING",
+                "createdAt": "2026-11-16T04:38:57.327232Z",
+                "endedAt": "",
+                "reconciled": false
+              },
+              "dispatch": {
+                "id": "7b52fbe1-af57-4dd2-9a84-8fca2ec173d0",
+                "state": "CLAIMED",
+                "dispatchCount": 1,
+                "createdAt": "2026-11-16T04:38:57.327232Z",
+                "claimedAt": "2026-11-16T04:39:14.009569Z",
+                "waitReason": ""
+              },
+              "sourceDirty": false,
+              "workspaceOwnership": {
+                "schemaVersion": 1,
+                "owner": "b2c3927a-88b3-440a-9c81-fc7b06ee2d21",
+                "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+                "strategy": "CLONE",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "gitDirectory": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work/.git",
+                "commonDirectory": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work/.git",
+                "lockReason": ""
+              },
+              "latestCheckpointId": "e6c7637b-655d-412f-9c15-74bf7319f04f",
+              "lastCheckpoint": {
+                "id": "e6c7637b-655d-412f-9c15-74bf7319f04f",
+                "version": "b6101f629b2ea83a78f421ee1b3a2b369f17a0de9fa47dbda4984ef4cbeeac25",
+                "stage": "baseline",
+                "createdAt": "2026-11-16T04:38:57.184924Z",
+                "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+                "manifestSha256": "1cb940e3dd3d3cc2aad0655d662bb68cfa52c7ad427b6a7d982212394407c548"
+              },
+              "currentStage": "baseline",
+              "baselineCheck": "PASSED",
+              "baselineVersion": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+              "pendingCheckpointRestoreId": "620ae5f1-2245-488a-9cfb-2d4407a88f1e",
+              "workspaceWriteLeaseId": "bf3a0c92-9236-44a9-8a73-5daf243caae7",
+              "stopRequestedAt": "2026-11-16T04:39:14.012032Z",
+              "activeOperation": "cf8c7ad6-18ee-4b3a-ace5-263ecf06733b"
+            }
+          ],
+          "previews": [
+            {
+              "schemaVersion": 1,
+              "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+              "target": {
+                "schemaVersion": 1,
+                "id": "5cbbcf56-58e5-4df6-ac22-a5c04bd38fa8",
+                "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+                "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+                "createdAt": "2026-11-16T04:38:57.107092Z",
+                "captureExecutorPid": 1730,
+                "captureProcessStartedAt": "2026-11-16T04:36:27.766Z",
+                "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+                "indexVersion": "7416a989aeb0c722e431d699f86b1275827e0ee9d9c23f9ff17e28caec807ce0",
+                "status": "READY",
+                "manifestSha256": "3fa5cb1ce89411d488373d8059c7212597ca5c617858bde94e774ba297d8da43",
+                "fileCount": 4,
+                "storedBytes": 450,
+                "excludedCount": 0,
+                "limitedCount": 0,
+                "metadata": {
+                  "kind": "MANUAL",
+                  "stage": "baseline",
+                  "title": "隔离基线检查",
+                  "taskState": "FAILED",
+                  "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+                  "planStates": {
+                    "baseline": "COMPLETED"
+                  },
+                  "context": [],
+                  "evidenceIds": [
+                    "37ce4e4e-cada-4ee6-a3fe-24b33506966b"
+                  ],
+                  "budgetSnapshot": {
+                    "maxCalls": 16,
+                    "reserveCalls": 4,
+                    "usedCalls": 0,
+                    "usedDevelopmentCalls": 0,
+                    "usedReservedCalls": 0,
+                    "developmentAvailable": 12,
+                    "type": "REQUEST_COUNT"
+                  },
+                  "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+                  "dispatchActionId": "dcaf1ee8-0ee9-4b9f-866f-79d91842bfa2",
+                  "unknownOperationIds": []
+                },
+                "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+                "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+                "visible": true,
+                "observedAt": "2026-11-16T04:38:57.113185Z",
+                "coreObservation": {
+                  "taskState": "FAILED",
+                  "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+                  "coreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f"
+                },
+                "sequence": 66
+              },
+              "source": {
+                "schemaVersion": 1,
+                "id": "e6c7637b-655d-412f-9c15-74bf7319f04f",
+                "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+                "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+                "createdAt": "2026-11-16T04:38:57.184924Z",
+                "captureExecutorPid": 1730,
+                "captureProcessStartedAt": "2026-11-16T04:36:27.766Z",
+                "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "version": "b6101f629b2ea83a78f421ee1b3a2b369f17a0de9fa47dbda4984ef4cbeeac25",
+                "indexVersion": "7416a989aeb0c722e431d699f86b1275827e0ee9d9c23f9ff17e28caec807ce0",
+                "status": "READY",
+                "manifestSha256": "1cb940e3dd3d3cc2aad0655d662bb68cfa52c7ad427b6a7d982212394407c548",
+                "fileCount": 4,
+                "storedBytes": 443,
+                "excludedCount": 0,
+                "limitedCount": 0,
+                "metadata": {
+                  "kind": "MANUAL",
+                  "stage": "baseline",
+                  "title": "隔离基线检查",
+                  "taskState": "FAILED",
+                  "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+                  "planStates": {
+                    "baseline": "COMPLETED"
+                  },
+                  "context": [],
+                  "evidenceIds": [
+                    "37ce4e4e-cada-4ee6-a3fe-24b33506966b"
+                  ],
+                  "budgetSnapshot": {
+                    "maxCalls": 16,
+                    "reserveCalls": 4,
+                    "usedCalls": 0,
+                    "usedDevelopmentCalls": 0,
+                    "usedReservedCalls": 0,
+                    "developmentAvailable": 12,
+                    "type": "REQUEST_COUNT"
+                  },
+                  "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+                  "dispatchActionId": "dcaf1ee8-0ee9-4b9f-866f-79d91842bfa2",
+                  "unknownOperationIds": []
+                },
+                "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+                "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+                "visible": true,
+                "observedAt": "2026-11-16T04:38:57.191271Z",
+                "coreObservation": {
+                  "taskState": "FAILED",
+                  "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+                  "coreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f"
+                },
+                "sequence": 67
+              },
+              "current": {
+                "schemaVersion": 1,
+                "id": "d67151a1-d368-4e7e-9987-10909b56efdc",
+                "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+                "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+                "createdAt": "2026-11-16T04:38:57.272529Z",
+                "captureExecutorPid": 1730,
+                "captureProcessStartedAt": "2026-11-16T04:36:27.766Z",
+                "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "version": "b6101f629b2ea83a78f421ee1b3a2b369f17a0de9fa47dbda4984ef4cbeeac25",
+                "indexVersion": "7416a989aeb0c722e431d699f86b1275827e0ee9d9c23f9ff17e28caec807ce0",
+                "status": "READY",
+                "manifestSha256": "f914324032164c659ad028a7136cd3b6b05d2a29fd5906d4dee5e536dcc5e041",
+                "fileCount": 4,
+                "storedBytes": 443,
+                "excludedCount": 0,
+                "limitedCount": 0,
+                "metadata": {
+                  "kind": "UNDO_PREFLIGHT"
+                }
+              },
+              "changes": [
+                {
+                  "path": "app.txt",
+                  "action": "MODIFY",
+                  "beforeSha256": "5d022a8891e39d9eba6ccb74a8403e128d617dc1e2422a899c18dac11b89e680",
+                  "afterSha256": "05184e201c2d222e182b91be0e02aea365d814d75fb67a45c3241f155377f52a",
+                  "bytes": 13
+                },
+                {
+                  "path": "binary.dat",
+                  "action": "CREATE",
+                  "beforeSha256": "",
+                  "afterSha256": "e9489f37fb3051e9efa1dc916004d7274e7b63975e3209708947267f2393a9be",
+                  "bytes": 4
+                }
+              ],
+              "conflicts": [],
+              "indexChanges": false,
+              "canRestore": true,
+              "createdAt": "2026-11-16T04:38:57.278242Z",
+              "id": "620ae5f1-2245-488a-9cfb-2d4407a88f1e",
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "state": "QUEUED",
+              "targetCheckpointId": "5cbbcf56-58e5-4df6-ac22-a5c04bd38fa8",
+              "sourceCheckpointId": "e6c7637b-655d-412f-9c15-74bf7319f04f",
+              "expiresAt": "2026-11-16T04:53:57.281347Z",
+              "taskStateAtPreview": "FAILED",
+              "budgetAtPreview": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "requestedAt": "2026-11-16T04:38:57.326755Z",
+              "requestedBy": "USER"
+            }
+          ],
+          "actions": [
+            {
+              "id": "7b52fbe1-af57-4dd2-9a84-8fca2ec173d0",
+              "schemaVersion": 1,
+              "kind": "ROOT_TASK",
+              "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+              "taskExecutionId": "149e1e1d-519f-4aa8-8bf2-19c48bb6f7b1",
+              "attempt": 2,
+              "state": "CLAIMED",
+              "version": 2,
+              "dispatchCount": 1,
+              "createdAt": "2026-11-16T04:38:57.327232Z",
+              "enqueuedCoreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f",
+              "authorization": {
+                "contract": {
+                  "id": "cb5279bb-e616-491f-b3e9-bb641a1d5f9b",
+                  "version": 1,
+                  "scope": [
+                    "**"
+                  ],
+                  "acceptance": [
+                    "original file receipts"
+                  ],
+                  "commands": [
+                    "node verify.mjs"
+                  ],
+                  "permissions": [
+                    "read",
+                    "search",
+                    "write",
+                    "verify"
+                  ],
+                  "createdAt": "2026-11-16T04:38:55.887820Z",
+                  "confirmed": true
+                },
+                "execution": {
+                  "version": 1,
+                  "protocolVersion": 1,
+                  "executionNodeId": "f35b46bb-5b6a-4cf7-9455-3a7ccb46a229",
+                  "nodeVersion": 1,
+                  "nodeName": "本机执行节点",
+                  "repositoryBindingId": "67f07ce0-3921-45d9-84ba-f97daf4ef439",
+                  "bindingVersion": 1,
+                  "bindingName": "original checkpoint source",
+                  "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                  "deployment": "LOCAL_PROCESS",
+                  "createdAt": "2026-11-16T04:38:55.754092Z"
+                },
+                "workspaceSelection": {
+                  "schemaVersion": 1,
+                  "version": 1,
+                  "strategy": "CLONE",
+                  "ref": "HEAD",
+                  "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                  "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                  "source": {
+                    "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                    "branch": "main",
+                    "statusDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                    "dirty": false,
+                    "index": "e4ab90ef059b340be564269d925ae307b364ceb8e583836b913ed691ad7199c6",
+                    "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2"
+                  },
+                  "includeChanges": false,
+                  "createdAt": "2026-11-16T04:38:55.887350Z"
+                },
+                "routeId": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                "routeSnapshot": {
+                  "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                  "name": "checkpoint local HTTP",
+                  "engine": "API",
+                  "model": "fixture",
+                  "provider": "",
+                  "baseUrl": "http://127.0.0.1:49266/v1",
+                  "executable": "",
+                  "enabled": true,
+                  "version": 1,
+                  "updatedAt": "2026-11-16T04:38:55.753068Z",
+                  "budgetType": "REQUEST_COUNT",
+                  "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                },
+                "locks": {},
+                "mcpAuthorization": {
+                  "version": 1,
+                  "mode": "FIXED_ARGUMENTS",
+                  "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+                  "bindings": [],
+                  "createdAt": "2026-11-16T04:38:56.104192Z"
+                },
+                "collaboration": {
+                  "enabled": false,
+                  "version": 1,
+                  "maxActive": 6,
+                  "maxDepth": 3,
+                  "maxTotal": 24,
+                  "spawned": 0,
+                  "definitions": [
+                    {
+                      "id": "agent-reviewer",
+                      "name": "核对副 Agent",
+                      "role": "reviewer",
+                      "instructions": "只读检查委派成果与原始资料，报告证据、缺口和反证条件；不能把自报完成视为验证。",
+                      "capabilities": [
+                        "read",
+                        "search"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.219082Z",
+                      "updatedAt": "2026-11-16T04:38:55.219088Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    },
+                    {
+                      "id": "agent-developer",
+                      "name": "实现副 Agent",
+                      "role": "developer",
+                      "instructions": "在独立现场完成有边界的实现，保留已有注释、失败和验证记录。结果由父 Agent 核对采纳，不能代替独立审查。",
+                      "capabilities": [
+                        "read",
+                        "search",
+                        "write",
+                        "verify",
+                        "delegate",
+                        "mcp"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.217953Z",
+                      "updatedAt": "2026-11-16T04:38:55.217960Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    },
+                    {
+                      "id": "agent-research",
+                      "name": "调查副 Agent",
+                      "role": "researcher",
+                      "instructions": "调查委派范围中的资料，保留原始路径、版本和未知。需要进一步调查时可在根限制内委派。",
+                      "capabilities": [
+                        "read",
+                        "search",
+                        "delegate"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.216354Z",
+                      "updatedAt": "2026-11-16T04:38:55.216368Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    }
+                  ]
+                },
+                "policyVersion": "1.1/0.2.0-alpha.19"
+              },
+              "ownerCoreSessionId": "04ee063e-0512-4097-ab73-dbc0032b1424",
+              "ownerCorePid": 1730,
+              "ownerCoreStartedAt": "2026-11-16T04:36:27.766Z",
+              "claimedAt": "2026-11-16T04:39:14.009569Z",
+              "workspaceWriteLeaseId": "bf3a0c92-9236-44a9-8a73-5daf243caae7"
+            },
+            {
+              "id": "dcaf1ee8-0ee9-4b9f-866f-79d91842bfa2",
+              "schemaVersion": 1,
+              "kind": "ROOT_TASK",
+              "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+              "taskExecutionId": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+              "attempt": 1,
+              "state": "SETTLED",
+              "version": 3,
+              "dispatchCount": 1,
+              "createdAt": "2026-11-16T04:38:56.107506Z",
+              "enqueuedCoreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f",
+              "authorization": {
+                "contract": {
+                  "id": "cb5279bb-e616-491f-b3e9-bb641a1d5f9b",
+                  "version": 1,
+                  "scope": [
+                    "**"
+                  ],
+                  "acceptance": [
+                    "original file receipts"
+                  ],
+                  "commands": [
+                    "node verify.mjs"
+                  ],
+                  "permissions": [
+                    "read",
+                    "search",
+                    "write",
+                    "verify"
+                  ],
+                  "createdAt": "2026-11-16T04:38:55.887820Z",
+                  "confirmed": true
+                },
+                "execution": {
+                  "version": 1,
+                  "protocolVersion": 1,
+                  "executionNodeId": "f35b46bb-5b6a-4cf7-9455-3a7ccb46a229",
+                  "nodeVersion": 1,
+                  "nodeName": "本机执行节点",
+                  "repositoryBindingId": "67f07ce0-3921-45d9-84ba-f97daf4ef439",
+                  "bindingVersion": 1,
+                  "bindingName": "original checkpoint source",
+                  "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                  "deployment": "LOCAL_PROCESS",
+                  "createdAt": "2026-11-16T04:38:55.754092Z"
+                },
+                "workspaceSelection": {
+                  "schemaVersion": 1,
+                  "version": 1,
+                  "strategy": "CLONE",
+                  "ref": "HEAD",
+                  "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                  "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                  "source": {
+                    "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                    "branch": "main",
+                    "statusDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                    "dirty": false,
+                    "index": "e4ab90ef059b340be564269d925ae307b364ceb8e583836b913ed691ad7199c6",
+                    "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2"
+                  },
+                  "includeChanges": false,
+                  "createdAt": "2026-11-16T04:38:55.887350Z"
+                },
+                "routeId": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                "routeSnapshot": {
+                  "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                  "name": "checkpoint local HTTP",
+                  "engine": "API",
+                  "model": "fixture",
+                  "provider": "",
+                  "baseUrl": "http://127.0.0.1:49266/v1",
+                  "executable": "",
+                  "enabled": true,
+                  "version": 1,
+                  "updatedAt": "2026-11-16T04:38:55.753068Z",
+                  "budgetType": "REQUEST_COUNT",
+                  "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                },
+                "locks": {},
+                "mcpAuthorization": {
+                  "version": 1,
+                  "mode": "FIXED_ARGUMENTS",
+                  "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+                  "bindings": [],
+                  "createdAt": "2026-11-16T04:38:56.104192Z"
+                },
+                "collaboration": {
+                  "enabled": false,
+                  "version": 1,
+                  "maxActive": 6,
+                  "maxDepth": 3,
+                  "maxTotal": 24,
+                  "spawned": 0,
+                  "definitions": [
+                    {
+                      "id": "agent-reviewer",
+                      "name": "核对副 Agent",
+                      "role": "reviewer",
+                      "instructions": "只读检查委派成果与原始资料，报告证据、缺口和反证条件；不能把自报完成视为验证。",
+                      "capabilities": [
+                        "read",
+                        "search"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.219082Z",
+                      "updatedAt": "2026-11-16T04:38:55.219088Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    },
+                    {
+                      "id": "agent-developer",
+                      "name": "实现副 Agent",
+                      "role": "developer",
+                      "instructions": "在独立现场完成有边界的实现，保留已有注释、失败和验证记录。结果由父 Agent 核对采纳，不能代替独立审查。",
+                      "capabilities": [
+                        "read",
+                        "search",
+                        "write",
+                        "verify",
+                        "delegate",
+                        "mcp"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.217953Z",
+                      "updatedAt": "2026-11-16T04:38:55.217960Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    },
+                    {
+                      "id": "agent-research",
+                      "name": "调查副 Agent",
+                      "role": "researcher",
+                      "instructions": "调查委派范围中的资料，保留原始路径、版本和未知。需要进一步调查时可在根限制内委派。",
+                      "capabilities": [
+                        "read",
+                        "search",
+                        "delegate"
+                      ],
+                      "version": 1,
+                      "builtin": true,
+                      "projectId": "",
+                      "routeId": "",
+                      "scope": [
+                        "**"
+                      ],
+                      "maxCalls": 8,
+                      "enabled": true,
+                      "createdAt": "2026-11-16T04:38:55.216354Z",
+                      "updatedAt": "2026-11-16T04:38:55.216368Z",
+                      "routeSnapshot": {
+                        "id": "6a100aa2-0f68-4e07-8c65-668b76062677",
+                        "name": "checkpoint local HTTP",
+                        "engine": "API",
+                        "model": "fixture",
+                        "provider": "",
+                        "baseUrl": "http://127.0.0.1:49266/v1",
+                        "executable": "",
+                        "enabled": true,
+                        "version": 1,
+                        "updatedAt": "2026-11-16T04:38:55.753068Z",
+                        "budgetType": "REQUEST_COUNT",
+                        "capabilityNote": "平台工具边界；费用与实际模型行为须通过端点验证"
+                      }
+                    }
+                  ]
+                },
+                "policyVersion": "1.1/0.2.0-alpha.19"
+              },
+              "ownerCoreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f",
+              "ownerCorePid": 1730,
+              "ownerCoreStartedAt": "2026-11-16T04:36:27.766Z",
+              "claimedAt": "2026-11-16T04:38:56.111233Z",
+              "workspaceWriteLeaseId": "c13e51d0-e244-4777-b9f0-7809d9772c58",
+              "endedAt": "2026-11-16T04:38:57.013388Z",
+              "executionState": "FAILED"
+            }
+          ],
+          "executions": [
+            {
+              "id": "149e1e1d-519f-4aa8-8bf2-19c48bb6f7b1",
+              "schemaVersion": 1,
+              "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "rootTaskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+              "attempt": 2,
+              "trigger": "USER_CHECKPOINT_RESTORE",
+              "state": "RUNNING",
+              "createdAt": "2026-11-16T04:38:57.327232Z",
+              "dispatchActionId": "7b52fbe1-af57-4dd2-9a84-8fca2ec173d0",
+              "sourceTaskState": "FAILED",
+              "policyVersion": "1.1/0.2.0-alpha.19",
+              "budgetAtEnqueue": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "contractVersion": 1,
+              "authorizationVersion": 1,
+              "workspaceSelection": {
+                "schemaVersion": 1,
+                "version": 1,
+                "strategy": "CLONE",
+                "ref": "HEAD",
+                "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "source": {
+                  "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                  "branch": "main",
+                  "statusDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "dirty": false,
+                  "index": "e4ab90ef059b340be564269d925ae307b364ceb8e583836b913ed691ad7199c6",
+                  "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2"
+                },
+                "includeChanges": false,
+                "createdAt": "2026-11-16T04:38:55.887350Z"
+              },
+              "ownerCoreSessionId": "04ee063e-0512-4097-ab73-dbc0032b1424",
+              "ownerCorePid": 1730,
+              "ownerCoreStartedAt": "2026-11-16T04:36:27.766Z",
+              "startedAt": "2026-11-16T04:39:14.009569Z",
+              "budgetAtStart": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "workspaceWriteLeaseId": "bf3a0c92-9236-44a9-8a73-5daf243caae7"
+            },
+            {
+              "id": "99bc86f0-5464-4c72-a047-24f3abecd43a",
+              "schemaVersion": 1,
+              "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "rootTaskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+              "projectId": "245fadc5-37e2-4b87-9b2e-7837ccc59ca6",
+              "sessionId": "cdab3376-0562-416d-9d8a-0fa03a297505",
+              "attempt": 1,
+              "trigger": "USER_APPROVAL",
+              "state": "FAILED",
+              "createdAt": "2026-11-16T04:38:56.107506Z",
+              "dispatchActionId": "dcaf1ee8-0ee9-4b9f-866f-79d91842bfa2",
+              "sourceTaskState": "DRAFT",
+              "policyVersion": "1.1/0.2.0-alpha.19",
+              "budgetAtEnqueue": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "contractVersion": 1,
+              "authorizationVersion": 1,
+              "workspaceSelection": {
+                "schemaVersion": 1,
+                "version": 1,
+                "strategy": "CLONE",
+                "ref": "HEAD",
+                "baseline": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "source": {
+                  "head": "53e31c956472b908973cc7917ea8c3f02bcc480c",
+                  "branch": "main",
+                  "statusDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "dirty": false,
+                  "index": "e4ab90ef059b340be564269d925ae307b364ceb8e583836b913ed691ad7199c6",
+                  "version": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2"
+                },
+                "includeChanges": false,
+                "createdAt": "2026-11-16T04:38:55.887350Z"
+              },
+              "ownerCoreSessionId": "3a60c784-78d7-41b8-b596-fb6635ebd32f",
+              "ownerCorePid": 1730,
+              "ownerCoreStartedAt": "2026-11-16T04:36:27.766Z",
+              "startedAt": "2026-11-16T04:38:56.111233Z",
+              "budgetAtStart": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "workspaceWriteLeaseId": "c13e51d0-e244-4777-b9f0-7809d9772c58",
+              "workspaceWriteStateAtEnd": "RELEASED",
+              "workspaceWriteProtectionReleased": true,
+              "endedAt": "2026-11-16T04:38:57.013321Z",
+              "reason": "当前内容与验证或审查版本不符，请重新验证",
+              "taskStateAtEnd": "FAILED",
+              "taskOutcomeAtEnd": "FAILED",
+              "budgetAtEnd": {
+                "maxCalls": 16,
+                "reserveCalls": 4,
+                "usedCalls": 0,
+                "usedDevelopmentCalls": 0,
+                "usedReservedCalls": 0,
+                "developmentAvailable": 12,
+                "type": "REQUEST_COUNT"
+              },
+              "workspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work",
+              "resultVersion": "a6bd2152a7091ebcd222495c328c3ee3a6cafce96dcb7ba939955df792d9bfa2",
+              "elapsedMs": 905,
+              "workspaceOwnership": {
+                "schemaVersion": 1,
+                "owner": "b2c3927a-88b3-440a-9c81-fc7b06ee2d21",
+                "taskId": "3ee1834c-8dd5-4dc9-98cd-744e2620b184",
+                "strategy": "CLONE",
+                "sourcePath": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/中文 原仓库",
+                "gitDirectory": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work/.git",
+                "commonDirectory": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-9430763784835273456/data/workspaces/3ee1834c-8dd5-4dc9-98cd-744e2620b184/work/.git",
+                "lockReason": ""
+              }
+            }
+          ]
+        },
+        "originalUnclaimed": true,
+        "reopenedClaimObserved": true,
+        "originalClaimTimingNotUploaded": true,
+        "sourceSupportedFixtureProblem": "reopen() replaces the blocked executor with an unblocked executor before recover() starts dispatching; the original unclaimed condition is no longer held."
+      },
+      "allOriginalFailuresAndMissingExceptionTimingRetained": true
+    }
+  ],
+  "provenance": [
+    {
+      "file": ".runtime\\alpha19-ci\\run-43805087356-attempt-1\\receipt.json",
+      "sha256": "863cc41e348aadc39892cfa1a3b04ba72d10f03c06f6193f9fc49b2a31fd2ca8"
+    },
+    {
+      "file": ".runtime\\alpha19-ci\\run-43805087356-attempt-1\\followup-successful-windows-summary.json",
+      "sha256": "1d14636d935380c1a4521545a758eaaa188e1961575ff17cd4be3ae62d774fb1"
+    },
+    {
+      "file": ".runtime/alpha19-ci-followup-failure-audit-attempt1/receipt.json",
+      "sha256": "a7c7df434b3b0e1f5cfa00db66b79ebd7569054bacf2f1e7e2479dfe4b6532d5"
+    }
+  ],
+  "independentlyReproducedRuntimeDefect": {
+    "evidenceFile": ".runtime/alpha19-shared-directory-reproduction-audit-attempt1/receipt.json",
+    "evidenceSha256": "6149edc47c8adafba4e68d1e55320ca74f65b9d21f514aa16a67b8684c934827",
+    "participants": 8,
+    "originalReady": 6,
+    "originalFailed": 2,
+    "originalException": "FileAlreadyExistsException for shared data/checkpoints creation",
+    "originalReproductionFixtureFilesVerified": 298,
+    "originalProductionClassesMatchFrozenJar": 138,
+    "exactOriginalCIExceptionCauseAndActorStillUncaptured": true
+  },
+  "runtimeRepairRequiresNewSourceBindingJarAndCi": true,
+  "distributionArtifacts": [
+    {
+      "id": 14199293259,
+      "name": "desktop-windows-latest",
+      "digest": "sha256:9238d0cd99a17f3bb7d826d529c92fe15e762c383098c25b34c9788dac4ad689",
+      "size": 152752424,
+      "downloadedAndByteVerified": false
+    }
+  ],
+  "distributionArtifactBytesNotDownloadedOrValidatedHere": true
+}

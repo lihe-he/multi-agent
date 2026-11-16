@@ -81,3 +81,15 @@ OpenCode来源沿用原 MIT许可证；Git文档为GPL-2.0来源。本项目只�
 另一原错误发生在Diff测试保存普通现场的 `Files.walk`，枚举内部 `.git/objects/maintenance.lock` 时文件已不可读取。原ON_SUCCESS临时目录未被CI上传，无法确定原锁字节、创建/删除参与者和准确时序。跟进使用 `walkFileTree` 在枚举前排除顶层Git目录，完整普通文件哈希及原HEAD/index/config断言保留，普通工作区读取错误继续抛出。现有失败保存扩展也接入Diff套件；新增POSIX实际不可读对象目录检查和LEGACY/CLONE/WORKTREE符号别名拒绝，原清单、归属、index、HEAD与文件字节分别保全。
 
 跟进两套完整Windows回归65项、59通过/6条件跳过，原63项及原等待表达式保留；所有138个生产class与原冻结Jar逐项相同，核心生产源码/POM和原验收产物保持原字节。原两条Java注释保持，新增一条标准多行Javadoc。JUnit对Windows停用整个POSIX参数化模板，Windows全套预期449项，macOS/Linux预期451项。准确来源、原错误XML、70份原引用、条件跳过及覆盖缺口见[夹具跟进记录](../qa/alpha19-ci-fixture-followup-win32.json)。原运行已完整结束，Windows/Ubuntu作业成功，macOS核心失败；后续准确SHA的成功沿独立回执记录。
+
+两条alpha.19 CI随后均完整收齐三端日志和证据ZIP。原`40e98fa9a1e134ec75608681c5fc654d97f1f474`的 [run 43800367811](https://github.com/lihe-he/multi-agent/actions/runs/43800367811) 终态failure，Windows447项为441通过/6跳过，Linux447项为438通过/9跳过，macOS447项为1失败/1错误/9跳过；原70份检查点夹具再次逐项核对，消失的Git锁文件原夹具、参与者、字节与时序缺口保持。见[原失败回执](../qa/alpha19-ci-original-failure-receipt.json)。
+
+测试夹具跟进`41a5145b8578fb55f5db8b2e31023c8685298d46`的 [run 43805087356](https://github.com/lihe-he/multi-agent/actions/runs/43805087356) 也终态failure。Windows完整作业成功，449项为441通过/8跳过，完整UI196、实际检查点16、原生命周期、内置JRE及UNKNOWN历史独立复核。Ubuntu451项为1失败/0错误/9跳过，macOS451项为2失败/0错误/9跳过；三份ZIP digest及两端原失败夹具300份文件逐项核对。修订的GitDiff/归档套件及四个POSIX新增用例均通过。Ubuntu原两父团队在首次检查点捕获失败后，另一父请求又未满足15秒屏障；macOS还有原restart-pause夹具重开后已领取动作，原快照为重开前PENDING/count0、重开后CLAIMED/count1，原恢复次数仍为0。见[跟进失败回执](../qa/alpha19-ci-followup-failure-receipt.json)。这些原CI只保存通用包装I/O错误，具体目录创建异常、参与者与准确时序仍未捕获。
+
+独立真实复现为八个原归属CLONE现场共用同一数据根，所有首次`a.txt`读取到达后同时发布。原生产类得到六个READY、两个包装`FileAlreadyExistsException`，异常明确指向共享`data/checkpoints`。原298份夹具文件、六份成功清单的文件/blob/index字节、源HEAD/index和138个与原冻结Jar相同的生产class均独立核对，证据在`.runtime/alpha19-shared-directory-reproduction-audit-attempt1/receipt.json`。这证明原实现存在共享目录创建竞争；不据此重建早前CI未保留的内部异常时间线。
+
+运行时修复仅捕获目录创建的`FileAlreadyExistsException`，拒绝非目录，继续逐级核对NOFOLLOW和规范路径，并在核对后同步父目录；其他I/O异常继续传播。restart-pause原用例在替换执行器恢复前建立阻塞，补核对原待领取编号、PENDING与count0；原恢复逻辑、断言和时限保持。八现场并发、三项原未领取暂停/取消/重开及原两父容量用例共五项定向全部通过，源码摘要一致。
+
+新完整`runtime-repair-full-attempt1`为34套/450项，440通过/10条件跳过，0失败或错误，42:40分钟，载体2/2，源码前后摘要一致。原447项及更早356项逐项保留；138个生产class中仅`WorkspaceCheckpointArchive`改变，依赖、许可证、版本和未过滤资源保持。新Jar SHA-256 `048141550c1bf8f9e46dfd39d5bb12f559c4b0d36c2b725e9946da0a7eff5508`的普通检查点16、差异14、协议29、恢复11、队列13、工作区15、写入22及文件版本9均通过；新发行程序禁用外部Java后的启动、原身份停止、包内核心与Web/桌面字节及内置JRE写入核对，守卫21/21。安装器152744012字节、SHA-256 `01922b6904659b7ec921fd89400a1f469044080a63d867e518cdbf03f8e07518`，NotSigned。原UI源码与两浏览器196项对应Web字节保持，本次运行时修复未重跑UI全套。三份受改Java的原18条注释保持，新增三条Javadoc为标准多行。
+
+内置JRE探针首轮在原写入QA仍指向旧Jar的摘要门禁处失败，未开始原生写入；新Jar写入22项完整通过后，原探针第二轮通过，首轮回执保留。汇总收集器首轮将原138项class核对数组误当布尔值，启动复制前即失败，原收集器源码和失败另存；修正字段读取后完整收集通过，没有重复产品验收或改写原回执。15份工具生成的历史报告/截图另存后恢复原字节，新验收冻结在`.runtime/alpha19-runtime-repair-final-local-qa-attempt1/`，正式结果见[修复验证](../qa/alpha19-runtime-repair-validation-win32.json)。新运行时修复的准确生产提交仍需三端CI，预期win32为450项、darwin/linux为452项；原失败、UNKNOWN和证据缺口保持，完整F01–F21/M0–M3继续实施。

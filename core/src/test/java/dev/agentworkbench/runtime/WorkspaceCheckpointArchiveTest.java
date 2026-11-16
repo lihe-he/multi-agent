@@ -8,12 +8,17 @@ import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.FileTime;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -28,6 +33,64 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(CheckpointFailureEvidence.class)
 class WorkspaceCheckpointArchiveTest {
     @TempDir(cleanup = CleanupMode.ON_SUCCESS) Path temporary;
+
+    /**
+     * 多个真实归属现场在首次文件读取后同时发布，核对共享对象目录和各自原 index。
+     */
+    @Test
+    void simultaneousFirstCapturesShareObjectsWithoutLosingAnyOriginalManifestOrIndex() throws Exception {
+        int participants = 8;
+        Fixture original = fixture("CLONE"); CountDownLatch firstReads = new CountDownLatch(participants);
+        WorkspaceRuntime runtime = new WorkspaceRuntime(new ObjectMapper(), original.data.toString()) {
+            @Override byte[] readPreviewFile(String workspace, WorkspaceContentSnapshot.File expected) {
+                byte[] bytes = super.readPreviewFile(workspace, expected);
+                if (expected.path().equals("a.txt")) {
+                    firstReads.countDown();
+                    try { assertTrue(firstReads.await(20, TimeUnit.SECONDS), "all original first file reads must arrive before publication"); }
+                    catch (InterruptedException exception) { Thread.currentThread().interrupt(); throw new IllegalStateException(exception); }
+                }
+                return bytes;
+            }
+        };
+        List<Fixture> fixtures = new ArrayList<>();
+        fixtures.add(new Fixture(runtime, original.data, original.source, original.work, original.task, original.head, original.prepared));
+        for (int index = 1; index < participants; index++) {
+            String task = UUID.randomUUID().toString();
+            Map<String, Object> selection = runtime.selectWorkspace(original.source.toString(), obj("strategy", "CLONE"), false, 1);
+            Map<String, Object> prepared = runtime.prepareSelected(original.source.toString(), task, false, selection);
+            fixtures.add(new Fixture(runtime, original.data, original.source, Path.of(str(prepared, "workspace")), task, original.head, prepared));
+        }
+        assertFalse(Files.exists(original.data.resolve("checkpoints")));
+        List<byte[]> indexes = new ArrayList<>(); for (Fixture fixture : fixtures) indexes.add(fixture.index());
+        byte[] sourceIndex = Files.readAllBytes(original.source.resolve(".git/index"));
+        List<Map<String, Object>> descriptors = new ArrayList<>(); List<String> failures = new ArrayList<>();
+        try (var captures = Executors.newFixedThreadPool(participants)) {
+            var pending = fixtures.stream().map(fixture -> captures.submit(fixture::capture)).toList();
+            for (var future : pending) {
+                try { descriptors.add(future.get(45, TimeUnit.SECONDS)); }
+                catch (ExecutionException exception) {
+                    StringBuilder causes = new StringBuilder();
+                    for (Throwable cause = exception.getCause(); cause != null; cause = cause.getCause()) causes.append(cause).append('\n');
+                    failures.add(causes.toString());
+                }
+            }
+        }
+        Files.write(temporary.resolve("concurrent-capture-results.json"), new ObjectMapper().writerWithDefaultPrettyPrinter()
+            .writeValueAsBytes(obj("participants", participants, "descriptors", descriptors, "failures", failures)));
+        assertTrue(failures.isEmpty(), "original concurrent capture failures: " + failures);
+        assertEquals(participants, descriptors.size()); assertEquals(0, firstReads.getCount());
+        for (int index = 0; index < participants; index++) {
+            Fixture fixture = fixtures.get(index); Map<String, Object> descriptor = descriptors.get(index);
+            assertEquals("READY", descriptor.get("status")); assertEquals(fixture.task, descriptor.get("taskId"));
+            Map<String, Object> manifest = runtime.checkpointManifest(fixture.task, str(descriptor, "id"), str(descriptor, "manifestSha256"));
+            assertEquals(4, objects(manifest.get("files")).size()); assertEquals(fixture.head, manifest.get("head"));
+            for (Map<String, Object> file : objects(manifest.get("files")))
+                assertArrayEquals(Files.readAllBytes(fixture.work.resolve(str(file, "path"))), runtime.checkpointBlobBytes(str(file, "blob")));
+            assertArrayEquals(indexes.get(index), fixture.index());
+        }
+        assertArrayEquals(sourceIndex, Files.readAllBytes(original.source.resolve(".git/index")));
+        assertEquals(original.head, original.sourceGit("rev-parse", "HEAD").strip());
+    }
 
     @Test
     void actualHundredsOfObjectsCrossBatchBoundariesWithoutChangingOriginalBytesOrIndex() throws Exception {

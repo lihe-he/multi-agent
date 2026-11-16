@@ -172,7 +172,16 @@ class CheckpointEngineTest {
         void sql(String statement) throws Exception { try (var database = DriverManager.getConnection("jdbc:sqlite:" + data.resolve("workbench.sqlite")); var command = database.createStatement()) { command.execute(statement); } }
 
         void reopen() throws Exception {
-            closeCore(); sql("DROP TRIGGER IF EXISTS checkpoint_fault"); fault = ""; openCore(); engine.recover();
+            reopen(false);
+        }
+
+        /**
+         * 未领取恢复用例先阻塞新执行器，再允许原恢复逻辑启动派发。
+         */
+        void reopen(boolean blockRecoveredQueue) throws Exception {
+            closeCore(); sql("DROP TRIGGER IF EXISTS checkpoint_fault"); fault = ""; openCore();
+            if (blockRecoveredQueue) blockQueue();
+            engine.recover();
         }
 
         void reconcile() {
@@ -330,7 +339,11 @@ class CheckpointEngineTest {
             Map<String, Object> preview = fixture.changedPreview(); fixture.blockQueue(); fixture.restore(preview);
             assertEquals("QUEUED", fixture.undoRecord(preview).get("state")); Map<String, Object> dispatch = fixture.store.get("dispatchAction", str(fixture.task(), "dispatchActionId"));
             assertEquals("PENDING", dispatch.get("state")); assertEquals(0, num(dispatch, "dispatchCount", -1)); assertEquals(409, assertThrows(ApiException.class, () -> fixture.restore(preview)).status());
-            if (action.equals("restart-pause")) { fixture.reopen(); assertEquals(dispatch.get("id"), fixture.task().get("dispatchActionId")); assertEquals("QUEUED", fixture.undoRecord(preview).get("state")); }
+            if (action.equals("restart-pause")) {
+                fixture.reopen(true); assertEquals(dispatch.get("id"), fixture.task().get("dispatchActionId")); assertEquals("QUEUED", fixture.undoRecord(preview).get("state"));
+                Map<String, Object> recovered = fixture.store.get("dispatchAction", str(dispatch, "id"));
+                assertEquals("PENDING", recovered.get("state")); assertEquals(0, num(recovered, "dispatchCount", -1));
+            }
             fixture.engine.action(fixture.taskId, action.equals("cancel") ? "cancel" : "pause", obj());
             assertEquals("CANCELLED", fixture.undoRecord(preview).get("state")); assertEquals("WITHDRAWN", fixture.store.get("dispatchAction", str(dispatch, "id")).get("state")); assertEquals(0, fixture.restores.get());
             assertEquals("agent app\n", Files.readString(fixture.work().resolve("app.txt"))); assertFalse(Files.exists(fixture.work().resolve("binary.dat")));

@@ -1,0 +1,1014 @@
+{
+  "recordedAt": "2026-11-16T05:09:47.264Z",
+  "version": "0.2.0-alpha.19",
+  "headSha": "40e98fa9a1e134ec75608681c5fc654d97f1f474",
+  "runId": 43800367811,
+  "runAttempt": 1,
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/43800367811",
+  "status": "completed",
+  "conclusion": "failure",
+  "scope": "ORIGINAL_RUN; ONLY_WINDOWS_AND_UBUNTU_COMPLETE_PLATFORM_ACCEPTANCE_VERIFIED",
+  "jobs": [
+    {
+      "id": 133078913633,
+      "name": "verify (macos-latest)",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 133078913902,
+      "name": "verify (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 133078913923,
+      "name": "verify (windows-latest)",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 14196379545,
+      "name": "evidence-ubuntu-latest",
+      "bytes": 106726692,
+      "sha256": "9df7190c55be29fb5d05b31d9cc83de972cefb1a359b75a9d0c01bd4a3c6ed4c",
+      "digestVerified": true
+    },
+    {
+      "id": 14195454554,
+      "name": "evidence-macos-latest",
+      "bytes": 7411479,
+      "sha256": "7627a561c0af9c9008863a5d47de4c1b5194141a4282778af9804d1ddc08b406",
+      "digestVerified": true
+    },
+    {
+      "id": 14198215160,
+      "name": "evidence-windows-latest",
+      "bytes": 98634361,
+      "sha256": "aa589cc75192863bd158cf31bad78bd934e95306c8d9e6048a8ed08e8554ceff",
+      "digestVerified": true
+    }
+  ],
+  "logs": [
+    {
+      "jobId": 133078913633,
+      "bytes": 45267,
+      "sha256": "e35be040606a3f9fb11778f75938c2ca91aeab140b7cbeecfdfc9957265b751f"
+    },
+    {
+      "jobId": 133078913902,
+      "bytes": 177919,
+      "sha256": "0b6637c6d9bc316465760c53e6b8af82d643bb5f852a2768c680e563c5672f7e"
+    },
+    {
+      "jobId": 133078913923,
+      "bytes": 168492,
+      "sha256": "986743f3981ba2f022ed63c1e3d49da7c07972c90a73e2b2236bf2cc602a230f"
+    }
+  ],
+  "successfulPlatforms": [
+    {
+      "platform": "win32",
+      "runner": "windows-latest",
+      "jobId": 133078913923,
+      "conclusion": "success",
+      "core": {
+        "suiteCount": 34,
+        "tests": 447,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 6,
+        "passed": 441
+      },
+      "skippedCases": [
+        {
+          "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+          "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+          "reason": "org.opentest4j.TestAbortedException: Assumption failed: No restricted live PID on this runner",
+          "suite": "dev.agentworkbench.ManagedProcessLedgerTest"
+        },
+        {
+          "name": "successfulTextReplacementPreservesPosixPermissions",
+          "className": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+          "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true",
+          "suite": "dev.agentworkbench.runtime.FileVersionRuntimeTest"
+        },
+        {
+          "name": "posixTabsNewlinesAndBackslashesStayLiteralAndWhitespaceOnlyNamesAreRejected",
+          "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+          "reason": "Disabled on operating system: Windows Server 2025",
+          "suite": "dev.agentworkbench.runtime.GitDiffViewTest"
+        },
+        {
+          "name": "fileExecutionPermissionsAreRestoredAlongWithTheBytes",
+          "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+          "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not false",
+          "suite": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest"
+        },
+        {
+          "name": "readOnlyTargetPermissionsAreRestoredWithoutReopeningTheFileForWrite",
+          "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+          "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not false",
+          "suite": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest"
+        },
+        {
+          "name": "fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging",
+          "className": "dev.agentworkbench.RuntimeIntegrationTest",
+          "reason": "org.opentest4j.TestAbortedException: Assumption failed: Requires real POSIX executable permissions",
+          "suite": "dev.agentworkbench.RuntimeIntegrationTest"
+        }
+      ],
+      "artifactId": 14198215160,
+      "artifactSha256": "aa589cc75192863bd158cf31bad78bd934e95306c8d9e6048a8ed08e8554ceff",
+      "jarSha256": "bef2c3f131af7cfe654c60413ad81289cfb62b39508369111746ba6e37bde3cc",
+      "uiTests": 196,
+      "protocolChecks": 29,
+      "recoveryChecks": 11,
+      "dispatchChecks": 13,
+      "workspaceChecks": 15,
+      "workspaceWriteChecks": 22,
+      "fileVersionChecks": 9,
+      "diffView": {
+        "status": "passed",
+        "platform": "win32",
+        "version": "0.2.0-alpha.19",
+        "checks": 14,
+        "jarSha256": "bef2c3f131af7cfe654c60413ad81289cfb62b39508369111746ba6e37bde3cc",
+        "originalWorkerTaskRequestsBound": true,
+        "actualProductionWebAndJar": true,
+        "actualReadOnlySourceAndWorkspaceFactsVerified": true,
+        "tasks": [
+          {
+            "strategy": "CLONE",
+            "taskId": "df1fb672-ad22-4a49-b5cd-38e0d40cca38",
+            "taskExecutionId": "ea4c895f-ff89-44e6-8f02-1173efcd65cb",
+            "modelRequests": 5,
+            "initialVersion": "1117c779d6ed538e7c348c0cc21c9e281ffff9d6f421df10737446e8b65b93d4",
+            "capturedVersion": "af5cc31ce2916b48d152e94c9725721b3de605dff8a07d84c31f22d55f9b8329",
+            "states": 7,
+            "deliverySha256": "f3ad3dbce738032e712a7fffbc6ae4b08f33df79a0319ee6a110f28118af7e8c",
+            "originalProcessObservations": 124
+          },
+          {
+            "strategy": "WORKTREE",
+            "taskId": "db8ba732-8e58-4abe-a63c-fb779b4d078d",
+            "taskExecutionId": "7a44db7e-0836-4b8a-9015-3e8787475b95",
+            "modelRequests": 5,
+            "initialVersion": "1117c779d6ed538e7c348c0cc21c9e281ffff9d6f421df10737446e8b65b93d4",
+            "capturedVersion": "af5cc31ce2916b48d152e94c9725721b3de605dff8a07d84c31f22d55f9b8329",
+            "states": 7,
+            "deliverySha256": "ef211987a5301c06bca6db10503b1eb1e1d8e1da19b6cebcb06e2f7f6b73a2e6",
+            "originalProcessObservations": 284
+          }
+        ],
+        "modelCalls": 10,
+        "originalIdentitiesStopped": 285,
+        "screenshots": [
+          {
+            "file": "CLONE-production-diff-1440.png",
+            "bytes": 109538,
+            "sha256": "95ec4dd0f126d489873a842d1691eeb909a2514f1848e72a386a203489ff064a"
+          },
+          {
+            "file": "CLONE-production-diff-430.png",
+            "bytes": 64412,
+            "sha256": "b15d7bed2c3c251b10384fe58f09f89152e97a9852c60ee3d5560818d66b4ac5"
+          },
+          {
+            "file": "CLONE-production-refreshed.png",
+            "bytes": 73163,
+            "sha256": "4bb86992eb9d4632a4347e99007313866beccc8e3bf9476c17c4ba95b4ece318"
+          },
+          {
+            "file": "WORKTREE-production-diff-1440.png",
+            "bytes": 108169,
+            "sha256": "5bf5950bfcccf33dd6170a7b6f796909ed1671098a491720863c8a2e4be47dc0"
+          },
+          {
+            "file": "WORKTREE-production-diff-430.png",
+            "bytes": 63071,
+            "sha256": "b98fef30e30362ee5be09df48f1c72494b89f20700f2ce7fc3fbaf9424960644"
+          },
+          {
+            "file": "WORKTREE-production-refreshed.png",
+            "bytes": 74596,
+            "sha256": "2cdaec92033a29ae9baa823169fd80d8d570980431b36e04b0de98b2264878f8"
+          }
+        ],
+        "servedFiles": [
+          {
+            "file": "/index.html",
+            "sha256": "9accda73d7e4f67f8ae4c0d5528991369c7d90a5ed594bd1eaa3714c15057249"
+          },
+          {
+            "file": "/theme-init.js",
+            "sha256": "cba14173c20c5925a449979c68ffc281111bc1c116481894277e1747833765e0"
+          },
+          {
+            "file": "/assets/index-lpN8oTSv.js",
+            "sha256": "4538d88879ee893ac18cdaef6240c8becdd5b2da1e8a4306247c0669ae60e4fd"
+          },
+          {
+            "file": "/assets/index-C6FUt5I0.css",
+            "sha256": "b7b832a24fd25a9bbbb184f1224896a726bbc81897b1f3c4ce9eb4548272b333"
+          }
+        ],
+        "previewProcessCoverage": "CORE_PREVIEW_NOT_PERSISTED_IN_WORKER_LEDGER; TASK_EXECUTION_OBSERVED_ONLY",
+        "fixtureSourceMatchesVerifiedSource": true,
+        "fixtureSourceMatchesExactCommit": true,
+        "exactCommit": "40e98fa9a1e134ec75608681c5fc654d97f1f474"
+      },
+      "checkpoints": {
+        "checks": 16,
+        "protocolVersion": 1,
+        "schemaVersion": 9,
+        "actualProductionWebAndJar": true,
+        "fixtureSourceMatchesAcceptedSources": true,
+        "fixtureSourceMatchesExactCommit": true,
+        "exactCommit": "40e98fa9a1e134ec75608681c5fc654d97f1f474",
+        "originalWorkerTaskRequestsBound": true,
+        "strategies": [
+          {
+            "strategy": "CLONE",
+            "taskId": "ab80fb70-ea51-4e53-9270-f19e3665bd49",
+            "originalExecutionId": "4b542e1e-7477-4bae-9e67-8748db196a06",
+            "restoreExecutionId": "e19f366e-aadd-4d4f-a63d-5c563c809092",
+            "toolCheckpoints": 5,
+            "modelRequests": 8,
+            "originalIndexRestored": true,
+            "userLaterFileRetained": true,
+            "originalEvidenceAndBudgetRetained": true
+          },
+          {
+            "strategy": "WORKTREE",
+            "taskId": "4898dce5-6c06-42e3-83a8-78c1b6004afe",
+            "originalExecutionId": "e9dc35ff-65bc-4ffc-9035-a82524a01e78",
+            "restoreExecutionId": "898e4079-54b3-4399-9280-19c602e56ca0",
+            "toolCheckpoints": 5,
+            "modelRequests": 8,
+            "originalIndexRestored": true,
+            "userLaterFileRetained": true,
+            "originalEvidenceAndBudgetRetained": true
+          }
+        ],
+        "faults": [
+          {
+            "fault": "ack",
+            "taskId": "f64d9941-46f7-4300-b0cf-1095711a05c2",
+            "originalOperationId": "ecb03365-fca3-4b5e-b05e-67f0c1b90170",
+            "sqliteOperationState": "UNKNOWN",
+            "originalRestoreState": "UNKNOWN",
+            "originalObservedReceiptState": "ACKNOWLEDGED",
+            "unpublishedResultIncluded": true,
+            "oldVersionExportAfterReconcileRejected": true,
+            "originalModelRequests": 8,
+            "unconfirmedLeaseRetained": true,
+            "originalLockHeldAtProbe": true,
+            "originalWorkerStoppedAfterLockProbe": true,
+            "originalOwnerLockGateVerified": true
+          },
+          {
+            "fault": "publish",
+            "taskId": "b341ccbb-ef5d-4de0-8165-c232f0e146bf",
+            "originalOperationId": "41e5296d-9111-430b-9e36-73f64da658e0",
+            "sqliteOperationState": "ACKNOWLEDGED",
+            "originalRestoreState": "UNKNOWN",
+            "originalObservedReceiptState": "ACKNOWLEDGED",
+            "unpublishedResultIncluded": true,
+            "oldVersionExportAfterReconcileRejected": true,
+            "originalModelRequests": 8,
+            "unconfirmedLeaseRetained": true,
+            "originalLockHeldAtProbe": false,
+            "originalWorkerStoppedAfterLockProbe": true,
+            "originalOwnerLockGateVerified": true
+          }
+        ],
+        "archives": [
+          {
+            "file": "CLONE-actual-undo.zip",
+            "bytes": 121575,
+            "sha256": "977446d0a338d08158507ac2827537fc7ca435007e26dd2572f4978b7d995ef3",
+            "references": 25,
+            "deduplicatedObjects": 11
+          },
+          {
+            "file": "WORKTREE-actual-undo.zip",
+            "bytes": 139313,
+            "sha256": "5bfeb1ca4585962bb67cef57f8eea7b912d21fd8b6bfa70232a1a7239d4b00a0",
+            "references": 25,
+            "deduplicatedObjects": 11
+          },
+          {
+            "file": "ack-unknown-original.zip",
+            "bytes": 141519,
+            "sha256": "97a629c9f21a1a5a47f47561125b69bb024598d16da03cd39cbeaaffc604ba47",
+            "references": 21,
+            "deduplicatedObjects": 9
+          },
+          {
+            "file": "publish-unknown-original.zip",
+            "bytes": 109787,
+            "sha256": "aa29ad69990533603d9519dc12b6014e367f461325c942180205749a8c094b7c",
+            "references": 21,
+            "deduplicatedObjects": 9
+          }
+        ],
+        "screenshots": [
+          {
+            "file": "CLONE-production-preview-1440.png",
+            "bytes": 138764,
+            "sha256": "e71d3c02f53f2952b3dadef9fd1a00c6dba3cad078edf6f52b9857f1ac1e93b9"
+          },
+          {
+            "file": "CLONE-production-preview-430.png",
+            "bytes": 85920,
+            "sha256": "209b608d037c5be04b5d717866041dbc2ba71f496ec7485a9d3d281236d757ef"
+          },
+          {
+            "file": "WORKTREE-production-preview-1440.png",
+            "bytes": 133931,
+            "sha256": "54510dfd8eaef5f2186b328886b2fd4983e3708183bb9b8d7289d4fc6e9b1f82"
+          },
+          {
+            "file": "WORKTREE-production-preview-430.png",
+            "bytes": 84103,
+            "sha256": "6983d7937ce856ba8383f63568965e44ee9ced0e250b1f1bf97596db6754ff39"
+          }
+        ],
+        "modelRequests": 32,
+        "coreStarts": 3,
+        "originalRecordedIdentitiesStopped": 939,
+        "completeOriginalReferenceBytesVerified": true,
+        "actualOriginalSourceAndRestoredWorkspacesVerified": true,
+        "originalAppliedAndUnknownFactsRetained": true,
+        "processCoverage": "OBSERVED_ONLY; CORE_CHECKPOINT_READS_NOT_FULL_HISTORICAL_PROCESS_COVERAGE"
+      },
+      "completeOriginalHistoryAndUnknownVerified": true,
+      "originalCoreCasesRetained": 356,
+      "standaloneStatus": "passed",
+      "packagedStatus": "passed",
+      "packagedCoreMatchesFinalJar": true,
+      "exactCommitFixtureSourcesVerified": true,
+      "packagedJreWriter": {
+        "recordedAt": "2026-11-16T04:31:18.419Z",
+        "version": "0.2.0-alpha.19",
+        "platform": "win32",
+        "status": "passed",
+        "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
+        "jarSha256": "bef2c3f131af7cfe654c60413ad81289cfb62b39508369111746ba6e37bde3cc",
+        "packagedJarSha256": "bef2c3f131af7cfe654c60413ad81289cfb62b39508369111746ba6e37bde3cc",
+        "packagedJava": "D:\\a\\multi-agent\\multi-agent\\release\\win-unpacked\\resources\\jre\\bin\\java.exe",
+        "packagedJavaSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
+        "javaVersion": "21.0.13",
+        "packagedRuntimeReleaseSha256": "b3f0f2c915151893f679218e30bf445ee6b489681e06457f466744fe89e50e8c",
+        "fixtureClassesCompiledOnce": true,
+        "fixtureClasses": [
+          {
+            "file": "ProcessRecoveryProbe$Identity.class",
+            "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+          },
+          {
+            "file": "ProcessRecoveryProbe$State.class",
+            "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+          },
+          {
+            "file": "ProcessRecoveryProbe$Visibility.class",
+            "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+          },
+          {
+            "file": "ProcessRecoveryProbe.class",
+            "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteDatabaseFixture.class",
+            "sha256": "a588579f7b3a02bb2246c3d3718765c672e72742947a425f774a0cfbb0add75b"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$1.class",
+            "sha256": "e19bcd1e5940a102a8e849b7303b016196bfaf31cf3c132b9f3b2a9f61acebed"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$2.class",
+            "sha256": "a0d4e287e5364f47dab229f62eefdba5c195123bdc4c5540c72d0458d0da7a86"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe.class",
+            "sha256": "17969c48c3e8b6a10357e24eaa8b8a4c1e08d20f723b78c5b0c0842018ad28a6"
+          }
+        ],
+        "productionClasses": [
+          {
+            "file": "dev/agentworkbench/WorkbenchEngine.class",
+            "sha256": "869054f463789e63994d0a9cd0d3b1c6ad9ee9a3df8a2c7a89dbfa59f13a80ce"
+          },
+          {
+            "file": "dev/agentworkbench/WorkerProcessMain.class",
+            "sha256": "cc73f7de2edc901a5e0ee38a541abaf04d9f0fe62f4fc5c1335e39fea01b2647"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+            "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+          },
+          {
+            "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+            "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+            "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+            "sha256": "42c57b0db8d5780cbc971acbf7c44362deb326f764f840472c41cb2e17eee222"
+          }
+        ],
+        "nativeDependencies": [
+          {
+            "file": "jna-5.17.0.jar",
+            "bytes": 2002589,
+            "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          },
+          {
+            "file": "jna-platform-5.17.0.jar",
+            "bytes": 1378617,
+            "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          }
+        ],
+        "nativeFileKey": "WINDOWS:5a0e833e0e8311e5:fc6a0000000001000000000000000000",
+        "originalPid": 7672,
+        "originalProcessStartedAt": "2026-11-16T04:31:17.029Z",
+        "originalStopped": true,
+        "releaseDuringBorrowRejected": true,
+        "lockAvailableAfterRelease": true,
+        "windowsNativeProcessSnapshotApplicable": true,
+        "windowsNativeProcessSnapshotVerified": true,
+        "nativeProcessBirth": "2026-11-16T04:31:17.029Z",
+        "nativeProcessSnapshotCount": 133,
+        "probeOutputEncoding": "UTF-8",
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2,
+        "evidenceDirectory": "D:\\a\\multi-agent\\multi-agent\\.runtime\\bundled-workspace-writer-1vTvyw"
+      },
+      "previewProcessCoverageLimitationsRetained": true
+    },
+    {
+      "platform": "linux",
+      "runner": "ubuntu-latest",
+      "jobId": 133078913902,
+      "conclusion": "success",
+      "core": {
+        "suiteCount": 34,
+        "tests": 447,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 9,
+        "passed": 438
+      },
+      "skippedCases": [
+        {
+          "name": "redirectedWorkspaceRootCannotCreateTaskDirectoriesInsideAForeignJunction",
+          "className": "dev.agentworkbench.GitWorkspaceTest",
+          "reason": "Disabled on operating system: Linux",
+          "suite": "dev.agentworkbench.GitWorkspaceTest"
+        },
+        {
+          "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+          "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+          "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows restricted process identity",
+          "suite": "dev.agentworkbench.ManagedProcessLedgerTest"
+        },
+        {
+          "name": "failedWindowsSnapshotStillRejectsAnUnverifiableLivePid",
+          "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+          "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity failure",
+          "suite": "dev.agentworkbench.ManagedProcessLedgerTest"
+        },
+        {
+          "name": "missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory",
+          "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+          "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity fallback",
+          "suite": "dev.agentworkbench.ManagedProcessLedgerTest"
+        },
+        {
+          "name": "transientWindowsReceiptLockDoesNotReplayCompletedFileTool",
+          "className": "dev.agentworkbench.RuntimeIntegrationTest",
+          "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true",
+          "suite": "dev.agentworkbench.RuntimeIntegrationTest"
+        },
+        {
+          "name": "persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay",
+          "className": "dev.agentworkbench.RuntimeIntegrationTest",
+          "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true",
+          "suite": "dev.agentworkbench.RuntimeIntegrationTest"
+        },
+        {
+          "name": "actualWindowsSnapshotMatchesReadableProcessBirths",
+          "className": "dev.agentworkbench.WindowsProcessSnapshotTest",
+          "reason": "org.opentest4j.TestAbortedException: Assumption failed: Windows native system process snapshot",
+          "suite": "dev.agentworkbench.WindowsProcessSnapshotTest"
+        },
+        {
+          "name": "savedWindowsShortWorkspaceKeepsItsPhysicalScopeAfterStoreReopen",
+          "className": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+          "reason": "Disabled on operating system: Linux",
+          "suite": "dev.agentworkbench.WorkspaceWriteLedgerTest"
+        },
+        {
+          "name": "windowsJunctionCannotRedirectPreviewCopiesOrCleanup",
+          "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+          "reason": "Disabled on operating system: Linux",
+          "suite": "dev.agentworkbench.runtime.GitDiffViewTest"
+        }
+      ],
+      "artifactId": 14196379545,
+      "artifactSha256": "9df7190c55be29fb5d05b31d9cc83de972cefb1a359b75a9d0c01bd4a3c6ed4c",
+      "jarSha256": "698ecc584de4f74795d9999694687d0efd226edbffab6f6335a18434efcd7abe",
+      "uiTests": 196,
+      "protocolChecks": 29,
+      "recoveryChecks": 11,
+      "dispatchChecks": 13,
+      "workspaceChecks": 15,
+      "workspaceWriteChecks": 22,
+      "fileVersionChecks": 9,
+      "diffView": {
+        "status": "passed",
+        "platform": "linux",
+        "version": "0.2.0-alpha.19",
+        "checks": 14,
+        "jarSha256": "698ecc584de4f74795d9999694687d0efd226edbffab6f6335a18434efcd7abe",
+        "originalWorkerTaskRequestsBound": true,
+        "actualProductionWebAndJar": true,
+        "actualReadOnlySourceAndWorkspaceFactsVerified": true,
+        "tasks": [
+          {
+            "strategy": "CLONE",
+            "taskId": "9fd68fa0-5074-4aa6-a55a-ea99cdd9e448",
+            "taskExecutionId": "30e9ad7f-1b76-4fdc-86ea-8600bb0e4c57",
+            "modelRequests": 5,
+            "initialVersion": "1117c779d6ed538e7c348c0cc21c9e281ffff9d6f421df10737446e8b65b93d4",
+            "capturedVersion": "af5cc31ce2916b48d152e94c9725721b3de605dff8a07d84c31f22d55f9b8329",
+            "states": 7,
+            "deliverySha256": "c6d95af75af557e8f5a89d45937df929ae44404ba5823a3b44d997b94de75f5c",
+            "originalProcessObservations": 66
+          },
+          {
+            "strategy": "WORKTREE",
+            "taskId": "f90c35d7-5108-47e9-8ace-679b1b0476d6",
+            "taskExecutionId": "7c89a06a-f876-4728-a4cd-7402929c4cab",
+            "modelRequests": 5,
+            "initialVersion": "1117c779d6ed538e7c348c0cc21c9e281ffff9d6f421df10737446e8b65b93d4",
+            "capturedVersion": "af5cc31ce2916b48d152e94c9725721b3de605dff8a07d84c31f22d55f9b8329",
+            "states": 7,
+            "deliverySha256": "036445c196496ef91c933a0c297923cd3c8137c3532e50ba5f99604c41b52a54",
+            "originalProcessObservations": 147
+          }
+        ],
+        "modelCalls": 10,
+        "originalIdentitiesStopped": 146,
+        "screenshots": [
+          {
+            "file": "CLONE-production-diff-1440.png",
+            "bytes": 143996,
+            "sha256": "b94a494fad08130fccc16e5747c2c25585bf7d6f3029f79a0e181203670872da"
+          },
+          {
+            "file": "CLONE-production-diff-430.png",
+            "bytes": 79616,
+            "sha256": "e912cac5925246e5d9ef94c6c13302ce3239f5c115e987a85d7f5c4ed66589fb"
+          },
+          {
+            "file": "CLONE-production-refreshed.png",
+            "bytes": 94597,
+            "sha256": "0d2589482bb918b08e1a4278c9097a298ce9bf8107c229c60cecac2b44f4bc14"
+          },
+          {
+            "file": "WORKTREE-production-diff-1440.png",
+            "bytes": 145434,
+            "sha256": "f5c0be8de8a5cd228f510cceb24512a8439e9da2ea41c86a6889363e2d12f8c7"
+          },
+          {
+            "file": "WORKTREE-production-diff-430.png",
+            "bytes": 81094,
+            "sha256": "32c0fa85c893a176d1aa9793e9c7fec2c7b61a59c594348ecdcb931cee66e3bc"
+          },
+          {
+            "file": "WORKTREE-production-refreshed.png",
+            "bytes": 93374,
+            "sha256": "f6ee6d6c7941debf83c18befafe425ee5d009c2950ea4e92d8651cc41fdddbf9"
+          }
+        ],
+        "servedFiles": [
+          {
+            "file": "/index.html",
+            "sha256": "7376556ea5caaaec24b06aa4e0f50fe67766eaf908d860e31e79153d07b97154"
+          },
+          {
+            "file": "/theme-init.js",
+            "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+          },
+          {
+            "file": "/assets/index-lpN8oTSv.js",
+            "sha256": "4538d88879ee893ac18cdaef6240c8becdd5b2da1e8a4306247c0669ae60e4fd"
+          },
+          {
+            "file": "/assets/index-C6FUt5I0.css",
+            "sha256": "b7b832a24fd25a9bbbb184f1224896a726bbc81897b1f3c4ce9eb4548272b333"
+          }
+        ],
+        "previewProcessCoverage": "CORE_PREVIEW_NOT_PERSISTED_IN_WORKER_LEDGER; TASK_EXECUTION_OBSERVED_ONLY",
+        "fixtureSourceMatchesVerifiedSource": true,
+        "fixtureSourceMatchesExactCommit": true,
+        "exactCommit": "40e98fa9a1e134ec75608681c5fc654d97f1f474"
+      },
+      "checkpoints": {
+        "checks": 16,
+        "protocolVersion": 1,
+        "schemaVersion": 9,
+        "actualProductionWebAndJar": true,
+        "fixtureSourceMatchesAcceptedSources": true,
+        "fixtureSourceMatchesExactCommit": true,
+        "exactCommit": "40e98fa9a1e134ec75608681c5fc654d97f1f474",
+        "originalWorkerTaskRequestsBound": true,
+        "strategies": [
+          {
+            "strategy": "CLONE",
+            "taskId": "fbf1bda2-842c-488c-a72e-19ded666a8b1",
+            "originalExecutionId": "ca358d43-0614-4488-875c-15adadce2cdd",
+            "restoreExecutionId": "2fc9e036-c345-418b-bb56-8895289bcbea",
+            "toolCheckpoints": 5,
+            "modelRequests": 8,
+            "originalIndexRestored": true,
+            "userLaterFileRetained": true,
+            "originalEvidenceAndBudgetRetained": true
+          },
+          {
+            "strategy": "WORKTREE",
+            "taskId": "7b101ac2-b817-4eaa-a3ce-2964f6981883",
+            "originalExecutionId": "8f524ea9-b7a9-4535-b446-6c609969ef89",
+            "restoreExecutionId": "43d282d7-1b7f-4ede-a550-2f1d505b690c",
+            "toolCheckpoints": 5,
+            "modelRequests": 8,
+            "originalIndexRestored": true,
+            "userLaterFileRetained": true,
+            "originalEvidenceAndBudgetRetained": true
+          }
+        ],
+        "faults": [
+          {
+            "fault": "ack",
+            "taskId": "31e5404f-40ad-4077-a58d-559f8643c2ce",
+            "originalOperationId": "5d904205-06f3-4a95-8a01-ce25788cd39d",
+            "sqliteOperationState": "UNKNOWN",
+            "originalRestoreState": "UNKNOWN",
+            "originalObservedReceiptState": "ACKNOWLEDGED",
+            "unpublishedResultIncluded": true,
+            "oldVersionExportAfterReconcileRejected": true,
+            "originalModelRequests": 8,
+            "unconfirmedLeaseRetained": true,
+            "originalLockHeldAtProbe": true,
+            "originalWorkerStoppedAfterLockProbe": true,
+            "originalOwnerLockGateVerified": true
+          },
+          {
+            "fault": "publish",
+            "taskId": "48f278a2-411c-423c-811c-fdd80979cb81",
+            "originalOperationId": "9d5c7d6a-f78c-4fb1-aebc-bd0fcb76a07d",
+            "sqliteOperationState": "ACKNOWLEDGED",
+            "originalRestoreState": "UNKNOWN",
+            "originalObservedReceiptState": "ACKNOWLEDGED",
+            "unpublishedResultIncluded": true,
+            "oldVersionExportAfterReconcileRejected": true,
+            "originalModelRequests": 8,
+            "unconfirmedLeaseRetained": true,
+            "originalLockHeldAtProbe": true,
+            "originalWorkerStoppedAfterLockProbe": true,
+            "originalOwnerLockGateVerified": true
+          }
+        ],
+        "archives": [
+          {
+            "file": "CLONE-actual-undo.zip",
+            "bytes": 115193,
+            "sha256": "a4bf95127eb6324452901d3f8e95f866752f4bbc79892ce74d34a40a5a53d5c6",
+            "references": 25,
+            "deduplicatedObjects": 11
+          },
+          {
+            "file": "WORKTREE-actual-undo.zip",
+            "bytes": 123301,
+            "sha256": "788a30523205a9ccfa351908ccff8dd373c963b2793f27de095d850d598052db",
+            "references": 25,
+            "deduplicatedObjects": 11
+          },
+          {
+            "file": "ack-unknown-original.zip",
+            "bytes": 118388,
+            "sha256": "46ba4b1ab676517f3fdcb2c689ffe5f124ac9d75461882ee74ec687354599447",
+            "references": 21,
+            "deduplicatedObjects": 9
+          },
+          {
+            "file": "publish-unknown-original.zip",
+            "bytes": 103937,
+            "sha256": "d826c5759ed4dbbb3881973eedb41899f65aef367f678b83aa656e34fced2202",
+            "references": 21,
+            "deduplicatedObjects": 9
+          }
+        ],
+        "screenshots": [
+          {
+            "file": "CLONE-production-preview-1440.png",
+            "bytes": 198055,
+            "sha256": "ac47ea0d523ff18ec840718e633caf53a004f53863818b9a93fd81ec02706280"
+          },
+          {
+            "file": "CLONE-production-preview-430.png",
+            "bytes": 121632,
+            "sha256": "0a2486ebaeae4d33280062825ef1660a3fbbc5be8437a234b12d27302999e004"
+          },
+          {
+            "file": "WORKTREE-production-preview-1440.png",
+            "bytes": 193367,
+            "sha256": "797a30d53da382cbb9197a0b677988675c7cdd0da5e5dce52e8cd8f716081bb7"
+          },
+          {
+            "file": "WORKTREE-production-preview-430.png",
+            "bytes": 119587,
+            "sha256": "cbc242aecc4c0815cbe95e5348605fa9204d25efa18a41679fdf1b6f760953dc"
+          }
+        ],
+        "modelRequests": 32,
+        "coreStarts": 3,
+        "originalRecordedIdentitiesStopped": 478,
+        "completeOriginalReferenceBytesVerified": true,
+        "actualOriginalSourceAndRestoredWorkspacesVerified": true,
+        "originalAppliedAndUnknownFactsRetained": true,
+        "processCoverage": "OBSERVED_ONLY; CORE_CHECKPOINT_READS_NOT_FULL_HISTORICAL_PROCESS_COVERAGE"
+      },
+      "completeOriginalHistoryAndUnknownVerified": true,
+      "originalCoreCasesRetained": 356,
+      "standaloneStatus": "passed",
+      "packagedStatus": "passed",
+      "packagedCoreMatchesFinalJar": true,
+      "exactCommitFixtureSourcesVerified": true,
+      "packagedJreWriter": {
+        "recordedAt": "2026-11-16T04:05:52.612Z",
+        "version": "0.2.0-alpha.19",
+        "platform": "linux",
+        "status": "passed",
+        "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
+        "jarSha256": "698ecc584de4f74795d9999694687d0efd226edbffab6f6335a18434efcd7abe",
+        "packagedJarSha256": "698ecc584de4f74795d9999694687d0efd226edbffab6f6335a18434efcd7abe",
+        "packagedJava": "/home/runner/work/multi-agent/multi-agent/release/linux-unpacked/resources/jre/bin/java",
+        "packagedJavaSha256": "9cad3f2620d3ef2ed10b26f922af7e773d54fdaa05f615d6d6df014f3fec4155",
+        "javaVersion": "21.0.13",
+        "packagedRuntimeReleaseSha256": "32d77bb26cba44ee2282c8b4fbb6dcf429757ed8b851d9d84863c7342989584d",
+        "fixtureClassesCompiledOnce": true,
+        "fixtureClasses": [
+          {
+            "file": "ProcessRecoveryProbe$Identity.class",
+            "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+          },
+          {
+            "file": "ProcessRecoveryProbe$State.class",
+            "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+          },
+          {
+            "file": "ProcessRecoveryProbe$Visibility.class",
+            "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+          },
+          {
+            "file": "ProcessRecoveryProbe.class",
+            "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteDatabaseFixture.class",
+            "sha256": "a588579f7b3a02bb2246c3d3718765c672e72742947a425f774a0cfbb0add75b"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$1.class",
+            "sha256": "e19bcd1e5940a102a8e849b7303b016196bfaf31cf3c132b9f3b2a9f61acebed"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe$2.class",
+            "sha256": "a0d4e287e5364f47dab229f62eefdba5c195123bdc4c5540c72d0458d0da7a86"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteProbe.class",
+            "sha256": "17969c48c3e8b6a10357e24eaa8b8a4c1e08d20f723b78c5b0c0842018ad28a6"
+          }
+        ],
+        "productionClasses": [
+          {
+            "file": "dev/agentworkbench/WorkbenchEngine.class",
+            "sha256": "869054f463789e63994d0a9cd0d3b1c6ad9ee9a3df8a2c7a89dbfa59f13a80ce"
+          },
+          {
+            "file": "dev/agentworkbench/WorkerProcessMain.class",
+            "sha256": "cc73f7de2edc901a5e0ee38a541abaf04d9f0fe62f4fc5c1335e39fea01b2647"
+          },
+          {
+            "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+            "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+          },
+          {
+            "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+            "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+            "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+          },
+          {
+            "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+            "sha256": "42c57b0db8d5780cbc971acbf7c44362deb326f764f840472c41cb2e17eee222"
+          }
+        ],
+        "nativeDependencies": [
+          {
+            "file": "jna-5.17.0.jar",
+            "bytes": 2002589,
+            "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          },
+          {
+            "file": "jna-platform-5.17.0.jar",
+            "bytes": 1378617,
+            "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+            "licenseChoice": "Apache-2.0",
+            "licenses": [
+              {
+                "entry": "META-INF/AL2.0",
+                "bytes": 10174,
+                "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+              },
+              {
+                "entry": "META-INF/LICENSE",
+                "bytes": 797,
+                "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+              }
+            ]
+          }
+        ],
+        "nativeFileKey": "NIO:(dev=801,ino=8032588)",
+        "originalPid": 72829,
+        "originalProcessStartedAt": "2026-11-16T04:05:50.600Z",
+        "originalStopped": true,
+        "releaseDuringBorrowRejected": true,
+        "lockAvailableAfterRelease": true,
+        "windowsNativeProcessSnapshotApplicable": false,
+        "windowsNativeProcessSnapshotVerified": null,
+        "probeOutputEncoding": "UTF-8",
+        "schedulerParallelism": 2,
+        "schedulerMaxPoolSize": 2,
+        "evidenceDirectory": "/home/runner/work/multi-agent/multi-agent/.runtime/bundled-workspace-writer-Xr2HOW"
+      },
+      "previewProcessCoverageLimitationsRetained": true
+    }
+  ],
+  "originalMacosFailure": {
+    "totals": {
+      "tests": 447,
+      "failures": 1,
+      "errors": 1,
+      "skipped": 9
+    },
+    "failedCases": [
+      {
+        "name": "evenWellFormedGitRowsMustReconstructTheCapturedBeforeAndAfterBytes(String)[1]",
+        "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+        "originalXmlBody": "\n    <error message=\"java.nio.file.NoSuchFileException: /var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-11832987018459397993/row-binding 中文 repo/.git/objects/maintenance.lock\" type=\"java.io.UncheckedIOException\"><![CDATA[java.io.UncheckedIOException: java.nio.file.NoSuchFileException: /var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-11832987018459397993/row-binding 中文 repo/.git/objects/maintenance.lock\n\tat java.base/java.nio.file.FileTreeIterator.fetchNextIfNeeded(FileTreeIterator.java:87)\n\tat java.base/java.nio.file.FileTreeIterator.hasNext(FileTreeIterator.java:103)\n\tat java.base/java.util.Iterator.forEachRemaining(Iterator.java:132)\n\tat java.base/java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1939)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:575)\n\tat java.base/java.util.stream.AbstractPipeline.evaluateToArrayNode(AbstractPipeline.java:260)\n\tat java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:616)\n\tat java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:622)\n\tat java.base/java.util.stream.ReferencePipeline.toList(ReferencePipeline.java:627)\n\tat dev.agentworkbench.runtime.GitDiffViewTest.source(GitDiffViewTest.java:446)\n\tat dev.agentworkbench.runtime.GitDiffViewTest.evenWellFormedGitRowsMustReconstructTheCapturedBeforeAndAfterBytes(GitDiffViewTest.java:364)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.Optional.ifPresent(Optional.java:178)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)\n\tat java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)\n\tat java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\n\tat java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\nCaused by: java.nio.file.NoSuchFileException: /var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-11832987018459397993/row-binding 中文 repo/.git/objects/maintenance.lock\n\tat java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)\n\tat java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106)\n\tat java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)\n\tat java.base/sun.nio.fs.UnixFileAttributeViews$Basic.readAttributes(UnixFileAttributeViews.java:55)\n\tat java.base/sun.nio.fs.UnixFileSystemProvider.readAttributes(UnixFileSystemProvider.java:171)\n\tat java.base/java.nio.file.Files.readAttributes(Files.java:1854)\n\tat java.base/java.nio.file.FileTreeWalker.getAttributes(FileTreeWalker.java:220)\n\tat java.base/java.nio.file.FileTreeWalker.visit(FileTreeWalker.java:277)\n\tat java.base/java.nio.file.FileTreeWalker.next(FileTreeWalker.java:374)\n\tat java.base/java.nio.file.FileTreeIterator.fetchNextIfNeeded(FileTreeIterator.java:94)\n\t... 47 more\n]]></error>\n  "
+      },
+      {
+        "name": "legacyPreparationWithUnresolvedDataPathPublishesAndRecoversTheCanonicalOwnedWorkspace",
+        "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+        "originalXmlBody": "\n    <failure message=\"expected: &lt;true&gt; but was: &lt;false&gt;\" type=\"org.opentest4j.AssertionFailedError\"><![CDATA[org.opentest4j.AssertionFailedError: expected: <true> but was: <false>\n\tat org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)\n\tat org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)\n\tat org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)\n\tat org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)\n\tat org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)\n\tat org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)\n\tat dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.legacyPreparationWithUnresolvedDataPathPublishesAndRecoversTheCanonicalOwnedWorkspace(WorkspaceCheckpointArchiveTest.java:63)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></failure>\n  "
+      }
+    ],
+    "verifiedOriginalFixtureFiles": 70,
+    "fixtureCopySha256": "b4ba25768ffa742e68496ca3c964c4283717d4800556dcfbf756465f284a42e7",
+    "sourceSnapshotSha256": [
+      {
+        "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+        "checkoutSha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87",
+        "gitBlobSha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+        "checkoutSha256": "19ee2d272c6eb067caf6754fdf395aa0728d6d9261bac420cb97dda06e976f48",
+        "gitBlobSha256": "19ee2d272c6eb067caf6754fdf395aa0728d6d9261bac420cb97dda06e976f48"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+        "checkoutSha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448",
+        "gitBlobSha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+        "checkoutSha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846",
+        "gitBlobSha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/CheckpointFailureEvidence.java",
+        "checkoutSha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3",
+        "gitBlobSha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3"
+      },
+      {
+        "file": ".github/workflows/verify.yml",
+        "checkoutSha256": "4b46e12fa052a2aec3a9d0aacd25b8ae4e6117f69fa11d0268f5c5fbbab5a342",
+        "gitBlobSha256": "fde1e70f3aa7e681d330707d2aa523534fe6100dece4a95f735a332e9d3c053b"
+      }
+    ],
+    "checkpointFailure": {
+      "originalFixture": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-8550386149371748017",
+      "jvmTemporaryRoot": "/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/",
+      "publishedWorkspace": "/private/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-8550386149371748017/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work",
+      "reconstructedOldPath": "/var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/junit-8550386149371748017/fixture-5918510160625013046/data/workspaces/0303ce77-c0bb-492a-bc84-33b39259fa8f/work",
+      "reconstructedFromOriginalSourcesAndCanonicalManifest": true,
+      "literalOldPathNotIndependentlySavedAtAssertion": true,
+      "actualPrivateVarSymlinkMetadataNotUploaded": true,
+      "publishedManifestSha256": "9edb8604708b25dbc4ce1a0a37a8b2209b255feee4c25a4a2729a57248dfb384",
+      "sourceAndIndexFilesVerified": true,
+      "decision": "Preserve lexical unresolved data-path preparation coverage; use canonical task path on POSIX and retain ordinary Windows short-path coverage. Add explicit symbolic alias refusal."
+    },
+    "gitDiffFailure": {
+      "exception": "NoSuchFileException for .git/objects/maintenance.lock during Files.walk fixture enumeration",
+      "originalGitDiffFixtureUploaded": false,
+      "gap": "ON_SUCCESS kept the runner temporary fixture but the workflow uploaded no GitDiff TempDir copy; no original lock bytes, actor or disappearance timeline available.",
+      "decision": "Prune top-level .git subtree before enumeration; preserve original HEAD/index/config and complete non-Git file hashing. Do not swallow workspace IO failures."
+    }
+  },
+  "provenance": [
+    {
+      "file": ".runtime\\alpha19-ci\\run-43800367811-attempt-1\\receipt.json",
+      "sha256": "2415a42ba1b7a264717dcc5b0643ef3f6cbc43d2b91869a9f96e1163ce363352"
+    },
+    {
+      "file": ".runtime\\alpha19-ci\\run-43800367811-attempt-1\\original-successful-platform-summary.json",
+      "sha256": "036a1c08bbfe6e84e3b80e2c5815514d634ad2b5412d8165e422877a36213bec"
+    },
+    {
+      "file": ".runtime\\alpha19-ci-original-macos-audit-attempt1\\receipt.json",
+      "sha256": "48f9cbc9ca2cb9cbea2e254afc12b39324e721a1d651ed02ce49e687315820e8"
+    }
+  ],
+  "originalFailureAndMissingEvidenceRetained": true,
+  "laterFollowupMustBeVerifiedSeparately": true,
+  "distributionArtifacts": [
+    {
+      "id": 14197916303,
+      "name": "desktop-windows-latest",
+      "digest": "sha256:047b01f20fa85b07fbe8156588fb4aea42cdd2c3d2354aa126a6b3a14ccaba9f",
+      "size": 152752553,
+      "downloadedAndByteVerified": false
+    },
+    {
+      "id": 14196259491,
+      "name": "desktop-ubuntu-latest",
+      "digest": "sha256:58287588a96df1782d39dea1a23c324f1ca761fcd28322b56e42b9b406e4f9c3",
+      "size": 184923234,
+      "downloadedAndByteVerified": false
+    }
+  ],
+  "distributionArtifactBytesNotDownloadedOrValidatedHere": true
+}

@@ -613,14 +613,24 @@ final class WorkspaceCheckpointArchive {
 
     private void uuid(String id) { if (id == null || !id.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")) throw new ApiException(400, "无效检查点或操作编号。"); }
 
+    /**
+     * 共享归档目录允许并发创建，逐级核对普通目录和真实路径后再同步父目录。
+     */
     private void safeDirectory(Path directory, boolean create) throws IOException {
         Path base = data.toRealPath();
         if (!directory.startsWith(base)) throw conflict("检查点目录越界。");
         Path current = base;
         for (Path component : base.relativize(directory)) {
             current = current.resolve(component);
-            if (!Files.exists(current, LinkOption.NOFOLLOW_LINKS) && create) { Files.createDirectory(current); forceDirectory(current.getParent()); }
+            boolean creationAttempted = !Files.exists(current, LinkOption.NOFOLLOW_LINKS) && create;
+            if (creationAttempted) {
+                try { Files.createDirectory(current); }
+                catch (java.nio.file.FileAlreadyExistsException concurrent) {
+                    if (!Files.isDirectory(current, LinkOption.NOFOLLOW_LINKS)) throw conflict("检查点父目录缺失或被重定向。");
+                }
+            }
             if (!Files.isDirectory(current, LinkOption.NOFOLLOW_LINKS) || !current.toRealPath().equals(current)) throw conflict("检查点父目录缺失或被重定向。");
+            if (creationAttempted) forceDirectory(current.getParent());
         }
     }
 
