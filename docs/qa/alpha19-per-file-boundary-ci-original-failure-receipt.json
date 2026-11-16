@@ -1,0 +1,636 @@
+{
+  "recordedAt": "2026-11-16T07:48:00.442Z",
+  "status": "completed",
+  "conclusion": "failure",
+  "runId": 43816939938,
+  "runAttempt": 1,
+  "headSha": "38155bb14e3eab977d30f2ad4d25603c18e11922",
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/43816939938",
+  "jobs": [
+    {
+      "id": 133131030111,
+      "name": "verify (windows-latest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 133131030286,
+      "name": "verify (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 133131030394,
+      "name": "verify (macos-latest)",
+      "status": "completed",
+      "conclusion": "failure"
+    }
+  ],
+  "originalCollection": {
+    "file": ".runtime\\alpha19-ci\\run-43816939938-attempt-1\\receipt.json",
+    "sha256": "3aa067905a131753522cd1f7ca4b3254d607d78cdc6563bae2c62c78f579062a"
+  },
+  "collected": [
+    {
+      "type": "job-log",
+      "id": 133131030111,
+      "name": "verify (windows-latest)",
+      "sha256": "398434ce3e399ead6ce152c40680265649d32b07dd259600ac9652d3abcffdc7",
+      "size": 169466
+    },
+    {
+      "type": "job-log",
+      "id": 133131030286,
+      "name": "verify (ubuntu-latest)",
+      "sha256": "3aec64843ce8d71d98916805f63db31fc85feb7fae7b27b1642ff31393e9f130",
+      "size": 38104
+    },
+    {
+      "type": "job-log",
+      "id": 133131030394,
+      "name": "verify (macos-latest)",
+      "sha256": "96c09592ab521e411b3d93b4af62c54072c32505b7aaf32f641c9a6a580dae9f",
+      "size": 84985
+    },
+    {
+      "type": "artifact",
+      "id": 14203481273,
+      "name": "evidence-ubuntu-latest",
+      "sha256": "1e43c34be9422e95293ff3ab55197eb2cff33f75f80eb9b0f50f6b7e21cb7ed4",
+      "digestVerified": true,
+      "size": 7404808,
+      "verifiedOriginalSource": ".runtime\\alpha19-ci\\artifact-14203481273-run-43816939938-attempt-1\\evidence-ubuntu-latest-14203481273.zip",
+      "sourceWholeDigestReverifiedAgainstCurrentMetadata": true
+    },
+    {
+      "type": "artifact",
+      "id": 14202983434,
+      "name": "evidence-macos-latest",
+      "sha256": "7df701e84ad155fa5c903dec2117eba1f09e4c20bcddef53db5b86a6829106dd",
+      "digestVerified": true,
+      "size": 56495941,
+      "verifiedOriginalSource": ".runtime\\alpha19-ci\\artifact-14202983434-run-43816939938-attempt-1\\evidence-macos-latest-14202983434.zip",
+      "sourceWholeDigestReverifiedAgainstCurrentMetadata": true
+    },
+    {
+      "type": "artifact",
+      "id": 14204189856,
+      "name": "evidence-windows-latest",
+      "sha256": "c220c02af4e7b92b4e083e574638fbcd1407735b389bcb60c983b70ac329278c",
+      "digestVerified": true,
+      "size": 98641894,
+      "downloadMode": "WHOLE_DIGEST_VERIFIED_RANGE_ASSEMBLY",
+      "rangeProvenance": {
+        "file": ".runtime\\alpha19-ci\\run-43816939938-attempt-1\\evidence-windows-latest-14204189856-range-provenance.json",
+        "sha256": "df0c2392fc47e1cfd922d9bf55775dc9188efe20aafecfedc491ba1f5583347a",
+        "preservedRangesPossible": false
+      }
+    }
+  ],
+  "distributionArtifacts": [
+    {
+      "id": 14204484182,
+      "name": "desktop-windows-latest",
+      "digest": "sha256:55def4b916574dc7057ab0822b95bac6ffc467cdf07f8a0ff187072a6db1e065",
+      "size": 152752586,
+      "downloadedAndByteVerified": false
+    }
+  ],
+  "successfulWindows": {
+    "receipt": {
+      "file": ".runtime\\alpha19-ci\\run-43816939938-attempt-1\\runtime-repair-successful-windows-verified-summary.json",
+      "sha256": "ae0638172f6502aa4dca46c435aa4ce9f086653d6981bde6e340b616f6556a22"
+    },
+    "core": {
+      "suiteCount": 34,
+      "tests": 450,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 8,
+      "passed": 442,
+      "suites": [
+        {
+          "name": "dev.agentworkbench.AgentRunStoreTest",
+          "xmlSha256": "bda39d37aa7d969b2941b9e6ee62ba185ef36ef4279fd16c09a4efc1e3001b1b",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.CheckpointEngineTest",
+          "xmlSha256": "876cea58d18e9745c43f1080391d926a86e1e6177b2814f091079227457d1984",
+          "tests": 19,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.CheckpointExportHistoryTest",
+          "xmlSha256": "dfaa8686ffa810abed4d73592826e8b136c233f5ffb207cd645aabfe7c3f463e",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.ExecutionStoreTest",
+          "xmlSha256": "02205a70726625d15031dab41361c5a2d3abb22595100b132b0ec1146a9bb1da",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.FileToolHistoryTest",
+          "xmlSha256": "9d1103fb1b9bffb3b4c7e677b84514b5c949ca0ecc5601bbdd704ec72f95354b",
+          "tests": 23,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.GitWorkspaceTest",
+          "xmlSha256": "ade7e4705ed81d71a66ee56dba4434e1fec54e39655d8600eee5b3a8403da290",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.LocalAccessFilterTest",
+          "xmlSha256": "eabd00cd31008569934a6e2d68698a2c4bcae84ac6a91dd7c1d1e9fbe04f841e",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.ManagedProcessLedgerTest",
+          "xmlSha256": "c724b746957dd4fd7b7e658eb25f76da46b0298e649dd760abd5aecc82814c89",
+          "tests": 19,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "skippedCases": [
+            {
+              "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+              "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+              "reason": "org.opentest4j.TestAbortedException: Assumption failed: No restricted live PID on this runner"
+            }
+          ],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.mcp.McpIntegrationTest",
+          "xmlSha256": "bbccd2e96ec4068ca2b3e990affa255953e8cb3d999be0acbc0c5b881500fec6",
+          "tests": 25,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.ModelRequestStoreTest",
+          "xmlSha256": "e000f9d4aaf8eea8364295bc0e57737a644ec21bd14319795afbe11f417e288b",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.PlanAndPolicyTest",
+          "xmlSha256": "f946586e10ddc89a2375ce4dd8b10323a4849e2e46489465d165bd742bf81d39",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+          "xmlSha256": "eb5f57921e08ef98582448202e5cc214ae26e07ccab0cd131e30e01620ea0dea",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.RootDispatchEngineTest",
+          "xmlSha256": "902c1cd45fa95af4c4bf7da00e9357b3b7297508e60674ae3a597ca0744cb043",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+          "xmlSha256": "b3a27cefcaf9bd03e06346c3bba3f83d181c8e5c003fcf30f9ff6e55bbf2945f",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "skippedCases": [
+            {
+              "name": "successfulTextReplacementPreservesPosixPermissions",
+              "className": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+              "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+            }
+          ],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.runtime.GitBlobBatchTest",
+          "xmlSha256": "03d512105d6d3d1dd6c67b2d50fb1ed972a6e86dff41a78745924459cbebc9e8",
+          "tests": 22,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.runtime.GitDiffViewTest",
+          "xmlSha256": "3267ad203bdbc944c85c8b3c53f611af5b37fbf73fbd64e12e632e253b4ea618",
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 2,
+          "skippedCases": [
+            {
+              "name": "ordinaryWorkspaceSnapshotDoesNotEnterAnUnreadableGitObjectDirectory",
+              "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+              "reason": "Disabled on operating system: Windows Server 2025"
+            },
+            {
+              "name": "posixTabsNewlinesAndBackslashesStayLiteralAndWhitespaceOnlyNamesAreRejected",
+              "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+              "reason": "Disabled on operating system: Windows Server 2025"
+            }
+          ],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+          "xmlSha256": "9ed7e7a556d6cf5f1ab81a95f43921a56b7f0e83709c67849cdfb68231451af7",
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 3,
+          "skippedCases": [
+            {
+              "name": "fileExecutionPermissionsAreRestoredAlongWithTheBytes",
+              "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+              "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not false"
+            },
+            {
+              "name": "readOnlyTargetPermissionsAreRestoredWithoutReopeningTheFileForWrite",
+              "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+              "reason": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not false"
+            },
+            {
+              "name": "symbolicDirectoryAliasesCannotAuthorizeCheckpointCapture(String)",
+              "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+              "reason": "Disabled on operating system: Windows Server 2025"
+            }
+          ],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.runtime.WorkspaceWriteGuardTest",
+          "xmlSha256": "d680edad0cc33a66e87aa15e006202aba730915aedf99378ede78e2ad4ba87c8",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.RuntimeDelegationTest",
+          "xmlSha256": "68f9924427dbd014f12920b238dcc87b2f740866b9d2c61619163ef492072e77",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.RuntimeIntegrationTest",
+          "xmlSha256": "2997ca82adc781ec57e3616872994ed318a78d868b0cd5a4e2b9c273202f050b",
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "skippedCases": [
+            {
+              "name": "fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging",
+              "className": "dev.agentworkbench.RuntimeIntegrationTest",
+              "reason": "org.opentest4j.TestAbortedException: Assumption failed: Requires real POSIX executable permissions"
+            }
+          ],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.SessionStoreTest",
+          "xmlSha256": "b14ad90cdb2c6c9303df5562da8008d3154f1b996e84fec90e85aa621dcdc1b8",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.TaskDispatchQueueTest",
+          "xmlSha256": "39a9fc6a68c64bcd7c95dd2dc59392f9371e29cba64f1f98d59415c1521f9bc3",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.TeamExecutionTest",
+          "xmlSha256": "3eab849a183cc234bda8839a9b829af99491ce57e38fa965cbbb465eb970d481",
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.TeamRecordsTest",
+          "xmlSha256": "cd6c5c83f2378b6bc075a8223eb6b64bfd75d900a9215cf9a00a48c5c2c34de4",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.WindowsProcessSnapshotTest",
+          "xmlSha256": "91dc1b54f78b76851950d199dfc7343663ec588b5bb436785fad5ca3efe48db9",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.WorkbenchEngineTest",
+          "xmlSha256": "6cd4b6fb602d13481b1b596163a7909e9965841fa8b67fbda6ba0db07c3310b3",
+          "tests": 24,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.WorkbenchVersionTest",
+          "xmlSha256": "b12dc59e267c38aeebdad5e062ca8bf8649e8187c9a35a0b1f3a8ade43eef396",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.WorkerLeaseTest",
+          "xmlSha256": "a6d7c6c7205c01f5014201b5e822338b761c82e2f7a630b320c6510534cdc3f7",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.WorkerProcessTest",
+          "xmlSha256": "c1f547c7d62dd653f65ecc9ab48bf5d4486dab9b8d1eb1c4c6be11971060f4cc",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.WorkerRpcTest",
+          "xmlSha256": "228da78d3bbfdc435e33ea82589e6f48ca54dcdb1cb35a527a0a5fb1ffc942d4",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.WorkerWireTest",
+          "xmlSha256": "ff4620b0a9f48e56aa70503aa8c8aa0e9d905cf0506bf4fd8595054643dc2bf0",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.WorkspaceSelectionEngineTest",
+          "xmlSha256": "3ca483eb32b5623e5c54e2f5af974b64363d4488b0d00e8aa79e9f2664f84346",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.WorkspaceWriteEngineTest",
+          "xmlSha256": "52807e4541b0d6e42857100757c3ef244a8ddca54546777887f5162617ae1013",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        },
+        {
+          "name": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+          "xmlSha256": "ba7a0fb6a26a87c969845c0a3d782f5ee54d0877ece4987094ae91bf3bb54b8f",
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "skippedCases": [],
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2
+        }
+      ]
+    },
+    "uiTests": 196,
+    "freshRuntimeEvidenceVerified": true,
+    "originalJobConclusion": "success"
+  },
+  "failedUbuntu": {
+    "receipt": {
+      "file": ".runtime/alpha19-runtime-repair-ci-ubuntu-original-attempt1/receipt.json",
+      "sha256": "7dbeff32798c60a29973e667ad576b0e3b7501ba4d8480b5ba2e0c40e8aa1351"
+    },
+    "suiteCount": 34,
+    "totals": {
+      "tests": 452,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 9
+    },
+    "fixtureAudit": {
+      "file": ".runtime/alpha19-runtime-repair-ubuntu-fixture-audit-attempt1/receipt.json",
+      "sha256": "8574d7146047f71e7afe90da27843fa583a4812fb141ce2e03d5b48e875472ee"
+    },
+    "originalFixtureFilesVerified": 94,
+    "failingCase": "CheckpointEngineTest.realPartialCancellationRetainsChangedAndUnchangedPathsAsUnknown",
+    "expected": "UNKNOWN",
+    "actual": "PAUSED",
+    "originalObservedJournalState": "APPLIED",
+    "originalObservedRestoredPaths": 8,
+    "establishedObservation": "The failed original Linux fixture restored all eight paths, its journal is APPLIED, and every preserved partial file contains original bytes. The failed UNKNOWN assertion remains unchanged.",
+    "timingLimit": "Original metadata does not identify the exact native cancellation arrival time. Core-only polling of the fixture cancellation supplier does not establish an acknowledged per-file stop boundary."
+  },
+  "failedMacos": {
+    "receipt": {
+      "file": ".runtime/alpha19-runtime-repair-ci-macos-original-attempt1/receipt.json",
+      "sha256": "5688cb7dd05961c0eee2d1683e8d7c372ef6a7e0545ced3d86f1f40b0c8ea1f8"
+    },
+    "suiteCount": 34,
+    "coreTotals": {
+      "tests": 452,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 9
+    },
+    "ui": {
+      "passed": 195,
+      "failed": 1,
+      "retries": 0,
+      "skipped": 0
+    },
+    "focusEvidence": {
+      "file": ".runtime/alpha19-runtime-repair-macos-focus-audit-attempt1/focus-target-attributes.json",
+      "sha256": "95dafa60c6a637d73d5da69c2473add76d7f6fe186feded8c27c80d5771dd190"
+    },
+    "originalSourceTraceSha256": "c41de95cba91866108d412cf33327dc5134336cb742980aa4188b274b998d94d",
+    "failingCase": "checkpoint keyboard/contrast test, celadon 1440px",
+    "originalTargetWasDisabledDuringFocus": true
+  },
+  "originalFailuresAndUnknownEvidenceGapsRetained": true,
+  "currentRepair": {
+    "core": "Synchronous original CHECK_CURRENT at each existing restore cancellation/write boundary",
+    "ui": "Wait for the original preview button to become enabled before focus and Enter",
+    "fullCoreAcceptance": "PENDING",
+    "exactCommitCiAcceptance": "PENDING",
+    "expectedFullCases": {
+      "win32": 452,
+      "darwin": 454,
+      "linux": 454
+    }
+  },
+  "scope": "ORIGINAL_FAILED_CI_AND_INDEPENDENT_SUCCESSFUL_WINDOWS_AUDIT; NO_SUCCESS_CLAIM_FOR_CURRENT_UNCOMMITTED_REPAIR",
+  "completeProjectGoal": false
+}

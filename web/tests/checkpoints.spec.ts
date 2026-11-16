@@ -142,6 +142,7 @@ for (const theme of ['pure-white', 'paper-ink', 'classic-warm', 'celadon', 'ink-
   test(`检查点实际文字对比度、键盘与布局 ${theme} ${width}px`, async ({ page }, info) => {
     await page.setViewportSize({ width, height: 1100 }); await page.addInitScript(value => localStorage.setItem('workbench-theme', value), theme);
     const source = await fixture(page), panel = await open(page); await inspect(panel); const preview = panel.getByRole('button', { name: '预览撤销', exact: true });
+    await expect(preview).toBeEnabled();
     await preview.focus(); await expect(preview).toBeFocused(); await preview.press('Enter'); await expect(panel.locator('.checkpoint-paths li')).toHaveCount(2);
     const measurements = await panel.evaluate(root => {
       const rgb = (value: string) => value.match(/[\d.]+/g)?.map(Number) || [0, 0, 0];

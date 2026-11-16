@@ -113,9 +113,18 @@ class CheckpointEngineTest {
                 @Override public Map<String, Object> restoreCheckpoint(String workspace, String task, String operation, Map<String, Object> preview, BooleanSupplier cancelled) {
                     restores.incrementAndGet(); heldDuringRestore = !lockAvailable(data.resolve("workspaces").resolve(task).resolve("writer.lock"));
                     if ("BEFORE_FILE_CHANGED".equals(fault)) try { Files.writeString(Path.of(workspace).resolve("app.txt"), "later user change\n"); } catch (Exception exception) { throw new IllegalStateException(exception); }
-                    BooleanSupplier stop = "PARTIAL_CANCEL".equals(fault) ? () -> {
+                    BooleanSupplier stop = Set.of("PARTIAL_CANCEL", "PARTIAL_REVOKE").contains(fault) ? () -> {
                         if (cancelled.getAsBoolean()) return true;
-                        try { return !strings(map(checkpointRestoreJournal(task, operation), "progress").get("writtenPaths")).isEmpty(); }
+                        try {
+                            List<String> written = strings(map(checkpointRestoreJournal(task, operation), "progress").get("writtenPaths"));
+                            if (written.isEmpty()) return false;
+                            if ("PARTIAL_REVOKE".equals(fault)) {
+                                Map<String, Object> binding = store.get("repositoryBinding", str(map(task(), "execution"), "repositoryBindingId"));
+                                binding.put("version", num(binding, "version", 1) + 1); store.put("repositoryBinding", binding);
+                                return false;
+                            }
+                            return true;
+                        }
                         catch (RuntimeException ignored) { return false; }
                     } : cancelled;
                     Map<String, Object> result = super.restoreCheckpoint(workspace, task, operation, preview, stop); originalReturned = result;
@@ -315,6 +324,31 @@ class CheckpointEngineTest {
             for (int index = 0; index < 8; index++) { String path = "partial-" + index + ".txt"; assertEquals(written.contains(path) ? "original\n" : "agent\n", Files.readString(fixture.work().resolve(path))); }
             assertEquals(409, assertThrows(ApiException.class, () -> fixture.engine.action(fixture.taskId, "resume", obj())).status()); fixture.archive("actual-partial-unknown");
             fixture.reopen(); assertEquals(1, fixture.restores.get()); assertEquals("UNKNOWN", fixture.task().get("state")); fixture.reconcile(); assertEquals(1, fixture.restores.get()); assertEquals("UNKNOWN", fixture.undoRecord(preview).get("state"));
+        }
+    }
+
+    /**
+     * 原 Worker 在写入首个文件后同步观察授权撤回，保留已写与未写路径。
+     */
+    @ParameterizedTest
+    @ValueSource(strings = {"CLONE", "WORKTREE"})
+    void perFileAuthorizationRevocationRetainsOriginalPartialUndoAsUnknown(String strategy) throws Exception {
+        try (var fixture = new Fixture(strategy, false)) {
+            for (int index = 0; index < 8; index++) Files.writeString(fixture.work().resolve("revoke-" + index + ".txt"), "original\n");
+            Map<String, Object> target = fixture.save();
+            for (int index = 0; index < 8; index++) Files.writeString(fixture.work().resolve("revoke-" + index + ".txt"), "agent\n");
+            fixture.save(); Map<String, Object> preview = fixture.preview(str(target, "id"));
+            fixture.fault = "PARTIAL_REVOKE"; fixture.restore(preview); fixture.settled();
+            assertEquals("UNKNOWN", fixture.task().get("state")); assertEquals("UNKNOWN", fixture.undoRecord(preview).get("state"));
+            assertEquals("UNKNOWN", fixture.journal().get("state"));
+            List<String> written = strings(fixture.journal().get("writtenPaths")); assertFalse(written.isEmpty()); assertTrue(written.size() < 8, written.toString());
+            for (int index = 0; index < 8; index++) {
+                String path = "revoke-" + index + ".txt";
+                assertEquals(written.contains(path) ? "original\n" : "agent\n", Files.readString(fixture.work().resolve(path)));
+            }
+            assertEquals(1, fixture.restores.get()); assertEquals(0, num(map(fixture.task(), "budget"), "usedCalls", -1));
+            assertEquals(409, assertThrows(ApiException.class, () -> fixture.engine.action(fixture.taskId, "resume", obj())).status());
+            fixture.sourceUnchanged(); fixture.archive("actual-per-file-revocation-unknown");
         }
     }
 

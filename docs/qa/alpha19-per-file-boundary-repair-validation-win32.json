@@ -1,0 +1,2096 @@
+{
+  "recordedAt": "2026-11-16T08:42:15.029Z",
+  "version": "0.2.0-alpha.19",
+  "platform": "win32",
+  "status": "passed",
+  "baseCommit": "38155bb14e3eab977d30f2ad4d25603c18e11922",
+  "scope": "ALPHA19_CHECKPOINT_PER_FILE_AUTHORIZATION_AND_UI_ENABLED_FOCUS_BOUNDARY_REPAIR",
+  "core": {
+    "jar": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-core-evidence-attempt2/agent-workbench-core-0.2.0-alpha.19.jar",
+      "buildOutputFile": "core/target/agent-workbench-core-0.2.0-alpha.19.jar",
+      "bytes": 39349064,
+      "sha256": "7db450e119112484f971c7d2276a1a39a13438cce35484f4598370ef1adf568f"
+    },
+    "suiteCount": 34,
+    "tests": 452,
+    "passed": 442,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 10,
+    "originalCasesRetained": 356,
+    "originalAlpha19CasesRetained": 447,
+    "originalRuntimeRepairCasesRetained": 450,
+    "classes": 138,
+    "changedProductionClasses": [
+      "dev/agentworkbench/WorkerProcessMain$Call$RemoteObserver$1.class",
+      "dev/agentworkbench/WorkerProcessMain$Call$RemoteObserver.class",
+      "dev/agentworkbench/WorkerProcessMain$Call.class",
+      "dev/agentworkbench/WorkerProcessMain.class"
+    ],
+    "behaviorChangedProductionClasses": [
+      "dev/agentworkbench/WorkerProcessMain$Call.class",
+      "dev/agentworkbench/WorkerProcessMain.class"
+    ],
+    "debugOnlyChangedClasses": [
+      "dev/agentworkbench/WorkerProcessMain$Call$RemoteObserver$1.class",
+      "dev/agentworkbench/WorkerProcessMain$Call$RemoteObserver.class"
+    ],
+    "debugAudit": {
+      "file": ".runtime/alpha19-per-file-boundary-debug-class-audit-attempt1/receipt.json",
+      "sha256": "bfd5fb0c2d039874d11f7a4feaae88f76f9ac1e1199e38690d868c32ba1db04a"
+    },
+    "dependenciesUnchanged": true,
+    "javaCommentAudit": {
+      "recordedAt": "2026-11-16T07:33:24.125Z",
+      "baseCommit": "38155bb14e3eab977d30f2ad4d25603c18e11922",
+      "status": "passed",
+      "method": "Java lexical boundaries exclude quoted strings, characters and text blocks; original text and opening indentation retained in order",
+      "retained": [
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+          "originalCommentsRetained": 3,
+          "newStandardMultilineJavadocs": 1,
+          "newOtherComments": 0,
+          "normalizedLfSha256": "e917940c6cccd04f3dfafe3079c1ec3929b582286dde05dfca472ea13e7c4531"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointEngineTest.java",
+          "originalCommentsRetained": 3,
+          "newStandardMultilineJavadocs": 1,
+          "newOtherComments": 0,
+          "normalizedLfSha256": "410e7d4bb25e5b5a978f2d5a53bc4fec2be869e27276f30ab91b2509875f9fc0"
+        }
+      ],
+      "added": [],
+      "originalCommentCount": 6,
+      "newMultilineJavadocs": 2
+    }
+  },
+  "directedCore": {
+    "file": ".runtime/alpha19-core-per-file-boundary-repair-integration-attempt1/receipt.json",
+    "sha256": "ebb60eebd2e78cca58870e5cf16be2a7315b4c6f820a10d0601aeee27dea6135",
+    "totals": {
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": [
+      {
+        "file": "TEST-dev.agentworkbench.CheckpointEngineTest.xml",
+        "sha256": "3256388cfd467527c05d1ad78b1d04c5ddd71fb79df38e93feea7ebaa6108028",
+        "tests": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "TEST-dev.agentworkbench.CheckpointExportHistoryTest.xml",
+        "sha256": "04dccb8f84c212f3c999f35d8b9cbb8a356a0321f56c912bcb003abbf2235ea1",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "perFileRevocation": {
+    "file": ".runtime/alpha19-per-file-revocation-independent-audit-attempt1/receipt.json",
+    "sha256": "2017e6f44b4033ff754ffde9fa02ec29f14b229f211847943150714604917ae2",
+    "cases": [
+      {
+        "directory": ".runtime\\alpha19-core-per-file-boundary-repair-full-attempt1\\checkpoint-evidence-6c43b92e-ece1-4146-af75-472420f24ad9",
+        "archive": ".runtime\\alpha19-core-per-file-boundary-repair-full-attempt1\\checkpoint-evidence-6c43b92e-ece1-4146-af75-472420f24ad9\\actual-per-file-revocation-unknown.zip",
+        "strategy": "WORKTREE",
+        "taskId": "7e16c16a-3e63-4fe0-a06e-8ce71671702d",
+        "operationId": "8332e5a0-06fd-44d0-91f9-ebd68e82e748",
+        "archiveSha256": "0b0a01bbb409fe38162f45e12d709a055534c6bbf7b42d2723d2c5514d25e6c1",
+        "snapshotSha256": "b09e1aee3d4c802a07bf933db2d52b298ded3f58053bfcb468cb764a3bc73369",
+        "stopSha256": "5ffb4d083109241bb33cdd9c62ebe10c628ab57b773c793b5fe688e87d614aa9",
+        "journalSha256": "43730248a15313d9d334907c33e10c2979a847618842bd39380e3aa54cba3337",
+        "patchSha256": "09bab9bce54bd7e5d5a24ea69b81207cc1ab45813cd3486138db263d110c4df0",
+        "writtenPaths": [
+          "revoke-0.txt"
+        ],
+        "originalPaths": [
+          "revoke-0.txt",
+          "revoke-1.txt",
+          "revoke-2.txt",
+          "revoke-3.txt",
+          "revoke-4.txt",
+          "revoke-5.txt",
+          "revoke-6.txt",
+          "revoke-7.txt"
+        ],
+        "pathEffects": [
+          {
+            "path": "revoke-0.txt",
+            "written": true,
+            "exportedContentSha256": "25718360e05d3c2d0963d1381e9dd4dae5fca789244ee4b9f861adcc0cc96218"
+          },
+          {
+            "path": "revoke-1.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-2.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-3.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-4.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-5.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-6.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-7.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          }
+        ],
+        "originalWorker": {
+          "id": "817969f2-222e-4a4c-8dc2-f6023c916671",
+          "executionNodeId": "36310adf-95d2-435a-a5fb-7cdd94d7091f",
+          "epoch": 1,
+          "protocolVersion": 1,
+          "deployment": "LOCAL_PROCESS",
+          "pid": 46568,
+          "processStartedAt": "2026-11-16T07:29:04.946Z",
+          "startedAt": "2026-11-16T07:29:06.123006100Z",
+          "heartbeatAt": "2026-11-16T07:29:06.123006100Z",
+          "expiresAt": "2026-11-16T07:29:36.123006100Z",
+          "state": "RUNNING",
+          "platform": "Windows 11",
+          "architecture": "amd64",
+          "parentPid": 49852,
+          "corePid": 49852,
+          "coreStartedAt": "2026-11-16T07:19:36.402Z",
+          "processSessionId": "e80dc226-679e-44ea-9bd5-dc4257b6e311",
+          "controlEnvironmentPresent": false,
+          "jvmOptionsEnvironmentPresent": false,
+          "controlPropertiesPresent": false,
+          "heartbeatSource": "STARTUP_HANDSHAKE",
+          "lastHeartbeatSequence": 0
+        },
+        "originalWorkerIndependentlyStopped": true,
+        "taskRootActionAndJournalRemainUnknown": true,
+        "modelCalls": 0,
+        "restoreInvocations": 1,
+        "evidenceScope": "ORIGINAL_EXPORTED_PATCH_JOURNAL_SNAPSHOT_AND_PID_BIRTH_STOP; RAW_TEMPORARY_WORKSPACE_FILES_NOT_SEPARATELY_PRESERVED"
+      },
+      {
+        "directory": ".runtime\\alpha19-core-per-file-boundary-repair-full-attempt1\\checkpoint-evidence-c5835170-07b9-4b86-800c-55131736006a",
+        "archive": ".runtime\\alpha19-core-per-file-boundary-repair-full-attempt1\\checkpoint-evidence-c5835170-07b9-4b86-800c-55131736006a\\actual-per-file-revocation-unknown.zip",
+        "strategy": "CLONE",
+        "taskId": "43dfe2db-0cad-4439-8639-d4e83e80dded",
+        "operationId": "3afa0461-84f7-4593-9779-4eda07b9ee66",
+        "archiveSha256": "85e427c4c603dd02cce04d6a01c39a5f2b61a2343db65ae4867935ce42238427",
+        "snapshotSha256": "e8f28d418e127918d7e9e330a67b0099adbdfd75ae7ddca251887bc545311c8d",
+        "stopSha256": "0ba51c6faee0553a2830fe19d6cbcf7cca295cf532fef04598ea34a3bab836c9",
+        "journalSha256": "35a5370cd6c0c5e57ef65d232f97412e5be33d50728ab84bf1fb288429367ee2",
+        "patchSha256": "09bab9bce54bd7e5d5a24ea69b81207cc1ab45813cd3486138db263d110c4df0",
+        "writtenPaths": [
+          "revoke-0.txt"
+        ],
+        "originalPaths": [
+          "revoke-0.txt",
+          "revoke-1.txt",
+          "revoke-2.txt",
+          "revoke-3.txt",
+          "revoke-4.txt",
+          "revoke-5.txt",
+          "revoke-6.txt",
+          "revoke-7.txt"
+        ],
+        "pathEffects": [
+          {
+            "path": "revoke-0.txt",
+            "written": true,
+            "exportedContentSha256": "25718360e05d3c2d0963d1381e9dd4dae5fca789244ee4b9f861adcc0cc96218"
+          },
+          {
+            "path": "revoke-1.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-2.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-3.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-4.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-5.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-6.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          },
+          {
+            "path": "revoke-7.txt",
+            "written": false,
+            "exportedContentSha256": "d20bc21bb3c7736d8d03ade3ddb4c68b665cdfbca6f6df0f7fdd192f37f59060"
+          }
+        ],
+        "originalWorker": {
+          "id": "ae7351ec-b7f1-4101-aff5-9c30505082ec",
+          "executionNodeId": "7b3ceeb7-ef51-4be4-ae0f-0f06dbf83e29",
+          "epoch": 1,
+          "protocolVersion": 1,
+          "deployment": "LOCAL_PROCESS",
+          "pid": 46060,
+          "processStartedAt": "2026-11-16T07:28:24.997Z",
+          "startedAt": "2026-11-16T07:28:26.299598200Z",
+          "heartbeatAt": "2026-11-16T07:28:26.299598200Z",
+          "expiresAt": "2026-11-16T07:28:56.299598200Z",
+          "state": "RUNNING",
+          "platform": "Windows 11",
+          "architecture": "amd64",
+          "parentPid": 49852,
+          "corePid": 49852,
+          "coreStartedAt": "2026-11-16T07:19:36.402Z",
+          "processSessionId": "520d7b48-0fc3-4f4f-8cb0-05c71def56c7",
+          "controlEnvironmentPresent": false,
+          "jvmOptionsEnvironmentPresent": false,
+          "controlPropertiesPresent": false,
+          "heartbeatSource": "STARTUP_HANDSHAKE",
+          "lastHeartbeatSequence": 0
+        },
+        "originalWorkerIndependentlyStopped": true,
+        "taskRootActionAndJournalRemainUnknown": true,
+        "modelCalls": 0,
+        "restoreInvocations": 1,
+        "evidenceScope": "ORIGINAL_EXPORTED_PATCH_JOURNAL_SNAPSHOT_AND_PID_BIRTH_STOP; RAW_TEMPORARY_WORKSPACE_FILES_NOT_SEPARATELY_PRESERVED"
+      }
+    ]
+  },
+  "directedUi": [
+    {
+      "file": ".runtime/alpha19-ui-edge-directed-attempt4/receipt.json",
+      "sha256": "405bd7d3030098956a5072aca9a8b69cf069eaa67379adb960ebfeec62840832",
+      "browser": "msedge",
+      "stats": {
+        "startTime": "2026-11-16T07:09:17.473Z",
+        "duration": 38362.228,
+        "expected": 34,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "exactSourcesUnchanged": true
+    },
+    {
+      "file": ".runtime/alpha19-ui-chromium-shell-directed-attempt3/receipt.json",
+      "sha256": "b528e2b39d914642e786eed87fc97a147b80b0f99b93c2ca9b752eb089f29615",
+      "browser": "chromium-headless-shell",
+      "stats": {
+        "startTime": "2026-11-16T07:11:19.818Z",
+        "duration": 69857.774,
+        "expected": 34,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "exactSourcesUnchanged": true
+    }
+  ],
+  "unchangedProductionUi": {
+    "originalFullUi": [
+      {
+        "file": "docs/qa/alpha19-ui-validation-win32.json",
+        "sha256": "1838a2e86e4cd4361cd9fcebeb42fafe0a4b3aaa981955356c44f83ac0e98d48",
+        "cases": 196
+      },
+      {
+        "file": "docs/qa/alpha19-ui-chromium-shell-win32.json",
+        "sha256": "13e753e3ba3b1aa8033ae05ff75ecdbcfb41cfd0abab36efcdac052f5c26a1cb",
+        "cases": 196
+      }
+    ],
+    "webAssets": [
+      {
+        "file": "web/dist/assets/index-C6FUt5I0.css",
+        "sha256": "b7b832a24fd25a9bbbb184f1224896a726bbc81897b1f3c4ce9eb4548272b333"
+      },
+      {
+        "file": "web/dist/assets/index-lpN8oTSv.js",
+        "sha256": "4538d88879ee893ac18cdaef6240c8becdd5b2da1e8a4306247c0669ae60e4fd"
+      },
+      {
+        "file": "web/dist/index.html",
+        "sha256": "7376556ea5caaaec24b06aa4e0f50fe67766eaf908d860e31e79153d07b97154"
+      },
+      {
+        "file": "web/dist/theme-init.js",
+        "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+      },
+      {
+        "file": "web/dist/workbench-config.json",
+        "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+      }
+    ],
+    "currentDirectedCasesPerBrowser": 34,
+    "originalFullUiNotRepeated": true,
+    "originalTestBodyRetainedWithEnabledWait": true
+  },
+  "sourceAudit": {
+    "sources": [
+      {
+        "file": ".github/workflows/verify.yml",
+        "sha256": "4b46e12fa052a2aec3a9d0aacd25b8ae4e6117f69fa11d0268f5c5fbbab5a342",
+        "normalizedLfSha256": "fde1e70f3aa7e681d330707d2aa523534fe6100dece4a95f735a332e9d3c053b"
+      },
+      {
+        "file": "core/pom.xml",
+        "sha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598",
+        "normalizedLfSha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/AgentPermissions.java",
+        "sha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8",
+        "normalizedLfSha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/ApiErrors.java",
+        "sha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c",
+        "normalizedLfSha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/ApiException.java",
+        "sha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c",
+        "normalizedLfSha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/BudgetPolicy.java",
+        "sha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7",
+        "normalizedLfSha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/CheckpointExportHistory.java",
+        "sha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c",
+        "normalizedLfSha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/CheckpointLedger.java",
+        "sha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8",
+        "normalizedLfSha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/CollaborationPolicy.java",
+        "sha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277",
+        "normalizedLfSha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/ExecutionNodes.java",
+        "sha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba",
+        "normalizedLfSha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+        "sha256": "1044d948da7e20a08377fe9b4c23140607473d04ebf6e55c2a7e1c493605ee32",
+        "normalizedLfSha256": "29663610aa1c73e07dbf018e6e748f25888b3701e6e30cb9375b86b70502e600"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/ExecutionWorker.java",
+        "sha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5",
+        "normalizedLfSha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+        "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c",
+        "normalizedLfSha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/Json.java",
+        "sha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62",
+        "normalizedLfSha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/LocalAccessFilter.java",
+        "sha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08",
+        "normalizedLfSha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+        "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998",
+        "normalizedLfSha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+        "sha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85",
+        "normalizedLfSha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/mcp/McpAccessRegistry.java",
+        "sha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f",
+        "normalizedLfSha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+        "sha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e",
+        "normalizedLfSha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+        "sha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906",
+        "normalizedLfSha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/mcp/McpTaskPolicy.java",
+        "sha256": "9e649ae1c9a378deb9ed90bc24dd0339245c0b447c30e0a17794056d8b409018",
+        "normalizedLfSha256": "69f4156d5f0c9f79ed287265ec3bea9284eaf0e004712151c7bf2de244afcdb6"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+        "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e",
+        "normalizedLfSha256": "cdc7e2c231f314f08639cd617011a35c3092e4724989af522411f7efdde34d87"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/PlanValidator.java",
+        "sha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091",
+        "normalizedLfSha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+        "sha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e",
+        "normalizedLfSha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+        "sha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2",
+        "normalizedLfSha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/ResourceManager.java",
+        "sha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c",
+        "normalizedLfSha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/AgentToolSession.java",
+        "sha256": "39ad743bcbb0e966a126061ac9676f693f75cbcf814eac26090dd3412a7a88a2",
+        "normalizedLfSha256": "df85816da5746660a2c6567959f602c88012024f79f02aafa36e14dd134a641b"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/CheckpointRestoreRejected.java",
+        "sha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434",
+        "normalizedLfSha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+        "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931",
+        "normalizedLfSha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/GitBlobBatch.java",
+        "sha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa",
+        "normalizedLfSha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+        "sha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423",
+        "normalizedLfSha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+        "sha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242",
+        "normalizedLfSha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/ModelCallObserver.java",
+        "sha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a",
+        "normalizedLfSha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+        "sha256": "c126538e41f1effe0af6073a9eab397aeccd247a1e889e42d28a8f11102c4fbc",
+        "normalizedLfSha256": "c126538e41f1effe0af6073a9eab397aeccd247a1e889e42d28a8f11102c4fbc"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+        "sha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448",
+        "normalizedLfSha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceContentSnapshot.java",
+        "sha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79",
+        "normalizedLfSha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+        "sha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3",
+        "normalizedLfSha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+        "sha256": "c4c864bf554e2405244376b1fc428b3d4d516ba0ff090b62257a57d41ecda1b1",
+        "normalizedLfSha256": "29c28a1c622b98fd810850e740b2e08215ad08a1d2227c29dd347b3c6776a267"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceSelectionConflict.java",
+        "sha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195",
+        "normalizedLfSha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+        "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360",
+        "normalizedLfSha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/SessionController.java",
+        "sha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1",
+        "normalizedLfSha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+        "sha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa",
+        "normalizedLfSha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/TeamCoordinator.java",
+        "sha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e",
+        "normalizedLfSha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+        "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c",
+        "normalizedLfSha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkbenchApplication.java",
+        "sha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961",
+        "normalizedLfSha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+        "sha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc",
+        "normalizedLfSha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+        "sha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af",
+        "normalizedLfSha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+        "sha256": "ca2505cea9318bdeeea7462d438109240efbde2daab82ea48b1ebd71a7716caa",
+        "normalizedLfSha256": "b738afd2cfb92cf643f61bc1c3ccfa4e08770851e2e10c2da7d06ace4ef52aa3"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkbenchVersion.java",
+        "sha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45",
+        "normalizedLfSha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+        "sha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28",
+        "normalizedLfSha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkerProcess.java",
+        "sha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837",
+        "normalizedLfSha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+        "sha256": "e917940c6cccd04f3dfafe3079c1ec3929b582286dde05dfca472ea13e7c4531",
+        "normalizedLfSha256": "e917940c6cccd04f3dfafe3079c1ec3929b582286dde05dfca472ea13e7c4531"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkerRpc.java",
+        "sha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572",
+        "normalizedLfSha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkerWire.java",
+        "sha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61",
+        "normalizedLfSha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+        "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c",
+        "normalizedLfSha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+      },
+      {
+        "file": "core/src/main/resources/application.properties",
+        "sha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39",
+        "normalizedLfSha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39"
+      },
+      {
+        "file": "core/src/main/resources/workbench-build.properties",
+        "sha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458",
+        "normalizedLfSha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/AgentRunStoreTest.java",
+        "sha256": "b89ee4f4f690f0aeaf622ba857fe4999fbc1698cac5d8377d09b953f919b7ff0",
+        "normalizedLfSha256": "15b1a49b869828416a01f5cbccb99ca26169d1789451d649cc256546391afd7f"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/CheckpointEngineTest.java",
+        "sha256": "410e7d4bb25e5b5a978f2d5a53bc4fec2be869e27276f30ab91b2509875f9fc0",
+        "normalizedLfSha256": "410e7d4bb25e5b5a978f2d5a53bc4fec2be869e27276f30ab91b2509875f9fc0"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/CheckpointExportHistoryTest.java",
+        "sha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6",
+        "normalizedLfSha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/CheckpointFailureEvidence.java",
+        "sha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3",
+        "normalizedLfSha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/ExecutionStoreTest.java",
+        "sha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6",
+        "normalizedLfSha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
+        "sha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3",
+        "normalizedLfSha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/GitWorkspaceTest.java",
+        "sha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83",
+        "normalizedLfSha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/LocalAccessFilterTest.java",
+        "sha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2",
+        "normalizedLfSha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
+        "sha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406",
+        "normalizedLfSha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
+        "sha256": "5a23d5c113b2b1b6b63f2751bb0b816ad8e5bababd1b4e62b14a1147a09eb202",
+        "normalizedLfSha256": "0ac9317ff6db7404c9d1c3169f7f9f34fcb11da408719316bb0a43b37ce55869"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/ModelRequestStoreTest.java",
+        "sha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603",
+        "normalizedLfSha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/PlanAndPolicyTest.java",
+        "sha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c",
+        "normalizedLfSha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
+        "sha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c",
+        "normalizedLfSha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/RootDispatchEngineTest.java",
+        "sha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c",
+        "normalizedLfSha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/runtime/FileVersionRuntimeTest.java",
+        "sha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7",
+        "normalizedLfSha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/runtime/GitBlobBatchTest.java",
+        "sha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295",
+        "normalizedLfSha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+        "sha256": "cd626f66c1e3f2608351c0965b82d38a8d7d8bed0ab183a46ddc758b91a4b81c",
+        "normalizedLfSha256": "cd626f66c1e3f2608351c0965b82d38a8d7d8bed0ab183a46ddc758b91a4b81c"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+        "sha256": "a0c8dc3af0e7288a2817da5657e5372a8ea5c768a70881738448301a8588a23b",
+        "normalizedLfSha256": "a0c8dc3af0e7288a2817da5657e5372a8ea5c768a70881738448301a8588a23b"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceWriteGuardTest.java",
+        "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9",
+        "normalizedLfSha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/RuntimeDelegationTest.java",
+        "sha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7",
+        "normalizedLfSha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+        "sha256": "409cc2ef7d95a36128b325870607708751f953f27892235d3231a4f7c7de57e3",
+        "normalizedLfSha256": "1ce30cc4ff41d2e67095ee183c358b4841ec1531564b1b920d642c5362fd4733"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/SessionStoreTest.java",
+        "sha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62",
+        "normalizedLfSha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/TaskDispatchQueueTest.java",
+        "sha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88",
+        "normalizedLfSha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+        "sha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409",
+        "normalizedLfSha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/TeamRecordsTest.java",
+        "sha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef",
+        "normalizedLfSha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WindowsProcessSnapshotTest.java",
+        "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1",
+        "normalizedLfSha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkbenchEngineTest.java",
+        "sha256": "14601d8e0087715b1328ffb19faedc5948c334bd341175525d5011d748fa0e69",
+        "normalizedLfSha256": "a3f3fbe3eaf7ad3fbbb68a97a49adef6001bd4e3cbd46ac27f1723b3647cb8f9"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkbenchVersionTest.java",
+        "sha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28",
+        "normalizedLfSha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkerLeaseTest.java",
+        "sha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a",
+        "normalizedLfSha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkerProcessTest.java",
+        "sha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1",
+        "normalizedLfSha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkerRpcTest.java",
+        "sha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb",
+        "normalizedLfSha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkerWireTest.java",
+        "sha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4",
+        "normalizedLfSha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkspaceSelectionEngineTest.java",
+        "sha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015",
+        "normalizedLfSha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteEngineTest.java",
+        "sha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3",
+        "normalizedLfSha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteLedgerTest.java",
+        "sha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0",
+        "normalizedLfSha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0"
+      },
+      {
+        "file": "desktop/connection.cjs",
+        "sha256": "00fde4930d4d17854b0aa06967c6a4bb73814fee8e47f3a136d975957de5677d",
+        "normalizedLfSha256": "be30074312f83fd73483a157d46ce1c1aa6f89cacd65596946f7bbefd6bcbf21"
+      },
+      {
+        "file": "desktop/icon.ico",
+        "sha256": "008d29fb170499e344a9356830eb38357c0d0e161c443c18af60eb68597c1007",
+        "normalizedLfSha256": "b63d572f3b9c350f7634dfc3518509ba17c0cd81a23591bae084d6e16bd0752d"
+      },
+      {
+        "file": "desktop/icon.png",
+        "sha256": "f93908cae6990902bb7eead381f7330a47ee30c4b4ce497fa367fc78c830c4d6",
+        "normalizedLfSha256": "52000762f10bf91610247e7e61b75543dc736bb846378cdc8816f1e7f019a5c1"
+      },
+      {
+        "file": "desktop/main.cjs",
+        "sha256": "5c7211fb26a11a39762baf799b43143764515f4153d743a22dec92eac79e9a84",
+        "normalizedLfSha256": "edda61ffd09824a53403fc62b44a8b0e243d928a69e8293016c22788e49c3ed8"
+      },
+      {
+        "file": "desktop/preload.cjs",
+        "sha256": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98",
+        "normalizedLfSha256": "96c591dc04e340035771bc1b6c046fddca89fd67647ef0ed35218cf61babaa98"
+      },
+      {
+        "file": "package-lock.json",
+        "sha256": "07b5108d79bd27e13da2177808ce29df3bba5c547012701a13839f9438fbd9da",
+        "normalizedLfSha256": "07b5108d79bd27e13da2177808ce29df3bba5c547012701a13839f9438fbd9da"
+      },
+      {
+        "file": "package.json",
+        "sha256": "0ec1082fdb156314599f492fc37e5737dea6c32bd0f349521a659d44d552ee97",
+        "normalizedLfSha256": "0ec1082fdb156314599f492fc37e5737dea6c32bd0f349521a659d44d552ee97"
+      },
+      {
+        "file": "tools/build_plan.mjs",
+        "sha256": "ba499b4eaa4a47aa8cd03264ccce58b688d080d8229c725ce3aaac30d7d08468",
+        "normalizedLfSha256": "ba499b4eaa4a47aa8cd03264ccce58b688d080d8229c725ce3aaac30d7d08468"
+      },
+      {
+        "file": "tools/build-icon.mjs",
+        "sha256": "646f53f464f6a7c9af7aff4a6477969b80f8c71a1f3b165482c97e580d8435f4",
+        "normalizedLfSha256": "646f53f464f6a7c9af7aff4a6477969b80f8c71a1f3b165482c97e580d8435f4"
+      },
+      {
+        "file": "tools/bundled-workspace-write-smoke.mjs",
+        "sha256": "ad817b76fcd922cca67139a34d15b2654e7cceb2f0ce132a723f79d5177d3f99",
+        "normalizedLfSha256": "ad817b76fcd922cca67139a34d15b2654e7cceb2f0ce132a723f79d5177d3f99"
+      },
+      {
+        "file": "tools/check_plan.cjs",
+        "sha256": "5f46db56c4d42d80a70854330e82089e89468da4f4de77a3c95a53c1260745ad",
+        "normalizedLfSha256": "5f46db56c4d42d80a70854330e82089e89468da4f4de77a3c95a53c1260745ad"
+      },
+      {
+        "file": "tools/checkpoint-smoke.mjs",
+        "sha256": "0aaae60667f9804a4e4657e671485fa1e60bf6e478ed4f77287d5ad376fac97b",
+        "normalizedLfSha256": "0aaae60667f9804a4e4657e671485fa1e60bf6e478ed4f77287d5ad376fac97b"
+      },
+      {
+        "file": "tools/CheckpointDatabaseFixture.java",
+        "sha256": "635d2d0c5dd11e3afe6e8fb9e3c552398af91d160e0a967d60e5069113a508ee",
+        "normalizedLfSha256": "635d2d0c5dd11e3afe6e8fb9e3c552398af91d160e0a967d60e5069113a508ee"
+      },
+      {
+        "file": "tools/ci-desktop.mjs",
+        "sha256": "f26df059c64e79a6c572dc240d72543b2366e80356c587753c2177b1f42dd5a9",
+        "normalizedLfSha256": "15fe25885cb50c268888ecd2783c137f59eb5c3d7064fda39c63ab917109db33"
+      },
+      {
+        "file": "tools/ci-layout-desktop.mjs",
+        "sha256": "2e2aea049b2bac7134aa8ac626b566fce1f4be8f720696e7f6862642f89fba56",
+        "normalizedLfSha256": "2e2aea049b2bac7134aa8ac626b566fce1f4be8f720696e7f6862642f89fba56"
+      },
+      {
+        "file": "tools/ci-smoke.mjs",
+        "sha256": "6293893a62aa89492b0ba85d60b80a23db3e00cbe90d5cc0806db70c4e5f058d",
+        "normalizedLfSha256": "a69dbddcf7225ccd3269cf03123682bf360a7367187bf14d404a3c86e1bb31fa"
+      },
+      {
+        "file": "tools/ci-theme-desktop.mjs",
+        "sha256": "5e878b5d61c7ac7cd61c14dcdb3b886fe781d9dae6191dcb97f76cc9c1fe7f90",
+        "normalizedLfSha256": "5e878b5d61c7ac7cd61c14dcdb3b886fe781d9dae6191dcb97f76cc9c1fe7f90"
+      },
+      {
+        "file": "tools/connection.test.cjs",
+        "sha256": "d321588909133ba0cddecf120ecabf31f6a2733ae71038d00a7d1e57fd9e26bc",
+        "normalizedLfSha256": "1e5e82406eed8334023943ec66bbf110f67843b598e26b1979d0ef1091e11efe"
+      },
+      {
+        "file": "tools/ControlledDispatchLauncher.java",
+        "sha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09",
+        "normalizedLfSha256": "ec4c1e73afba9cb4b913d47a22b276e0cd77a263c777e486bc41a1d58e8dad09"
+      },
+      {
+        "file": "tools/desktop-smoke.cjs",
+        "sha256": "ec73d925bdb96d9b9c9537f4db4622063850e07846f985017706bb03515f1b3f",
+        "normalizedLfSha256": "f3bf643cec99fec72b07e632afd5c33585222cd4b9503661c656a89900a4e4f5"
+      },
+      {
+        "file": "tools/diff-view-smoke.mjs",
+        "sha256": "46e1a79887da1f8253cea082a6fb9c422e53b036d7a89857e3453bad7c329479",
+        "normalizedLfSha256": "46e1a79887da1f8253cea082a6fb9c422e53b036d7a89857e3453bad7c329479"
+      },
+      {
+        "file": "tools/dispatch-queue-smoke.mjs",
+        "sha256": "8c323a3d9bc693d2d9f84848fbaf16ddf95edcbd4f17a7f06bbe130ec9dfc622",
+        "normalizedLfSha256": "8c323a3d9bc693d2d9f84848fbaf16ddf95edcbd4f17a7f06bbe130ec9dfc622"
+      },
+      {
+        "file": "tools/DispatchDatabaseFixture.java",
+        "sha256": "4645272377fe08207278c8cce13b8f696fff26d435c04950defff4fa47fd4625",
+        "normalizedLfSha256": "4645272377fe08207278c8cce13b8f696fff26d435c04950defff4fa47fd4625"
+      },
+      {
+        "file": "tools/file-version-smoke.mjs",
+        "sha256": "b77b73f4c4e824fed3412f6bfd10960cb0b0059467adb1981148d3598f1cfc17",
+        "normalizedLfSha256": "b77b73f4c4e824fed3412f6bfd10960cb0b0059467adb1981148d3598f1cfc17"
+      },
+      {
+        "file": "tools/install-desktop-deps.mjs",
+        "sha256": "685b2b9bcbce9f54f27591da79457edfb8f78120cdae828d45fbcf7cfa1e9ef0",
+        "normalizedLfSha256": "685b2b9bcbce9f54f27591da79457edfb8f78120cdae828d45fbcf7cfa1e9ef0"
+      },
+      {
+        "file": "tools/install-desktop-deps.test.mjs",
+        "sha256": "bb0ac48c418897530a6aeae457f320bd092fc5eece32c3afe653d797b82949cc",
+        "normalizedLfSha256": "bb0ac48c418897530a6aeae457f320bd092fc5eece32c3afe653d797b82949cc"
+      },
+      {
+        "file": "tools/java-runtime.mjs",
+        "sha256": "2da702fe27c046c4af6776fd8db196bbe1be62b0fed35bfe790e24b4f386a282",
+        "normalizedLfSha256": "2da702fe27c046c4af6776fd8db196bbe1be62b0fed35bfe790e24b4f386a282"
+      },
+      {
+        "file": "tools/layout-desktop-checks.cjs",
+        "sha256": "bc296a25b95a4b81f11db4d4d632f791d24931efd89f09a7c979d421c6238a4d",
+        "normalizedLfSha256": "bc296a25b95a4b81f11db4d4d632f791d24931efd89f09a7c979d421c6238a4d"
+      },
+      {
+        "file": "tools/layout-desktop-smoke.cjs",
+        "sha256": "710b2fdad47b764b0eb3839a355895a5291be2080a71b5c6abe9a39ada6611b9",
+        "normalizedLfSha256": "710b2fdad47b764b0eb3839a355895a5291be2080a71b5c6abe9a39ada6611b9"
+      },
+      {
+        "file": "tools/manage.mjs",
+        "sha256": "458a00df92cd1ff84a082ed92c55c58fdfc16cb0bd7323aea15d625943603aa2",
+        "normalizedLfSha256": "e33ccdc82c1c9445c4c466fa87a7d45243da56922d85778c8e9742146b495d04"
+      },
+      {
+        "file": "tools/package-desktop.mjs",
+        "sha256": "8599281b3f6ba9469aaa4d5935b1842ce9b48afd1c2c6dd0ef3026c8e3bb6c0e",
+        "normalizedLfSha256": "8599281b3f6ba9469aaa4d5935b1842ce9b48afd1c2c6dd0ef3026c8e3bb6c0e"
+      },
+      {
+        "file": "tools/package-desktop.test.mjs",
+        "sha256": "0c05a29beafd67df9fbb7737f99760755d033f44bf13865257d3669cbc67e219",
+        "normalizedLfSha256": "0c05a29beafd67df9fbb7737f99760755d033f44bf13865257d3669cbc67e219"
+      },
+      {
+        "file": "tools/process-recovery-smoke.mjs",
+        "sha256": "e76b334727071031e9d8343d376b0a2a52313c44b74835502951252b355b2c12",
+        "normalizedLfSha256": "e76b334727071031e9d8343d376b0a2a52313c44b74835502951252b355b2c12"
+      },
+      {
+        "file": "tools/ProcessRecoveryProbe.java",
+        "sha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268",
+        "normalizedLfSha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268"
+      },
+      {
+        "file": "tools/recovery-mcp-fixture.mjs",
+        "sha256": "ce5db958f9315a9144a8df78ee5822426db4fa3e6022a4f0a5756c21d4d824a2",
+        "normalizedLfSha256": "ce5db958f9315a9144a8df78ee5822426db4fa3e6022a4f0a5756c21d4d824a2"
+      },
+      {
+        "file": "tools/smoke-test.mjs",
+        "sha256": "94f3407e5545c5eac7e71de4de21ff9a102f6437a6a9fead804a7545060522e3",
+        "normalizedLfSha256": "fb1662ef1b25230c59d9ac0aa8d651587237c9fe56c0911c0b6952fe3a97cf33"
+      },
+      {
+        "file": "tools/standalone-smoke.mjs",
+        "sha256": "a064e26ee871a4bf9ef452dfbea8d82f41da7f27d3b9ba76b900bed1c918edc5",
+        "normalizedLfSha256": "495255263a90dd9f531e4a037e3a79b24962dda8ea41c513ad97cfd971e9cdd7"
+      },
+      {
+        "file": "tools/team-smoke-fixture.mjs",
+        "sha256": "136e5f4a17a099efb9cf6bc088068e495e97dd3e2daff70ab77853a3523eae5c",
+        "normalizedLfSha256": "136e5f4a17a099efb9cf6bc088068e495e97dd3e2daff70ab77853a3523eae5c"
+      },
+      {
+        "file": "tools/theme-desktop-smoke.cjs",
+        "sha256": "9ada532891468c3c7c7ce63cb760f51f599d31aa1fd820561e253902ce6cfcc9",
+        "normalizedLfSha256": "9ada532891468c3c7c7ce63cb760f51f599d31aa1fd820561e253902ce6cfcc9"
+      },
+      {
+        "file": "tools/theme-web-smoke.mjs",
+        "sha256": "75609f07112231d4fad0e17e9462678f76ff1e9764e83cd5aaa8987d9669cb5d",
+        "normalizedLfSha256": "75609f07112231d4fad0e17e9462678f76ff1e9764e83cd5aaa8987d9669cb5d"
+      },
+      {
+        "file": "tools/verify-version.mjs",
+        "sha256": "088978068db775b1928715daca52e6f9eea5a1191709ee21fce3e91c3fbf6846",
+        "normalizedLfSha256": "088978068db775b1928715daca52e6f9eea5a1191709ee21fce3e91c3fbf6846"
+      },
+      {
+        "file": "tools/verify-version.test.mjs",
+        "sha256": "baaa6db76468d4b571bc14487a4954759553e4e8a3c62cd57587bc3eae83fea2",
+        "normalizedLfSha256": "baaa6db76468d4b571bc14487a4954759553e4e8a3c62cd57587bc3eae83fea2"
+      },
+      {
+        "file": "tools/workspace-selection-smoke.mjs",
+        "sha256": "4415b8c657152797d6f303d4ed4f0094bf0bc4eddae00b32f514b771c750f275",
+        "normalizedLfSha256": "4415b8c657152797d6f303d4ed4f0094bf0bc4eddae00b32f514b771c750f275"
+      },
+      {
+        "file": "tools/workspace-write-smoke.mjs",
+        "sha256": "8e5dd108b2f148c62656b11643444925ff8dfaedcbb766832e76c239b3404006",
+        "normalizedLfSha256": "8e5dd108b2f148c62656b11643444925ff8dfaedcbb766832e76c239b3404006"
+      },
+      {
+        "file": "tools/WorkspaceDatabaseFixture.java",
+        "sha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c",
+        "normalizedLfSha256": "f39f47c7788667621265ec1a5aed9667b58a1e410fda0cd9a3ec09cd24b0697c"
+      },
+      {
+        "file": "tools/WorkspaceWriteDatabaseFixture.java",
+        "sha256": "3750ad2943fff276b3e917fb6a4d2bedbd1b37569390bca214741261cf7cc0af",
+        "normalizedLfSha256": "3750ad2943fff276b3e917fb6a4d2bedbd1b37569390bca214741261cf7cc0af"
+      },
+      {
+        "file": "tools/WorkspaceWriteProbe.java",
+        "sha256": "5b647a630e0814aad7c93d9e652c647f91b8c11e07f278d0359cceea40aa2f20",
+        "normalizedLfSha256": "5b647a630e0814aad7c93d9e652c647f91b8c11e07f278d0359cceea40aa2f20"
+      },
+      {
+        "file": "web/index.html",
+        "sha256": "fc04605e3012a21e7caacfdd911d8cdc4a851de3b57ba38d32d5a69426bc2e73",
+        "normalizedLfSha256": "fc04605e3012a21e7caacfdd911d8cdc4a851de3b57ba38d32d5a69426bc2e73"
+      },
+      {
+        "file": "web/package-lock.json",
+        "sha256": "902da4c7b82f01ad0904055f45f1f8b355d88450c8868fbb52fad3b8abbd59ea",
+        "normalizedLfSha256": "902da4c7b82f01ad0904055f45f1f8b355d88450c8868fbb52fad3b8abbd59ea"
+      },
+      {
+        "file": "web/package.json",
+        "sha256": "59b55788487c58bbb300db4f09fb8f8bb04c5a695703af044a2c1b77373e0810",
+        "normalizedLfSha256": "59b55788487c58bbb300db4f09fb8f8bb04c5a695703af044a2c1b77373e0810"
+      },
+      {
+        "file": "web/playwright.config.ts",
+        "sha256": "58d71ff10e4159026b050d3ff6694a850e76a39ab083c6c79ba4dfefc7ab1d00",
+        "normalizedLfSha256": "58d71ff10e4159026b050d3ff6694a850e76a39ab083c6c79ba4dfefc7ab1d00"
+      },
+      {
+        "file": "web/public/theme-init.js",
+        "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70",
+        "normalizedLfSha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+      },
+      {
+        "file": "web/public/workbench-config.json",
+        "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874",
+        "normalizedLfSha256": "3be957fbf2bc4239f17ca04398c552f2214c74caabe1109ee876ddeca9e8f270"
+      },
+      {
+        "file": "web/src/AgentDefinitions.tsx",
+        "sha256": "658e38bf0807042048e58c5653e977a881489d180b0e01f3df215aa1c338db9a",
+        "normalizedLfSha256": "658e38bf0807042048e58c5653e977a881489d180b0e01f3df215aa1c338db9a"
+      },
+      {
+        "file": "web/src/AgentRuns.tsx",
+        "sha256": "5aaa3c0c4f136229eb8e2916f837fbd00070ff0164faa994267cf07951d53bf3",
+        "normalizedLfSha256": "2f6805f03e839b88e061a9d748ac1ffd6d63922e929c77f1bbb0d3a3b5608575"
+      },
+      {
+        "file": "web/src/api.ts",
+        "sha256": "a15a2bf0b33f3d04444f0062ba1dc408644a37d92439be5fe8d028860f553042",
+        "normalizedLfSha256": "a7ed50f00d08cf0fcd3d02ac9a6d4876195a08976ee106747c386353686b6316"
+      },
+      {
+        "file": "web/src/App.tsx",
+        "sha256": "fc2a962da27e5e05bad3582deb9bb46482a9f20348cf57352489261002135e82",
+        "normalizedLfSha256": "fc2a962da27e5e05bad3582deb9bb46482a9f20348cf57352489261002135e82"
+      },
+      {
+        "file": "web/src/appearance.css",
+        "sha256": "80d77a7b30f327834af70d306b6d5c6206e5c2f067b2f466c4cae20d82a04f4d",
+        "normalizedLfSha256": "80d77a7b30f327834af70d306b6d5c6206e5c2f067b2f466c4cae20d82a04f4d"
+      },
+      {
+        "file": "web/src/Appearance.tsx",
+        "sha256": "8aab4b980a71871b0a5a419af08dabeb7f9f6cd742d9a613da6c3b4ab2989cfd",
+        "normalizedLfSha256": "8aab4b980a71871b0a5a419af08dabeb7f9f6cd742d9a613da6c3b4ab2989cfd"
+      },
+      {
+        "file": "web/src/browser-storage.ts",
+        "sha256": "78fbb382c3ff020e2425cf2f23c0967bc4f429290dc20591051244c65e74aa29",
+        "normalizedLfSha256": "78fbb382c3ff020e2425cf2f23c0967bc4f429290dc20591051244c65e74aa29"
+      },
+      {
+        "file": "web/src/checkpoints.css",
+        "sha256": "ae4c97c346f376570fdcb7b9ae121b226e59fb8c3d0c7ab7a0d2623e81d56a1b",
+        "normalizedLfSha256": "ae4c97c346f376570fdcb7b9ae121b226e59fb8c3d0c7ab7a0d2623e81d56a1b"
+      },
+      {
+        "file": "web/src/Checkpoints.tsx",
+        "sha256": "a59bbbe00d69e582fa9d67c9a1781b4ab0ac81fa5ade0146d1889226a79ce625",
+        "normalizedLfSha256": "a59bbbe00d69e582fa9d67c9a1781b4ab0ac81fa5ade0146d1889226a79ce625"
+      },
+      {
+        "file": "web/src/DelegationContract.tsx",
+        "sha256": "33fb06c2e86c42bdfcefb76c300855162bdab7fef1b6d31ad8e4e2d3290735e5",
+        "normalizedLfSha256": "33fb06c2e86c42bdfcefb76c300855162bdab7fef1b6d31ad8e4e2d3290735e5"
+      },
+      {
+        "file": "web/src/dialogs.tsx",
+        "sha256": "6a2a3d52372aabfe131029c7d71664f52df66695dc10f4d6144e1d9217d872cf",
+        "normalizedLfSha256": "3d15917cc88d520973165414afb8b7edc72646916973d7bb6fd76ec527133073"
+      },
+      {
+        "file": "web/src/diff-view-contract.ts",
+        "sha256": "4425955716f96deac13d230011f509a94ef9632eaa7b26e6168afd5f18ccccc2",
+        "normalizedLfSha256": "4425955716f96deac13d230011f509a94ef9632eaa7b26e6168afd5f18ccccc2"
+      },
+      {
+        "file": "web/src/diff-view.css",
+        "sha256": "e3fe9aa27ea5f7fd76128efb90557c42175274cc9914e715eab20b98c69eceae",
+        "normalizedLfSha256": "e3fe9aa27ea5f7fd76128efb90557c42175274cc9914e715eab20b98c69eceae"
+      },
+      {
+        "file": "web/src/DiffView.tsx",
+        "sha256": "c5c63b7450ae4af634996356605af7fcd4394f2de00c5d9c81096c21fedac67d",
+        "normalizedLfSha256": "c5c63b7450ae4af634996356605af7fcd4394f2de00c5d9c81096c21fedac67d"
+      },
+      {
+        "file": "web/src/execution-source.ts",
+        "sha256": "2e2ed802c3b8707a799bd4893e407844356b02daaf61d07d15c04dfe92fe1e38",
+        "normalizedLfSha256": "2e2ed802c3b8707a799bd4893e407844356b02daaf61d07d15c04dfe92fe1e38"
+      },
+      {
+        "file": "web/src/ExecutionResources.tsx",
+        "sha256": "1d04e36f9f4ac321bcb623b5eda34b25a2b7a4e4b789261fa61719b275e46c0d",
+        "normalizedLfSha256": "1d04e36f9f4ac321bcb623b5eda34b25a2b7a4e4b789261fa61719b275e46c0d"
+      },
+      {
+        "file": "web/src/file-tool-operations.css",
+        "sha256": "2084ecb1f335852f46332b53fec02fb2d53a684e1e67a78be88beebf4f9ca143",
+        "normalizedLfSha256": "2084ecb1f335852f46332b53fec02fb2d53a684e1e67a78be88beebf4f9ca143"
+      },
+      {
+        "file": "web/src/FileToolOperations.tsx",
+        "sha256": "b500d84c0c3ebb0c788836c2133ebb9f40e90df73006e70b145c456322890272",
+        "normalizedLfSha256": "b500d84c0c3ebb0c788836c2133ebb9f40e90df73006e70b145c456322890272"
+      },
+      {
+        "file": "web/src/layout.css",
+        "sha256": "d5610e3d1d84fa163a636021ead5999f18e84731490d85f97f33c7344d52fe21",
+        "normalizedLfSha256": "d5610e3d1d84fa163a636021ead5999f18e84731490d85f97f33c7344d52fe21"
+      },
+      {
+        "file": "web/src/main.tsx",
+        "sha256": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c",
+        "normalizedLfSha256": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c"
+      },
+      {
+        "file": "web/src/McpPanel.tsx",
+        "sha256": "094f658e7aa03bfc3dcfb77ebc551dd3f87782ecc6e3dc0b64e5191a3cd86610",
+        "normalizedLfSha256": "094f658e7aa03bfc3dcfb77ebc551dd3f87782ecc6e3dc0b64e5191a3cd86610"
+      },
+      {
+        "file": "web/src/McpProjectAccess.tsx",
+        "sha256": "0eedfa6a9753669e823de42e6023d7a518148e382bd18236c8ee91db7dc529a0",
+        "normalizedLfSha256": "0eedfa6a9753669e823de42e6023d7a518148e382bd18236c8ee91db7dc529a0"
+      },
+      {
+        "file": "web/src/ModelRequests.tsx",
+        "sha256": "54397da88e7a3180e576df9e391cb86b545340ced82ca330fd5cbde262e8b7b1",
+        "normalizedLfSha256": "54397da88e7a3180e576df9e391cb86b545340ced82ca330fd5cbde262e8b7b1"
+      },
+      {
+        "file": "web/src/process-recovery.css",
+        "sha256": "99a6a4d4c2d78c10ffd42057ea540c90dfa1fb3551234808a4c1c6b3d152c5e4",
+        "normalizedLfSha256": "99a6a4d4c2d78c10ffd42057ea540c90dfa1fb3551234808a4c1c6b3d152c5e4"
+      },
+      {
+        "file": "web/src/ProcessRecovery.tsx",
+        "sha256": "38497fefc7879ea44524d60e4f77398344b1758b04d9f683df474fdc8a17aab9",
+        "normalizedLfSha256": "38497fefc7879ea44524d60e4f77398344b1758b04d9f683df474fdc8a17aab9"
+      },
+      {
+        "file": "web/src/ProfileImport.tsx",
+        "sha256": "ba911330410870ce2e570ac520c53fba29145ebed3677eb3db7f2b6892a16f2a",
+        "normalizedLfSha256": "ba911330410870ce2e570ac520c53fba29145ebed3677eb3db7f2b6892a16f2a"
+      },
+      {
+        "file": "web/src/readability.css",
+        "sha256": "9c20cee0e4837f1379d919e9af38a8cc205079eeb5fda6370434d3ba79351f19",
+        "normalizedLfSha256": "9c20cee0e4837f1379d919e9af38a8cc205079eeb5fda6370434d3ba79351f19"
+      },
+      {
+        "file": "web/src/sessions.css",
+        "sha256": "66f63710637dd6581a84ddcef8bb9bac7dd436b584a0c43c3346a6376dc81cb0",
+        "normalizedLfSha256": "31f71851d9151d42cf10ef80061330ef722a00b16854f44739bc7f98bbfb54f4"
+      },
+      {
+        "file": "web/src/SessionWorkspace.tsx",
+        "sha256": "e52ea48d2b7c9c8b401f7022886e4d82d61ca22ca75126ef47affcdcfeaac516",
+        "normalizedLfSha256": "2cc64022ff3634ae909a92d541f457c694c00a656cd6c59eaec931122ca0eaca"
+      },
+      {
+        "file": "web/src/SidebarLayout.tsx",
+        "sha256": "744d60fcc502b2fe1053ae0b175f224f74073d52d2e56ecf69c9d79c3d038d0e",
+        "normalizedLfSha256": "744d60fcc502b2fe1053ae0b175f224f74073d52d2e56ecf69c9d79c3d038d0e"
+      },
+      {
+        "file": "web/src/styles.css",
+        "sha256": "4d6772ac8f172548eb7858a8ac5f18f73b5a84c926cc8493ed7db68cbe3850e7",
+        "normalizedLfSha256": "4d6772ac8f172548eb7858a8ac5f18f73b5a84c926cc8493ed7db68cbe3850e7"
+      },
+      {
+        "file": "web/src/task-detail.css",
+        "sha256": "d4c9a364ffc9fabd0a9d6b573fa991b1a8764a674715c7408141a214613cf63c",
+        "normalizedLfSha256": "d4c9a364ffc9fabd0a9d6b573fa991b1a8764a674715c7408141a214613cf63c"
+      },
+      {
+        "file": "web/src/TaskDetail.tsx",
+        "sha256": "5bbdd6f87056355c8c6f944090f4d3dbe646234e01ad3d59c4288f0049693bba",
+        "normalizedLfSha256": "5bbdd6f87056355c8c6f944090f4d3dbe646234e01ad3d59c4288f0049693bba"
+      },
+      {
+        "file": "web/src/TaskExecutions.tsx",
+        "sha256": "fe75dbb4e66f56e8f177364b359f62ffaa05f1549b0be3855abe7499e81d1871",
+        "normalizedLfSha256": "fe75dbb4e66f56e8f177364b359f62ffaa05f1549b0be3855abe7499e81d1871"
+      },
+      {
+        "file": "web/src/TeamPanel.tsx",
+        "sha256": "c5d0eef183ba9b17f964e23b2e1725e10f1f5306f48f2ca24e31ff967b6871ec",
+        "normalizedLfSha256": "c5d0eef183ba9b17f964e23b2e1725e10f1f5306f48f2ca24e31ff967b6871ec"
+      },
+      {
+        "file": "web/src/theme.ts",
+        "sha256": "8697ea0b7cf169c7faab94a1e7d5a5d18c225129d0a49998e427ce24189d7965",
+        "normalizedLfSha256": "8697ea0b7cf169c7faab94a1e7d5a5d18c225129d0a49998e427ce24189d7965"
+      },
+      {
+        "file": "web/src/themes.css",
+        "sha256": "b497ab3098fa9ae93fd72e501394feb058b6783e31bdc6d0449a6801ffb981b2",
+        "normalizedLfSha256": "b497ab3098fa9ae93fd72e501394feb058b6783e31bdc6d0449a6801ffb981b2"
+      },
+      {
+        "file": "web/src/types.ts",
+        "sha256": "94557f1ecf7b549d30bb2bf58941e98e475036482326010c53679c6502fccba2",
+        "normalizedLfSha256": "17fcb6aac9bcda6aad13122fd507152d7ccf97c2907cf23b0b82e255cbfd22f5"
+      },
+      {
+        "file": "web/src/ui.tsx",
+        "sha256": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722",
+        "normalizedLfSha256": "456570058be46b17f4a8c73d123a390f670340d7c8e7e533cd40f1445e31360f"
+      },
+      {
+        "file": "web/src/WorkerActivity.tsx",
+        "sha256": "458e7cf944f750b9a9ffa8dd0416f32d83a9b7865fbf7512a34e3186f2528d2f",
+        "normalizedLfSha256": "458e7cf944f750b9a9ffa8dd0416f32d83a9b7865fbf7512a34e3186f2528d2f"
+      },
+      {
+        "file": "web/src/workspace-writes.css",
+        "sha256": "38c42c97a64169a500ff93bc314660f2a45db7b29020e901fb369862ad4e4938",
+        "normalizedLfSha256": "38c42c97a64169a500ff93bc314660f2a45db7b29020e901fb369862ad4e4938"
+      },
+      {
+        "file": "web/src/WorkspaceContract.tsx",
+        "sha256": "709025bdecec9847a61d1e685aba1a78af07e1b6f03c07fb74aa199dff588974",
+        "normalizedLfSha256": "709025bdecec9847a61d1e685aba1a78af07e1b6f03c07fb74aa199dff588974"
+      },
+      {
+        "file": "web/src/WorkspacePicker.tsx",
+        "sha256": "f199ef36e9cc33957ea66f7d5874c4f7ccf6fa5d0260008b7389f49894e6e483",
+        "normalizedLfSha256": "f199ef36e9cc33957ea66f7d5874c4f7ccf6fa5d0260008b7389f49894e6e483"
+      },
+      {
+        "file": "web/src/WorkspaceWrites.tsx",
+        "sha256": "ad9bd8c6a851d3bfddbdf0c3092caa441cb43e0407b1adbcfa9dd6758e71b487",
+        "normalizedLfSha256": "ad9bd8c6a851d3bfddbdf0c3092caa441cb43e0407b1adbcfa9dd6758e71b487"
+      },
+      {
+        "file": "web/tests/checkpoints.spec.ts",
+        "sha256": "df5f5704b5e474db60824f2700a18c5c544fc021f59ef9a644a39f27980dc7bb",
+        "normalizedLfSha256": "df5f5704b5e474db60824f2700a18c5c544fc021f59ef9a644a39f27980dc7bb"
+      },
+      {
+        "file": "web/tests/diff-view.spec.ts",
+        "sha256": "02d8a9c18148fc89f7446fe4e031fe9f9332d1d035bb91a45b3e0b7f100e8d05",
+        "normalizedLfSha256": "02d8a9c18148fc89f7446fe4e031fe9f9332d1d035bb91a45b3e0b7f100e8d05"
+      },
+      {
+        "file": "web/tests/dispatch.spec.ts",
+        "sha256": "195479e179691b57bc67f5f2855d7ed73fe1346bd3d659697b3343284615bbfe",
+        "normalizedLfSha256": "195479e179691b57bc67f5f2855d7ed73fe1346bd3d659697b3343284615bbfe"
+      },
+      {
+        "file": "web/tests/file-tool-operations.spec.ts",
+        "sha256": "f099acea0b19fe267dacedc68d9d10a09c1bca0ed88422eec0b35cde5d65e873",
+        "normalizedLfSha256": "f099acea0b19fe267dacedc68d9d10a09c1bca0ed88422eec0b35cde5d65e873"
+      },
+      {
+        "file": "web/tests/fixtures/workspaces.ts",
+        "sha256": "afa41feaa8fe5b6a056a9b4e2a6c20a5c1ba9d6eb73e75d4f510fc67462ad4a9",
+        "normalizedLfSha256": "afa41feaa8fe5b6a056a9b4e2a6c20a5c1ba9d6eb73e75d4f510fc67462ad4a9"
+      },
+      {
+        "file": "web/tests/layout-resize.spec.ts",
+        "sha256": "e2587731c8fa9c84ef0046957a99e4183b1c2e7a8451a868b044ac8f53ab9be7",
+        "normalizedLfSha256": "e2587731c8fa9c84ef0046957a99e4183b1c2e7a8451a868b044ac8f53ab9be7"
+      },
+      {
+        "file": "web/tests/process-recovery.spec.ts",
+        "sha256": "f0ceec211223af0d31902575c4ec57a49d9fe376a15c06c16046bf13f90423e8",
+        "normalizedLfSha256": "f0ceec211223af0d31902575c4ec57a49d9fe376a15c06c16046bf13f90423e8"
+      },
+      {
+        "file": "web/tests/sessions.spec.ts",
+        "sha256": "3138342274f9631bb22619141a3e8f41f3bd7ae5877da2db5cd2af9565ad8f06",
+        "normalizedLfSha256": "92a4eba056cf4a0be983d2a9ac8c8e1cece94ceb0465bebb3fa6fd083f2ec771"
+      },
+      {
+        "file": "web/tests/sidebar.spec.ts",
+        "sha256": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953",
+        "normalizedLfSha256": "6fdb0409b47772e1123cc382ef378459c800971c01adb73020189c498af98953"
+      },
+      {
+        "file": "web/tests/team.spec.ts",
+        "sha256": "f001f125286ca5d7ebe7a513654851a55a371c4b05fb42a5cb817cc771f46ab2",
+        "normalizedLfSha256": "f001f125286ca5d7ebe7a513654851a55a371c4b05fb42a5cb817cc771f46ab2"
+      },
+      {
+        "file": "web/tests/themes.spec.ts",
+        "sha256": "1378230a0871a5690b6b8822bf71f2f5cd56df5a1af6d6113adcc6cc42a717aa",
+        "normalizedLfSha256": "1378230a0871a5690b6b8822bf71f2f5cd56df5a1af6d6113adcc6cc42a717aa"
+      },
+      {
+        "file": "web/tests/ui.spec.ts",
+        "sha256": "afaace10ba06f1a133321d2c983c3c9269ba19c0ea3348cb81ab98a38c378535",
+        "normalizedLfSha256": "afaace10ba06f1a133321d2c983c3c9269ba19c0ea3348cb81ab98a38c378535"
+      },
+      {
+        "file": "web/tests/worker.spec.ts",
+        "sha256": "6b5220497321d48af884f2c21983abfd3ad824e2df0a983c66e4c2690af7d73f",
+        "normalizedLfSha256": "6b5220497321d48af884f2c21983abfd3ad824e2df0a983c66e4c2690af7d73f"
+      },
+      {
+        "file": "web/tests/workspace-writes.spec.ts",
+        "sha256": "08295871a47c71784f821f4fa22f91245d113e5888818e566ea80f24e453d62a",
+        "normalizedLfSha256": "08295871a47c71784f821f4fa22f91245d113e5888818e566ea80f24e453d62a"
+      },
+      {
+        "file": "web/tests/workspaces.spec.ts",
+        "sha256": "9c59aca948bd64d8fa2c456535790ad1da9b533751701fe1d02450849a2c0007",
+        "normalizedLfSha256": "9c59aca948bd64d8fa2c456535790ad1da9b533751701fe1d02450849a2c0007"
+      },
+      {
+        "file": "web/tsconfig.json",
+        "sha256": "17c8cd295e72131a9acbad4f2a39ecde43b93e8e7324ac8d759c93bbebb71857",
+        "normalizedLfSha256": "17c8cd295e72131a9acbad4f2a39ecde43b93e8e7324ac8d759c93bbebb71857"
+      },
+      {
+        "file": "web/vite.config.ts",
+        "sha256": "87431b20dc47a8c84879cb1e0e2e983c8be637535030cde9c731d7e71a2c8585",
+        "normalizedLfSha256": "87431b20dc47a8c84879cb1e0e2e983c8be637535030cde9c731d7e71a2c8585"
+      }
+    ],
+    "allAcceptedSourcesMatchCurrentFiles": true
+  },
+  "steps": {
+    "checkpoints": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/checkpoints-attempt1/receipt.json",
+      "sha256": "680ede58cb77879af41341c7d8c3063075a2bc289734dc300a66343efaed1f6b",
+      "step": "checkpoints",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:10:20.803Z",
+      "completedAt": "2026-11-16T08:13:56.726Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/checkpoint-smoke.mjs"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": [
+        {
+          "file": "docs\\qa\\checkpoints-win32.json",
+          "sha256": "d3ca36dc460552b1c3b33cd4d3f765f6534fbc25d58a0e7f40c80933ff6b40de",
+          "changedDuringCommand": true
+        }
+      ]
+    },
+    "integration": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/integration-attempt1/receipt.json",
+      "sha256": "8d31dd5683ad5a93fd46e88719f648d9208ec4518f59dfcbb156d9260c8e644b",
+      "step": "integration",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:13:57.164Z",
+      "completedAt": "2026-11-16T08:15:42.957Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/ci-smoke.mjs"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": [
+        {
+          "file": "docs\\qa\\smoke-win32.json",
+          "sha256": "f854794402672ee1a544af8c529580e077b03430b60820f325c2aa2bfe08daf9",
+          "changedDuringCommand": true
+        }
+      ]
+    },
+    "dispatch": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/dispatch-attempt1/receipt.json",
+      "sha256": "3180b7a8110ac1360a3d08bb7c27a18d4ef94c1bfa7be58995f4e1fc32e51ca1",
+      "step": "dispatch",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:15:43.379Z",
+      "completedAt": "2026-11-16T08:18:31.820Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/dispatch-queue-smoke.mjs"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": [
+        {
+          "file": "docs\\qa\\dispatch-queue-win32.json",
+          "sha256": "a274fa5d0f00755b61d7d9813a43ea89a8f7caf46a85a370bea31aac8fc15809",
+          "changedDuringCommand": true
+        }
+      ]
+    },
+    "recovery": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/recovery-attempt1/receipt.json",
+      "sha256": "4883ad66670c5c48126ef8c5c781428c55ca6cf66e64b370c183e173246b6139",
+      "step": "recovery",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:18:32.238Z",
+      "completedAt": "2026-11-16T08:19:44.544Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/process-recovery-smoke.mjs"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": [
+        {
+          "file": "docs\\qa\\process-recovery-win32.json",
+          "sha256": "5bae44469c6b6af34980485372171aab0f074fe2b4900784c6b49c9eaa3fa0ba",
+          "changedDuringCommand": true
+        }
+      ]
+    },
+    "workspaces": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/workspaces-attempt1/receipt.json",
+      "sha256": "c335c09f99dd7851406aac1b45a951ff0d5d8facf7400e0cfea94ada7473d480",
+      "step": "workspaces",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:19:44.977Z",
+      "completedAt": "2026-11-16T08:23:45.578Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/workspace-selection-smoke.mjs"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": [
+        {
+          "file": "docs\\qa\\workspace-selection-win32.json",
+          "sha256": "30938d117047b3bda16ccf4e278c2824fd29baae8bd6c618af4ad510dcf29923",
+          "changedDuringCommand": true
+        }
+      ]
+    },
+    "workspace-writes": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/workspace-writes-attempt1/receipt.json",
+      "sha256": "84a39a2ca40a25af5134c61cdac7e315fcfc17734a7089cf79cf48d260b57e44",
+      "step": "workspace-writes",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:23:45.998Z",
+      "completedAt": "2026-11-16T08:31:15.795Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/workspace-write-smoke.mjs"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": [
+        {
+          "file": "docs\\qa\\workspace-writes-win32.json",
+          "sha256": "d63035985cc1000100d543a7dd3ddd1d7bd8252ee5fcead790e670cefb019916",
+          "changedDuringCommand": true
+        }
+      ]
+    },
+    "file-versions": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/file-versions-attempt1/receipt.json",
+      "sha256": "25c6837f5ee8d24ff8c88db4af4659169e9438ec09f273d28e4d3b86eaff1ea6",
+      "step": "file-versions",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:31:16.232Z",
+      "completedAt": "2026-11-16T08:33:16.587Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/file-version-smoke.mjs"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": [
+        {
+          "file": "docs\\qa\\file-versions-win32.json",
+          "sha256": "bae0d639dead8ead6d24f74d262585f963c697c97b89cc8459c8766627c9ad05",
+          "changedDuringCommand": true
+        }
+      ]
+    },
+    "diff-view": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/diff-view-attempt1/receipt.json",
+      "sha256": "d572babb8f44fad7aa9a0e61eed5170460a36971120123e5c22b4462226a5aa8",
+      "step": "diff-view",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:33:17.057Z",
+      "completedAt": "2026-11-16T08:36:37.931Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/diff-view-smoke.mjs"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": [
+        {
+          "file": "docs\\qa\\diff-view-win32.json",
+          "sha256": "f5407433b7b63bd33c9e0cfcb7c007cc31b3854e7a22fd31d03b2934e49227c8",
+          "changedDuringCommand": true
+        }
+      ]
+    },
+    "package": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/package-attempt1/receipt.json",
+      "sha256": "a2b5effb3836e455a52095fa905fb29cd303b20a6fc2e040610d3973301cc281",
+      "step": "package",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:38:22.059Z",
+      "completedAt": "2026-11-16T08:38:44.815Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/manage.mjs",
+        "package:prepared"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": []
+    },
+    "packaged": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/packaged-attempt1/receipt.json",
+      "sha256": "83cd1ecd203d193babf4787ad3418d616e59cd052475c650249789c63fb47582",
+      "step": "packaged",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:38:45.668Z",
+      "completedAt": "2026-11-16T08:38:57.758Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/ci-desktop.mjs"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": [
+        {
+          "file": "docs\\qa\\desktop-packaged-win32.json",
+          "sha256": "54a28276bc58c69efca2b3092e62edfef69e17a6048aa7349d100f83dc03df07",
+          "changedDuringCommand": true
+        }
+      ]
+    },
+    "bundled-writer": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/bundled-writer-attempt1/receipt.json",
+      "sha256": "06a2c32ed8ccfba8149dd8a2f2f295546b379af823202ff362f4c256e300db7f",
+      "step": "bundled-writer",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:38:58.271Z",
+      "completedAt": "2026-11-16T08:39:00.544Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tools/bundled-workspace-write-smoke.mjs"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": [
+        {
+          "file": "docs\\qa\\bundled-workspace-writer-win32.json",
+          "sha256": "ee786c53f43811b14452994fa7c5f6315fd46a6955b8775deb1b181ca84dca53",
+          "changedDuringCommand": true
+        }
+      ]
+    },
+    "guards": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-final-checks/guards-attempt1/receipt.json",
+      "sha256": "a8f52b809a0aff84046c4fda3c4ea054860d648d42b9607f71ba8302b243b4fa",
+      "step": "guards",
+      "attempt": 1,
+      "startedAt": "2026-11-16T08:39:00.968Z",
+      "completedAt": "2026-11-16T08:39:01.509Z",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "tools/install-desktop-deps.test.mjs",
+        "tools/package-desktop.test.mjs",
+        "tools/connection.test.cjs",
+        "tools/verify-version.test.mjs"
+      ],
+      "originalAssertionsAndTimeoutsRetained": true,
+      "reports": []
+    }
+  },
+  "protocols": {
+    "integration": {
+      "file": "docs/qa/smoke-win32.json",
+      "sha256": "f854794402672ee1a544af8c529580e077b03430b60820f325c2aa2bfe08daf9",
+      "checks": 29,
+      "originalScriptAndSource": true
+    },
+    "dispatch": {
+      "file": "docs/qa/dispatch-queue-win32.json",
+      "sha256": "a274fa5d0f00755b61d7d9813a43ea89a8f7caf46a85a370bea31aac8fc15809",
+      "checks": 13,
+      "originalScriptAndSource": true
+    },
+    "recovery": {
+      "file": "docs/qa/process-recovery-win32.json",
+      "sha256": "5bae44469c6b6af34980485372171aab0f074fe2b4900784c6b49c9eaa3fa0ba",
+      "checks": 11,
+      "originalScriptAndSource": true
+    },
+    "workspaces": {
+      "file": "docs/qa/workspace-selection-win32.json",
+      "sha256": "30938d117047b3bda16ccf4e278c2824fd29baae8bd6c618af4ad510dcf29923",
+      "checks": 15,
+      "originalScriptAndSource": true
+    },
+    "workspace-writes": {
+      "file": "docs/qa/workspace-writes-win32.json",
+      "sha256": "d63035985cc1000100d543a7dd3ddd1d7bd8252ee5fcead790e670cefb019916",
+      "checks": 22,
+      "originalScriptAndSource": true
+    }
+  },
+  "checkpoints": {
+    "checks": 16,
+    "protocolVersion": 1,
+    "schemaVersion": 9,
+    "actualProductionWebAndJar": true,
+    "fixtureSourceMatchesAcceptedSources": true,
+    "fixtureSourceMatchesExactCommit": false,
+    "originalWorkerTaskRequestsBound": true,
+    "strategies": [
+      {
+        "strategy": "CLONE",
+        "taskId": "ff37a323-b3db-47d0-b948-8d1516a3906a",
+        "originalExecutionId": "001e1c8d-77eb-453e-be00-dad64faad07c",
+        "restoreExecutionId": "f4c7caa8-63fc-4d0a-9fc5-f9c41971cadd",
+        "toolCheckpoints": 5,
+        "modelRequests": 8,
+        "originalIndexRestored": true,
+        "userLaterFileRetained": true,
+        "originalEvidenceAndBudgetRetained": true
+      },
+      {
+        "strategy": "WORKTREE",
+        "taskId": "a28cff05-c132-4864-afc5-0f93b7e3a073",
+        "originalExecutionId": "0a90b4a0-50f4-4961-9441-bb7504b9b2de",
+        "restoreExecutionId": "12a7eb4c-5211-4531-bc33-09913574e48f",
+        "toolCheckpoints": 5,
+        "modelRequests": 8,
+        "originalIndexRestored": true,
+        "userLaterFileRetained": true,
+        "originalEvidenceAndBudgetRetained": true
+      }
+    ],
+    "faults": [
+      {
+        "fault": "ack",
+        "taskId": "8e2486bc-f15a-4594-88ff-1465ab5cad42",
+        "originalOperationId": "599982a5-41d2-4db8-b5f4-66be0092a8c4",
+        "sqliteOperationState": "UNKNOWN",
+        "originalRestoreState": "UNKNOWN",
+        "originalObservedReceiptState": "ACKNOWLEDGED",
+        "unpublishedResultIncluded": true,
+        "oldVersionExportAfterReconcileRejected": true,
+        "originalModelRequests": 8,
+        "unconfirmedLeaseRetained": true,
+        "originalLockHeldAtProbe": false,
+        "originalWorkerStoppedAfterLockProbe": true,
+        "originalOwnerLockGateVerified": true
+      },
+      {
+        "fault": "publish",
+        "taskId": "80fafade-90de-4019-9968-68a76ef23a01",
+        "originalOperationId": "3453ca0d-5b38-419e-8c3b-c1d0a4d807c7",
+        "sqliteOperationState": "ACKNOWLEDGED",
+        "originalRestoreState": "UNKNOWN",
+        "originalObservedReceiptState": "ACKNOWLEDGED",
+        "unpublishedResultIncluded": true,
+        "oldVersionExportAfterReconcileRejected": true,
+        "originalModelRequests": 8,
+        "unconfirmedLeaseRetained": true,
+        "originalLockHeldAtProbe": false,
+        "originalWorkerStoppedAfterLockProbe": true,
+        "originalOwnerLockGateVerified": true
+      }
+    ],
+    "archives": [
+      {
+        "file": "CLONE-actual-undo.zip",
+        "bytes": 123832,
+        "sha256": "a11eb0de73119d9303a61891f5b7ecf9c7b3361c54be626cbdf4d5adda7868c8",
+        "references": 25,
+        "deduplicatedObjects": 11
+      },
+      {
+        "file": "WORKTREE-actual-undo.zip",
+        "bytes": 141278,
+        "sha256": "75b5383d512e5bc5992dd6ad646b7ecdf2d52e81adf65dca10bec38231625d53",
+        "references": 25,
+        "deduplicatedObjects": 11
+      },
+      {
+        "file": "ack-unknown-original.zip",
+        "bytes": 143093,
+        "sha256": "3dea4576a3469e2b28c813a6adfad127bde7b28fda3ca6f6c443585977bf78d9",
+        "references": 21,
+        "deduplicatedObjects": 9
+      },
+      {
+        "file": "publish-unknown-original.zip",
+        "bytes": 111478,
+        "sha256": "9a050def8ebf8e9c36b925436a2e7d87330ef3adba07270cf51cb827a9f40355",
+        "references": 21,
+        "deduplicatedObjects": 9
+      }
+    ],
+    "screenshots": [
+      {
+        "file": "CLONE-production-preview-1440.png",
+        "bytes": 136300,
+        "sha256": "c2488aeb0acfe83a6ca62bf8214ccb5f95ff89cc752b214b2f4ed8a8df3c5b54"
+      },
+      {
+        "file": "CLONE-production-preview-430.png",
+        "bytes": 83397,
+        "sha256": "a2f70d142648f94c63bb52aa2875e889b20167039139ad4d7ac38b9a92d35efc"
+      },
+      {
+        "file": "WORKTREE-production-preview-1440.png",
+        "bytes": 130625,
+        "sha256": "f33ef546966fba9ddd7c29c56c31ccb03d9cff362181dc09242058054117b2c1"
+      },
+      {
+        "file": "WORKTREE-production-preview-430.png",
+        "bytes": 81576,
+        "sha256": "5e8101c5158ca3b6e74259c4b00d0b8966963202e16a40f8bd6446d9e59a3f26"
+      }
+    ],
+    "modelRequests": 32,
+    "coreStarts": 3,
+    "originalRecordedIdentitiesStopped": 942,
+    "completeOriginalReferenceBytesVerified": true,
+    "actualOriginalSourceAndRestoredWorkspacesVerified": true,
+    "originalAppliedAndUnknownFactsRetained": true,
+    "processCoverage": "OBSERVED_ONLY; CORE_CHECKPOINT_READS_NOT_FULL_HISTORICAL_PROCESS_COVERAGE"
+  },
+  "diffView": {
+    "status": "passed",
+    "platform": "win32",
+    "version": "0.2.0-alpha.19",
+    "checks": 14,
+    "jarSha256": "7db450e119112484f971c7d2276a1a39a13438cce35484f4598370ef1adf568f",
+    "originalWorkerTaskRequestsBound": true,
+    "actualProductionWebAndJar": true,
+    "actualReadOnlySourceAndWorkspaceFactsVerified": true,
+    "tasks": [
+      {
+        "strategy": "CLONE",
+        "taskId": "8d6264b5-1218-43d6-bdc5-cf6ba88db615",
+        "taskExecutionId": "103d387e-d00c-4c17-8647-26c06fac7d45",
+        "modelRequests": 5,
+        "initialVersion": "1117c779d6ed538e7c348c0cc21c9e281ffff9d6f421df10737446e8b65b93d4",
+        "capturedVersion": "af5cc31ce2916b48d152e94c9725721b3de605dff8a07d84c31f22d55f9b8329",
+        "states": 7,
+        "deliverySha256": "eba3284317fe294961ecd2aaf615434f9dc56b52eb468286518942e1aaaff2a2",
+        "originalProcessObservations": 116
+      },
+      {
+        "strategy": "WORKTREE",
+        "taskId": "17944070-8967-4b00-89a0-d0d26b51be6b",
+        "taskExecutionId": "e187e75a-794d-4dc2-a933-d7534daf960b",
+        "modelRequests": 5,
+        "initialVersion": "1117c779d6ed538e7c348c0cc21c9e281ffff9d6f421df10737446e8b65b93d4",
+        "capturedVersion": "af5cc31ce2916b48d152e94c9725721b3de605dff8a07d84c31f22d55f9b8329",
+        "states": 7,
+        "deliverySha256": "f99a55c44821956b11ac2db896cc508810fbc7abeb74292e0d67c79d1e11b40e",
+        "originalProcessObservations": 199
+      }
+    ],
+    "modelCalls": 10,
+    "originalIdentitiesStopped": 200,
+    "screenshots": [
+      {
+        "file": "CLONE-production-diff-1440.png",
+        "bytes": 103659,
+        "sha256": "b7ef79c13a4d64dc11310c7d6f2a75688337b2dc80147271fdd5496c6a0e0871"
+      },
+      {
+        "file": "CLONE-production-diff-430.png",
+        "bytes": 59615,
+        "sha256": "f52e714d92c131d97fe09eaa7d2781f462ecb6236c331d7e847bca8cc7f18848"
+      },
+      {
+        "file": "CLONE-production-refreshed.png",
+        "bytes": 70516,
+        "sha256": "7712a2c8b516b17ba98d5b2260ac4c2c97ab8aa3586187caf16343bf1ccc3f42"
+      },
+      {
+        "file": "WORKTREE-production-diff-1440.png",
+        "bytes": 104883,
+        "sha256": "0f9dd6faf45241db5b1fa8440f71b64a1a4a2e27b315961a38e7862d96ab429a"
+      },
+      {
+        "file": "WORKTREE-production-diff-430.png",
+        "bytes": 60746,
+        "sha256": "4afbcc9ab8f7214c4c817b60045594f7e75e803439335d3cd655c549cddddde4"
+      },
+      {
+        "file": "WORKTREE-production-refreshed.png",
+        "bytes": 71615,
+        "sha256": "64ffed4207c86000ae5182ec2751b351227148cec751d6df13b9c0fb07b44c92"
+      }
+    ],
+    "servedFiles": [
+      {
+        "file": "/index.html",
+        "sha256": "7376556ea5caaaec24b06aa4e0f50fe67766eaf908d860e31e79153d07b97154"
+      },
+      {
+        "file": "/theme-init.js",
+        "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+      },
+      {
+        "file": "/assets/index-lpN8oTSv.js",
+        "sha256": "4538d88879ee893ac18cdaef6240c8becdd5b2da1e8a4306247c0669ae60e4fd"
+      },
+      {
+        "file": "/assets/index-C6FUt5I0.css",
+        "sha256": "b7b832a24fd25a9bbbb184f1224896a726bbc81897b1f3c4ce9eb4548272b333"
+      }
+    ],
+    "previewProcessCoverage": "CORE_PREVIEW_NOT_PERSISTED_IN_WORKER_LEDGER; TASK_EXECUTION_OBSERVED_ONLY",
+    "fixtureSourceMatchesVerifiedSource": true,
+    "fixtureSourceMatchesExactCommit": false
+  },
+  "fileVersions": {
+    "checks": 9,
+    "modelCalls": 28,
+    "exports": [
+      {
+        "strategy": "CLONE",
+        "operations": 130,
+        "requestBound": 9,
+        "explicitlyLegacy": 121,
+        "independentReviews": 1,
+        "conflicts": 2,
+        "sha256": "cec437fa8b2530174f4eaaf0a230da2cc67978c51f7f3264bf51af0ddf8b2e51"
+      },
+      {
+        "strategy": "WORKTREE",
+        "operations": 130,
+        "requestBound": 9,
+        "explicitlyLegacy": 121,
+        "independentReviews": 1,
+        "conflicts": 2,
+        "sha256": "e0942d19a431a417a0f6ddced85b96fc1dd0064a8749997ed9d19046a4fbcff4"
+      }
+    ],
+    "originalIdentitiesIndependentlyStopped": 383,
+    "protocolVersion": 2,
+    "completeHistoryVerified": true,
+    "fixtureSourceVerified": true
+  },
+  "packaged": {
+    "jarSha256": "7db450e119112484f971c7d2276a1a39a13438cce35484f4598370ef1adf568f",
+    "asarSha256": "2edc9f8867da9e85d10b93c487734ea55ddf50e6a0b025995ef061c72cd92f54",
+    "allWebAndDesktopBytesMatchAcceptedSources": true,
+    "installer": {
+      "version": "0.2.0-alpha.19",
+      "file": "release/Agent Workbench Setup 0.2.0-alpha.19.exe",
+      "bytes": 152743970,
+      "sha256": "54e988d3ce3166ebf7ae1d4fa17d724f32382a644d678cbb847635d8af0375f6",
+      "authenticodeStatus": "NotSigned",
+      "signatureProbeUsesChildDefaultModulePath": true,
+      "recordedAt": "2026-11-16T08:38:44.814Z"
+    },
+    "originalBuilder": {
+      "status": "passed",
+      "originalBuilderUsed": true
+    },
+    "externalJavaDisabled": true,
+    "originalProcessesStopped": true,
+    "bundledWriter": {
+      "recordedAt": "2026-11-16T08:39:00.416Z",
+      "version": "0.2.0-alpha.19",
+      "platform": "win32",
+      "status": "passed",
+      "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
+      "jarSha256": "7db450e119112484f971c7d2276a1a39a13438cce35484f4598370ef1adf568f",
+      "packagedJarSha256": "7db450e119112484f971c7d2276a1a39a13438cce35484f4598370ef1adf568f",
+      "packagedJava": "D:\\Projects\\多Agent研发工作台\\release\\win-unpacked\\resources\\jre\\bin\\java.exe",
+      "packagedJavaSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
+      "javaVersion": "21.0.13",
+      "packagedRuntimeReleaseSha256": "b3f0f2c915151893f679218e30bf445ee6b489681e06457f466744fe89e50e8c",
+      "fixtureClassesCompiledOnce": true,
+      "fixtureClasses": [
+        {
+          "file": "ProcessRecoveryProbe$Identity.class",
+          "sha256": "316c1a58b5d9e4d38734ad18d170f7dafeeb7b609dc00645f697e1fe5498d6e6"
+        },
+        {
+          "file": "ProcessRecoveryProbe$State.class",
+          "sha256": "a102ae19d3257c11912e68a90e875592ef7dcf802ff3ac1ae2189218be683c2d"
+        },
+        {
+          "file": "ProcessRecoveryProbe$Visibility.class",
+          "sha256": "336dac9329d617189e9d7488b236bd967185c047715ef4b42eca48bf836009b7"
+        },
+        {
+          "file": "ProcessRecoveryProbe.class",
+          "sha256": "40079c7cbc306d5334a41d482bdfbf8d7cd8f304ad28cf8d65601e425e9d5217"
+        },
+        {
+          "file": "dev/agentworkbench/WorkspaceWriteDatabaseFixture.class",
+          "sha256": "a588579f7b3a02bb2246c3d3718765c672e72742947a425f774a0cfbb0add75b"
+        },
+        {
+          "file": "dev/agentworkbench/WorkspaceWriteProbe$1.class",
+          "sha256": "e19bcd1e5940a102a8e849b7303b016196bfaf31cf3c132b9f3b2a9f61acebed"
+        },
+        {
+          "file": "dev/agentworkbench/WorkspaceWriteProbe$2.class",
+          "sha256": "a0d4e287e5364f47dab229f62eefdba5c195123bdc4c5540c72d0458d0da7a86"
+        },
+        {
+          "file": "dev/agentworkbench/WorkspaceWriteProbe.class",
+          "sha256": "17969c48c3e8b6a10357e24eaa8b8a4c1e08d20f723b78c5b0c0842018ad28a6"
+        }
+      ],
+      "productionClasses": [
+        {
+          "file": "dev/agentworkbench/WorkbenchEngine.class",
+          "sha256": "869054f463789e63994d0a9cd0d3b1c6ad9ee9a3df8a2c7a89dbfa59f13a80ce"
+        },
+        {
+          "file": "dev/agentworkbench/WorkerProcessMain.class",
+          "sha256": "33d4256bc7b0a3602118bc4ab36fdd347dc5f192888005210ae26077d22b25c0"
+        },
+        {
+          "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
+          "sha256": "e7a6d066f1d0d50516aaf133de76dd4a372995087a495a94688226ad38b3b2ae"
+        },
+        {
+          "file": "dev/agentworkbench/WindowsProcessSnapshot.class",
+          "sha256": "02720c26db1ddcd2e43b86de21e3a8bcb66065f66197dcdb220deb1a01389869"
+        },
+        {
+          "file": "dev/agentworkbench/runtime/WorkspaceWriteGuard.class",
+          "sha256": "18e7c9730e2f3db3809f976dfbe7d81eca7dc8149b48336b911eb83d194d5034"
+        },
+        {
+          "file": "dev/agentworkbench/runtime/WorkspaceFileIdentity.class",
+          "sha256": "42c57b0db8d5780cbc971acbf7c44362deb326f764f840472c41cb2e17eee222"
+        }
+      ],
+      "nativeDependencies": [
+        {
+          "file": "jna-5.17.0.jar",
+          "bytes": 2002589,
+          "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+          "licenseChoice": "Apache-2.0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ]
+        },
+        {
+          "file": "jna-platform-5.17.0.jar",
+          "bytes": 1378617,
+          "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+          "licenseChoice": "Apache-2.0",
+          "licenses": [
+            {
+              "entry": "META-INF/AL2.0",
+              "bytes": 10174,
+              "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+            },
+            {
+              "entry": "META-INF/LICENSE",
+              "bytes": 797,
+              "sha256": "07c938b23950ab7d47a24ef35f9f5da3a05ae164278dc959ad6994135ed59ff1"
+            }
+          ]
+        }
+      ],
+      "nativeFileKey": "WINDOWS:86ca0064ca0052bb:05610f00000001000000000000000000",
+      "originalPid": 18980,
+      "originalProcessStartedAt": "2026-11-16T08:38:58.431Z",
+      "originalStopped": true,
+      "releaseDuringBorrowRejected": true,
+      "lockAvailableAfterRelease": true,
+      "windowsNativeProcessSnapshotApplicable": true,
+      "windowsNativeProcessSnapshotVerified": true,
+      "nativeProcessBirth": "2026-11-16T08:38:58.431Z",
+      "nativeProcessSnapshotCount": 527,
+      "probeOutputEncoding": "UTF-8",
+      "schedulerParallelism": 2,
+      "schedulerMaxPoolSize": 2,
+      "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-XsY7G6"
+    },
+    "nativeTestDesktop": {
+      "file": ".runtime/alpha19-per-file-boundary-repair-isolated-packaged-attempt1/receipt.json",
+      "sha256": "1d0ae7b30564a09e19308081f8b23d32f06dfb59bda378fe95683f0af28ecaff",
+      "inputDesktopUnchanged": true,
+      "handleClosed": true
+    }
+  },
+  "originalCi": {
+    "file": "docs/qa/alpha19-per-file-boundary-ci-original-failure-receipt.json",
+    "sha256": "5d267b16643984b00d2d2fde2a82ff9455a94e634f9698bdf58eeb5d96441690",
+    "runId": 43816939938,
+    "conclusion": "failure",
+    "successfulWindowsIndependentlyVerified": true
+  },
+  "previousAcceptance": {
+    "file": ".runtime/alpha19-runtime-repair-final-local-qa-attempt1/manifest.json",
+    "sha256": "d518360e3aff5038daa93e10c0d1f75e514824ff47c0f09f3f6ebe1d1ffd9b59",
+    "jarSha256": "048141550c1bf8f9e46dfd39d5bb12f559c4b0d36c2b725e9946da0a7eff5508",
+    "originalAcceptancePreserved": true
+  },
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha19-per-file-boundary-repair-final-local-qa-attempt2",
+  "originalFailuresAndUnknownEvidenceGapsUnchanged": true,
+  "ci": {
+    "status": "PENDING",
+    "expectedFullCoreCases": {
+      "win32": 452,
+      "darwin": 454,
+      "linux": 454
+    }
+  },
+  "publishedDistribution": false,
+  "completeProjectGoal": false,
+  "preservedCollectorFailure": {
+    "file": ".runtime/alpha19-per-file-boundary-repair-final-local-qa-attempt1/collector-failure.json",
+    "sha256": "a7cd85f94fbcb5d9a9f519458fae063e2d06390c39eea931f57614092966e2e9",
+    "partialDirectoryPreserved": true,
+    "productAcceptanceRepeated": false
+  },
+  "limitations": [
+    "Fresh three-platform CI must bind the exact accepted commit.",
+    "Alpha.20 terminal implementation remains ignored staging and has not been delivered.",
+    "Full F01–F21 and M0–M3 work remains active."
+  ]
+}

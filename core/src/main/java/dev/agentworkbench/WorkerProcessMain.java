@@ -138,7 +138,7 @@ public final class WorkerProcessMain {
             case "REVIEW_COPY" -> runtime.reviewCopy(str(p, "workspace"), str(p, "subjectId"), str(p, "version"));
             case "DELEGATION_COPY" -> runtime.delegationCopy(str(p, "workspace"), str(p, "subjectId"), str(p, "version"));
             case "INTEGRATE" -> runtime.integrateDelegation(str(p, "baseline"), str(p, "working"), str(p, "targetWorkspace"), str(p, "expectedResult"), map(p, "permissions"));
-            case "RESTORE_CHECKPOINT" -> runtime.restoreCheckpoint(str(p, "workspace"), str(p, "taskId"), str(p, "operationId"), map(p, "preview"), call::stopped);
+            case "RESTORE_CHECKPOINT" -> runtime.restoreCheckpoint(str(p, "workspace"), str(p, "taskId"), str(p, "operationId"), map(p, "preview"), call::checkedStop);
             case "VERIFY" -> runtime.verify(str(p, "workspace"), str(p, "command"), call::stopped, text -> call.callback("LOG", obj("text", text)));
             case "RUN" -> runtime.runWithMcp(map(p, "route"), str(p, "apiKey"), str(p, "workspace"), str(p, "prompt"), bool(p, "readOnly", true), strings(p.get("scope")),
                 call::stopped, text -> call.callback("LOG", obj("text", text)), call.observer, objects(p.get("mcpBindings")), new WorkspaceRuntime.FixedToolInvoker() {
@@ -277,6 +277,14 @@ public final class WorkerProcessMain {
         private long callbacks;
         Call(String id, Map<String, Object> lease, Map<String, Object> parameters, long sequence) { this.id = id; this.lease = lease; this.parameters = parameters; this.sequence = sequence; }
         boolean stopped() { return cancelled.get() || stopping.get() || !rpc.open(); }
+
+        /**
+         * 每个撤销写入边界同步核对原核心授权，停止回执先于后续文件效果。
+         */
+        boolean checkedStop() {
+            if (stopped()) return true;
+            callback("CHECK_CURRENT", obj()); return stopped();
+        }
 
         Object callback(String action, Map<String, Object> arguments) {
             callbackLock.lock();
