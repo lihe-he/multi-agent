@@ -7,6 +7,7 @@ import dev.agentworkbench.runtime.WorkspaceRuntime;
 import dev.agentworkbench.runtime.ModelCallObserver;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -31,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * 使用真实 Git 和本地协议测试端点验证隔离与工具权限，不代表外部模型兼容验收。
  */
+@ExtendWith(CheckpointFailureEvidence.class)
 class RuntimeIntegrationTest {
     @TempDir
     Path temporary;
@@ -128,6 +130,58 @@ class RuntimeIntegrationTest {
         } finally { release.countDown(); server.stop(0); }
     }
 
+    @ParameterizedTest
+    @CsvSource({"CLONE", "WORKTREE"})
+    void toolCheckpointUsesOriginalCoreOwnershipAfterTheSelectionRecordChanges(String strategy) throws Exception {
+        Path source = repository(), data = temporary.resolve("state"); WorkspaceRuntime runtime = runtime(); String taskId = java.util.UUID.randomUUID().toString();
+        byte[] sourceIndex = Files.readAllBytes(source.resolve(".git/index")); String sourceHead = git(source, "rev-parse", "HEAD").strip();
+        Map<String, Object> selection = runtime.selectWorkspace(source.toString(), Json.obj("strategy", strategy, "ref", "HEAD"), false, 1);
+        Map<String, Object> prepared = runtime.prepareSelected(source.toString(), taskId, false, selection), ownership = Json.map(prepared, "workspaceOwnership");
+        Path work = Path.of(Json.str(prepared, "workspace")), selectionFile = work.getParent().resolve("selection.json"), manifests = data.resolve("checkpoints/tasks").resolve(taskId);
+        runtime.captureCheckpoint(work.toString(), taskId, Json.obj("kind", "ORIGINAL_BOUNDARY"), ownership);
+        AtomicInteger requests = new AtomicInteger(), published = new AtomicInteger(); AtomicReference<byte[]> rewrittenBytes = new AtomicReference<>(); List<Throwable> errors = new CopyOnWriteArrayList<>();
+        try (ExecutionStore store = new ExecutionStore(json, data.toString())) {
+            WorkbenchCatalog catalog = new WorkbenchCatalog(store, runtime, new PlanValidator()); String runId = java.util.UUID.randomUUID().toString();
+            store.put("task", Json.obj("id", taskId, "projectId", "owner-fixture", "workspace", work.toString(), "workspaceOwnership", ownership,
+                "state", "RUNNING", "plan", List.of(), "context", List.of(), "budget", Map.of()));
+            store.put("agentRun", Json.obj("id", runId, "taskId", taskId, "workspace", work.toString(), "stage", "implement"));
+            CheckpointLedger ledger = new CheckpointLedger(store, catalog, runtime);
+            ObservedCalls observed = new ObservedCalls() {
+                @Override public String lastRequestId() { return outputs.isEmpty() || !"SUCCEEDED".equals(outputs.getLast().get("state")) ? "" : "original-owner-request-" + outputs.size(); }
+                @Override public Map<String, Object> checkpointContext() { return ledger.context(taskId, runId); }
+                @Override public void checkpoint(Map<String, Object> descriptor) { published.incrementAndGet(); }
+            };
+            var readTool = tool("read_file", Map.of("path", "src/greeting.txt")); HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+            server.createContext("/", exchange -> {
+                try {
+                    exchange.getRequestBody().readAllBytes(); Map<String, Object> message;
+                    if (requests.incrementAndGet() == 1) {
+                        Map<String, Object> rewritten = json.readValue(Files.readAllBytes(selectionFile), new TypeReference<>() {});
+                        Json.map(Json.map(rewritten, "facts"), "workspaceOwnership").put("owner", java.util.UUID.randomUUID().toString());
+                        byte[] bytes = json.writeValueAsBytes(rewritten); Files.write(selectionFile, bytes); rewrittenBytes.set(bytes);
+                        message = Map.of("role", "assistant", "tool_calls", List.of(readTool));
+                    } else message = Map.of("role", "assistant", "content", "later model response");
+                    byte[] bytes = json.writeValueAsBytes(Map.of("choices", List.of(Map.of("message", message))));
+                    exchange.sendResponseHeaders(200, bytes.length); exchange.getResponseBody().write(bytes);
+                } catch (Throwable failure) { errors.add(failure); }
+                finally { exchange.close(); }
+            }); server.start();
+            try {
+                Map<String, Object> result = runtime.run(route(server), "fixture", work.toString(), "Read the original scoped file", true, List.of("**"), () -> false, ignored -> {}, observed);
+                assertEquals("WAITING_INPUT", result.get("status"), result.toString()); assertEquals(1, requests.get(), "a failed checkpoint must stop later model dispatch");
+                assertEquals(0, published.get()); assertEquals(1, observed.outputs.size()); assertEquals("SUCCEEDED", observed.outputs.getFirst().get("state")); assertTrue(errors.isEmpty(), errors.toString());
+                assertEquals(ownership, Json.map(ledger.context(taskId, runId), "workspaceOwnership"), "the core context retains the original stored owner");
+                List<Map<String, Object>> operations = Json.objects(runtime.fileToolJournal(work.toString()).get("operations")); assertEquals(1, operations.size());
+                assertEquals("CONFIRMED", operations.getFirst().get("state")); assertEquals("read_file", operations.getFirst().get("tool"));
+                assertEquals("original-owner-request-1", operations.getFirst().get("modelRequestId"));
+                try (var files = Files.list(manifests)) { assertEquals(1, files.count(), "a changed owner cannot publish another manifest"); }
+                assertNotNull(rewrittenBytes.get()); assertArrayEquals(rewrittenBytes.get(), Files.readAllBytes(selectionFile));
+                assertArrayEquals(sourceIndex, Files.readAllBytes(source.resolve(".git/index"))); assertEquals(sourceHead, git(source, "rev-parse", "HEAD").strip());
+                assertEquals("hello\n", Files.readString(work.resolve("src/greeting.txt"))); assertEquals("hello\n", Files.readString(source.resolve("src/greeting.txt"))); assertTrue(store.healthy());
+            } finally { server.stop(0); }
+        }
+    }
+
     @Test
     void nativeRunnersUseIsolationFlagsAndKeepReadOnlyToolPolicy() throws Exception {
         Path project = Files.createDirectories(temporary.resolve("native project"));
@@ -192,6 +246,30 @@ class RuntimeIntegrationTest {
             assertFalse(child != null && child.isAlive(), "verification returned success while the original child " + pid + " was still alive");
             assertTrue(Files.exists(receipts.resolve("finished")), "the original child must finish before the command can be confirmed");
             assertTrue(Files.exists(receipts.resolve("parent-saw-exit")), "the parent receipt must follow the original child exit");
+        } finally { stopFixtureChild(child == null ? recordedFixtureChild(receipts) : child); }
+    }
+
+    @Test
+    void parentExitWaitsForTheOriginalChildNaturalStopBeforeConfirmingTheCommand() throws Exception {
+        Path root = Files.createDirectories(temporary.resolve("parent returns before child")), receipts = Files.createDirectories(temporary.resolve("receipts"));
+        String receiptPath = json.writeValueAsString(receipts.toString());
+        Files.writeString(root.resolve("child.mjs"), "import{existsSync,writeFileSync}from'node:fs';import{join}from'node:path';const receipts=" + receiptPath
+            + ";setTimeout(()=>process.exit(2),15000);const poll=setInterval(()=>{if(existsSync(join(receipts,'release'))){clearInterval(poll);setTimeout(()=>{writeFileSync(join(receipts,'finished'),'original child exited');process.exit(0)},2000)}},5);\n");
+        Files.writeString(root.resolve("parent.mjs"), "import{spawn}from'node:child_process';import{writeFileSync}from'node:fs';import{join}from'node:path';import{fileURLToPath}from'node:url';const receipts=" + receiptPath
+            + ";const child=spawn(process.execPath,[fileURLToPath(new URL('child.mjs',import.meta.url))],{detached:true,windowsHide:true,stdio:'ignore'});writeFileSync(join(receipts,'child-pid'),String(child.pid));child.unref();setTimeout(()=>{writeFileSync(join(receipts,'release'),'parent exiting');process.exit(0)},1000);\n");
+        WorkspaceRuntime runtime = runtime();
+        List<Map<String, Object>> observations = new java.util.concurrent.CopyOnWriteArrayList<>(); runtime.observeProcesses(observations::add);
+        ProcessHandle child = null;
+        try {
+            Map<String, Object> result = runtime.verify(root.toString(), "node parent.mjs", () -> false, ignored -> {});
+            long pid = Long.parseLong(Files.readString(receipts.resolve("child-pid")));
+            child = originalFixtureChild(receipts.resolve("child-pid"), pid);
+            Map<String, Object> original = observations.stream().filter(value -> ((Number) value.get("pid")).longValue() == pid).findFirst().orElseThrow();
+            assertEquals("SUCCEEDED", result.get("status"), result.toString());
+            assertEquals(0, result.get("exitCode"));
+            assertTrue(Files.exists(receipts.resolve("finished")), "original child must finish naturally before command confirmation");
+            assertTrue(ManagedProcessLedger.observedProcessStopped(pid, original.get("processStartedAt").toString()));
+            assertFalse(child != null && child.isAlive());
         } finally { stopFixtureChild(child == null ? recordedFixtureChild(receipts) : child); }
     }
 
@@ -449,6 +527,37 @@ class RuntimeIntegrationTest {
         assertNotEquals(before, runtime.fingerprint(source.toString()), "A changed executable mode is a different deliverable even with identical content");
     }
 
+    @ParameterizedTest
+    @CsvSource({"sha1", "sha256"})
+    void fingerprintPreservesPreviouslyRecordedVersionsAcrossGitListingBoundaries(String format) throws Exception {
+        Path root = Files.createDirectories(temporary.resolve("original version boundary"));
+        git(root, "init", "--initial-branch=main", "--object-format=" + format);
+        git(root, "config", "user.name", "Version Fixture"); git(root, "config", "user.email", "version@example.invalid");
+        git(root, "config", "core.filemode", "false"); git(root, "config", "core.autocrlf", "false");
+        for (String name : List.of("H tracked.txt", "S cached.txt", "deleted.txt", "mode.txt")) Files.writeString(root.resolve(name), name + " original\n");
+        Files.writeString(root.resolve(".gitignore"), "ignored.txt\n"); git(root, "add", "."); git(root, "commit", "-m", "original version fixture");
+        git(root, "update-index", "--assume-unchanged", "H tracked.txt"); git(root, "update-index", "--skip-worktree", "S cached.txt"); Files.delete(root.resolve("deleted.txt"));
+        for (String name : List.of("H untracked.txt", "100644 fake mode.txt", "中文 path.txt", "ignored.txt")) Files.writeString(root.resolve(name), name + " original\n");
+        if (Files.getFileStore(root).supportsFileAttributeView("posix")) {
+            try (var files = Files.list(root)) {
+                for (Path path : files.filter(Files::isRegularFile).toList()) Files.setPosixFilePermissions(path,
+                    PosixFilePermissions.fromString(path.getFileName().toString().equals("mode.txt") ? "rwxr-xr-x" : "rw-r--r--"));
+            }
+        }
+        String object = git(root, "rev-parse", "HEAD:mode.txt").strip();
+        String input = "0 " + "0".repeat(format.equals("sha1") ? 40 : 64) + "\tmode.txt\n"
+            + "100644 " + object + " 1\tmode.txt\n" + "100644 " + object + " 2\tmode.txt\n" + "100755 " + object + " 3\tmode.txt\n";
+        gitWithInput(root, input, "update-index", "--index-info");
+        byte[] index = Files.readAllBytes(root.resolve(".git/index")); String head = git(root, "rev-parse", "HEAD").strip(); WorkspaceRuntime runtime = runtime();
+        // 旧双清单实现的真实现场结果已冻结；合并读取不能改变持久化的 v2 内容版本。
+        assertEquals("c209e00a5556d165d3473680e1f697f51fe0b2f390b543ae318482142fd81c76", runtime.fingerprint(root.toString()));
+        Files.writeString(root.resolve("中文 path.txt"), "中文 path.txt modified\n");
+        assertEquals("fd31f9bc4ae678a3151098860556e2b7327e3933c123bde922e42e1ab9d0fbf4", runtime.fingerprint(root.toString()), "same-length changes require a fresh byte read");
+        assertArrayEquals(index, Files.readAllBytes(root.resolve(".git/index"))); assertEquals(head, git(root, "rev-parse", "HEAD").strip());
+        assertEquals("H untracked.txt original\n", Files.readString(root.resolve("H untracked.txt")));
+        assertEquals("100644 fake mode.txt original\n", Files.readString(root.resolve("100644 fake mode.txt")));
+    }
+
     @Test
     void fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging() throws Exception {
         Assumptions.assumeTrue(Files.getFileStore(temporary).supportsFileAttributeView("posix"), "Requires real POSIX executable permissions");
@@ -653,6 +762,19 @@ class RuntimeIntegrationTest {
         return new WorkspaceRuntime(json, temporary.resolve("state").toString());
     }
 
+    @Test
+    void anUninitializedGitlinkIsRejectedFromTheActualIndexBeforeWorkspaceSelection() throws Exception {
+        Path source = repository(); String head = git(source, "rev-parse", "HEAD").strip();
+        Files.writeString(source.resolve(".gitmodules"), "[submodule \"original nested\"]\n\tpath = nested\n\turl = ../original-nested\n");
+        git(source, "add", ".gitmodules"); git(source, "update-index", "--add", "--cacheinfo", "160000," + head + ",nested");
+        byte[] index = Files.readAllBytes(source.resolve(".git/index"));
+        IllegalArgumentException failure = assertThrows(IllegalArgumentException.class,
+            () -> runtime().selectWorkspace(source.toString(), Map.of("strategy", "CLONE"), false, 1));
+        assertTrue(failure.getMessage().contains("子模块"));
+        assertFalse(Files.exists(source.resolve("nested")), "an uninitialized original gitlink must still be rejected");
+        assertArrayEquals(index, Files.readAllBytes(source.resolve(".git/index"))); assertEquals(head, git(source, "rev-parse", "HEAD").strip());
+    }
+
     private Path repository() throws Exception {
         Path source = Files.createDirectories(temporary.resolve("中文 source project"));
         Files.createDirectories(source.resolve("src"));
@@ -666,9 +788,14 @@ class RuntimeIntegrationTest {
     }
 
     private String git(Path directory, String... arguments) throws Exception {
+        return gitWithInput(directory, "", arguments);
+    }
+
+    private String gitWithInput(Path directory, String input, String... arguments) throws Exception {
         List<String> command = new ArrayList<>(List.of("git", "-C", directory.toString()));
         command.addAll(List.of(arguments));
         Process process = new ProcessBuilder(command).redirectErrorStream(true).start();
+        try (var stream = process.getOutputStream()) { stream.write(input.getBytes(StandardCharsets.UTF_8)); }
         String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         assertEquals(0, process.waitFor(), output);
         return output;

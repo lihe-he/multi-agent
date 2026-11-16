@@ -23,12 +23,18 @@ final class RequestObservation implements ModelCallObserver {
     private final Runnable before;
     private final AgentToolSession tools;
     private final int maxCalls;
+    private final CheckpointLedger checkpoints;
     private String requestId = "";
     private String receiptId = "";
 
     RequestObservation(ExecutionStore store, WorkbenchCatalog catalog, String taskId, String runId, boolean reserved, BooleanSupplier cancelled, AtomicBoolean denied, Runnable before, AgentToolSession tools, int maxCalls) {
+        this(store, catalog, taskId, runId, reserved, cancelled, denied, before, tools, maxCalls, null);
+    }
+
+    RequestObservation(ExecutionStore store, WorkbenchCatalog catalog, String taskId, String runId, boolean reserved, BooleanSupplier cancelled, AtomicBoolean denied, Runnable before, AgentToolSession tools, int maxCalls, CheckpointLedger checkpoints) {
         this.store = store; this.catalog = catalog; this.taskId = taskId; this.runId = runId; this.reserved = reserved;
         this.cancelled = cancelled; this.denied = denied; this.before = before; this.tools = tools; this.maxCalls = maxCalls;
+        this.checkpoints = checkpoints;
     }
 
     @Override
@@ -61,4 +67,9 @@ final class RequestObservation implements ModelCallObserver {
 
     @Override public AgentToolSession tools() { return tools; }
     @Override public String lastRequestId() { return receiptId; }
+    @Override public Map<String, Object> checkpointContext() { return checkpoints == null ? obj() : checkpoints.context(taskId, runId); }
+    @Override public void checkpoint(Map<String, Object> descriptor) {
+        if (checkpoints == null || receiptId.isBlank()) throw new ApiException(403, "文件检查点缺少原成功请求来源。");
+        checkpoints.observe(taskId, runId, receiptId, descriptor);
+    }
 }

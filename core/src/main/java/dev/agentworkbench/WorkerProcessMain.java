@@ -138,6 +138,7 @@ public final class WorkerProcessMain {
             case "REVIEW_COPY" -> runtime.reviewCopy(str(p, "workspace"), str(p, "subjectId"), str(p, "version"));
             case "DELEGATION_COPY" -> runtime.delegationCopy(str(p, "workspace"), str(p, "subjectId"), str(p, "version"));
             case "INTEGRATE" -> runtime.integrateDelegation(str(p, "baseline"), str(p, "working"), str(p, "targetWorkspace"), str(p, "expectedResult"), map(p, "permissions"));
+            case "RESTORE_CHECKPOINT" -> runtime.restoreCheckpoint(str(p, "workspace"), str(p, "taskId"), str(p, "operationId"), map(p, "preview"), call::stopped);
             case "VERIFY" -> runtime.verify(str(p, "workspace"), str(p, "command"), call::stopped, text -> call.callback("LOG", obj("text", text)));
             case "RUN" -> runtime.runWithMcp(map(p, "route"), str(p, "apiKey"), str(p, "workspace"), str(p, "prompt"), bool(p, "readOnly", true), strings(p.get("scope")),
                 call::stopped, text -> call.callback("LOG", obj("text", text)), call.observer, objects(p.get("mcpBindings")), new WorkspaceRuntime.FixedToolInvoker() {
@@ -176,6 +177,7 @@ public final class WorkerProcessMain {
         Set<String> allowed = switch (str(lease, "operationType")) {
             case "WORKSPACE" -> Set.of("PREPARE");
             case "WORKSPACE_WRITE" -> Set.of("ACQUIRE_WRITE");
+            case "CHECKPOINT_RESTORE" -> Set.of("RESTORE_CHECKPOINT");
             case "MODEL", "SUBAGENT_MODEL", "REVIEW" -> Set.of("RUN");
             case "VERIFICATION" -> Set.of("VERIFY");
             case "REVIEW_SNAPSHOT" -> Set.of("REVIEW_COPY");
@@ -193,6 +195,8 @@ public final class WorkerProcessMain {
         if (!path.isAbsolute() || !ExecutionNodes.samePath(path.normalize().toString(), str(lease, "workingDirectory"))
                 || !ExecutionNodes.samePath(path.toRealPath().toString(), str(lease, "realWorkingDirectory"))) throw new ApiException(403, "现场目录不属于原领取或解析目标已变化");
         if ("PREPARE".equals(method) && !str(lease, "taskId").equals(str(parameters, "taskId"))) throw new ApiException(403, "准备目录不属于原根任务");
+        if ("RESTORE_CHECKPOINT".equals(method) && (!str(lease, "taskId").equals(str(parameters, "taskId")) || !str(lease, "operationId").equals(str(parameters, "operationId"))
+                || !str(lease, "taskId").equals(str(map(parameters, "preview"), "taskId")) || map(lease, "workspaceWriteIdentity").isEmpty())) throw new ApiException(403, "撤销参数不属于原根文件操作与实际写入保护");
         if ("PREPARE".equals(method) && !map(lease, "workspaceSelection").equals(map(parameters, "workspaceSelection"))) throw new ApiException(403, "准备提交与原 Worker 领取不一致");
         if ("PREPARE".equals(method) && !map(lease, "workspaceSelection").isEmpty()
                 && (!(parameters.get("includeChanges") instanceof Boolean) || bool(parameters, "includeChanges", false) != bool(map(lease, "workspaceSelection"), "includeChanges", false))) throw new ApiException(403, "带入改动参数与原启动选择不一致");
@@ -320,6 +324,8 @@ public final class WorkerProcessMain {
             @Override public boolean begin(Map<String, Object> metadata) { receiptId = ""; return Boolean.TRUE.equals(callback("MODEL_BEGIN", obj("metadata", metadata))); }
             @Override public void end(Map<String, Object> observation) { receiptId = java.util.Objects.toString(callback("MODEL_END", obj("observation", observation)), ""); }
             @Override public String lastRequestId() { return receiptId; }
+            @Override public Map<String, Object> checkpointContext() { return bool(parameters, "hasCheckpoints", false) ? valueMap(callback("CHECKPOINT_CONTEXT", obj())) : obj(); }
+            @Override public void checkpoint(Map<String, Object> descriptor) { callback("CHECKPOINT", obj("descriptor", descriptor)); }
             @Override public AgentToolSession tools() { return bool(parameters, "hasTools", false) ? tools : null; }
         }
     }

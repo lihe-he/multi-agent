@@ -1,0 +1,3436 @@
+{
+  "recordedAt": "2026-11-15T15:23:38.721Z",
+  "status": "passed",
+  "version": "0.2.0-alpha.19",
+  "scope": "ORIGINAL_INDEX_EXPORT_FAILURE_REPRODUCTION_SOURCE_DIAGNOSIS_AND_DIRECTED_COMPILED_RUNTIME_REGRESSIONS; FINAL_ORDINARY_JAR_ACCEPTANCE_RECORDED_SEPARATELY",
+  "originalSmokeStatus": "passed",
+  "originalIndependentCompleteEvidenceVerification": "failed",
+  "originalFinalJarAccepted": false,
+  "frozenOriginal": {
+    "file": ".runtime/alpha19-index-mismatch-attempt1/frozen-before-diagnostics.json",
+    "sha256": "dfb208564ba471528f9cb41c85ce84df7f2fafb42a6b737a5fddcd3be8b0eebc",
+    "files": 774,
+    "bytes": 48330934,
+    "eachFrozenByteReverified": true
+  },
+  "originalFailure": {
+    "file": ".runtime/alpha19-index-mismatch-attempt1/reproduced-inspector-error.json",
+    "sha256": "e8d3501e231ee23890c97e81424ecd9718db6cd7d90ead6a512a0ca95fe0bdf9"
+  },
+  "rawIndexAnalysis": {
+    "file": ".runtime/alpha19-index-mismatch-attempt1/raw-analysis/receipt.json",
+    "sha256": "aaaa51ebf35a879df91e793d74199ffc9a13610a2eeb153d79ee3b6b7ae846b3",
+    "strategies": [
+      {
+        "strategy": "CLONE",
+        "taskId": "470d68c5-6667-4b42-8384-4a6b7bd8f359",
+        "target": {
+          "version": 2,
+          "count": 6,
+          "bytes": 521,
+          "sha256": "edb4b77254fa9b709d80982fcba9c745bee8c0b8631705618e05d17b8dd3bea3",
+          "entries": [
+            {
+              "path": ".gitattributes",
+              "objectId": "fa1385d99a319b43c06f5309d1aae9fdd3adea46",
+              "flags": 14,
+              "ctimeSeconds": 1794753950,
+              "ctimeNanoseconds": 13877200,
+              "mtimeSeconds": 1794753950,
+              "mtimeNanoseconds": 14875600,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 8
+            },
+            {
+              "path": "app.txt",
+              "objectId": "83dc24cddb7ce3740e844cb31f971a1eb303e3a6",
+              "flags": 7,
+              "ctimeSeconds": 1794753950,
+              "ctimeNanoseconds": 14875600,
+              "mtimeSeconds": 1794753950,
+              "mtimeNanoseconds": 15876700,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 29
+            },
+            {
+              "path": "binary.dat",
+              "objectId": "f22e01afe4faf4825a5e9abeed7685f24488a69f",
+              "flags": 10,
+              "ctimeSeconds": 1794753950,
+              "ctimeNanoseconds": 15876700,
+              "mtimeSeconds": 1794753950,
+              "mtimeNanoseconds": 15876700,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 5
+            },
+            {
+              "path": "empty.txt",
+              "objectId": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+              "flags": 9,
+              "ctimeSeconds": 1794753950,
+              "ctimeNanoseconds": 16875900,
+              "mtimeSeconds": 1794753950,
+              "mtimeNanoseconds": 16875900,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 0
+            },
+            {
+              "path": "later.txt",
+              "objectId": "19e63633d9e17455ea5a784d12bca567f3fee9b5",
+              "flags": 9,
+              "ctimeSeconds": 1794753950,
+              "ctimeNanoseconds": 17876400,
+              "mtimeSeconds": 1794753950,
+              "mtimeNanoseconds": 17876400,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 19
+            },
+            {
+              "path": "verify.mjs",
+              "objectId": "57acbc34053cf48f4cae8de62a81e7bba9fb3dc3",
+              "flags": 10,
+              "ctimeSeconds": 1794753950,
+              "ctimeNanoseconds": 17876400,
+              "mtimeSeconds": 1794753950,
+              "mtimeNanoseconds": 17876400,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 306
+            }
+          ],
+          "extensions": [
+            {
+              "signature": "TREE",
+              "size": 25,
+              "sha256": "06f385bc295086d65a7b4ad98bbb03a2d791ab9d4c5a962e620a0cf440f0d495",
+              "hex": "003620300a76af81138459b6b9dde06d793e82aa882a3d976f"
+            }
+          ]
+        },
+        "final": {
+          "version": 2,
+          "count": 6,
+          "bytes": 521,
+          "sha256": "a4cf03b34a9baee86a086ec06b5b6f67286701f6644e5cce54840d112471ae51",
+          "entries": [
+            {
+              "path": ".gitattributes",
+              "objectId": "fa1385d99a319b43c06f5309d1aae9fdd3adea46",
+              "flags": 14,
+              "ctimeSeconds": 1794753950,
+              "ctimeNanoseconds": 13877200,
+              "mtimeSeconds": 1794753950,
+              "mtimeNanoseconds": 14875600,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 8
+            },
+            {
+              "path": "app.txt",
+              "objectId": "83dc24cddb7ce3740e844cb31f971a1eb303e3a6",
+              "flags": 7,
+              "ctimeSeconds": 1794753981,
+              "ctimeNanoseconds": 199270900,
+              "mtimeSeconds": 1794753981,
+              "mtimeNanoseconds": 199270900,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 29
+            },
+            {
+              "path": "binary.dat",
+              "objectId": "f22e01afe4faf4825a5e9abeed7685f24488a69f",
+              "flags": 10,
+              "ctimeSeconds": 1794753981,
+              "ctimeNanoseconds": 372516000,
+              "mtimeSeconds": 1794753981,
+              "mtimeNanoseconds": 372516000,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 5
+            },
+            {
+              "path": "empty.txt",
+              "objectId": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+              "flags": 9,
+              "ctimeSeconds": 1794753950,
+              "ctimeNanoseconds": 16875900,
+              "mtimeSeconds": 1794753950,
+              "mtimeNanoseconds": 16875900,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 0
+            },
+            {
+              "path": "later.txt",
+              "objectId": "19e63633d9e17455ea5a784d12bca567f3fee9b5",
+              "flags": 9,
+              "ctimeSeconds": 1794753950,
+              "ctimeNanoseconds": 17876400,
+              "mtimeSeconds": 1794753950,
+              "mtimeNanoseconds": 17876400,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 19
+            },
+            {
+              "path": "verify.mjs",
+              "objectId": "57acbc34053cf48f4cae8de62a81e7bba9fb3dc3",
+              "flags": 10,
+              "ctimeSeconds": 1794753950,
+              "ctimeNanoseconds": 17876400,
+              "mtimeSeconds": 1794753950,
+              "mtimeNanoseconds": 17876400,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 306
+            }
+          ],
+          "extensions": [
+            {
+              "signature": "TREE",
+              "size": 25,
+              "sha256": "06f385bc295086d65a7b4ad98bbb03a2d791ab9d4c5a962e620a0cf440f0d495",
+              "hex": "003620300a76af81138459b6b9dde06d793e82aa882a3d976f"
+            }
+          ]
+        },
+        "differences": [
+          {
+            "path": "app.txt",
+            "changes": {
+              "ctimeSeconds": {
+                "target": 1794753950,
+                "final": 1794753981
+              },
+              "ctimeNanoseconds": {
+                "target": 14875600,
+                "final": 199270900
+              },
+              "mtimeSeconds": {
+                "target": 1794753950,
+                "final": 1794753981
+              },
+              "mtimeNanoseconds": {
+                "target": 15876700,
+                "final": 199270900
+              }
+            }
+          },
+          {
+            "path": "binary.dat",
+            "changes": {
+              "ctimeSeconds": {
+                "target": 1794753950,
+                "final": 1794753981
+              },
+              "ctimeNanoseconds": {
+                "target": 15876700,
+                "final": 372516000
+              },
+              "mtimeSeconds": {
+                "target": 1794753950,
+                "final": 1794753981
+              },
+              "mtimeNanoseconds": {
+                "target": 15876700,
+                "final": 372516000
+              }
+            }
+          }
+        ]
+      },
+      {
+        "strategy": "WORKTREE",
+        "taskId": "171200b0-8f61-4765-976e-a4bdea4f54aa",
+        "target": {
+          "version": 2,
+          "count": 6,
+          "bytes": 521,
+          "sha256": "2d4b39f25bc9daa6c14d5377cc122f7ae8256f1930b07c3512bde5a636f6166e",
+          "entries": [
+            {
+              "path": ".gitattributes",
+              "objectId": "fa1385d99a319b43c06f5309d1aae9fdd3adea46",
+              "flags": 14,
+              "ctimeSeconds": 1794753991,
+              "ctimeNanoseconds": 30604400,
+              "mtimeSeconds": 1794753991,
+              "mtimeNanoseconds": 31603800,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 8
+            },
+            {
+              "path": "app.txt",
+              "objectId": "83dc24cddb7ce3740e844cb31f971a1eb303e3a6",
+              "flags": 7,
+              "ctimeSeconds": 1794753991,
+              "ctimeNanoseconds": 31603800,
+              "mtimeSeconds": 1794753991,
+              "mtimeNanoseconds": 31603800,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 29
+            },
+            {
+              "path": "binary.dat",
+              "objectId": "f22e01afe4faf4825a5e9abeed7685f24488a69f",
+              "flags": 10,
+              "ctimeSeconds": 1794753991,
+              "ctimeNanoseconds": 32604600,
+              "mtimeSeconds": 1794753991,
+              "mtimeNanoseconds": 32604600,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 5
+            },
+            {
+              "path": "empty.txt",
+              "objectId": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+              "flags": 9,
+              "ctimeSeconds": 1794753991,
+              "ctimeNanoseconds": 32604600,
+              "mtimeSeconds": 1794753991,
+              "mtimeNanoseconds": 32604600,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 0
+            },
+            {
+              "path": "later.txt",
+              "objectId": "19e63633d9e17455ea5a784d12bca567f3fee9b5",
+              "flags": 9,
+              "ctimeSeconds": 1794753991,
+              "ctimeNanoseconds": 33602800,
+              "mtimeSeconds": 1794753991,
+              "mtimeNanoseconds": 33602800,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 19
+            },
+            {
+              "path": "verify.mjs",
+              "objectId": "57acbc34053cf48f4cae8de62a81e7bba9fb3dc3",
+              "flags": 10,
+              "ctimeSeconds": 1794753991,
+              "ctimeNanoseconds": 33602800,
+              "mtimeSeconds": 1794753991,
+              "mtimeNanoseconds": 34602900,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 306
+            }
+          ],
+          "extensions": [
+            {
+              "signature": "TREE",
+              "size": 25,
+              "sha256": "06f385bc295086d65a7b4ad98bbb03a2d791ab9d4c5a962e620a0cf440f0d495",
+              "hex": "003620300a76af81138459b6b9dde06d793e82aa882a3d976f"
+            }
+          ]
+        },
+        "final": {
+          "version": 2,
+          "count": 6,
+          "bytes": 521,
+          "sha256": "5ce7eea852bf3f6ed5be7bdd396ea16a3c980f0426abd33a33d6a477b1996156",
+          "entries": [
+            {
+              "path": ".gitattributes",
+              "objectId": "fa1385d99a319b43c06f5309d1aae9fdd3adea46",
+              "flags": 14,
+              "ctimeSeconds": 1794753991,
+              "ctimeNanoseconds": 30604400,
+              "mtimeSeconds": 1794753991,
+              "mtimeNanoseconds": 31603800,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 8
+            },
+            {
+              "path": "app.txt",
+              "objectId": "83dc24cddb7ce3740e844cb31f971a1eb303e3a6",
+              "flags": 7,
+              "ctimeSeconds": 1794754025,
+              "ctimeNanoseconds": 251451400,
+              "mtimeSeconds": 1794754025,
+              "mtimeNanoseconds": 251451400,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 29
+            },
+            {
+              "path": "binary.dat",
+              "objectId": "f22e01afe4faf4825a5e9abeed7685f24488a69f",
+              "flags": 10,
+              "ctimeSeconds": 1794754025,
+              "ctimeNanoseconds": 430559500,
+              "mtimeSeconds": 1794754025,
+              "mtimeNanoseconds": 430559500,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 5
+            },
+            {
+              "path": "empty.txt",
+              "objectId": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+              "flags": 9,
+              "ctimeSeconds": 1794753991,
+              "ctimeNanoseconds": 32604600,
+              "mtimeSeconds": 1794753991,
+              "mtimeNanoseconds": 32604600,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 0
+            },
+            {
+              "path": "later.txt",
+              "objectId": "19e63633d9e17455ea5a784d12bca567f3fee9b5",
+              "flags": 9,
+              "ctimeSeconds": 1794753991,
+              "ctimeNanoseconds": 33602800,
+              "mtimeSeconds": 1794753991,
+              "mtimeNanoseconds": 33602800,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 19
+            },
+            {
+              "path": "verify.mjs",
+              "objectId": "57acbc34053cf48f4cae8de62a81e7bba9fb3dc3",
+              "flags": 10,
+              "ctimeSeconds": 1794753991,
+              "ctimeNanoseconds": 33602800,
+              "mtimeSeconds": 1794753991,
+              "mtimeNanoseconds": 34602900,
+              "device": 0,
+              "inode": 0,
+              "mode": 33188,
+              "uid": 0,
+              "gid": 0,
+              "size": 306
+            }
+          ],
+          "extensions": [
+            {
+              "signature": "TREE",
+              "size": 25,
+              "sha256": "06f385bc295086d65a7b4ad98bbb03a2d791ab9d4c5a962e620a0cf440f0d495",
+              "hex": "003620300a76af81138459b6b9dde06d793e82aa882a3d976f"
+            }
+          ]
+        },
+        "differences": [
+          {
+            "path": "app.txt",
+            "changes": {
+              "ctimeSeconds": {
+                "target": 1794753991,
+                "final": 1794754025
+              },
+              "ctimeNanoseconds": {
+                "target": 31603800,
+                "final": 251451400
+              },
+              "mtimeSeconds": {
+                "target": 1794753991,
+                "final": 1794754025
+              },
+              "mtimeNanoseconds": {
+                "target": 31603800,
+                "final": 251451400
+              }
+            }
+          },
+          {
+            "path": "binary.dat",
+            "changes": {
+              "ctimeSeconds": {
+                "target": 1794753991,
+                "final": 1794754025
+              },
+              "ctimeNanoseconds": {
+                "target": 32604600,
+                "final": 430559500
+              },
+              "mtimeSeconds": {
+                "target": 1794753991,
+                "final": 1794754025
+              },
+              "mtimeNanoseconds": {
+                "target": 32604600,
+                "final": 430559500
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "actualGitVersion": "2.53.0.windows.2",
+  "originalReadCommandProbe": {
+    "file": ".runtime/alpha19-index-read-command-probe-attempt1/receipt.json",
+    "sha256": "d326c7a807c23182a8960695d81ab7a5b57d66906332539f449ef8a082755769"
+  },
+  "statOnlyPathProbes": [
+    {
+      "file": ".runtime/alpha19-index-read-command-probe-attempt2/receipt.json",
+      "sha256": "739a07589d9c833efbb778d6535e1cc6184e448c91d02cb8b5427dfff5f4a233"
+    },
+    {
+      "file": ".runtime/alpha19-index-read-command-probe-attempt2/additional-name-semantics.json",
+      "sha256": "877f17eaa22ab70ca813c063d04cf086f8887a004ff4af6fdde441d88fbd78b6"
+    },
+    {
+      "file": ".runtime/alpha19-index-content-path-probe-attempt1/receipt.json",
+      "sha256": "37f4249cfc9d1f08644b2f8cf05b32a6b12b585dc869b5f1c9f1024a222e3008"
+    }
+  ],
+  "attempts": [
+    {
+      "label": "baseline-attempt1",
+      "file": ".runtime/alpha19-core-index-observation-baseline-attempt1/receipt.json",
+      "sha256": "25252d4a64f3bab8034dba7b5a71c87225f49121ce227111a3abb83d1024f578",
+      "status": "failed",
+      "exitCode": 1,
+      "sourcesUnchanged": true,
+      "totals": {
+        "tests": 2,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      "originalCommandLog": {
+        "file": ".runtime/alpha19-core-index-observation-baseline-attempt1/command.log",
+        "sha256": "37723e5329f500c435b22ddd5dac77a5b4149af38774cf66d12e7667513da1e0"
+      },
+      "sources": [
+        {
+          "file": "core/pom.xml",
+          "sha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598",
+          "normalizedLfSha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/AgentPermissions.java",
+          "sha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8",
+          "normalizedLfSha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiErrors.java",
+          "sha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c",
+          "normalizedLfSha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiException.java",
+          "sha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c",
+          "normalizedLfSha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/BudgetPolicy.java",
+          "sha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7",
+          "normalizedLfSha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointExportHistory.java",
+          "sha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c",
+          "normalizedLfSha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointLedger.java",
+          "sha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8",
+          "normalizedLfSha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CollaborationPolicy.java",
+          "sha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277",
+          "normalizedLfSha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionNodes.java",
+          "sha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba",
+          "normalizedLfSha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+          "sha256": "1044d948da7e20a08377fe9b4c23140607473d04ebf6e55c2a7e1c493605ee32",
+          "normalizedLfSha256": "29663610aa1c73e07dbf018e6e748f25888b3701e6e30cb9375b86b70502e600"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionWorker.java",
+          "sha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5",
+          "normalizedLfSha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+          "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c",
+          "normalizedLfSha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/Json.java",
+          "sha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62",
+          "normalizedLfSha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalAccessFilter.java",
+          "sha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08",
+          "normalizedLfSha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+          "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998",
+          "normalizedLfSha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+          "sha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85",
+          "normalizedLfSha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/PlanValidator.java",
+          "sha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091",
+          "normalizedLfSha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+          "sha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e",
+          "normalizedLfSha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+          "sha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2",
+          "normalizedLfSha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ResourceManager.java",
+          "sha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c",
+          "normalizedLfSha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/SessionController.java",
+          "sha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1",
+          "normalizedLfSha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+          "sha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa",
+          "normalizedLfSha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TeamCoordinator.java",
+          "sha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e",
+          "normalizedLfSha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+          "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c",
+          "normalizedLfSha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchApplication.java",
+          "sha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961",
+          "normalizedLfSha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+          "sha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc",
+          "normalizedLfSha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+          "sha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af",
+          "normalizedLfSha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+          "sha256": "ca2505cea9318bdeeea7462d438109240efbde2daab82ea48b1ebd71a7716caa",
+          "normalizedLfSha256": "b738afd2cfb92cf643f61bc1c3ccfa4e08770851e2e10c2da7d06ace4ef52aa3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchVersion.java",
+          "sha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45",
+          "normalizedLfSha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+          "sha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28",
+          "normalizedLfSha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcess.java",
+          "sha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837",
+          "normalizedLfSha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+          "sha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d",
+          "normalizedLfSha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerRpc.java",
+          "sha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572",
+          "normalizedLfSha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerWire.java",
+          "sha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61",
+          "normalizedLfSha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+          "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c",
+          "normalizedLfSha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpAccessRegistry.java",
+          "sha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f",
+          "normalizedLfSha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+          "sha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e",
+          "normalizedLfSha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+          "sha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906",
+          "normalizedLfSha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTaskPolicy.java",
+          "sha256": "9e649ae1c9a378deb9ed90bc24dd0339245c0b447c30e0a17794056d8b409018",
+          "normalizedLfSha256": "69f4156d5f0c9f79ed287265ec3bea9284eaf0e004712151c7bf2de244afcdb6"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+          "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e",
+          "normalizedLfSha256": "cdc7e2c231f314f08639cd617011a35c3092e4724989af522411f7efdde34d87"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/AgentToolSession.java",
+          "sha256": "39ad743bcbb0e966a126061ac9676f693f75cbcf814eac26090dd3412a7a88a2",
+          "normalizedLfSha256": "df85816da5746660a2c6567959f602c88012024f79f02aafa36e14dd134a641b"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/CheckpointRestoreRejected.java",
+          "sha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434",
+          "normalizedLfSha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+          "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931",
+          "normalizedLfSha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitBlobBatch.java",
+          "sha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa",
+          "normalizedLfSha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+          "sha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423",
+          "normalizedLfSha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+          "sha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242",
+          "normalizedLfSha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/ModelCallObserver.java",
+          "sha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a",
+          "normalizedLfSha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+          "sha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846",
+          "normalizedLfSha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+          "sha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448",
+          "normalizedLfSha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceContentSnapshot.java",
+          "sha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79",
+          "normalizedLfSha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+          "sha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3",
+          "normalizedLfSha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+          "sha256": "306d0604e2ac53d39249d44b5042e15c3b268e5de01a05b46f2418c85026dc29",
+          "normalizedLfSha256": "0e353cc36c8be337afd6b9516a63bd354d53e6c63846d2df2c3d7a65e086a4be"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceSelectionConflict.java",
+          "sha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195",
+          "normalizedLfSha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+          "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360",
+          "normalizedLfSha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
+        },
+        {
+          "file": "core/src/main/resources/application.properties",
+          "sha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39",
+          "normalizedLfSha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39"
+        },
+        {
+          "file": "core/src/main/resources/workbench-build.properties",
+          "sha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458",
+          "normalizedLfSha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/AgentRunStoreTest.java",
+          "sha256": "b89ee4f4f690f0aeaf622ba857fe4999fbc1698cac5d8377d09b953f919b7ff0",
+          "normalizedLfSha256": "15b1a49b869828416a01f5cbccb99ca26169d1789451d649cc256546391afd7f"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointEngineTest.java",
+          "sha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4",
+          "normalizedLfSha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointExportHistoryTest.java",
+          "sha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6",
+          "normalizedLfSha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointFailureEvidence.java",
+          "sha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3",
+          "normalizedLfSha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ExecutionStoreTest.java",
+          "sha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6",
+          "normalizedLfSha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
+          "sha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3",
+          "normalizedLfSha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/GitWorkspaceTest.java",
+          "sha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83",
+          "normalizedLfSha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/LocalAccessFilterTest.java",
+          "sha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2",
+          "normalizedLfSha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
+          "sha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406",
+          "normalizedLfSha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ModelRequestStoreTest.java",
+          "sha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603",
+          "normalizedLfSha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/PlanAndPolicyTest.java",
+          "sha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c",
+          "normalizedLfSha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
+          "sha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c",
+          "normalizedLfSha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RootDispatchEngineTest.java",
+          "sha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c",
+          "normalizedLfSha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeDelegationTest.java",
+          "sha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7",
+          "normalizedLfSha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+          "sha256": "409cc2ef7d95a36128b325870607708751f953f27892235d3231a4f7c7de57e3",
+          "normalizedLfSha256": "1ce30cc4ff41d2e67095ee183c358b4841ec1531564b1b920d642c5362fd4733"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/SessionStoreTest.java",
+          "sha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62",
+          "normalizedLfSha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TaskDispatchQueueTest.java",
+          "sha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88",
+          "normalizedLfSha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+          "sha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409",
+          "normalizedLfSha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamRecordsTest.java",
+          "sha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef",
+          "normalizedLfSha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WindowsProcessSnapshotTest.java",
+          "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1",
+          "normalizedLfSha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchEngineTest.java",
+          "sha256": "14601d8e0087715b1328ffb19faedc5948c334bd341175525d5011d748fa0e69",
+          "normalizedLfSha256": "a3f3fbe3eaf7ad3fbbb68a97a49adef6001bd4e3cbd46ac27f1723b3647cb8f9"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchVersionTest.java",
+          "sha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28",
+          "normalizedLfSha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerLeaseTest.java",
+          "sha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a",
+          "normalizedLfSha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerProcessTest.java",
+          "sha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1",
+          "normalizedLfSha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerRpcTest.java",
+          "sha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb",
+          "normalizedLfSha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerWireTest.java",
+          "sha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4",
+          "normalizedLfSha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceSelectionEngineTest.java",
+          "sha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015",
+          "normalizedLfSha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteEngineTest.java",
+          "sha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3",
+          "normalizedLfSha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteLedgerTest.java",
+          "sha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0",
+          "normalizedLfSha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
+          "sha256": "5a23d5c113b2b1b6b63f2751bb0b816ad8e5bababd1b4e62b14a1147a09eb202",
+          "normalizedLfSha256": "0ac9317ff6db7404c9d1c3169f7f9f34fcb11da408719316bb0a43b37ce55869"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/FileVersionRuntimeTest.java",
+          "sha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7",
+          "normalizedLfSha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitBlobBatchTest.java",
+          "sha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295",
+          "normalizedLfSha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+          "sha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87",
+          "normalizedLfSha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+          "sha256": "d32a2d184f276842c7df6ea2168c455ff9e8ed7efaafcd8607480ab6f46c0755",
+          "normalizedLfSha256": "d32a2d184f276842c7df6ea2168c455ff9e8ed7efaafcd8607480ab6f46c0755"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceWriteGuardTest.java",
+          "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9",
+          "normalizedLfSha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9"
+        }
+      ]
+    },
+    {
+      "label": "repaired-attempt1",
+      "file": ".runtime/alpha19-core-index-observation-repaired-attempt1/receipt.json",
+      "sha256": "2ba8f714ad5831cd1872ff2627b768fcc3186159d0f2c78f0e59d63a26399b21",
+      "status": "failed",
+      "exitCode": 1,
+      "sourcesUnchanged": true,
+      "totals": {
+        "tests": 2,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      "originalCommandLog": {
+        "file": ".runtime/alpha19-core-index-observation-repaired-attempt1/command.log",
+        "sha256": "e49e5edd02b957ddefbf25f7ffb7cecc65899dd09476edda3b482e74dfec3f55"
+      },
+      "sources": [
+        {
+          "file": "core/pom.xml",
+          "sha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598",
+          "normalizedLfSha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/AgentPermissions.java",
+          "sha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8",
+          "normalizedLfSha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiErrors.java",
+          "sha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c",
+          "normalizedLfSha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiException.java",
+          "sha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c",
+          "normalizedLfSha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/BudgetPolicy.java",
+          "sha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7",
+          "normalizedLfSha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointExportHistory.java",
+          "sha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c",
+          "normalizedLfSha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointLedger.java",
+          "sha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8",
+          "normalizedLfSha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CollaborationPolicy.java",
+          "sha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277",
+          "normalizedLfSha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionNodes.java",
+          "sha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba",
+          "normalizedLfSha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+          "sha256": "1044d948da7e20a08377fe9b4c23140607473d04ebf6e55c2a7e1c493605ee32",
+          "normalizedLfSha256": "29663610aa1c73e07dbf018e6e748f25888b3701e6e30cb9375b86b70502e600"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionWorker.java",
+          "sha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5",
+          "normalizedLfSha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+          "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c",
+          "normalizedLfSha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/Json.java",
+          "sha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62",
+          "normalizedLfSha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalAccessFilter.java",
+          "sha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08",
+          "normalizedLfSha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+          "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998",
+          "normalizedLfSha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+          "sha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85",
+          "normalizedLfSha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/PlanValidator.java",
+          "sha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091",
+          "normalizedLfSha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+          "sha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e",
+          "normalizedLfSha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+          "sha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2",
+          "normalizedLfSha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ResourceManager.java",
+          "sha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c",
+          "normalizedLfSha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/SessionController.java",
+          "sha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1",
+          "normalizedLfSha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+          "sha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa",
+          "normalizedLfSha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TeamCoordinator.java",
+          "sha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e",
+          "normalizedLfSha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+          "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c",
+          "normalizedLfSha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchApplication.java",
+          "sha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961",
+          "normalizedLfSha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+          "sha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc",
+          "normalizedLfSha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+          "sha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af",
+          "normalizedLfSha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+          "sha256": "ca2505cea9318bdeeea7462d438109240efbde2daab82ea48b1ebd71a7716caa",
+          "normalizedLfSha256": "b738afd2cfb92cf643f61bc1c3ccfa4e08770851e2e10c2da7d06ace4ef52aa3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchVersion.java",
+          "sha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45",
+          "normalizedLfSha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+          "sha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28",
+          "normalizedLfSha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcess.java",
+          "sha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837",
+          "normalizedLfSha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+          "sha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d",
+          "normalizedLfSha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerRpc.java",
+          "sha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572",
+          "normalizedLfSha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerWire.java",
+          "sha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61",
+          "normalizedLfSha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+          "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c",
+          "normalizedLfSha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpAccessRegistry.java",
+          "sha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f",
+          "normalizedLfSha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+          "sha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e",
+          "normalizedLfSha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+          "sha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906",
+          "normalizedLfSha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTaskPolicy.java",
+          "sha256": "9e649ae1c9a378deb9ed90bc24dd0339245c0b447c30e0a17794056d8b409018",
+          "normalizedLfSha256": "69f4156d5f0c9f79ed287265ec3bea9284eaf0e004712151c7bf2de244afcdb6"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+          "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e",
+          "normalizedLfSha256": "cdc7e2c231f314f08639cd617011a35c3092e4724989af522411f7efdde34d87"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/AgentToolSession.java",
+          "sha256": "39ad743bcbb0e966a126061ac9676f693f75cbcf814eac26090dd3412a7a88a2",
+          "normalizedLfSha256": "df85816da5746660a2c6567959f602c88012024f79f02aafa36e14dd134a641b"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/CheckpointRestoreRejected.java",
+          "sha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434",
+          "normalizedLfSha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+          "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931",
+          "normalizedLfSha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitBlobBatch.java",
+          "sha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa",
+          "normalizedLfSha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+          "sha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423",
+          "normalizedLfSha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+          "sha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242",
+          "normalizedLfSha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/ModelCallObserver.java",
+          "sha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a",
+          "normalizedLfSha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+          "sha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846",
+          "normalizedLfSha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+          "sha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448",
+          "normalizedLfSha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceContentSnapshot.java",
+          "sha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79",
+          "normalizedLfSha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+          "sha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3",
+          "normalizedLfSha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+          "sha256": "8342e31c916ef9d025a4061c61a8c17ff597065c5faef7a4f56c3b9bcb47da46",
+          "normalizedLfSha256": "6b8bed75c1efd5c480c521e206641c63e70150c82ac0e00a69aa753db1f37759"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceSelectionConflict.java",
+          "sha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195",
+          "normalizedLfSha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+          "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360",
+          "normalizedLfSha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
+        },
+        {
+          "file": "core/src/main/resources/application.properties",
+          "sha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39",
+          "normalizedLfSha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39"
+        },
+        {
+          "file": "core/src/main/resources/workbench-build.properties",
+          "sha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458",
+          "normalizedLfSha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/AgentRunStoreTest.java",
+          "sha256": "b89ee4f4f690f0aeaf622ba857fe4999fbc1698cac5d8377d09b953f919b7ff0",
+          "normalizedLfSha256": "15b1a49b869828416a01f5cbccb99ca26169d1789451d649cc256546391afd7f"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointEngineTest.java",
+          "sha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4",
+          "normalizedLfSha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointExportHistoryTest.java",
+          "sha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6",
+          "normalizedLfSha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointFailureEvidence.java",
+          "sha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3",
+          "normalizedLfSha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ExecutionStoreTest.java",
+          "sha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6",
+          "normalizedLfSha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
+          "sha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3",
+          "normalizedLfSha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/GitWorkspaceTest.java",
+          "sha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83",
+          "normalizedLfSha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/LocalAccessFilterTest.java",
+          "sha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2",
+          "normalizedLfSha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
+          "sha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406",
+          "normalizedLfSha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ModelRequestStoreTest.java",
+          "sha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603",
+          "normalizedLfSha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/PlanAndPolicyTest.java",
+          "sha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c",
+          "normalizedLfSha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
+          "sha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c",
+          "normalizedLfSha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RootDispatchEngineTest.java",
+          "sha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c",
+          "normalizedLfSha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeDelegationTest.java",
+          "sha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7",
+          "normalizedLfSha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+          "sha256": "409cc2ef7d95a36128b325870607708751f953f27892235d3231a4f7c7de57e3",
+          "normalizedLfSha256": "1ce30cc4ff41d2e67095ee183c358b4841ec1531564b1b920d642c5362fd4733"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/SessionStoreTest.java",
+          "sha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62",
+          "normalizedLfSha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TaskDispatchQueueTest.java",
+          "sha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88",
+          "normalizedLfSha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+          "sha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409",
+          "normalizedLfSha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamRecordsTest.java",
+          "sha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef",
+          "normalizedLfSha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WindowsProcessSnapshotTest.java",
+          "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1",
+          "normalizedLfSha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchEngineTest.java",
+          "sha256": "14601d8e0087715b1328ffb19faedc5948c334bd341175525d5011d748fa0e69",
+          "normalizedLfSha256": "a3f3fbe3eaf7ad3fbbb68a97a49adef6001bd4e3cbd46ac27f1723b3647cb8f9"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchVersionTest.java",
+          "sha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28",
+          "normalizedLfSha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerLeaseTest.java",
+          "sha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a",
+          "normalizedLfSha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerProcessTest.java",
+          "sha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1",
+          "normalizedLfSha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerRpcTest.java",
+          "sha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb",
+          "normalizedLfSha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerWireTest.java",
+          "sha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4",
+          "normalizedLfSha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceSelectionEngineTest.java",
+          "sha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015",
+          "normalizedLfSha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteEngineTest.java",
+          "sha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3",
+          "normalizedLfSha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteLedgerTest.java",
+          "sha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0",
+          "normalizedLfSha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
+          "sha256": "5a23d5c113b2b1b6b63f2751bb0b816ad8e5bababd1b4e62b14a1147a09eb202",
+          "normalizedLfSha256": "0ac9317ff6db7404c9d1c3169f7f9f34fcb11da408719316bb0a43b37ce55869"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/FileVersionRuntimeTest.java",
+          "sha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7",
+          "normalizedLfSha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitBlobBatchTest.java",
+          "sha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295",
+          "normalizedLfSha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+          "sha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87",
+          "normalizedLfSha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+          "sha256": "d32a2d184f276842c7df6ea2168c455ff9e8ed7efaafcd8607480ab6f46c0755",
+          "normalizedLfSha256": "d32a2d184f276842c7df6ea2168c455ff9e8ed7efaafcd8607480ab6f46c0755"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceWriteGuardTest.java",
+          "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9",
+          "normalizedLfSha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9"
+        }
+      ]
+    },
+    {
+      "label": "repaired-attempt2",
+      "file": ".runtime/alpha19-core-index-observation-repaired-attempt2/receipt.json",
+      "sha256": "164e14795312470be5b28880e133c08d0048ccd14b7f2ebbc433b4015a8fd3f4",
+      "status": "passed",
+      "exitCode": 0,
+      "sourcesUnchanged": true,
+      "totals": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "originalCommandLog": {
+        "file": ".runtime/alpha19-core-index-observation-repaired-attempt2/command.log",
+        "sha256": "812971576b985c98bdbc52bf67470d2243e601048b08a3fd06f00b999eb134bc"
+      },
+      "sources": [
+        {
+          "file": "core/pom.xml",
+          "sha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598",
+          "normalizedLfSha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/AgentPermissions.java",
+          "sha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8",
+          "normalizedLfSha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiErrors.java",
+          "sha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c",
+          "normalizedLfSha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiException.java",
+          "sha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c",
+          "normalizedLfSha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/BudgetPolicy.java",
+          "sha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7",
+          "normalizedLfSha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointExportHistory.java",
+          "sha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c",
+          "normalizedLfSha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointLedger.java",
+          "sha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8",
+          "normalizedLfSha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CollaborationPolicy.java",
+          "sha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277",
+          "normalizedLfSha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionNodes.java",
+          "sha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba",
+          "normalizedLfSha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+          "sha256": "1044d948da7e20a08377fe9b4c23140607473d04ebf6e55c2a7e1c493605ee32",
+          "normalizedLfSha256": "29663610aa1c73e07dbf018e6e748f25888b3701e6e30cb9375b86b70502e600"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionWorker.java",
+          "sha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5",
+          "normalizedLfSha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+          "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c",
+          "normalizedLfSha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/Json.java",
+          "sha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62",
+          "normalizedLfSha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalAccessFilter.java",
+          "sha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08",
+          "normalizedLfSha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+          "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998",
+          "normalizedLfSha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+          "sha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85",
+          "normalizedLfSha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/PlanValidator.java",
+          "sha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091",
+          "normalizedLfSha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+          "sha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e",
+          "normalizedLfSha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+          "sha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2",
+          "normalizedLfSha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ResourceManager.java",
+          "sha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c",
+          "normalizedLfSha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/SessionController.java",
+          "sha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1",
+          "normalizedLfSha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+          "sha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa",
+          "normalizedLfSha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TeamCoordinator.java",
+          "sha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e",
+          "normalizedLfSha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+          "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c",
+          "normalizedLfSha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchApplication.java",
+          "sha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961",
+          "normalizedLfSha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+          "sha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc",
+          "normalizedLfSha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+          "sha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af",
+          "normalizedLfSha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+          "sha256": "ca2505cea9318bdeeea7462d438109240efbde2daab82ea48b1ebd71a7716caa",
+          "normalizedLfSha256": "b738afd2cfb92cf643f61bc1c3ccfa4e08770851e2e10c2da7d06ace4ef52aa3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchVersion.java",
+          "sha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45",
+          "normalizedLfSha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+          "sha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28",
+          "normalizedLfSha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcess.java",
+          "sha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837",
+          "normalizedLfSha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+          "sha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d",
+          "normalizedLfSha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerRpc.java",
+          "sha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572",
+          "normalizedLfSha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerWire.java",
+          "sha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61",
+          "normalizedLfSha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+          "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c",
+          "normalizedLfSha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpAccessRegistry.java",
+          "sha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f",
+          "normalizedLfSha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+          "sha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e",
+          "normalizedLfSha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+          "sha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906",
+          "normalizedLfSha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTaskPolicy.java",
+          "sha256": "9e649ae1c9a378deb9ed90bc24dd0339245c0b447c30e0a17794056d8b409018",
+          "normalizedLfSha256": "69f4156d5f0c9f79ed287265ec3bea9284eaf0e004712151c7bf2de244afcdb6"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+          "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e",
+          "normalizedLfSha256": "cdc7e2c231f314f08639cd617011a35c3092e4724989af522411f7efdde34d87"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/AgentToolSession.java",
+          "sha256": "39ad743bcbb0e966a126061ac9676f693f75cbcf814eac26090dd3412a7a88a2",
+          "normalizedLfSha256": "df85816da5746660a2c6567959f602c88012024f79f02aafa36e14dd134a641b"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/CheckpointRestoreRejected.java",
+          "sha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434",
+          "normalizedLfSha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+          "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931",
+          "normalizedLfSha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitBlobBatch.java",
+          "sha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa",
+          "normalizedLfSha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+          "sha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423",
+          "normalizedLfSha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+          "sha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242",
+          "normalizedLfSha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/ModelCallObserver.java",
+          "sha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a",
+          "normalizedLfSha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+          "sha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846",
+          "normalizedLfSha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+          "sha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448",
+          "normalizedLfSha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceContentSnapshot.java",
+          "sha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79",
+          "normalizedLfSha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+          "sha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3",
+          "normalizedLfSha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+          "sha256": "8342e31c916ef9d025a4061c61a8c17ff597065c5faef7a4f56c3b9bcb47da46",
+          "normalizedLfSha256": "6b8bed75c1efd5c480c521e206641c63e70150c82ac0e00a69aa753db1f37759"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceSelectionConflict.java",
+          "sha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195",
+          "normalizedLfSha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+          "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360",
+          "normalizedLfSha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
+        },
+        {
+          "file": "core/src/main/resources/application.properties",
+          "sha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39",
+          "normalizedLfSha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39"
+        },
+        {
+          "file": "core/src/main/resources/workbench-build.properties",
+          "sha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458",
+          "normalizedLfSha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/AgentRunStoreTest.java",
+          "sha256": "b89ee4f4f690f0aeaf622ba857fe4999fbc1698cac5d8377d09b953f919b7ff0",
+          "normalizedLfSha256": "15b1a49b869828416a01f5cbccb99ca26169d1789451d649cc256546391afd7f"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointEngineTest.java",
+          "sha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4",
+          "normalizedLfSha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointExportHistoryTest.java",
+          "sha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6",
+          "normalizedLfSha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointFailureEvidence.java",
+          "sha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3",
+          "normalizedLfSha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ExecutionStoreTest.java",
+          "sha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6",
+          "normalizedLfSha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
+          "sha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3",
+          "normalizedLfSha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/GitWorkspaceTest.java",
+          "sha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83",
+          "normalizedLfSha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/LocalAccessFilterTest.java",
+          "sha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2",
+          "normalizedLfSha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
+          "sha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406",
+          "normalizedLfSha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ModelRequestStoreTest.java",
+          "sha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603",
+          "normalizedLfSha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/PlanAndPolicyTest.java",
+          "sha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c",
+          "normalizedLfSha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
+          "sha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c",
+          "normalizedLfSha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RootDispatchEngineTest.java",
+          "sha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c",
+          "normalizedLfSha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeDelegationTest.java",
+          "sha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7",
+          "normalizedLfSha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+          "sha256": "409cc2ef7d95a36128b325870607708751f953f27892235d3231a4f7c7de57e3",
+          "normalizedLfSha256": "1ce30cc4ff41d2e67095ee183c358b4841ec1531564b1b920d642c5362fd4733"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/SessionStoreTest.java",
+          "sha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62",
+          "normalizedLfSha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TaskDispatchQueueTest.java",
+          "sha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88",
+          "normalizedLfSha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+          "sha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409",
+          "normalizedLfSha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamRecordsTest.java",
+          "sha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef",
+          "normalizedLfSha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WindowsProcessSnapshotTest.java",
+          "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1",
+          "normalizedLfSha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchEngineTest.java",
+          "sha256": "14601d8e0087715b1328ffb19faedc5948c334bd341175525d5011d748fa0e69",
+          "normalizedLfSha256": "a3f3fbe3eaf7ad3fbbb68a97a49adef6001bd4e3cbd46ac27f1723b3647cb8f9"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchVersionTest.java",
+          "sha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28",
+          "normalizedLfSha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerLeaseTest.java",
+          "sha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a",
+          "normalizedLfSha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerProcessTest.java",
+          "sha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1",
+          "normalizedLfSha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerRpcTest.java",
+          "sha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb",
+          "normalizedLfSha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerWireTest.java",
+          "sha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4",
+          "normalizedLfSha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceSelectionEngineTest.java",
+          "sha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015",
+          "normalizedLfSha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteEngineTest.java",
+          "sha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3",
+          "normalizedLfSha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteLedgerTest.java",
+          "sha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0",
+          "normalizedLfSha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
+          "sha256": "5a23d5c113b2b1b6b63f2751bb0b816ad8e5bababd1b4e62b14a1147a09eb202",
+          "normalizedLfSha256": "0ac9317ff6db7404c9d1c3169f7f9f34fcb11da408719316bb0a43b37ce55869"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/FileVersionRuntimeTest.java",
+          "sha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7",
+          "normalizedLfSha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitBlobBatchTest.java",
+          "sha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295",
+          "normalizedLfSha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+          "sha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87",
+          "normalizedLfSha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+          "sha256": "d605c10c3ac9d763c843a006ce71421e3918d27406acf1288b2ad15a53b192d1",
+          "normalizedLfSha256": "d605c10c3ac9d763c843a006ce71421e3918d27406acf1288b2ad15a53b192d1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceWriteGuardTest.java",
+          "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9",
+          "normalizedLfSha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9"
+        }
+      ]
+    },
+    {
+      "label": "repaired-attempt3",
+      "file": ".runtime/alpha19-core-index-observation-repaired-attempt3/receipt.json",
+      "sha256": "18b4f13a374f5111fe94f7b5743d098d91109ba3eb1215928a525e831a14d1a5",
+      "status": "failed",
+      "exitCode": 1,
+      "sourcesUnchanged": true,
+      "totals": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 2,
+        "skipped": 0
+      },
+      "originalCommandLog": {
+        "file": ".runtime/alpha19-core-index-observation-repaired-attempt3/command.log",
+        "sha256": "2fe1db3cca30a08428d99e3988bc0efb0ca17876d6ec78752fd054e5b53e5b22"
+      },
+      "sources": [
+        {
+          "file": "core/pom.xml",
+          "sha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598",
+          "normalizedLfSha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/AgentPermissions.java",
+          "sha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8",
+          "normalizedLfSha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiErrors.java",
+          "sha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c",
+          "normalizedLfSha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiException.java",
+          "sha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c",
+          "normalizedLfSha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/BudgetPolicy.java",
+          "sha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7",
+          "normalizedLfSha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointExportHistory.java",
+          "sha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c",
+          "normalizedLfSha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointLedger.java",
+          "sha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8",
+          "normalizedLfSha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CollaborationPolicy.java",
+          "sha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277",
+          "normalizedLfSha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionNodes.java",
+          "sha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba",
+          "normalizedLfSha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+          "sha256": "1044d948da7e20a08377fe9b4c23140607473d04ebf6e55c2a7e1c493605ee32",
+          "normalizedLfSha256": "29663610aa1c73e07dbf018e6e748f25888b3701e6e30cb9375b86b70502e600"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionWorker.java",
+          "sha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5",
+          "normalizedLfSha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+          "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c",
+          "normalizedLfSha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/Json.java",
+          "sha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62",
+          "normalizedLfSha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalAccessFilter.java",
+          "sha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08",
+          "normalizedLfSha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+          "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998",
+          "normalizedLfSha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+          "sha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85",
+          "normalizedLfSha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/PlanValidator.java",
+          "sha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091",
+          "normalizedLfSha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+          "sha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e",
+          "normalizedLfSha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+          "sha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2",
+          "normalizedLfSha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ResourceManager.java",
+          "sha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c",
+          "normalizedLfSha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/SessionController.java",
+          "sha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1",
+          "normalizedLfSha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+          "sha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa",
+          "normalizedLfSha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TeamCoordinator.java",
+          "sha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e",
+          "normalizedLfSha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+          "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c",
+          "normalizedLfSha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchApplication.java",
+          "sha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961",
+          "normalizedLfSha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+          "sha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc",
+          "normalizedLfSha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+          "sha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af",
+          "normalizedLfSha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+          "sha256": "ca2505cea9318bdeeea7462d438109240efbde2daab82ea48b1ebd71a7716caa",
+          "normalizedLfSha256": "b738afd2cfb92cf643f61bc1c3ccfa4e08770851e2e10c2da7d06ace4ef52aa3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchVersion.java",
+          "sha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45",
+          "normalizedLfSha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+          "sha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28",
+          "normalizedLfSha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcess.java",
+          "sha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837",
+          "normalizedLfSha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+          "sha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d",
+          "normalizedLfSha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerRpc.java",
+          "sha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572",
+          "normalizedLfSha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerWire.java",
+          "sha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61",
+          "normalizedLfSha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+          "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c",
+          "normalizedLfSha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpAccessRegistry.java",
+          "sha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f",
+          "normalizedLfSha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+          "sha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e",
+          "normalizedLfSha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+          "sha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906",
+          "normalizedLfSha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTaskPolicy.java",
+          "sha256": "9e649ae1c9a378deb9ed90bc24dd0339245c0b447c30e0a17794056d8b409018",
+          "normalizedLfSha256": "69f4156d5f0c9f79ed287265ec3bea9284eaf0e004712151c7bf2de244afcdb6"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+          "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e",
+          "normalizedLfSha256": "cdc7e2c231f314f08639cd617011a35c3092e4724989af522411f7efdde34d87"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/AgentToolSession.java",
+          "sha256": "39ad743bcbb0e966a126061ac9676f693f75cbcf814eac26090dd3412a7a88a2",
+          "normalizedLfSha256": "df85816da5746660a2c6567959f602c88012024f79f02aafa36e14dd134a641b"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/CheckpointRestoreRejected.java",
+          "sha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434",
+          "normalizedLfSha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+          "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931",
+          "normalizedLfSha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitBlobBatch.java",
+          "sha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa",
+          "normalizedLfSha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+          "sha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423",
+          "normalizedLfSha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+          "sha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242",
+          "normalizedLfSha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/ModelCallObserver.java",
+          "sha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a",
+          "normalizedLfSha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+          "sha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846",
+          "normalizedLfSha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+          "sha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448",
+          "normalizedLfSha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceContentSnapshot.java",
+          "sha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79",
+          "normalizedLfSha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+          "sha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3",
+          "normalizedLfSha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+          "sha256": "9afff5a7350958939064c9da9740a953a022f6835cf0e5b2f7fd1a28e5dc4c3b",
+          "normalizedLfSha256": "307b67618f1247f5a12bedcad2910506dfa8f7f2dbc524b0dae1e9116380929f"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceSelectionConflict.java",
+          "sha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195",
+          "normalizedLfSha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+          "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360",
+          "normalizedLfSha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
+        },
+        {
+          "file": "core/src/main/resources/application.properties",
+          "sha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39",
+          "normalizedLfSha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39"
+        },
+        {
+          "file": "core/src/main/resources/workbench-build.properties",
+          "sha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458",
+          "normalizedLfSha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/AgentRunStoreTest.java",
+          "sha256": "b89ee4f4f690f0aeaf622ba857fe4999fbc1698cac5d8377d09b953f919b7ff0",
+          "normalizedLfSha256": "15b1a49b869828416a01f5cbccb99ca26169d1789451d649cc256546391afd7f"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointEngineTest.java",
+          "sha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4",
+          "normalizedLfSha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointExportHistoryTest.java",
+          "sha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6",
+          "normalizedLfSha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointFailureEvidence.java",
+          "sha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3",
+          "normalizedLfSha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ExecutionStoreTest.java",
+          "sha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6",
+          "normalizedLfSha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
+          "sha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3",
+          "normalizedLfSha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/GitWorkspaceTest.java",
+          "sha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83",
+          "normalizedLfSha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/LocalAccessFilterTest.java",
+          "sha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2",
+          "normalizedLfSha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
+          "sha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406",
+          "normalizedLfSha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ModelRequestStoreTest.java",
+          "sha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603",
+          "normalizedLfSha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/PlanAndPolicyTest.java",
+          "sha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c",
+          "normalizedLfSha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
+          "sha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c",
+          "normalizedLfSha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RootDispatchEngineTest.java",
+          "sha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c",
+          "normalizedLfSha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeDelegationTest.java",
+          "sha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7",
+          "normalizedLfSha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+          "sha256": "409cc2ef7d95a36128b325870607708751f953f27892235d3231a4f7c7de57e3",
+          "normalizedLfSha256": "1ce30cc4ff41d2e67095ee183c358b4841ec1531564b1b920d642c5362fd4733"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/SessionStoreTest.java",
+          "sha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62",
+          "normalizedLfSha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TaskDispatchQueueTest.java",
+          "sha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88",
+          "normalizedLfSha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+          "sha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409",
+          "normalizedLfSha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamRecordsTest.java",
+          "sha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef",
+          "normalizedLfSha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WindowsProcessSnapshotTest.java",
+          "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1",
+          "normalizedLfSha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchEngineTest.java",
+          "sha256": "14601d8e0087715b1328ffb19faedc5948c334bd341175525d5011d748fa0e69",
+          "normalizedLfSha256": "a3f3fbe3eaf7ad3fbbb68a97a49adef6001bd4e3cbd46ac27f1723b3647cb8f9"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchVersionTest.java",
+          "sha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28",
+          "normalizedLfSha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerLeaseTest.java",
+          "sha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a",
+          "normalizedLfSha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerProcessTest.java",
+          "sha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1",
+          "normalizedLfSha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerRpcTest.java",
+          "sha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb",
+          "normalizedLfSha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerWireTest.java",
+          "sha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4",
+          "normalizedLfSha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceSelectionEngineTest.java",
+          "sha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015",
+          "normalizedLfSha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteEngineTest.java",
+          "sha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3",
+          "normalizedLfSha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteLedgerTest.java",
+          "sha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0",
+          "normalizedLfSha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
+          "sha256": "5a23d5c113b2b1b6b63f2751bb0b816ad8e5bababd1b4e62b14a1147a09eb202",
+          "normalizedLfSha256": "0ac9317ff6db7404c9d1c3169f7f9f34fcb11da408719316bb0a43b37ce55869"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/FileVersionRuntimeTest.java",
+          "sha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7",
+          "normalizedLfSha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitBlobBatchTest.java",
+          "sha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295",
+          "normalizedLfSha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+          "sha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87",
+          "normalizedLfSha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+          "sha256": "c0b9c01a381ff3ea32d5ba610c7d2e1b69a75484c0c547f21416e4847d311948",
+          "normalizedLfSha256": "c0b9c01a381ff3ea32d5ba610c7d2e1b69a75484c0c547f21416e4847d311948"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceWriteGuardTest.java",
+          "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9",
+          "normalizedLfSha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9"
+        }
+      ]
+    },
+    {
+      "label": "repaired-attempt4",
+      "file": ".runtime/alpha19-core-index-observation-repaired-attempt4/receipt.json",
+      "sha256": "69ff7f3691ad83d0e265d0be022b17536823ae7985d3b310195774b26678ecda",
+      "status": "failed",
+      "exitCode": 1,
+      "sourcesUnchanged": true,
+      "totals": {
+        "tests": 5,
+        "failures": 1,
+        "errors": 2,
+        "skipped": 0
+      },
+      "originalCommandLog": {
+        "file": ".runtime/alpha19-core-index-observation-repaired-attempt4/command.log",
+        "sha256": "d3ee334bb469b0fce41b436e84acb4b593d80a4f52f1710dc49b87b0db56b50a"
+      },
+      "sources": [
+        {
+          "file": "core/pom.xml",
+          "sha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598",
+          "normalizedLfSha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/AgentPermissions.java",
+          "sha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8",
+          "normalizedLfSha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiErrors.java",
+          "sha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c",
+          "normalizedLfSha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiException.java",
+          "sha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c",
+          "normalizedLfSha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/BudgetPolicy.java",
+          "sha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7",
+          "normalizedLfSha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointExportHistory.java",
+          "sha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c",
+          "normalizedLfSha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointLedger.java",
+          "sha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8",
+          "normalizedLfSha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CollaborationPolicy.java",
+          "sha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277",
+          "normalizedLfSha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionNodes.java",
+          "sha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba",
+          "normalizedLfSha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+          "sha256": "1044d948da7e20a08377fe9b4c23140607473d04ebf6e55c2a7e1c493605ee32",
+          "normalizedLfSha256": "29663610aa1c73e07dbf018e6e748f25888b3701e6e30cb9375b86b70502e600"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionWorker.java",
+          "sha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5",
+          "normalizedLfSha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+          "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c",
+          "normalizedLfSha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/Json.java",
+          "sha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62",
+          "normalizedLfSha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalAccessFilter.java",
+          "sha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08",
+          "normalizedLfSha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+          "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998",
+          "normalizedLfSha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+          "sha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85",
+          "normalizedLfSha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/PlanValidator.java",
+          "sha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091",
+          "normalizedLfSha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+          "sha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e",
+          "normalizedLfSha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+          "sha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2",
+          "normalizedLfSha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ResourceManager.java",
+          "sha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c",
+          "normalizedLfSha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/SessionController.java",
+          "sha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1",
+          "normalizedLfSha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+          "sha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa",
+          "normalizedLfSha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TeamCoordinator.java",
+          "sha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e",
+          "normalizedLfSha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+          "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c",
+          "normalizedLfSha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchApplication.java",
+          "sha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961",
+          "normalizedLfSha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+          "sha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc",
+          "normalizedLfSha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+          "sha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af",
+          "normalizedLfSha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+          "sha256": "ca2505cea9318bdeeea7462d438109240efbde2daab82ea48b1ebd71a7716caa",
+          "normalizedLfSha256": "b738afd2cfb92cf643f61bc1c3ccfa4e08770851e2e10c2da7d06ace4ef52aa3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchVersion.java",
+          "sha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45",
+          "normalizedLfSha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+          "sha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28",
+          "normalizedLfSha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcess.java",
+          "sha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837",
+          "normalizedLfSha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+          "sha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d",
+          "normalizedLfSha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerRpc.java",
+          "sha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572",
+          "normalizedLfSha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerWire.java",
+          "sha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61",
+          "normalizedLfSha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+          "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c",
+          "normalizedLfSha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpAccessRegistry.java",
+          "sha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f",
+          "normalizedLfSha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+          "sha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e",
+          "normalizedLfSha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+          "sha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906",
+          "normalizedLfSha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTaskPolicy.java",
+          "sha256": "9e649ae1c9a378deb9ed90bc24dd0339245c0b447c30e0a17794056d8b409018",
+          "normalizedLfSha256": "69f4156d5f0c9f79ed287265ec3bea9284eaf0e004712151c7bf2de244afcdb6"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+          "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e",
+          "normalizedLfSha256": "cdc7e2c231f314f08639cd617011a35c3092e4724989af522411f7efdde34d87"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/AgentToolSession.java",
+          "sha256": "39ad743bcbb0e966a126061ac9676f693f75cbcf814eac26090dd3412a7a88a2",
+          "normalizedLfSha256": "df85816da5746660a2c6567959f602c88012024f79f02aafa36e14dd134a641b"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/CheckpointRestoreRejected.java",
+          "sha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434",
+          "normalizedLfSha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+          "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931",
+          "normalizedLfSha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitBlobBatch.java",
+          "sha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa",
+          "normalizedLfSha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+          "sha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423",
+          "normalizedLfSha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+          "sha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242",
+          "normalizedLfSha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/ModelCallObserver.java",
+          "sha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a",
+          "normalizedLfSha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+          "sha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846",
+          "normalizedLfSha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+          "sha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448",
+          "normalizedLfSha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceContentSnapshot.java",
+          "sha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79",
+          "normalizedLfSha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+          "sha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3",
+          "normalizedLfSha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+          "sha256": "7ef2d4fdd1623b1fac68ad469e60bb6d5ce80b95286d98a1798f59f74034e37b",
+          "normalizedLfSha256": "f6dc50d8ce11d8d734f0c456c668fd91946bc7b99575cdd69fa8e8993629ba65"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceSelectionConflict.java",
+          "sha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195",
+          "normalizedLfSha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+          "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360",
+          "normalizedLfSha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
+        },
+        {
+          "file": "core/src/main/resources/application.properties",
+          "sha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39",
+          "normalizedLfSha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39"
+        },
+        {
+          "file": "core/src/main/resources/workbench-build.properties",
+          "sha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458",
+          "normalizedLfSha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/AgentRunStoreTest.java",
+          "sha256": "b89ee4f4f690f0aeaf622ba857fe4999fbc1698cac5d8377d09b953f919b7ff0",
+          "normalizedLfSha256": "15b1a49b869828416a01f5cbccb99ca26169d1789451d649cc256546391afd7f"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointEngineTest.java",
+          "sha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4",
+          "normalizedLfSha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointExportHistoryTest.java",
+          "sha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6",
+          "normalizedLfSha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointFailureEvidence.java",
+          "sha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3",
+          "normalizedLfSha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ExecutionStoreTest.java",
+          "sha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6",
+          "normalizedLfSha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
+          "sha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3",
+          "normalizedLfSha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/GitWorkspaceTest.java",
+          "sha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83",
+          "normalizedLfSha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/LocalAccessFilterTest.java",
+          "sha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2",
+          "normalizedLfSha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
+          "sha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406",
+          "normalizedLfSha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ModelRequestStoreTest.java",
+          "sha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603",
+          "normalizedLfSha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/PlanAndPolicyTest.java",
+          "sha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c",
+          "normalizedLfSha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
+          "sha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c",
+          "normalizedLfSha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RootDispatchEngineTest.java",
+          "sha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c",
+          "normalizedLfSha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeDelegationTest.java",
+          "sha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7",
+          "normalizedLfSha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+          "sha256": "409cc2ef7d95a36128b325870607708751f953f27892235d3231a4f7c7de57e3",
+          "normalizedLfSha256": "1ce30cc4ff41d2e67095ee183c358b4841ec1531564b1b920d642c5362fd4733"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/SessionStoreTest.java",
+          "sha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62",
+          "normalizedLfSha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TaskDispatchQueueTest.java",
+          "sha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88",
+          "normalizedLfSha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+          "sha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409",
+          "normalizedLfSha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamRecordsTest.java",
+          "sha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef",
+          "normalizedLfSha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WindowsProcessSnapshotTest.java",
+          "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1",
+          "normalizedLfSha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchEngineTest.java",
+          "sha256": "14601d8e0087715b1328ffb19faedc5948c334bd341175525d5011d748fa0e69",
+          "normalizedLfSha256": "a3f3fbe3eaf7ad3fbbb68a97a49adef6001bd4e3cbd46ac27f1723b3647cb8f9"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchVersionTest.java",
+          "sha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28",
+          "normalizedLfSha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerLeaseTest.java",
+          "sha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a",
+          "normalizedLfSha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerProcessTest.java",
+          "sha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1",
+          "normalizedLfSha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerRpcTest.java",
+          "sha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb",
+          "normalizedLfSha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerWireTest.java",
+          "sha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4",
+          "normalizedLfSha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceSelectionEngineTest.java",
+          "sha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015",
+          "normalizedLfSha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteEngineTest.java",
+          "sha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3",
+          "normalizedLfSha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteLedgerTest.java",
+          "sha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0",
+          "normalizedLfSha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
+          "sha256": "5a23d5c113b2b1b6b63f2751bb0b816ad8e5bababd1b4e62b14a1147a09eb202",
+          "normalizedLfSha256": "0ac9317ff6db7404c9d1c3169f7f9f34fcb11da408719316bb0a43b37ce55869"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/FileVersionRuntimeTest.java",
+          "sha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7",
+          "normalizedLfSha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitBlobBatchTest.java",
+          "sha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295",
+          "normalizedLfSha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+          "sha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87",
+          "normalizedLfSha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+          "sha256": "19ee2d272c6eb067caf6754fdf395aa0728d6d9261bac420cb97dda06e976f48",
+          "normalizedLfSha256": "19ee2d272c6eb067caf6754fdf395aa0728d6d9261bac420cb97dda06e976f48"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceWriteGuardTest.java",
+          "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9",
+          "normalizedLfSha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9"
+        }
+      ]
+    },
+    {
+      "label": "repaired-attempt5",
+      "file": ".runtime/alpha19-core-index-observation-repaired-attempt5/receipt.json",
+      "sha256": "6379716bc6bd2b0201e5bcef564860fe9c42389f99585b2cee1c8fb9949bf3fa",
+      "status": "passed",
+      "exitCode": 0,
+      "sourcesUnchanged": true,
+      "totals": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "originalCommandLog": {
+        "file": ".runtime/alpha19-core-index-observation-repaired-attempt5/command.log",
+        "sha256": "f0f3419dedfb490f3271f5b6c422599ff1afb73b1c2877f15d8b57ae8a4d52b4"
+      },
+      "sources": [
+        {
+          "file": "core/pom.xml",
+          "sha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598",
+          "normalizedLfSha256": "3fcc7a7a5814124a6771163004dfc61a3e734cd126fa2abe8213a577c2507598"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/AgentPermissions.java",
+          "sha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8",
+          "normalizedLfSha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiErrors.java",
+          "sha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c",
+          "normalizedLfSha256": "dc619dc52b41c740985e66133d429d3f563409a932bd2276a7b3b960ec94f97c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ApiException.java",
+          "sha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c",
+          "normalizedLfSha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/BudgetPolicy.java",
+          "sha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7",
+          "normalizedLfSha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointExportHistory.java",
+          "sha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c",
+          "normalizedLfSha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CheckpointLedger.java",
+          "sha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8",
+          "normalizedLfSha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/CollaborationPolicy.java",
+          "sha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277",
+          "normalizedLfSha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionNodes.java",
+          "sha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba",
+          "normalizedLfSha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+          "sha256": "1044d948da7e20a08377fe9b4c23140607473d04ebf6e55c2a7e1c493605ee32",
+          "normalizedLfSha256": "29663610aa1c73e07dbf018e6e748f25888b3701e6e30cb9375b86b70502e600"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ExecutionWorker.java",
+          "sha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5",
+          "normalizedLfSha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+          "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c",
+          "normalizedLfSha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/Json.java",
+          "sha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62",
+          "normalizedLfSha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalAccessFilter.java",
+          "sha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08",
+          "normalizedLfSha256": "b66a57ff3caa7653cb105b3dc07c734e64162fc40ec9f5b69bc0183c31a91c08"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+          "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998",
+          "normalizedLfSha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+          "sha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85",
+          "normalizedLfSha256": "dc48f88444fc4427a26693f1c924b9547f12f9b3bff9ea446446acf5de316c85"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/PlanValidator.java",
+          "sha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091",
+          "normalizedLfSha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+          "sha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e",
+          "normalizedLfSha256": "33c70a47c2228edc62354fd56ac810e296b0747503ebcd70d1b9afcc85653d2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+          "sha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2",
+          "normalizedLfSha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/ResourceManager.java",
+          "sha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c",
+          "normalizedLfSha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/SessionController.java",
+          "sha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1",
+          "normalizedLfSha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+          "sha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa",
+          "normalizedLfSha256": "6e4f2c2e5592efd9bae904783de95e81d40162cd2f05d9a8e383ac7879c0bfaa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/TeamCoordinator.java",
+          "sha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e",
+          "normalizedLfSha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+          "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c",
+          "normalizedLfSha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchApplication.java",
+          "sha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961",
+          "normalizedLfSha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+          "sha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc",
+          "normalizedLfSha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+          "sha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af",
+          "normalizedLfSha256": "1d6f9638fc6e626926f659d86093690e05c070be66009eefafe36b16ca9858af"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+          "sha256": "ca2505cea9318bdeeea7462d438109240efbde2daab82ea48b1ebd71a7716caa",
+          "normalizedLfSha256": "b738afd2cfb92cf643f61bc1c3ccfa4e08770851e2e10c2da7d06ace4ef52aa3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkbenchVersion.java",
+          "sha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45",
+          "normalizedLfSha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+          "sha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28",
+          "normalizedLfSha256": "cbc98f07eb869826c8dec9ad5eb553167cdb98bf51a299948387b7972a7a7e28"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcess.java",
+          "sha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837",
+          "normalizedLfSha256": "ae667a51aa519a432d6763f63b48aab0d79a362e961b2ff81d195a32c646b837"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+          "sha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d",
+          "normalizedLfSha256": "03f834e466fdde223aeb89525bce5a9400dcf9586e7697164b61e8eeda0c6f1d"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerRpc.java",
+          "sha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572",
+          "normalizedLfSha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkerWire.java",
+          "sha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61",
+          "normalizedLfSha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+          "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c",
+          "normalizedLfSha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpAccessRegistry.java",
+          "sha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f",
+          "normalizedLfSha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+          "sha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e",
+          "normalizedLfSha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+          "sha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906",
+          "normalizedLfSha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTaskPolicy.java",
+          "sha256": "9e649ae1c9a378deb9ed90bc24dd0339245c0b447c30e0a17794056d8b409018",
+          "normalizedLfSha256": "69f4156d5f0c9f79ed287265ec3bea9284eaf0e004712151c7bf2de244afcdb6"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+          "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e",
+          "normalizedLfSha256": "cdc7e2c231f314f08639cd617011a35c3092e4724989af522411f7efdde34d87"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/AgentToolSession.java",
+          "sha256": "39ad743bcbb0e966a126061ac9676f693f75cbcf814eac26090dd3412a7a88a2",
+          "normalizedLfSha256": "df85816da5746660a2c6567959f602c88012024f79f02aafa36e14dd134a641b"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/CheckpointRestoreRejected.java",
+          "sha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434",
+          "normalizedLfSha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+          "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931",
+          "normalizedLfSha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitBlobBatch.java",
+          "sha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa",
+          "normalizedLfSha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+          "sha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423",
+          "normalizedLfSha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+          "sha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242",
+          "normalizedLfSha256": "8af1825d06f217290b94ae69cb5fce632a9950662c4cd9bd180eb53c55728242"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/ModelCallObserver.java",
+          "sha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a",
+          "normalizedLfSha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+          "sha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846",
+          "normalizedLfSha256": "f3368f200e86e7b8cbd45b94fc2847fe46e717c57194c36dadc4193acc747846"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+          "sha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448",
+          "normalizedLfSha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceContentSnapshot.java",
+          "sha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79",
+          "normalizedLfSha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+          "sha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3",
+          "normalizedLfSha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+          "sha256": "c4c864bf554e2405244376b1fc428b3d4d516ba0ff090b62257a57d41ecda1b1",
+          "normalizedLfSha256": "29c28a1c622b98fd810850e740b2e08215ad08a1d2227c29dd347b3c6776a267"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceSelectionConflict.java",
+          "sha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195",
+          "normalizedLfSha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+          "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360",
+          "normalizedLfSha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
+        },
+        {
+          "file": "core/src/main/resources/application.properties",
+          "sha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39",
+          "normalizedLfSha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39"
+        },
+        {
+          "file": "core/src/main/resources/workbench-build.properties",
+          "sha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458",
+          "normalizedLfSha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/AgentRunStoreTest.java",
+          "sha256": "b89ee4f4f690f0aeaf622ba857fe4999fbc1698cac5d8377d09b953f919b7ff0",
+          "normalizedLfSha256": "15b1a49b869828416a01f5cbccb99ca26169d1789451d649cc256546391afd7f"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointEngineTest.java",
+          "sha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4",
+          "normalizedLfSha256": "4c3661c98a612d46488f787ca816b9d483c7e1889b18a8456587fce1d3dd65b4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointExportHistoryTest.java",
+          "sha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6",
+          "normalizedLfSha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/CheckpointFailureEvidence.java",
+          "sha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3",
+          "normalizedLfSha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ExecutionStoreTest.java",
+          "sha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6",
+          "normalizedLfSha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
+          "sha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3",
+          "normalizedLfSha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/GitWorkspaceTest.java",
+          "sha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83",
+          "normalizedLfSha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/LocalAccessFilterTest.java",
+          "sha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2",
+          "normalizedLfSha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
+          "sha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406",
+          "normalizedLfSha256": "cd648edfd3811b07d10aa6744515693df8542458b32b4e004000b21906bb3406"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ModelRequestStoreTest.java",
+          "sha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603",
+          "normalizedLfSha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/PlanAndPolicyTest.java",
+          "sha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c",
+          "normalizedLfSha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
+          "sha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c",
+          "normalizedLfSha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RootDispatchEngineTest.java",
+          "sha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c",
+          "normalizedLfSha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeDelegationTest.java",
+          "sha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7",
+          "normalizedLfSha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+          "sha256": "409cc2ef7d95a36128b325870607708751f953f27892235d3231a4f7c7de57e3",
+          "normalizedLfSha256": "1ce30cc4ff41d2e67095ee183c358b4841ec1531564b1b920d642c5362fd4733"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/SessionStoreTest.java",
+          "sha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62",
+          "normalizedLfSha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TaskDispatchQueueTest.java",
+          "sha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88",
+          "normalizedLfSha256": "045f49f684690bad6e1cce0d4021db21870f2395e71ca8f4620891334e492e88"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+          "sha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409",
+          "normalizedLfSha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/TeamRecordsTest.java",
+          "sha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef",
+          "normalizedLfSha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WindowsProcessSnapshotTest.java",
+          "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1",
+          "normalizedLfSha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchEngineTest.java",
+          "sha256": "14601d8e0087715b1328ffb19faedc5948c334bd341175525d5011d748fa0e69",
+          "normalizedLfSha256": "a3f3fbe3eaf7ad3fbbb68a97a49adef6001bd4e3cbd46ac27f1723b3647cb8f9"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkbenchVersionTest.java",
+          "sha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28",
+          "normalizedLfSha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerLeaseTest.java",
+          "sha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a",
+          "normalizedLfSha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerProcessTest.java",
+          "sha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1",
+          "normalizedLfSha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerRpcTest.java",
+          "sha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb",
+          "normalizedLfSha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkerWireTest.java",
+          "sha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4",
+          "normalizedLfSha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceSelectionEngineTest.java",
+          "sha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015",
+          "normalizedLfSha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteEngineTest.java",
+          "sha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3",
+          "normalizedLfSha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteLedgerTest.java",
+          "sha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0",
+          "normalizedLfSha256": "6a6b08d9149d5563268ec7080922bbff6de806935ab846c9702e2100318325a0"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
+          "sha256": "5a23d5c113b2b1b6b63f2751bb0b816ad8e5bababd1b4e62b14a1147a09eb202",
+          "normalizedLfSha256": "0ac9317ff6db7404c9d1c3169f7f9f34fcb11da408719316bb0a43b37ce55869"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/FileVersionRuntimeTest.java",
+          "sha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7",
+          "normalizedLfSha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitBlobBatchTest.java",
+          "sha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295",
+          "normalizedLfSha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+          "sha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87",
+          "normalizedLfSha256": "5de59794984f7cd13d1ce3d31a10587ce0146047ca21c42c1eb1fd1ea5b9ca87"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+          "sha256": "19ee2d272c6eb067caf6754fdf395aa0728d6d9261bac420cb97dda06e976f48",
+          "normalizedLfSha256": "19ee2d272c6eb067caf6754fdf395aa0728d6d9261bac420cb97dda06e976f48"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceWriteGuardTest.java",
+          "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9",
+          "normalizedLfSha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9"
+        }
+      ]
+    }
+  ],
+  "acceptedDirectedCandidate": "repaired-attempt5",
+  "acceptedDirectedCases": 5,
+  "regressionScope": [
+    "Actual CLONE and WORKTREE restore, subsequent diff/export and original index bytes",
+    "Unchanged sensitive file with changed mtime",
+    "Original split index and shared content bytes",
+    "Original binary/text patch reproduction",
+    "Original sensitive/truncated export rejection",
+    "Original staged/unstaged source materialization"
+  ],
+  "privateIndexRead": true,
+  "privateSplitIndexWritesDisabled": true,
+  "canonicalPrivateDataDirectory": true,
+  "originalFailureCausesAndResultsUnchanged": true,
+  "sourceReferences": {
+    "file": "docs/research/checkpoint-sources-2026-11-15.json",
+    "sha256": "e4d1935266d6af7a29b15bd44714d4c7a87f07506274b056177efc2d4cd3cc6c"
+  },
+  "noNewRuntimeDependencies": true
+}

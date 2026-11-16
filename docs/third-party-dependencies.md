@@ -6,6 +6,8 @@ alpha.16 的主题实现参考固定版本的 MIT 项目 OpenCode 和 next-theme
 
 alpha.18 的逐文件差异参考固定 OpenCode `59ed43f0b8da891f03a7333d540a7b0c428049ea`（MIT）与 Git v2.53.0 `67ad42147a7acc2af6074753ebd03d904476118f`（GPL-2.0）文档，十份原文件按 Git blob / SHA-256 核验。业务实现独立编写，没有复制或链接上游实现；Git 沿用用户环境中的外部工具，没有新增运行时依赖。Windows 预览目录身份复用原 JNA。固定来源见[差异研究](./research/file-diff-review-2026-11-14.md)和[清单](./research/file-diff-sources-2026-11-14.json)。
 
+alpha.19 的文件检查点与撤销沿用同一固定 OpenCode 和 Git 提交，22份原源码、文档与许可证重新核对字节数、SHA-256 和 Git blob。参考范围包括会话撤销边界、快照、Git 批量对象读取、index 原字节、worktree 双向关联和持久化选项；业务实现独立编写，没有复制上游实现、运行上游测试或新增运行时依赖。原 JNA、Maven 依赖和包内许可摘要继续按最终构建核对。来源及验收进度见[检查点研究](./research/checkpoints-2026-11-15.md)和[清单](./research/checkpoint-sources-2026-11-15.json)。
+
 ## JNA 5.17.0
 
 `net.java.dev.jna:jna:5.17.0` 与 `net.java.dev.jna:jna-platform:5.17.0` 用于 Windows 写入锁文件的原生文件身份，以及只读系统进程快照的动态调用。选择 JNA 提供的 **Apache-2.0** 许可路径，依赖 Jar 保持原字节；未复制或修改上游 Java 实现。
@@ -42,3 +44,5 @@ Java 无法读取当前 PID 出生时间时，核心调用 `ntdll` 的 `NtQueryS
 ## Git 参考
 
 Git v2.51.1 提交 `81f86aacc4eb74cdb9c2c8082d36d2070c666045` 的 lockfile API 与 worktree 文档用于理解描述符、原子意图及注册现场的语义。Git 为用户环境中的外部工具；本轮未引入或复制 GPL Git 实现。来源和实现取舍见[根写入保护研究](./research/workspace-writes-2026-11-10.md)与[Git worktree 研究](./research/git-workspaces-2026-11-09.md)。
+
+alpha.19另核对固定Git提交`67ad42147a7acc2af6074753ebd03d904476118f`的差异缓存刷新源码、配置与`GIT_INDEX_FILE`文档。差异读取在私有index副本上完成，原Git实现未复制或加入发行物；原始字节、Git blob与SHA-256见[检查点来源](./research/checkpoint-sources-2026-11-15.json)，独立复现及取舍见[检查点研究](./research/checkpoints-2026-11-15.md)。

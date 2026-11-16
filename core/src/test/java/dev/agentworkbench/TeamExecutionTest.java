@@ -8,6 +8,7 @@ import dev.agentworkbench.mcp.McpManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * 使用实际 Git、HTTP 和调度器验证委派，不用模拟运行身份替代真实执行。
  */
+@ExtendWith(CheckpointFailureEvidence.class)
 class TeamExecutionTest {
     @TempDir Path directory;
     private final ObjectMapper mapper = new ObjectMapper();

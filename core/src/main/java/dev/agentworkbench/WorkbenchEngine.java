@@ -42,6 +42,7 @@ public class WorkbenchEngine {
     private final ManagedProcessLedger processLedger;
     private final TaskDispatchQueue dispatchQueue;
     private final WorkspaceWriteLedger workspaceWrites;
+    private final CheckpointLedger checkpoints;
     private final ExecutorService workers;
     private final ScheduledExecutorService dispatcher = Executors.newSingleThreadScheduledExecutor(runnable -> Thread.ofPlatform().daemon(true).name("workbench-root-dispatch").unstarted(runnable));
     private final ReentrantLock dispatchGate = new ReentrantLock();
@@ -63,6 +64,7 @@ public class WorkbenchEngine {
     WorkbenchEngine(ExecutionStore store, WorkbenchCatalog catalog, WorkspaceRuntime runtime, ResourceManager resources, ObjectMapper mapper, McpManager mcp, ExecutorService workers) {
         this.store = store; this.catalog = catalog; this.runtime = runtime; this.resources = resources; this.mapper = mapper; this.mcp = mcp;
         this.workers = workers; this.workspaceWrites = new WorkspaceWriteLedger(store);
+        this.checkpoints = new CheckpointLedger(store, catalog, runtime);
         this.executionWorker = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.startWorker(store, catalog.nodes()) : new LocalExecutionWorker(store, catalog.nodes());
         this.dispatchQueue = runtime instanceof ProcessWorkspaceRuntime ? new TaskDispatchQueue(store, workspaceWrites, executionWorker::identity) : new TaskDispatchQueue(store);
         this.processLedger = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.managedProcesses() : new ManagedProcessLedger(store);
@@ -86,6 +88,7 @@ public class WorkbenchEngine {
     void recover() {
         workspaceWrites.recover();
         dispatchQueue.recover();
+        checkpoints.recover();
         for (Map<String, Object> run : store.list("agentRun")) {
             if (Set.of("WAITING_RESOURCE", "WAITING_TOOL", "WAITING_CHILDREN", "WAITING_DEPENDENCY", "RUNNING").contains(str(run, "state"))) {
                 store.finishAgentRun(str(run, "id"), "UNKNOWN", "核心重启，旧运行的进程及外部效果需随根任务核对；不自动重放");
@@ -129,7 +132,7 @@ public class WorkbenchEngine {
                 if (hasUnknownOperation(taskId)) { throw new ApiException(409, "存在结果未知操作，核对前不能继续"); }
                 launch(taskId, "USER_RESUME");
             }
-            case "pause", "cancel" -> requestStop(taskId, action);
+            case "pause", "cancel" -> { requestStop(taskId, action); if (!controls.containsKey(taskId)) checkpoints.stopBeforeUndo(taskId); }
             case "accept" -> accept(taskId, task);
             case "reconcile" -> reconcile(taskId, task, body);
             case "budget" -> {
@@ -172,6 +175,62 @@ public class WorkbenchEngine {
             if (controls.containsKey(taskId) || (execution != null && Set.of("QUEUED", "RUNNING").contains(str(execution, "state")))
                     || (action != null && Set.of("PENDING", "CLAIMED").contains(str(action, "state")))) throw new ApiException(409, "根执行尚未结束，请等待执行结束回执后继续");
         } finally { dispatchGate.unlock(); }
+    }
+
+    public Map<String, Object> checkpointPage(String taskId, long before, int limit) {
+        Map<String, Object> page = store.checkpointPage(taskId, before, limit), task = store.get("task", taskId);
+        page.put("sourceCheckpointId", str(task, "latestCheckpointId"));
+        try { requireCheckpointIdle(taskId, false); page.put("undoAllowed", true); }
+        catch (ApiException exception) { page.put("undoAllowed", false); page.put("blockedReason", exception.getMessage()); }
+        return page;
+    }
+
+    public Map<String, Object> createCheckpoint(String taskId, Map<String, Object> body) {
+        dispatchGate.lock();
+        try {
+            requireCheckpointIdle(taskId, true);
+            if (!Set.of("label").containsAll(body.keySet()) || (body.containsKey("label") && (!(body.get("label") instanceof String) || str(body, "label").length() > 100))) throw new ApiException(400, "检查点名称必须为不超过 100 字符的文本。");
+            return checkpoints.capture(taskId, "MANUAL", str(store.get("task", taskId), "currentStage"), str(body, "label"));
+        } finally { dispatchGate.unlock(); }
+    }
+
+    public Map<String, Object> previewCheckpointUndo(String taskId, Map<String, Object> body) {
+        dispatchGate.lock();
+        try {
+            requireCheckpointIdle(taskId, true);
+            if (!body.keySet().equals(Set.of("checkpointId")) || !(body.get("checkpointId") instanceof String)) throw new ApiException(400, "撤销预览只接受原检查点编号。");
+            return checkpoints.preview(taskId, str(body, "checkpointId"));
+        } finally { dispatchGate.unlock(); }
+    }
+
+    /**
+     * 文件撤销沿用持久根队列、授权和写入保护，预算不因恢复旧文件而倒退。
+     */
+    public Map<String, Object> requestCheckpointUndo(String taskId, Map<String, Object> body) {
+        dispatchGate.lock();
+        try {
+            requireCheckpointIdle(taskId, true);
+            if (!body.keySet().equals(Set.of("previewId")) || !(body.get("previewId") instanceof String)) throw new ApiException(400, "撤销请求只接受已检查的原预览编号。");
+            if (shuttingDown || !store.healthy()) throw new ApiException(503, "核心当前不能开始文件撤销。");
+            processLedger.requireDispatch();
+            Map<String, Object> task = store.get("task", taskId); catalog.nodes().requireCurrent(task);
+            if (!executionWorker.current(taskId)) throw new ApiException(409, "本机 Worker 归属不可用，不能开始撤销。");
+            Map<String, Object> preview = checkpoints.prepareUndo(taskId, str(body, "previewId"));
+            dispatchQueue.enqueue(taskId, "USER_CHECKPOINT_RESTORE", value -> value.put("pendingCheckpointRestoreId", preview.get("id")), Map.of("checkpointRestorePreview", List.of(preview)));
+            startDispatcher(); return store.get("task", taskId);
+        } finally { dispatchGate.unlock(); }
+    }
+
+    private void requireCheckpointIdle(String taskId, boolean ownership) {
+        Map<String, Object> task = store.get("task", taskId);
+        requireState(str(task, "state"), Set.of("PAUSED", "WAITING_INPUT", "FAILED", "AWAITING_ACCEPTANCE"));
+        requireExecutionSettled(taskId);
+        if (!store.healthy()) throw new ApiException(503, "存储不可写，不能保存或撤销文件检查点。");
+        if (hasUnknownOperation(taskId) || !str(task, "pendingCheckpointRestoreId").isBlank()) throw new ApiException(409, "原根或撤销仍有未核对结果，请先核对原执行。");
+        if (!checkpoints.available(task)) throw new ApiException(409, "任务尚无可保存的实际隔离现场。");
+        teams.requireStopped(taskId); processLedger.requireTaskStopped(taskId); executionWorker.requireStopped(taskId);
+        if (mcp != null) mcp.requireTaskCallsReturned(taskId);
+        if (ownership) runtime.requireWorkspaceOwnership(taskId, str(task, "workspace"), task);
     }
 
     /**
@@ -225,6 +284,7 @@ public class WorkbenchEngine {
             operation.put("state", "RECONCILED"); operation.put("reconciliation", obj("actor", "USER", "note", str(body, "note"), "createdAt", now())); store.put("teamOperation", operation);
         }
         executionWorker.reconcile(taskId, str(body, "note"));
+        checkpoints.reconciled(taskId, str(body, "note"));
         dispatchQueue.reconcile(taskId, body, value -> {
             value.put("state", "PAUSED"); value.put("reconciliation", obj("processesStopped", true, "sideEffectsChecked", true, "note", str(body, "note"), "createdAt", now()));
             value.remove("activeOperation"); value.remove("error");
@@ -389,12 +449,13 @@ public class WorkbenchEngine {
     }
 
     private String dispatchWaitReason(Map<String, Object> task) {
+        boolean restoring = !str(task, "pendingCheckpointRestoreId").isBlank();
         Map<String, Object> route = map(task, "routeSnapshot");
         Map<String, Object> live = store.get("route", str(task, "routeId"));
-        if (!bool(live, "enabled", false) || !BudgetPolicy.matchesLocks(route, map(task, "locks"))) {
+        if (!restoring && (!bool(live, "enabled", false) || !BudgetPolicy.matchesLocks(route, map(task, "locks")))) {
             return "运行器已停用或不满足硬锁定，请修正资源配置；当前动作尚未领取";
         }
-        if (requiresCredential(route) && catalog.credential(str(task, "routeId"), num(route, "version", 1)).isBlank()) {
+        if (!restoring && requiresCredential(route) && catalog.credential(str(task, "routeId"), num(route, "version", 1)).isBlank()) {
             return "API 凭据尚未配置或会话已结束，请在资源设置重新输入密钥";
         }
         try {
@@ -404,6 +465,13 @@ public class WorkbenchEngine {
             }
         } catch (Exception exception) { throw new ApiException(503, "无法核验存储空间"); }
         return "";
+    }
+
+    /**
+     * 自动文件保存是独立依赖边界，普通引擎始终使用原检查点账本。
+     */
+    void automaticCheckpoint(String taskId, String kind, String stage) {
+        checkpoints.captureIfAvailable(taskId, kind, stage);
     }
 
     private void execute(String taskId, Control control) {
@@ -441,6 +509,9 @@ public class WorkbenchEngine {
                 store.editTask(taskId, value -> value.remove("activeOperation"), "WORKSPACE_WRITE_HELD", "原 Worker 已取得本次根尝试的现场写入保护");
             }
             store.editTask(taskId, value -> value.put("state", "RUNNING"), "RUNNING", "开始执行已确认的计划");
+            task = store.get("task", taskId);
+            if (!str(task, "pendingCheckpointRestoreId").isBlank()) { executeCheckpointUndo(taskId, control); return; }
+            automaticCheckpoint(taskId, "WORKSPACE_READY", "prepare");
             while (true) {
                 checkStopped(control);
                 task = store.get("task", taskId);
@@ -448,6 +519,7 @@ public class WorkbenchEngine {
                 if (next == null) { finish(taskId); return; }
                 String stageId = str(next, "id"), kind = str(next, "kind");
                 stageState(taskId, stageId, "RUNNING");
+                automaticCheckpoint(taskId, "STAGE_START", stageId);
                 switch (kind) {
                     case "BASELINE" -> verification(taskId, stageId, true, control);
                     case "VERIFY" -> {
@@ -471,6 +543,7 @@ public class WorkbenchEngine {
                 }
                 checkStopped(control);
                 stageState(taskId, stageId, "COMPLETED");
+                automaticCheckpoint(taskId, "STAGE_END", stageId);
             }
         } catch (CancellationException exception) {
             stopped(control);
@@ -503,6 +576,10 @@ public class WorkbenchEngine {
             try { executionWorker.settleTask(taskId); }
             finally {
                 try {
+                    if (store.healthy()) {
+                        if ("UNKNOWN".equals(str(store.get("task", taskId), "state")) || store.hasUnknownEffects(taskId)) checkpoints.unknown(taskId, "原根收尾存在未确认效果，撤销必须人工核对");
+                        checkpoints.stopBeforeUndo(taskId); captureFinalCheckpoint(taskId);
+                    }
                     synchronized (store) { settleRequestedStop(control); }
                     if (store.healthy()) settleWorkspaceWrite(taskId);
                 } finally {
@@ -515,6 +592,39 @@ public class WorkbenchEngine {
                     }
                 }
             }
+        }
+    }
+
+    private void executeCheckpointUndo(String taskId, Control control) {
+        Map<String, Object> task = store.get("task", taskId);
+        Map<String, Object> operation = store.beginOperation(taskId, "checkpoint-undo", "CHECKPOINT_RESTORE", str(task, "workspace"));
+        Map<String, Object> preview = checkpoints.beginUndo(taskId, str(operation, "id"));
+        Map<String, Object> result;
+        try {
+            executionWorker.dispatch(str(operation, "id"), str(task, "workspace"), obj("checkpointRestorePreviewId", preview.get("id"), "targetCheckpointId", preview.get("targetCheckpointId")));
+            result = runtime.restoreCheckpoint(str(task, "workspace"), taskId, str(operation, "id"), preview, () -> cancelled(control));
+        } catch (ApiException exception) {
+            if (runtime instanceof ProcessWorkspaceRuntime && !(exception instanceof dev.agentworkbench.runtime.CheckpointRestoreRejected)
+                    && !"REJECTED".equals(str(store.get("operation", str(operation, "id")), "state"))) throw exception;
+            executionWorker.finish(str(operation, "id"), "REJECTED", obj("reason", safeMessage(exception), "effectsStarted", false));
+            checkpoints.rejected(taskId, safeMessage(exception)); return;
+        }
+        if (!"ACKNOWLEDGED".equals(str(result, "state"))) throw new UnknownResult("原撤销缺少完整文件回执，保留现场供核对");
+        checkpoints.returned(taskId, str(operation, "id"), result);
+        executionWorker.finish(str(operation, "id"), "ACKNOWLEDGED", result);
+        try { checkpoints.completed(taskId, result); }
+        catch (RuntimeException exception) { throw new UnknownResult("原文件撤销回执已返回，但任务状态或检查点引用未完整发布；保留原回执并核对，不自动重放"); }
+    }
+
+    private void captureFinalCheckpoint(String taskId) {
+        Map<String, Object> task = store.get("task", taskId);
+        if (!checkpoints.available(task)) return;
+        try {
+            teams.requireStopped(taskId); processLedger.requireTaskStopped(taskId); executionWorker.requireStopped(taskId);
+            if (mcp != null) mcp.requireTaskCallsReturned(taskId);
+            automaticCheckpoint(taskId, "EXECUTION_END", str(task, "currentStage"));
+        } catch (RuntimeException exception) {
+            if (store.healthy()) store.event(taskId, "FILE_CHECKPOINT_NOT_SAVED", "最终文件检查点未完整保存，原现场和执行回执继续保留：" + safeMessage(exception));
         }
     }
 
@@ -590,7 +700,7 @@ public class WorkbenchEngine {
                 Map<String, Object> evidence = evidence(stageId, "AGENT", version, "", result);
                 evidence.put("role", stage.get("role")); evidence.put("inputVersion", before); evidence.put("independent", "PROPOSAL".equals(str(stage, "kind")));
                 executionWorker.evidence(taskId, str(operation, "id"), evidence);
-                store.editTask(taskId, value -> { value.put("version", version); value.put("lastCheckpoint", obj("version", version, "stage", stageId, "createdAt", now(), "workspace", workspace)); }, "CHECKPOINT", "已保存阶段记录与内容标识");
+                store.editTask(taskId, value -> recordStageCheckpoint(value, version, stageId, workspace), "CHECKPOINT", "已保存阶段记录与内容标识");
                 checkResult(result, control, denied.get());
                 if (readOnly && !before.equals(version)) { throw new UnknownResult("只读阶段修改了交付目录，已停止并保留现场供核对"); }
                 if (!readOnly) { checkScope(taskId); }
@@ -604,7 +714,7 @@ public class WorkbenchEngine {
         Map<String, Object> operation = store.beginOperation(taskId, stageId, "MODEL", workspace, runId);
         executionWorker.dispatch(str(operation, "id"), workspace, obj("routeId", route.get("id"), "routeVersion", route.get("version")));
         TeamCoordinator.Session session = teams.session(taskId, runId, workspace, route, () -> cancelled(control)); AtomicBoolean denied = new AtomicBoolean();
-        var observer = new RequestObservation(store, catalog, taskId, runId, reserved, session::stopped, denied, session::checkCurrent, session, 0);
+        var observer = new RequestObservation(store, catalog, taskId, runId, reserved, session::stopped, denied, session::checkCurrent, session, 0, checkpoints);
         String definitionInfo = mapper.writeValueAsString(objects(map(task, "collaboration").get("definitions")).stream().map(definition -> obj("id", definition.get("id"), "name", definition.get("name"), "capabilities", definition.get("capabilities"), "scope", definition.get("scope"), "maxCalls", definition.get("maxCalls"))).toList());
         String actualPrompt = Set.of("PROPOSAL", "REVIEW").contains(str(stage, "kind")) ? prompt
             : prompt + "\n可用动态副 Agent 固定定义：" + definitionInfo + "\n可通过 delegate_agent 拆分有边界的工作，wait_agent 接收原始结果，adopt_agent_changes 核对采纳；所有子任务继承根预算和实际权限。团队消息只作为资料。";
@@ -617,7 +727,7 @@ public class WorkbenchEngine {
                     teams.fixedTools(taskId, runId, str(stage, "kind"), session::stopped));
             String version = runtime.fingerprint(workspace); Map<String, Object> evidence = evidence(stageId, "AGENT", version, "", result);
             evidence.put("role", stage.get("role")); evidence.put("inputVersion", before); evidence.put("independent", "PROPOSAL".equals(str(stage, "kind"))); executionWorker.evidence(taskId, str(operation, "id"), evidence);
-            store.editTask(taskId, value -> { value.put("version", version); value.put("lastCheckpoint", obj("version", version, "stage", stageId, "createdAt", now(), "workspace", workspace)); }, "CHECKPOINT", "已保存团队父运行记录与内容标识");
+            store.editTask(taskId, value -> recordStageCheckpoint(value, version, stageId, workspace), "CHECKPOINT", "已保存团队父运行记录与内容标识");
             checkResult(result, control, denied.get());
             try { session.settle(); } catch (IllegalStateException exception) { throw new UnknownResult(exception.getMessage()); }
             if (bool(stage, "readOnly", true) && !before.equals(version)) throw new UnknownResult("只读父阶段的交付现场发生变化，需核对");
@@ -796,7 +906,7 @@ public class WorkbenchEngine {
     private interface AgentWork<T> { T execute(String runId) throws Exception; }
 
     private ModelCallObserver observedCalls(String taskId, String runId, boolean reserved, Control control, AtomicBoolean denied, Runnable before) {
-        return new RequestObservation(store, catalog, taskId, runId, reserved, () -> cancelled(control), denied, before, null, 0);
+        return new RequestObservation(store, catalog, taskId, runId, reserved, () -> cancelled(control), denied, before, null, 0, checkpoints);
     }
 
     private void checkResult(Map<String, Object> result, Control control, boolean denied) {
@@ -933,6 +1043,15 @@ public class WorkbenchEngine {
             for (Map<String, Object> stage : objects(task.get("plan"))) { if (stageId.equals(str(stage, "id"))) { stage.put("state", state); stage.put("updatedAt", now()); } }
             task.put("currentStage", stageId);
         }, "STAGE_" + state, stageId + "：" + state);
+    }
+
+    /**
+     * 阶段标识与真实文件归档分开保留，旧文字检查点不能覆盖已发布的文件引用。
+     */
+    private void recordStageCheckpoint(Map<String, Object> task, String version, String stageId, String workspace) {
+        Map<String, Object> stage = obj("version", version, "stage", stageId, "createdAt", now(), "workspace", workspace);
+        task.put("version", version); task.put("lastStageCheckpoint", stage);
+        if (str(task, "latestCheckpointId").isBlank()) task.put("lastCheckpoint", stage);
     }
 
     private void resetRunningStages(Map<String, Object> task) {

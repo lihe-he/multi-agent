@@ -35,7 +35,8 @@ export interface Task {
   mcpBudget?: { maxCalls?: number; maxDurationMs?: number; usedCalls?: number; committedDurationMs?: number };
   locks?: Record<string, string>; baseline?: string; workspace?: string; version?: string;
   diffViewProtocolVersion?: number;
-  plan?: Stage[] | { stages?: Stage[] }; evidence?: Evidence[];
+  checkpointProtocolVersion?: number;
+  plan?: Stage[] | { stages?: Stage[] }; evidence?: Evidence[]; invalidatedEvidence?: string[];
   review?: { status?: string; output?: string; version?: string };
   context?: { id?: string; kind?: string; content?: string; source?: string; version?: string | number }[];
   issues?: (string | { message?: string; title?: string; severity?: string; [key: string]: unknown })[];

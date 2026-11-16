@@ -45,6 +45,7 @@ public class WorkspaceRuntime {
     private final GitWorkspaces workspaces;
     private final WorkspaceWriteGuard workspaceWrites;
     private final GitDiffView diffViews;
+    private final WorkspaceCheckpointArchive checkpoints;
     private final HttpClient http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).followRedirects(HttpClient.Redirect.NEVER).build();
     private final ConcurrentMap<Long, Process> processes = new ConcurrentHashMap<>();
     private final ConcurrentMap<Long, String> processWorkspaces = new ConcurrentHashMap<>();
@@ -56,6 +57,7 @@ public class WorkspaceRuntime {
         this.workspaces = new GitWorkspaces(this, json, this.data);
         this.workspaceWrites = new WorkspaceWriteGuard(json, this.data, this::writeMetadataAtomic);
         this.diffViews = new GitDiffView(this, this.data);
+        this.checkpoints = new WorkspaceCheckpointArchive(this, json, this.data);
     }
 
     /**
@@ -147,6 +149,9 @@ public class WorkspaceRuntime {
         Path manifest = dest.getParent().resolve("preparation.json");
         try {
             Files.createDirectories(dest.getParent());
+            // 准备回执使用实际父目录，Windows 短路径别名不成为新的现场身份。
+            dest = dest.getParent().toRealPath().resolve("work");
+            manifest = dest.getParent().resolve("preparation.json");
             if (Files.exists(dest)) {
                 if (Files.isRegularFile(manifest)) {
                     Map<String, Object> saved = json.readValue(Files.readAllBytes(manifest), new TypeReference<>() {});
@@ -205,23 +210,65 @@ public class WorkspaceRuntime {
      */
     WorkspaceContentSnapshot contentSnapshot(String workspace) {
         String format = git(Path.of(workspace), "rev-parse", "--show-object-format").trim();
+        return contentSnapshot(workspace, format);
+    }
+
+    /**
+     * 检查点复用同次 Git 元数据中的对象格式，完整文件指纹仍独立遍历。
+     */
+    WorkspaceContentSnapshot contentSnapshot(String workspace, String format) {
+        return contentSnapshot(workspace, format, null);
+    }
+
+    /**
+     * 捕获复用原暂存清单的模式，文件成员与完整字节仍独立读取。
+     */
+    WorkspaceContentSnapshot contentSnapshot(String workspace, String format, Map<String, String> modes) {
+        return contentSnapshot(workspace, format, modes, null);
+    }
+
+    /**
+     * 带状态标记的同次清单区分暂存记录与未跟踪路径，后续字节仍逐文件读取。
+     */
+    WorkspaceContentSnapshot contentSnapshot(String workspace, String format, Map<String, String> modes, Set<String> paths) {
         if (!Set.of("sha1", "sha256").contains(format)) throw new IllegalArgumentException("当前 Git 对象格式不能生成文件预览。");
         Map<String, WorkspaceContentSnapshot.File> files = new TreeMap<>();
-        String version = fingerprint(workspace, format, files);
+        String version = fingerprint(workspace, format, files, modes, paths);
         return new WorkspaceContentSnapshot(version, format, files);
     }
 
     private String fingerprint(String workspace, String format, Map<String, WorkspaceContentSnapshot.File> files) {
+        return fingerprint(workspace, format, files, null);
+    }
+
+    /**
+     * 收尾指纹复用独立重读的暂存模式，不复用先前文件摘要。
+     */
+    String checkpointFingerprint(String workspace, Map<String, String> modes) { return fingerprint(workspace, null, null, modes); }
+
+    /**
+     * 收尾使用独立重读的成员和暂存模式，重新读取全部文件字节。
+     */
+    String checkpointFingerprint(String workspace, Map<String, String> modes, Set<String> paths) { return fingerprint(workspace, null, null, modes, paths); }
+
+    private String fingerprint(String workspace, String format, Map<String, WorkspaceContentSnapshot.File> files, Map<String, String> capturedModes) {
+        return fingerprint(workspace, format, files, capturedModes, null);
+    }
+
+    private String fingerprint(String workspace, String format, Map<String, WorkspaceContentSnapshot.File> files, Map<String, String> capturedModes, Set<String> capturedPaths) {
         Path root = Path.of(workspace).toAbsolutePath().normalize();
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update("agent-workbench-content-v2".getBytes(StandardCharsets.UTF_8));
             SortedSet<String> paths = new TreeSet<>();
-            for (String f : git(root, "ls-files", "-z", "--cached", "--others", "--exclude-standard").split("\0")) {
+            GitFiles listing = capturedPaths == null && capturedModes == null ? fingerprintListing(root) : null;
+            Collection<String> members = capturedPaths != null ? capturedPaths : listing != null ? listing.paths()
+                : Arrays.asList(git(root, "ls-files", "-z", "--cached", "--others", "--exclude-standard").split("\0"));
+            for (String f : members) {
                 if (files != null && !f.isEmpty() && f.isBlank()) throw new ApiException(400, "当前内容版本不支持只有空白字符的 Git 文件名。");
                 if (!f.isBlank()) paths.add(f);
             }
-            Map<String, String> modes = fileModes(root);
+            Map<String, String> modes = capturedModes != null ? capturedModes : listing != null ? listing.modes() : fileModes(root);
             digest.update(ByteBuffer.allocate(4).putInt(paths.size()).array());
             for (String name : paths) {
                 byte[] nameBytes = name.getBytes(StandardCharsets.UTF_8);
@@ -265,6 +312,25 @@ public class WorkspaceRuntime {
         catch (Exception e) { throw failure(e); }
     }
 
+    /**
+     * 单次 Git 清单保留旧成员与模式语义；未合并路径仍取最后暂存阶段的模式。
+     */
+    private GitFiles fingerprintListing(Path root) {
+        Set<String> paths = new TreeSet<>(); Map<String, String> modes = new HashMap<>();
+        for (String record : git(root, "ls-files", "-t", "--stage", "--cached", "--others", "--exclude-standard", "-z").split("\0")) {
+            if (record.isEmpty()) continue;
+            if (record.length() < 3 || record.charAt(1) != ' ') throw new IllegalStateException("Git 内容清单缺少状态标记。");
+            char type = record.charAt(0); record = record.substring(2);
+            if (type == '?') { paths.add(record); continue; }
+            int separator = record.indexOf('\t');
+            if ("HSMRC".indexOf(type) < 0 || separator <= 6) throw new IllegalStateException("Git 内容清单缺少暂存模式。");
+            String path = record.substring(separator + 1); paths.add(path); modes.put(path, record.substring(0, 6));
+        }
+        return new GitFiles(paths, modes);
+    }
+
+    private record GitFiles(Set<String> paths, Map<String, String> modes) { }
+
     private Map<String, String> fileModes(Path root) {
         Map<String, String> result = new HashMap<>();
         for (String record : git(root, "ls-files", "--stage", "-z").split("\0")) {
@@ -304,6 +370,102 @@ public class WorkspaceRuntime {
      * 旧只读接口保留统一文本字段，内容同样来自已核验副本，省略项明确标注。
      */
     public Map<String, Object> legacyDiffView(String workspace) { return diffViews.legacy(workspace); }
+
+    /**
+     * 检查点保存原文件和暂存对象，只有完整持久化后才返回可发布的摘要。
+     */
+    public Map<String, Object> captureCheckpoint(String workspace, String taskId, Map<String, Object> metadata) { return checkpoints.capture(workspace, taskId, metadata); }
+
+    /**
+     * 原任务归属随捕获前后分别核对，不能采用被改写的现场选择回执。
+     */
+    public Map<String, Object> captureCheckpoint(String workspace, String taskId, Map<String, Object> metadata, Map<String, Object> ownership) {
+        return checkpoints.capture(workspace, taskId, metadata, ownership);
+    }
+
+    /**
+     * 旧任务目录文字保留，检查点匹配实际普通目录且拒绝重解析别名。
+     */
+    public boolean checkpointWorkspaceMatches(String expected, String workspace) {
+        return WorkspaceCheckpointOwnership.matches(Path.of(expected).toAbsolutePath().normalize(), workspace);
+    }
+
+    /**
+     * 已发布清单按原摘要读取，缺失或损坏对象不会被当作可恢复现场。
+     */
+    public Map<String, Object> checkpointManifest(String taskId, String id, String digest) { return checkpoints.read(taskId, id, digest); }
+
+    /**
+     * 预览只比较同任务原保存边界，并保全不参与撤销的后续文件。
+     */
+    public Map<String, Object> previewCheckpointRestore(String workspace, String taskId, Map<String, Object> target, Map<String, Object> source) {
+        return checkpoints.preview(workspace, taskId, target, source);
+    }
+
+    /**
+     * 请求进入持久队列前重新核验用户刚确认的原预览。
+     */
+    public void requireCheckpointRestoreCurrent(String workspace, String taskId, Map<String, Object> preview) { checkpoints.validatePreview(workspace, taskId, preview); }
+
+    /**
+     * 撤销通过原根 Worker 领取运行；部分效果缺少回执时保持 UNKNOWN。
+     */
+    public Map<String, Object> restoreCheckpoint(String workspace, String taskId, String operationId, Map<String, Object> preview, BooleanSupplier cancelled) {
+        return checkpoints.restore(workspace, taskId, operationId, preview, cancelled);
+    }
+
+    /**
+     * 导出按原引用核验字节，不接受任意磁盘路径。
+     */
+    public byte[] checkpointManifestBytes(String taskId, String id, String digest) { return checkpoints.manifestBytes(taskId, id, digest); }
+
+    /**
+     * 内容对象只按固定 SHA-256 标识读取。
+     */
+    public byte[] checkpointBlobBytes(String digest) { return checkpoints.blobBytes(digest); }
+
+    /**
+     * 核对原撤销进度字节；本地日志不能替代核心对 Worker 归属的确认。
+     */
+    public Map<String, Object> checkpointRestoreJournal(String taskId, String operationId) { return checkpoints.journal(taskId, operationId); }
+
+    /**
+     * 恢复暂存区前补齐归档的原二进制对象，Git 回执必须匹配原对象编号。
+     */
+    void writeCheckpointGitBlob(Path root, byte[] bytes, String expectedObject) {
+        Map<String, Object> result = execute(gitCommand("-c", "core.fsync=objects", "-c", "core.fsyncMethod=fsync", "hash-object", "-w", "--stdin"), root, "", () -> false, ignored -> {}, Duration.ofSeconds(30), false, null, 0, bytes);
+        if (!"SUCCEEDED".equals(result.get("status")) || ((Number) result.get("exitCode")).intValue() != 0 || !expectedObject.equals(Objects.toString(result.get("stdout"), "").strip()))
+            throw new IllegalStateException("归档暂存对象未取得完整原 Git 回执。");
+    }
+
+    /**
+     * 暂存对象先分批核对完整信息，未读取超限内容，也不启动逐对象进程。
+     */
+    Map<String, Long> checkpointGitBlobSizes(Path root, List<String> objects) {
+        Map<String, Long> sizes = new LinkedHashMap<>();
+        for (int offset = 0; offset < objects.size(); offset += GitBlobBatch.MAX_OBJECTS) {
+            List<String> batch = objects.subList(offset, Math.min(objects.size(), offset + GitBlobBatch.MAX_OBJECTS));
+            byte[] bytes = checkpointGitBatch(root, "--batch-check", GitBlobBatch.request(batch), batch.size() * GitBlobBatch.MAX_HEADER);
+            sizes.putAll(GitBlobBatch.sizes(batch, bytes));
+        }
+        return sizes;
+    }
+
+    /**
+     * 原二进制对象按信息回执有界读取，长度分隔与 Git 哈希须逐项一致。
+     */
+    Map<String, byte[]> checkpointGitBlobs(Path root, Map<String, Long> objects) {
+        byte[] bytes = checkpointGitBatch(root, "--batch", GitBlobBatch.request(List.copyOf(objects.keySet())), GitBlobBatch.contentBound(objects));
+        return GitBlobBatch.contents(objects, bytes);
+    }
+
+    private byte[] checkpointGitBatch(Path root, String option, String input, int maximumBytes) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream(Math.min(maximumBytes, 8192));
+        Map<String, Object> result = execute(gitCommand("--no-replace-objects", "cat-file", option), root, input, () -> false, ignored -> {}, Duration.ofSeconds(30), false, bytes, maximumBytes);
+        if (!"SUCCEEDED".equals(result.get("status")) || ((Number) result.get("exitCode")).intValue() != 0 || Boolean.TRUE.equals(result.get("truncated"))
+                || !Boolean.TRUE.equals(result.get("outputComplete"))) throw new IllegalStateException("Git 批量对象未取得完整原进程回执：" + result.get("output"));
+        return bytes.toByteArray();
+    }
 
     /**
      * 原字节有界读取固定 Git blob，沿用原进程观察与停止路径。
@@ -697,6 +859,19 @@ public class WorkspaceRuntime {
                         }
                         toolResult = json.writeValueAsString(object("error", "工具参数格式无效"));
                     }
+                    if (entry != null && "CONFIRMED".equals(entry.get("state")) && acquireCall instanceof ModelCallObserver observer) {
+                        try {
+                            Map<String, Object> context = observer.checkpointContext();
+                            if (Boolean.TRUE.equals(context.get("enabled"))) {
+                                Map<String, Object> checkpointMetadata = new LinkedHashMap<>(context);
+                                checkpointMetadata.putAll(object("kind", "TOOL_COMPLETED", "tool", name, "fileOperationId", entry.get("id"), "modelRequestId", observer.lastRequestId()));
+                                Map<String, Object> checkpoint = captureCheckpoint(root.toString(), Objects.toString(context.get("taskId"), ""), checkpointMetadata, map(context, "workspaceOwnership"));
+                                observer.checkpoint(checkpoint);
+                            }
+                        } catch (Exception exception) {
+                            return result(-1, "原工具回执已保存，文件检查点尚未完整发布；停止新增操作，请核对保存状态。", "WAITING_INPUT");
+                        }
+                    }
                     messages.add(object("role", "tool", "tool_call_id", call.get("id"), "content", cap(toolResult)));
                 }
                 if (json.writeValueAsBytes(messages).length > 1_500_000) return result(-1, "上下文达到本地上限，请缩小任务范围后接续。", "FAILED");
@@ -1076,7 +1251,9 @@ public class WorkspaceRuntime {
             if (!Files.isDirectory(root)) throw new IllegalArgumentException("项目路径不是目录。");
             String top = git(root, "rev-parse", "--show-toplevel").strip();
             if (!Path.of(top).toRealPath().equals(root)) throw new IllegalArgumentException("请导入 Git 仓库根目录：" + top);
-            if (!git(root, "submodule", "status").isBlank()) throw new IllegalArgumentException("首版暂不支持含子模块的项目。");
+            // 索引中的 gitlink 模式直接识别实际子模块，未初始化或未合并项也不能放行。
+            for (String entry : git(root, "ls-files", "--stage", "-z").split("\0"))
+                if (entry.startsWith("160000 ")) throw new IllegalArgumentException("首版暂不支持含子模块的项目。");
             return root;
         } catch (IOException e) { throw failure(e); }
     }
@@ -1137,14 +1314,50 @@ public class WorkspaceRuntime {
     }
 
     String git(Path cwd, String... args) {
-        Map<String, Object> result = execute(gitCommand(args), cwd, "", () -> false, x -> {}, Duration.ofMinutes(2), false);
+        Map<String, Object> result = List.of(args).contains("diff") && !List.of(args).contains("--no-index") ? gitWithPrivateIndex(cwd, args)
+                : execute(gitCommand(args), cwd, "", () -> false, x -> {}, Duration.ofMinutes(2), false);
         if (Boolean.TRUE.equals(result.get("truncated"))) throw new IllegalStateException("Git 元数据超过读取上限，不能基于不完整文件清单生成版本或快照。");
         if (!"SUCCEEDED".equals(result.get("status")) || ((Number) result.get("exitCode")).intValue() != 0) throw new IllegalArgumentException("Git 操作失败：" + result.get("output"));
         return result.get("stdout").toString();
     }
 
+    /**
+     * 差异读取只刷新私有 index 副本，原暂存字节变化时拒绝混合结果。
+     */
+    private Map<String, Object> gitWithPrivateIndex(Path cwd, String... args) {
+        Path root = cwd.toAbsolutePath().normalize(), directory = null, snapshots = null;
+        try {
+            Path original = root.resolve(git(root, "rev-parse", "--git-path", "index").strip()).normalize();
+            boolean present = Files.exists(original, LinkOption.NOFOLLOW_LINKS);
+            if (present && (!Files.isRegularFile(original, LinkOption.NOFOLLOW_LINKS) || Files.size(original) > 16 * 1024 * 1024))
+                throw new IllegalArgumentException("原 index 不是完整普通文件或超过读取上限。");
+            byte[] before = present ? Files.readAllBytes(original) : new byte[0];
+            Files.createDirectories(data); snapshots = data.toRealPath().resolve("git-read-index"); Files.createDirectories(snapshots);
+            if (!snapshots.toRealPath().equals(snapshots)) throw new IllegalArgumentException("私有 index 目录不能通过重解析路径。");
+            directory = Files.createTempDirectory(snapshots, "snapshot-").toRealPath();
+            Path snapshot = directory.resolve("index");
+            if (present) Files.write(snapshot, before, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+            List<String> command = new ArrayList<>(gitCommand("-c", "diff.autoRefreshIndex=true", "-c", "core.splitIndex=false")); command.addAll(List.of(args));
+            Map<String, Object> result = execute(command, root, "", () -> false, x -> {}, Duration.ofMinutes(2), false, null, 0, null,
+                    Map.of("GIT_INDEX_FILE", snapshot.toString()));
+            if (present != Files.exists(original, LinkOption.NOFOLLOW_LINKS) || present && (!Files.isRegularFile(original, LinkOption.NOFOLLOW_LINKS) || !Arrays.equals(before, Files.readAllBytes(original))))
+                throw new IllegalStateException("差异读取期间原 index 已变化，请重新读取现场。");
+            return result;
+        } catch (IOException exception) { throw failure(exception); }
+        finally {
+            if (directory != null) try {
+                if (directory.toRealPath().equals(directory) && snapshots != null && directory.startsWith(snapshots)) {
+                    Files.deleteIfExists(directory.resolve("index.lock")); Files.deleteIfExists(directory.resolve("index")); Files.deleteIfExists(directory);
+                }
+            } catch (IOException ignored) { }
+        }
+    }
+
+    /**
+     * 直接差异读取禁用缓存刷新，完整内容核对只允许写私有 index 副本。
+     */
     private List<String> gitCommand(String... args) {
-        List<String> command = new ArrayList<>(List.of("git", "--no-optional-locks", "-c", "core.quotePath=false", "-c", "core.hooksPath=/dev/null", "-c", "core.autocrlf=false"));
+        List<String> command = new ArrayList<>(List.of("git", "--no-optional-locks", "-c", "diff.autoRefreshIndex=false", "-c", "core.quotePath=false", "-c", "core.hooksPath=/dev/null", "-c", "core.autocrlf=false"));
         command.addAll(List.of(args));
         return command;
     }
@@ -1168,6 +1381,16 @@ public class WorkspaceRuntime {
 
     private Map<String, Object> execute(List<String> argv, Path cwd, String input, BooleanSupplier cancelled,
                                          Consumer<String> log, Duration timeout, boolean receipt, ByteArrayOutputStream binaryOutput, int maximumBytes) {
+        return execute(argv, cwd, input, cancelled, log, timeout, receipt, binaryOutput, maximumBytes, null);
+    }
+
+    private Map<String, Object> execute(List<String> argv, Path cwd, String input, BooleanSupplier cancelled,
+                                         Consumer<String> log, Duration timeout, boolean receipt, ByteArrayOutputStream binaryOutput, int maximumBytes, byte[] binaryInput) {
+        return execute(argv, cwd, input, cancelled, log, timeout, receipt, binaryOutput, maximumBytes, binaryInput, Map.of());
+    }
+
+    private Map<String, Object> execute(List<String> argv, Path cwd, String input, BooleanSupplier cancelled,
+                                         Consumer<String> log, Duration timeout, boolean receipt, ByteArrayOutputStream binaryOutput, int maximumBytes, byte[] binaryInput, Map<String, String> environmentOverrides) {
         Process process = null;
         Path receiptFile = null;
         StringBuilder output = new StringBuilder();
@@ -1175,8 +1398,7 @@ public class WorkspaceRuntime {
         String processFacts = "";
         AtomicBoolean truncated = new AtomicBoolean(false);
         AtomicReference<IOException> streamFailure = new AtomicReference<>();
-        Set<ProcessHandle> observedChildren = ConcurrentHashMap.newKeySet();
-        Map<Long, String> childStarts = new ConcurrentHashMap<>();
+        Set<ObservedChild> observedChildren = ConcurrentHashMap.newKeySet();
         try {
             Files.createDirectories(cwd);
             ProcessBuilder builder = new ProcessBuilder(argv).directory(cwd.toFile());
@@ -1185,6 +1407,7 @@ public class WorkspaceRuntime {
             builder.environment().put("GIT_TERMINAL_PROMPT", "0");
             builder.environment().put("NO_COLOR", "1");
             builder.environment().put("PYTHONIOENCODING", "utf-8");
+            builder.environment().putAll(environmentOverrides);
             process = builder.start();
             Process active = process;
             String activeStart = process.info().startInstant().map(Object::toString).orElse("");
@@ -1195,7 +1418,6 @@ public class WorkspaceRuntime {
                 receiptFile = receipts.resolve(process.pid() + ".json");
                 writeMetadataAtomic(receiptFile, json.writeValueAsBytes(object("pid", process.pid(), "workspace", cwd.toString(), "startedAt", process.info().startInstant().map(Object::toString).orElse(""), "state", "RUNNING")));
             }
-            try (OutputStream stdin = process.getOutputStream()) { stdin.write(input.getBytes(StandardCharsets.UTF_8)); }
             Thread reader = Thread.ofVirtual().start(() -> {
                 if (binaryOutput != null) {
                     try (InputStream stream = active.getInputStream()) {
@@ -1233,11 +1455,16 @@ public class WorkspaceRuntime {
                     }
                 } catch (IOException exception) { streamFailure.compareAndSet(null, exception); }
             });
+            // 原生管道读取可能占住两个虚拟载体，输入使用独立平台线程保证请求能够完成。
+            Thread writer = Thread.ofPlatform().daemon(true).name("workspace-stdin-" + active.pid()).start(() -> {
+                try (OutputStream stdin = active.getOutputStream()) { stdin.write(binaryInput == null ? input.getBytes(StandardCharsets.UTF_8) : binaryInput); }
+                catch (IOException exception) { streamFailure.compareAndSet(null, exception); }
+            });
             long deadline = System.nanoTime() + timeout.toNanos();
             String state = "SUCCEEDED";
-            observeChildren(process, observedChildren, childStarts, activeStart);
+            observeChildren(process, observedChildren, activeStart);
             while (!process.waitFor(150, TimeUnit.MILLISECONDS)) {
-                observeChildren(process, observedChildren, childStarts, activeStart);
+                observeChildren(process, observedChildren, activeStart);
                 if (cancelled.getAsBoolean() || System.nanoTime() > deadline) {
                     boolean stopped = terminate(process);
                     state = stopped ? (cancelled.getAsBoolean() ? "CANCELLED" : "FAILED") : "UNKNOWN";
@@ -1246,29 +1473,37 @@ public class WorkspaceRuntime {
             }
             reader.join(3000);
             errorReader.join(3000);
-            boolean outputComplete = !reader.isAlive() && !errorReader.isAlive() && streamFailure.get() == null;
+            writer.join(3000);
+            boolean outputComplete = !reader.isAlive() && !errorReader.isAlive() && !writer.isAlive() && streamFailure.get() == null;
             if (!outputComplete) {
                 state = "UNKNOWN";
-                processFacts = "标准输出或错误输出未完整读取，保留未知结果，不能接受部分内容。";
+                processFacts = "标准输入、输出或错误输出未完整处理，保留未知结果，不能接受部分内容。";
             }
             int exit = process.isAlive() ? -1 : process.exitValue();
-            List<ProcessHandle> unconfirmed = observedChildren.stream().filter(ProcessHandle::isAlive).toList();
+            List<ObservedChild> unconfirmed = unconfirmedChildren(observedChildren);
+            if (state.equals("SUCCEEDED") && exit == 0 && outputComplete && !truncated.get() && !unconfirmed.isEmpty()) {
+                long settleDeadline = Math.min(deadline, System.nanoTime() + Duration.ofSeconds(3).toNanos());
+                // 父进程返回与原后代退出可能不同步；只等待同一身份收尾，不重启进程或重放命令。
+                while (!unconfirmed.isEmpty() && !cancelled.getAsBoolean() && System.nanoTime() < settleDeadline) {
+                    Thread.sleep(20); unconfirmed = unconfirmedChildren(observedChildren);
+                }
+            }
             if (!unconfirmed.isEmpty()) {
                 processFacts += (processFacts.isBlank() ? "" : "\n") + "未确认子进程（共 " + unconfirmed.size() + " 个，最多列出 50 个）：" + unconfirmed.stream().limit(50)
-                    .map(child -> child.pid() + "@" + childStarts.getOrDefault(child.pid(), "UNKNOWN_START_TIME")).toList();
+                    .map(child -> child.handle().pid() + "@" + (child.startedAt().isBlank() ? "UNKNOWN_START_TIME" : child.startedAt())).toList();
                 synchronized (errors) {
                     int remaining = MAX_OUTPUT - errors.length();
                     String diagnostic = "\n" + processFacts;
                     if (diagnostic.length() > remaining) truncated.set(true);
                     if (remaining > 0) errors.append(diagnostic, 0, Math.min(diagnostic.length(), remaining));
                 }
-                unconfirmed.stream().filter(child -> originalProcess(child, childStarts.getOrDefault(child.pid(), ""))).forEach(ProcessHandle::destroyForcibly);
+                unconfirmed.stream().filter(child -> originalProcess(child.handle(), child.startedAt())).forEach(child -> child.handle().destroyForcibly());
                 state = "UNKNOWN";
                 log.accept("父进程退出后仍发现子进程，已请求停止；结果未知，不能自动重放。");
                 log.accept(processFacts);
             }
             // Windows 同步关闭管道可能等待后代释放句柄；先保留并停止原子进程，流由读取线程自行关闭。
-            if (!outputComplete) { reader.interrupt(); errorReader.interrupt(); }
+            if (!outputComplete) { reader.interrupt(); errorReader.interrupt(); writer.interrupt(); }
             if (state.equals("SUCCEEDED") && exit != 0) state = "FAILED";
             if (receiptFile != null) writeMetadataAtomic(receiptFile, json.writeValueAsBytes(object("pid", process.pid(), "workspace", cwd.toString(), "state", state, "exitCode", exit)));
             synchronized (output) {
@@ -1293,10 +1528,20 @@ public class WorkspaceRuntime {
             "observedFromPid", owner.pid(), "observedFromStartedAt", owner.info().startInstant().map(Object::toString).orElse("")));
     }
 
-    private void observeChildren(Process process, Set<ProcessHandle> children, Map<Long, String> starts, String ownerStart) {
-        for (ProcessHandle child : ManagedProcessLedger.originalDescendants(process.toHandle(), ownerStart)) if (children.add(child)) {
-            String birth = child.info().startInstant().map(Object::toString).orElse(""); starts.put(child.pid(), birth);
-            processObserver.accept(object("pid", child.pid(), "processStartedAt", birth, "observedFromPid", process.pid(), "observedFromStartedAt", ownerStart));
+    private record ObservedChild(ProcessHandle handle, String startedAt) { }
+
+    /**
+     * 每次收尾核对重新读取系统快照，保留原 PID 与出生时间以排除同号复用。
+     */
+    private List<ObservedChild> unconfirmedChildren(Set<ObservedChild> children) {
+        return ManagedProcessLedger.inspectProcesses(() -> children.stream()
+            .filter(child -> !ManagedProcessLedger.observedProcessStopped(child.handle().pid(), child.startedAt())).toList());
+    }
+
+    private void observeChildren(Process process, Set<ObservedChild> children, String ownerStart) {
+        for (ProcessHandle child : ManagedProcessLedger.originalDescendants(process.toHandle(), ownerStart)) {
+            String birth = child.info().startInstant().map(Object::toString).orElse("");
+            if (children.add(new ObservedChild(child, birth))) processObserver.accept(object("pid", child.pid(), "processStartedAt", birth, "observedFromPid", process.pid(), "observedFromStartedAt", ownerStart));
         }
     }
 

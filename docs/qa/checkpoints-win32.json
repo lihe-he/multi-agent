@@ -1,0 +1,121 @@
+{
+  "platform": "win32",
+  "version": "0.2.0-alpha.19",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "Ordinary final Jar exposed checkpoint protocol 1 with original independent Worker and schema 9",
+      "status": "passed",
+      "at": "2026-11-16T01:08:53.082Z"
+    },
+    {
+      "name": "CLONE actual original Worker published five tool checkpoints bound to successful requests and unchanged cumulative budget",
+      "status": "passed",
+      "at": "2026-11-16T01:09:54.405Z"
+    },
+    {
+      "name": "CLONE real manual checkpoint, authentication and stable cursors preserved original archive boundaries",
+      "status": "passed",
+      "at": "2026-11-16T01:09:57.123Z"
+    },
+    {
+      "name": "CLONE production desktop and narrow Web displayed real affected files and preserved cancelled confirmation without a restore request",
+      "status": "passed",
+      "at": "2026-11-16T01:10:05.035Z"
+    },
+    {
+      "name": "CLONE actual stale confirmation returned 409 with zero new root operations and retained the affected user bytes",
+      "status": "passed",
+      "at": "2026-11-16T01:10:07.255Z"
+    },
+    {
+      "name": "CLONE original Worker restored exact file/index bytes, preserved unrelated edits and evidence, released the real root lock and exported deduplicated original references without model replay",
+      "status": "passed",
+      "at": "2026-11-16T01:10:21.714Z"
+    },
+    {
+      "name": "WORKTREE actual original Worker published five tool checkpoints bound to successful requests and unchanged cumulative budget",
+      "status": "passed",
+      "at": "2026-11-16T01:10:48.603Z"
+    },
+    {
+      "name": "WORKTREE real manual checkpoint, authentication and stable cursors preserved original archive boundaries",
+      "status": "passed",
+      "at": "2026-11-16T01:10:50.975Z"
+    },
+    {
+      "name": "WORKTREE production desktop and narrow Web displayed real affected files and preserved cancelled confirmation without a restore request",
+      "status": "passed",
+      "at": "2026-11-16T01:10:54.715Z"
+    },
+    {
+      "name": "WORKTREE actual stale confirmation returned 409 with zero new root operations and retained the affected user bytes",
+      "status": "passed",
+      "at": "2026-11-16T01:10:57.042Z"
+    },
+    {
+      "name": "WORKTREE original Worker restored exact file/index bytes, preserved unrelated edits and evidence, released the real root lock and exported deduplicated original references without model replay",
+      "status": "passed",
+      "at": "2026-11-16T01:11:08.881Z"
+    },
+    {
+      "name": "ack real SQLite fault retained applied files, original observed receipt and unpublished result checkpoint as UNKNOWN across restart without replay or budget rollback",
+      "status": "passed",
+      "at": "2026-11-16T01:12:12.502Z"
+    },
+    {
+      "name": "ack explicit process/effect reconciliation preserved UNKNOWN history and refused the already consumed original preview",
+      "status": "passed",
+      "at": "2026-11-16T01:12:13.104Z"
+    },
+    {
+      "name": "publish real SQLite fault retained applied files, original observed receipt and unpublished result checkpoint as UNKNOWN across restart without replay or budget rollback",
+      "status": "passed",
+      "at": "2026-11-16T01:13:39.349Z"
+    },
+    {
+      "name": "publish explicit process/effect reconciliation preserved UNKNOWN history and refused the already consumed original preview",
+      "status": "passed",
+      "at": "2026-11-16T01:13:41.416Z"
+    },
+    {
+      "name": "Every recorded original PID/birth stopped independently and final Jar, production Web and original source bytes remained fixed",
+      "status": "passed",
+      "at": "2026-11-16T01:13:47.673Z"
+    }
+  ],
+  "completedAt": "2026-11-16T01:13:47.674Z",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\checkpoints-y9LT72",
+  "jarSha256": "c912bf2dbbbcf7d3900762ef00a55acd3978923867d87259f4736cb9984ca40e",
+  "scriptSha256": "0aaae60667f9804a4e4657e671485fa1e60bf6e478ed4f77287d5ad376fac97b",
+  "webFiles": [
+    {
+      "file": "web/dist/assets/index-C6FUt5I0.css",
+      "sha256": "b7b832a24fd25a9bbbb184f1224896a726bbc81897b1f3c4ce9eb4548272b333"
+    },
+    {
+      "file": "web/dist/assets/index-lpN8oTSv.js",
+      "sha256": "4538d88879ee893ac18cdaef6240c8becdd5b2da1e8a4306247c0669ae60e4fd"
+    },
+    {
+      "file": "web/dist/index.html",
+      "sha256": "7376556ea5caaaec24b06aa4e0f50fe67766eaf908d860e31e79153d07b97154"
+    },
+    {
+      "file": "web/dist/theme-init.js",
+      "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+    },
+    {
+      "file": "web/dist/workbench-config.json",
+      "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+    }
+  ],
+  "modelCalls": 32,
+  "originalProcessIdentities": 786,
+  "coreStarts": 3,
+  "browserVersion": "1.64.1",
+  "evidenceScope": "ACTUAL_ORDINARY_FINAL_JAR_ORIGINAL_WORKER_REAL_GIT_CLONE_WORKTREE_AND_PRODUCTION_WEB",
+  "processCoverage": "OBSERVED_ONLY; CORE_CHECKPOINT_READS_NOT_FULL_HISTORICAL_PROCESS_COVERAGE",
+  "modelErrors": [],
+  "pageErrors": []
+}

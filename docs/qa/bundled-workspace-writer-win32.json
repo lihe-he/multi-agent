@@ -1,11 +1,11 @@
 {
-  "recordedAt": "2026-11-14T09:36:20.471Z",
-  "version": "0.2.0-alpha.18",
+  "recordedAt": "2026-11-16T01:58:17.034Z",
+  "version": "0.2.0-alpha.19",
   "platform": "win32",
   "status": "passed",
   "scope": "ACTUAL_PACKAGED_JRE_FINAL_JAR_WORKSPACE_WRITE_GUARD",
-  "jarSha256": "e82eae779857fe0f7e667d5d3f7f2725196edcf7c18d893361ac09afede2990b",
-  "packagedJarSha256": "e82eae779857fe0f7e667d5d3f7f2725196edcf7c18d893361ac09afede2990b",
+  "jarSha256": "c912bf2dbbbcf7d3900762ef00a55acd3978923867d87259f4736cb9984ca40e",
+  "packagedJarSha256": "c912bf2dbbbcf7d3900762ef00a55acd3978923867d87259f4736cb9984ca40e",
   "packagedJava": "D:\\Projects\\多Agent研发工作台\\release\\win-unpacked\\resources\\jre\\bin\\java.exe",
   "packagedJavaSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
   "javaVersion": "21.0.13",
@@ -48,11 +48,11 @@
   "productionClasses": [
     {
       "file": "dev/agentworkbench/WorkbenchEngine.class",
-      "sha256": "888a353be60c66c4dd960eaf0403c3d5b06b1cb3a01dde986434e08ad9e15410"
+      "sha256": "869054f463789e63994d0a9cd0d3b1c6ad9ee9a3df8a2c7a89dbfa59f13a80ce"
     },
     {
       "file": "dev/agentworkbench/WorkerProcessMain.class",
-      "sha256": "3418574b7edd61d7dc694f654688cd31fd9bfe468c81c25fd12264adb68ab016"
+      "sha256": "cc73f7de2edc901a5e0ee38a541abaf04d9f0fe62f4fc5c1335e39fea01b2647"
     },
     {
       "file": "dev/agentworkbench/WorkspaceWriteLedger.class",
@@ -109,18 +109,18 @@
       ]
     }
   ],
-  "nativeFileKey": "WINDOWS:86ca0064ca0052bb:188f0b00000001000000000000000000",
-  "originalPid": 15912,
-  "originalProcessStartedAt": "2026-11-14T09:36:18.324Z",
+  "nativeFileKey": "WINDOWS:86ca0064ca0052bb:63580d00000001000000000000000000",
+  "originalPid": 45948,
+  "originalProcessStartedAt": "2026-11-16T01:58:15.155Z",
   "originalStopped": true,
   "releaseDuringBorrowRejected": true,
   "lockAvailableAfterRelease": true,
   "windowsNativeProcessSnapshotApplicable": true,
   "windowsNativeProcessSnapshotVerified": true,
-  "nativeProcessBirth": "2026-11-14T09:36:18.324Z",
-  "nativeProcessSnapshotCount": 444,
+  "nativeProcessBirth": "2026-11-16T01:58:15.155Z",
+  "nativeProcessSnapshotCount": 501,
   "probeOutputEncoding": "UTF-8",
   "schedulerParallelism": 2,
   "schedulerMaxPoolSize": 2,
-  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-0PNKxt"
+  "evidenceDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\bundled-workspace-writer-KSDaH2"
 }

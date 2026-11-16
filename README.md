@@ -4,19 +4,21 @@
 
 平台使用 Java 21、Spring Boot、SQLite、React、TypeScript 和 Electron。任务在独立工作目录中执行，验证和审查记录绑定代码版本，最终由用户验收。验收操作记录用户决定，不会自动提交、推送或改写原项目。
 
-当前开发版本为 **0.2.0-alpha.18**，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
+当前开发版本为 **0.2.0-alpha.19**，本轮检查点与撤销的本机最终验收已完成，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
 
 在“资源与设置 → 外观”选择纯白、纸墨、经典暖色、青瓷、墨夜或墨夜蓝，选择会应用到当前客户端的全部项目和页面。默认跟随系统，浅色使用青瓷、深色使用墨夜；固定选择会跨重新打开保留。浏览器无法保存时，当前窗口仍可切换，并提示未保存。核心离线时也可调整外观，具体来源与验收见[主题研究](./docs/research/themes-2026-11-12.md)。
 
 拖动侧栏边缘可调整宽度，分隔器支持方向键、Shift、Home/End 与 Enter 收起恢复。宽度和收起选择保存在此客户端；缩小窗口保留大窗口选择，存储失败保留本次窗口布局。外观设置可恢复默认布局，具体行为与验收边界见[侧栏布局约定](./docs/sidebar-layout-contract.md)。
 
-任务“代码差异”页按文件树查看变更，显示实际原行/新行、增删高亮、内容版本与固定 Git 基线。读取变化要求刷新，二进制、敏感路径、超限、空文件和仅执行位变化有明确状态；长行在代码区域内滚动，窄窗口上下排列。手动刷新保留仍有变更的选中文件，协议与边界见[逐文件差异约定](./docs/diff-view-contract.md)。轮次撤销与原项目局部采纳继续实施。
+任务“代码差异”页按文件树查看变更，显示实际原行/新行、增删高亮、内容版本与固定 Git 基线。读取变化要求刷新，二进制、敏感路径、超限、空文件和仅执行位变化有明确状态；长行在代码区域内滚动，窄窗口上下排列。手动刷新保留仍有变更的选中文件，协议与边界见[逐文件差异约定](./docs/diff-view-contract.md)。原项目逐文件/代码块局部采纳继续实施。
 
-alpha.17 修订生产提交 `71743f6` 的 Windows、macOS、Linux CI 已通过，三份实际证据 ZIP 的大小和 SHA-256 均核对。每端核心 29 套 / 324 项无失败或错误，UI 129 项通过；实际发行主题 12 项和侧栏 10 项分别验收，包含两次完整重开、最小窗口与原进程停止。条件跳过、原初始 CI 失败及验证边界见[三平台正式回执](./docs/qa/alpha17-ci-sidebar-receipt.json)。
+任务“检查点与撤销”页可查看准备、阶段和成功文件工具保存的实际文件边界；任务停止并完成原根收尾后，也可手动保存。选择较早检查点会先列出反向改动和冲突，确认后由新的根执行尝试交给原 Worker 撤销。未参与改动的用户后续文件保留，HEAD、累计预算和旧回执保持；撤销成功后任务暂停，当前现场需要重新验证和审查。归档包含原文件、二进制、完整 index 和暂存对象，交付 ZIP 核对全部引用；回执丢失时保留 UNKNOWN、已观察效果和原日志。具体范围与限额见[检查点与撤销约定](./docs/checkpoint-contract.md)。
+
+alpha.18 生产提交 `1ead6b2` 的 Windows、macOS、Linux CI 已通过，三份实际证据 ZIP 的大小和 SHA-256 均核对。每端核心30套/356项无失败或错误，UI162项通过；真实逐文件差异14项、发行主题12项和侧栏10项分别验收，包含两次完整重开、最小窗口与原进程停止。条件跳过、原失败及验证边界见[三平台正式回执](./docs/qa/alpha18-ci-diff-receipt.json)。alpha.19 的正式 CI 结果另行追加。
 
 计划确认与显式继续同事务保存根执行尝试和待派发动作。未领取动作可跨重启保留原编号，门禁满足后领取一次；已领取后缺少结果保持 UNKNOWN，核对后继续建立新尝试并沿用累计预算。“任务派发”页和 ZIP 保存完整历史，执行结束与人工验收分别记录。边界见[根派发协议](./docs/task-dispatch-contract.md)。
 
-创建任务可从实际本地或远程分支选择提交，以独立 clone 或锁定的 detached Git worktree 执行。计划保存所选 SHA、源文件与 index 快照，排队期间源变化会要求重新确认；完整 READY 现场在核对原目录、关联、归属和内容后可复用，原未知尝试与规则保留在历史和 ZIP 中。SQLite schema 为 8，API 与 Worker 帧协议仍为 1；旧核心不能打开新库。协议见[启动现场约定](./docs/workspace-selection-contract.md)。
+创建任务可从实际本地或远程分支选择提交，以独立 clone 或锁定的 detached Git worktree 执行。计划保存所选 SHA、源文件与 index 快照，排队期间源变化会要求重新确认；完整 READY 现场在核对原目录、关联、归属和内容后可复用，原未知尝试与规则保留在历史和 ZIP 中。SQLite schema 为 9，API 与 Worker 帧协议仍为 1；旧核心不能打开新库。协议见[启动现场约定](./docs/workspace-selection-contract.md)。
 
 原 Worker 从准备到根收尾持有实际文件锁，写入意图与根领取、授予与操作 ACK 分别同事务保存。模型容量释放和客户端退出保留根保护；丢失回执保持原 UNKNOWN，核对原进程及效果后释放保护，下一次恢复建立新的写入编号。Worker 页、请求/MCP 来源和 ZIP 可查看完整记录，边界见[根写入保护协议](./docs/workspace-write-contract.md)。当前目录执行、跨核心共享现场协调与完整 worktree 归档恢复继续实施。
 
@@ -75,6 +77,8 @@ npm run start
 `npm run test:layout:desktop` 在同一真实启动中执行原六主题 12 项与独立侧栏检查，覆盖鼠标、键盘、拖动中重载、完整退出重开和最小原生窗口；`npm run test:layout:packaged` 对当前发行目录执行同样验收并禁用外部 Java。侧栏报告另保存为 `docs/qa/sidebar-<desktop|packaged>-<platform>.json`。
 
 `npm run test:diff-view` 使用当前最终 Jar、原独立 Worker、真实 clone/worktree 和生产 Web，检查文件修改、原/新行号、旧接口与交付补丁、实际二进制/排除/大小/行限制、版本及 HEAD 冲突、窄屏和显式刷新，并独立核验原 PID/出生停止。实际集成与浏览器协议夹具证据分别保存。
+
+`npm run test:checkpoints` 使用普通最终 Jar、原 Worker 和生产 Web，验证 clone/worktree 的实际文件/index保存、工具请求来源、稳定历史分页、过期预览零写入、撤销与用户后续文件保全、重新验证状态和完整引用 ZIP。两处 SQLite 回执故障分别保留原 APPLIED/ACK/UNKNOWN，重启核对原身份并检查零重放；本机确定性模型、故障注入源码、编译类和完整现场按每次独立运行保存。
 
 ![Windows 工作台 · 墨夜蓝](./docs/qa/themes-dark-win32.png)
 

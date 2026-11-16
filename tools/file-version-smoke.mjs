@@ -158,7 +158,7 @@ try {
   for (const stream of [core.stdout, core.stderr]) stream.on('data', bytes => { logs += bytes.toString(); }); core.once('error', error => { processError = error; });
   coreIdentity = processProbe('identity', core.pid, '-'); remember(coreIdentity);
   await until('Final ordinary Jar startup', () => { if (processError) throw processError; if (ended()) throw new Error('Original core exited during startup'); const port = logs.match(/Tomcat started on port (\d+)/)?.[1]; if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; } });
-  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 8); assert.equal(health.apiVersion, 1); assert.equal(health.fileToolProtocolVersion, 2);
+  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 9); assert.equal(health.apiVersion, 1); assert.equal(health.fileToolProtocolVersion, 2);
   save('health.json', health);
   worker = (await api('/workers')).find(value => value.state === 'RUNNING'); assert.ok(worker); remember(worker); assert.notEqual(worker.pid, core.pid); assert.equal(worker.deployment, 'LOCAL_PROCESS');
   pass('Final Jar and original independent Worker exposed file tool protocol 2 with API 1/schema 8');

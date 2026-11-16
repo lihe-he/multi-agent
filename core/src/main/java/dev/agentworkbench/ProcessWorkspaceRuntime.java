@@ -133,6 +133,13 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         return objectValue(invoke("INTEGRATE", obj("baseline", baseline, "working", working, "targetWorkspace", target, "expectedResult", expected, "permissions", permissions), () -> false, ignored -> {}, null, null));
     }
 
+    /**
+     * 文件撤销仍由原 Worker 领取执行，核心不直接改写任务文件。
+     */
+    @Override public Map<String, Object> restoreCheckpoint(String workspace, String taskId, String operationId, Map<String, Object> preview, BooleanSupplier cancelled) {
+        return objectValue(invoke("RESTORE_CHECKPOINT", obj("workspace", workspace, "taskId", taskId, "operationId", operationId, "preview", preview), cancelled, ignored -> {}, null, null));
+    }
+
     @Override public Map<String, Object> verify(String workspace, String command, BooleanSupplier cancelled, Consumer<String> log) {
         return objectValue(invoke("VERIFY", obj("workspace", workspace, "command", command), cancelled, log, null, null));
     }
@@ -150,7 +157,7 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         };
         AgentToolSession tools = observer.tools();
         return objectValue(invoke("RUN", obj("route", route, "apiKey", apiKey, "workspace", workspace, "prompt", prompt, "readOnly", readOnly, "scope", scope,
-            "hasTools", tools != null, "definitions", tools == null ? List.of() : tools.definitions(), "permissions", tools == null ? obj() : tools.permissions(), "mcpBindings", mcpBindings),
+            "hasTools", tools != null, "hasCheckpoints", !observer.checkpointContext().isEmpty(), "definitions", tools == null ? List.of() : tools.definitions(), "permissions", tools == null ? obj() : tools.permissions(), "mcpBindings", mcpBindings),
             cancelled, log, observer, mcpInvoker));
     }
 
@@ -192,7 +199,10 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
             if (exception.getCause() instanceof WorkerRpc.RemoteFailure remote) {
                 if ("VALIDATION".equals(remote.category())) throw new IllegalArgumentException(remote.getMessage());
                 if ("CANCELLED".equals(remote.category())) throw new CancellationException(remote.getMessage());
-                if ("API".equals(remote.category()) && remote.status() < 500) throw new ApiException(remote.status(), remote.getMessage());
+                if ("API".equals(remote.category()) && remote.status() < 500) {
+                    if ("RESTORE_CHECKPOINT".equals(method)) throw new dev.agentworkbench.runtime.CheckpointRestoreRejected(remote.status(), remote.getMessage());
+                    throw new ApiException(remote.status(), remote.getMessage());
+                }
             }
             process.fence("WORKER_RESULT_MISSING"); throw new IllegalStateException("独立 Worker 未取得原调用的完整回执，结果未知且不自动重试");
         } finally {
@@ -294,6 +304,14 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
                 case "MODEL_END" -> {
                     if (!requestInFlight || observer == null) throw new ApiException(409, "模型回执缺少原请求派发");
                     observer.end(map(arguments, "observation")); requestInFlight = false; yield observer.lastRequestId();
+                }
+                case "CHECKPOINT_CONTEXT" -> {
+                    if (!"RUN".equals(method) || observer == null || requestInFlight || observer.lastRequestId().isBlank()) throw new ApiException(403, "文件快照上下文缺少原成功请求边界");
+                    yield observer.checkpointContext();
+                }
+                case "CHECKPOINT" -> {
+                    if (!"RUN".equals(method) || observer == null || requestInFlight || observer.lastRequestId().isBlank()) throw new ApiException(403, "文件快照回执缺少原成功请求来源");
+                    observer.checkpoint(map(arguments, "descriptor")); yield true;
                 }
                 case "MODEL_ACQUIRE", "TOOL_ACQUIRE" -> {
                     if (tools == null) throw new ApiException(403, "原调用没有逐请求资源会话");

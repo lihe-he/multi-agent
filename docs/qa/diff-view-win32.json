@@ -1,95 +1,95 @@
 {
   "platform": "win32",
-  "version": "0.2.0-alpha.18",
+  "version": "0.2.0-alpha.19",
   "status": "passed",
   "checks": [
     {
       "name": "Ordinary final Jar and original independent Worker exposed diff protocol 1 with unchanged API/schema/file-tool versions",
       "status": "passed",
-      "at": "2026-11-14T08:25:18.002Z"
+      "at": "2026-11-16T01:14:49.745Z"
     },
     {
       "name": "CLONE actual Worker read and version-bound write completed with independent review and original request identities",
       "status": "passed",
-      "at": "2026-11-14T08:25:46.415Z"
+      "at": "2026-11-16T01:15:18.507Z"
     },
     {
       "name": "CLONE actual old/new coordinates, verified legacy text and original delivery patch kept workspace/source bytes and Git metadata",
       "status": "passed",
-      "at": "2026-11-14T08:25:54.607Z"
+      "at": "2026-11-16T01:15:23.147Z"
     },
     {
       "name": "CLONE real binary/excluded/empty/deleted/literal/no-newline/file-size/row limits and stale version rejected partial or secret text without writes or model charges",
       "status": "passed",
-      "at": "2026-11-14T08:26:19.146Z"
+      "at": "2026-11-16T01:15:33.769Z"
     },
     {
       "name": "WORKTREE actual Worker read and version-bound write completed with independent review and original request identities",
       "status": "passed",
-      "at": "2026-11-14T08:26:50.477Z"
+      "at": "2026-11-16T01:15:57.226Z"
     },
     {
       "name": "WORKTREE actual old/new coordinates, verified legacy text and original delivery patch kept workspace/source bytes and Git metadata",
       "status": "passed",
-      "at": "2026-11-14T08:26:54.387Z"
+      "at": "2026-11-16T01:16:01.494Z"
     },
     {
       "name": "WORKTREE real binary/excluded/empty/deleted/literal/no-newline/file-size/row limits and stale version rejected partial or secret text without writes or model charges",
       "status": "passed",
-      "at": "2026-11-14T08:27:04.414Z"
+      "at": "2026-11-16T01:16:15.714Z"
     },
     {
       "name": "CLONE production Web rendered real Jar rows and explicit states on desktop/narrow screens with literal text and bounded horizontal scrolling",
       "status": "passed",
-      "at": "2026-11-14T08:27:12.160Z"
+      "at": "2026-11-16T01:16:28.751Z"
     },
     {
       "name": "CLONE actual 409 cleared old rows and explicit refresh kept selected file before rendering the new content version",
       "status": "passed",
-      "at": "2026-11-14T08:27:17.002Z"
+      "at": "2026-11-16T01:16:34.084Z"
     },
     {
       "name": "CLONE fixed Git baseline rejected HEAD movement even when the content fingerprint stayed identical",
       "status": "passed",
-      "at": "2026-11-14T08:27:20.266Z"
+      "at": "2026-11-16T01:16:38.036Z"
     },
     {
       "name": "WORKTREE production Web rendered real Jar rows and explicit states on desktop/narrow screens with literal text and bounded horizontal scrolling",
       "status": "passed",
-      "at": "2026-11-14T08:27:26.894Z"
+      "at": "2026-11-16T01:16:49.159Z"
     },
     {
       "name": "WORKTREE actual 409 cleared old rows and explicit refresh kept selected file before rendering the new content version",
       "status": "passed",
-      "at": "2026-11-14T08:27:37.413Z"
+      "at": "2026-11-16T01:16:55.648Z"
     },
     {
       "name": "WORKTREE fixed Git baseline rejected HEAD movement even when the content fingerprint stayed identical",
       "status": "passed",
-      "at": "2026-11-14T08:27:43.719Z"
+      "at": "2026-11-16T01:16:58.673Z"
     },
     {
       "name": "Original core/Worker and every recorded execution PID/birth were independently confirmed stopped after normal shutdown",
       "status": "passed",
-      "at": "2026-11-14T08:27:49.003Z"
+      "at": "2026-11-16T01:17:02.918Z"
     }
   ],
-  "completedAt": "2026-11-14T08:27:49.100Z",
-  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\diff-view-0A6WVw",
-  "jarSha256": "e82eae779857fe0f7e667d5d3f7f2725196edcf7c18d893361ac09afede2990b",
-  "scriptSha256": "18b9ead31ba38feb403b7ad6daafbc6ad6e781e57d345e97f02e735703dbfb39",
+  "completedAt": "2026-11-16T01:17:02.946Z",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\diff-view-4mieOe",
+  "jarSha256": "c912bf2dbbbcf7d3900762ef00a55acd3978923867d87259f4736cb9984ca40e",
+  "scriptSha256": "46e1a79887da1f8253cea082a6fb9c422e53b036d7a89857e3453bad7c329479",
   "webFiles": [
     {
-      "file": "web/dist/assets/index-CZL0NsHy.js",
-      "sha256": "5a19367b1c702088249d6fb0a0603a282a358aeca5c09c03bd8b41c32b0a95e1"
+      "file": "web/dist/assets/index-C6FUt5I0.css",
+      "sha256": "b7b832a24fd25a9bbbb184f1224896a726bbc81897b1f3c4ce9eb4548272b333"
     },
     {
-      "file": "web/dist/assets/index-DVydT1v8.css",
-      "sha256": "1ad2e46d6745d2041baa36530ff1e54fd9e43c7a4094e4e8431c37fa0904ab7b"
+      "file": "web/dist/assets/index-lpN8oTSv.js",
+      "sha256": "4538d88879ee893ac18cdaef6240c8becdd5b2da1e8a4306247c0669ae60e4fd"
     },
     {
       "file": "web/dist/index.html",
-      "sha256": "0544de487a5b4026123aa2146e609b30171b72811e911e736417c005b3d4835b"
+      "sha256": "7376556ea5caaaec24b06aa4e0f50fe67766eaf908d860e31e79153d07b97154"
     },
     {
       "file": "web/dist/theme-init.js",

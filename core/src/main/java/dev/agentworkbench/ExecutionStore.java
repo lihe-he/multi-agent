@@ -67,7 +67,7 @@ public class ExecutionStore implements AutoCloseable {
                 int schemaVersion;
                 try (var version = statement.executeQuery("PRAGMA user_version")) {
                     schemaVersion = version.next() ? version.getInt(1) : 0;
-                    if (schemaVersion > 8) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
+                    if (schemaVersion > 9) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
                 }
                 statement.execute("PRAGMA journal_mode=WAL");
                 statement.execute("PRAGMA synchronous=FULL");
@@ -86,6 +86,7 @@ public class ExecutionStore implements AutoCloseable {
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_subtask_dispatch ON entities(json_extract(body,'$.parentRunId'),json_extract(body,'$.requestId'),json_extract(body,'$.toolCallId')) WHERE kind='subtask'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_team_message ON entities(json_extract(body,'$.teamId'),json_extract(body,'$.sequence')) WHERE kind='teamMessage'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_effect_state ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.state')) WHERE kind IN ('operation','mcpOperation','teamOperation')");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_checkpoint_task ON entities(json_extract(body,'$.taskId')) WHERE kind IN ('checkpoint','checkpointRestorePreview')");
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_worker_lease_operation ON entities(json_extract(body,'$.operationKind'),json_extract(body,'$.operationId')) WHERE kind='workerLease'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_worker_lease_owner ON entities(json_extract(body,'$.workerId'),json_extract(body,'$.state')) WHERE kind='workerLease'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_worker_lease_task ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.state')) WHERE kind='workerLease'");
@@ -109,7 +110,7 @@ public class ExecutionStore implements AutoCloseable {
                     statement.execute("DELETE FROM session_search");
                     statement.execute("INSERT INTO session_search(rowid,project_id,session_id,message_id,sequence,content) SELECT sequence,json_extract(body,'$.projectId'),session_id,id,sequence,session_search_fold(json_extract(body,'$.content')) FROM session_messages");
                 }
-                statement.execute("PRAGMA user_version=8");
+                statement.execute("PRAGMA user_version=9");
                 opened.commit(); opened.setAutoCommit(true);
             }
             connection = opened; ownershipChannel = channel; ownershipLock = lock;
@@ -268,6 +269,59 @@ public class ExecutionStore implements AutoCloseable {
     public synchronized Map<String, Object> workspaceWriteLeasePage(String taskId, long before, int limit, String state) {
         if (!state.isBlank() && !WorkspaceWriteLedger.STATES.contains(state)) throw new ApiException(400, "现场写入归属状态无效");
         return dispatchRecordPage("workspaceWriteLease", "leases", taskId, before, limit, state);
+    }
+
+    /**
+     * 文件检查点使用稳定行游标；内部撤销预检快照不混入用户选择列表。
+     */
+    public synchronized Map<String, Object> checkpointPage(String taskId, long before, int requestedLimit) {
+        get("task", taskId);
+        if (before < 0) throw new ApiException(400, "检查点游标无效。");
+        int limit = Math.max(1, Math.min(100, requestedLimit));
+        try (var query = connection.prepareStatement("SELECT rowid,body FROM entities WHERE kind='checkpoint' AND json_extract(body,'$.taskId')=? AND COALESCE(json_extract(body,'$.visible'),1)=1"
+                + (before > 0 ? " AND rowid<?" : "") + " ORDER BY rowid DESC LIMIT ?")) {
+            int index = 1; query.setString(index++, taskId); if (before > 0) query.setLong(index++, before); query.setInt(index, limit + 1);
+            List<Map<String, Object>> records = new ArrayList<>(); long cursor = before; boolean more = false;
+            try (var rows = query.executeQuery()) {
+                while (rows.next()) {
+                    if (records.size() == limit) { more = true; break; }
+                    cursor = rows.getLong(1); Map<String, Object> record = decode(rows.getString(2)); record.put("sequence", cursor); records.add(record);
+                }
+            }
+            return obj("checkpoints", records, "cursor", cursor, "hasMore", more);
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    /**
+     * 原检查点与序号必须属于指定任务，不能以其他任务的编号恢复文件。
+     */
+    public synchronized Map<String, Object> checkpointRecord(String taskId, String id) {
+        get("task", taskId);
+        try (var query = connection.prepareStatement("SELECT rowid,body FROM entities WHERE kind='checkpoint' AND id=?")) {
+            query.setString(1, id);
+            try (var rows = query.executeQuery()) {
+                if (!rows.next()) throw new ApiException(404, "检查点不存在。");
+                Map<String, Object> record = decode(rows.getString(2));
+                if (!taskId.equals(str(record, "taskId"))) throw new ApiException(403, "检查点不属于此任务。");
+                record.put("sequence", rows.getLong(1)); return record;
+            }
+        } catch (ApiException exception) { throw exception; }
+        catch (Exception exception) { throw failure(exception); }
+    }
+
+    /**
+     * 导出读取全部原引用和撤销历史，不使用界面分页上限。
+     */
+    synchronized List<Map<String, Object>> taskCheckpointRecords(String taskId, String kind) {
+        get("task", taskId);
+        if (!Set.of("checkpoint", "checkpointRestorePreview").contains(kind)) throw new ApiException(400, "无效检查点记录类型。");
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind=? AND json_extract(body,'$.taskId')=? ORDER BY rowid")) {
+            query.setString(1, kind); query.setString(2, taskId);
+            List<Map<String, Object>> records = new ArrayList<>();
+            try (var rows = query.executeQuery()) { while (rows.next()) { if (records.size() >= 50_000) throw new ApiException(409, "检查点历史超过完整导出上限。"); records.add(decode(rows.getString(1))); } }
+            return records;
+        } catch (ApiException exception) { throw exception; }
+        catch (Exception exception) { throw failure(exception); }
     }
 
     private Map<String, Object> dispatchRecordPage(String kind, String key, String taskId, long before, int requestedLimit, String state) {

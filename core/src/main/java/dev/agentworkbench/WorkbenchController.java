@@ -35,15 +35,17 @@ public class WorkbenchController {
     private final ObjectMapper mapper;
     private final ConfigurableApplicationContext application;
     private final FileToolHistory fileTools;
+    private final CheckpointExportHistory checkpointHistory;
 
     public WorkbenchController(ExecutionStore store, WorkbenchCatalog catalog, WorkbenchEngine engine, WorkspaceRuntime runtime, ResourceManager resources, PlanValidator validator, ObjectMapper mapper, ConfigurableApplicationContext application) {
         this.store = store; this.catalog = catalog; this.engine = engine; this.runtime = runtime; this.resources = resources; this.validator = validator; this.mapper = mapper;
         this.application = application;
         this.fileTools = new FileToolHistory(store, catalog, runtime);
+        this.checkpointHistory = new CheckpointExportHistory(store, runtime, mapper);
     }
 
     @GetMapping("/health")
-    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", WorkbenchVersion.CURRENT, "apiVersion", 1, "schemaVersion", 8, "workspaceSelectionVersion", 1, "fileToolProtocolVersion", 2, "diffViewProtocolVersion", 1, "corePid", ProcessHandle.current().pid()); }
+    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", WorkbenchVersion.CURRENT, "apiVersion", 1, "schemaVersion", 9, "workspaceSelectionVersion", 1, "fileToolProtocolVersion", 2, "diffViewProtocolVersion", 1, "checkpointProtocolVersion", 1, "corePid", ProcessHandle.current().pid()); }
 
     @PostMapping("/shutdown")
     public Map<String, Object> shutdown() {
@@ -143,6 +145,7 @@ public class WorkbenchController {
     private Map<String, Object> taskSnapshot(Map<String, Object> task) {
         Map<String, Object> snapshot = new java.util.LinkedHashMap<>(task);
         snapshot.put("diffViewProtocolVersion", 1);
+        snapshot.put("checkpointProtocolVersion", 1);
         if (task.containsKey("workspaceSelection")) snapshot.put("workspacePreparationPresent", runtime.hasWorkspacePreparation(str(task, "id")));
         if (!str(task, "workspaceWriteLeaseId").isBlank()) snapshot.put("workspaceWrite", store.get("workspaceWriteLease", str(task, "workspaceWriteLeaseId")));
         snapshot.put("workspaceWriteHistoryPresent", !store.taskDispatchRecords("workspaceWriteLease", str(task, "id")).isEmpty());
@@ -155,6 +158,20 @@ public class WorkbenchController {
         Map<String, Object> task = store.get("task", id);
         return store.agentRunPage(str(task, "projectId"), "", id, before, limit, state);
     }
+
+    @GetMapping("/tasks/{id}/checkpoints")
+    public Map<String, Object> checkpoints(@PathVariable String id, @RequestParam(defaultValue = "0") long before, @RequestParam(defaultValue = "30") int limit) {
+        return engine.checkpointPage(id, before, limit);
+    }
+
+    @PostMapping("/tasks/{id}/checkpoints")
+    public Map<String, Object> checkpoint(@PathVariable String id, @RequestBody Map<String, Object> body) { return engine.createCheckpoint(id, body); }
+
+    @PostMapping("/tasks/{id}/checkpoint-restores/preview")
+    public Map<String, Object> previewCheckpointRestore(@PathVariable String id, @RequestBody Map<String, Object> body) { return engine.previewCheckpointUndo(id, body); }
+
+    @PostMapping("/tasks/{id}/checkpoint-restores")
+    public Map<String, Object> checkpointRestore(@PathVariable String id, @RequestBody Map<String, Object> body) { return taskSnapshot(engine.requestCheckpointUndo(id, body)); }
 
     @GetMapping("/tasks/{id}/task-executions")
     public Map<String, Object> taskExecutions(@PathVariable String id, @RequestParam(defaultValue = "0") long before,
@@ -298,18 +315,27 @@ public class WorkbenchController {
         Map<String, Object> task = store.get("task", id);
         String workspace = str(task, "workspace");
         if (List.of("RUNNING", "QUEUED", "WAITING_RESOURCE", "PAUSING", "CANCELLING").contains(str(task, "state"))) { throw new ApiException(409, "请先暂停任务并等待停止确认后导出一致成果"); }
-        if (!workspace.isBlank() && !str(task, "version").equals(runtime.fingerprint(workspace))) { throw new ApiException(409, "当前文件与任务记录的版本不同，请先重新验证，避免将新补丁与旧证据混合导出"); }
+        String workspaceVersion = workspace.isBlank() ? "" : runtime.fingerprint(workspace);
+        boolean unknownRestore = "UNKNOWN".equals(str(task, "state")) && !str(task, "pendingCheckpointRestoreId").isBlank();
+        if (!workspace.isBlank() && !str(task, "version").equals(workspaceVersion) && !unknownRestore) { throw new ApiException(409, "当前文件与任务记录的版本不同，请先重新验证，避免将新补丁与旧证据混合导出"); }
         String patch = workspace.isBlank() ? "" : runtime.exportPatch(workspace);
-        if (!workspace.isBlank() && !str(task, "version").equals(runtime.fingerprint(workspace))) { throw new ApiException(409, "生成补丁时文件发生变化，请停止外部修改并重新验证"); }
+        if (!workspace.isBlank() && !workspaceVersion.equals(runtime.fingerprint(workspace))) { throw new ApiException(409, "生成补丁时文件发生变化，请停止外部修改并重新验证"); }
         FileToolHistory.Snapshot fileToolSnapshot = fileTools.snapshot(id);
+        CheckpointExportHistory.Snapshot checkpointSnapshot = checkpointHistory.snapshot(id);
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (ZipOutputStream zip = new ZipOutputStream(bytes, StandardCharsets.UTF_8)) {
-            putZip(zip, "manifest.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(obj("schemaVersion", 1, "taskId", id, "exportedAt", now(), "version", task.get("version"), "baseline", task.get("baseline"), "state", task.get("state"), "outcome", task.get("outcome"), "credentialsIncluded", false)));
+            putZip(zip, "manifest.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(obj("schemaVersion", 1, "taskId", id, "exportedAt", now(), "version", task.get("version"), "baseline", task.get("baseline"), "state", task.get("state"), "outcome", task.get("outcome"), "credentialsIncluded", false,
+                "workspaceVersion", workspaceVersion, "workspaceMatchesRecordedVersion", workspace.isBlank() || str(task, "version").equals(workspaceVersion), "unknownRestoreEffects", unknownRestore, "checkpointProtocolVersion", 1,
+                "checkpointArchiveBytes", checkpointSnapshot.bytes(), "checkpointArchiveScope", "REFERENCED_ROOT_FILES_INDEX_AND_ORIGINAL_RESTORE_JOURNALS")));
             putZip(zip, "task.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(task));
             putZip(zip, "changes.patch", patch.getBytes(StandardCharsets.UTF_8));
             putZip(zip, "operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(operations(id)));
             putZip(zip, "file-tool-operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(fileToolSnapshot.operations()));
             putZip(zip, "file-tool-journal-sources.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(fileToolSnapshot.journals()));
+            putZip(zip, "checkpoints.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(checkpointSnapshot.checkpoints()));
+            putZip(zip, "checkpoint-restores.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(checkpointSnapshot.restores()));
+            putZip(zip, "checkpoint-restore-journal-sources.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(checkpointSnapshot.journals()));
+            for (var entry : checkpointSnapshot.files().entrySet()) putZip(zip, entry.getKey(), entry.getValue());
             putZip(zip, "agent-runs.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("agentRun").stream().filter(run -> id.equals(str(run, "taskId"))).toList()));
             putZip(zip, "task-executions.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.taskDispatchRecords("taskExecution", id)));
             putZip(zip, "dispatch-actions.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.taskDispatchRecords("dispatchAction", id)));
@@ -336,6 +362,8 @@ public class WorkbenchController {
             putZip(zip, "README.md", ("# 任务交付包\n\n本包保存需求、固定计划、证据、原始事件和代码补丁。\n\n状态：" + task.get("state") + "\n代码版本：" + task.get("version") + "\n\n验收只记录用户决定，不自动写入原项目。应用补丁前请检查目标版本和未提交修改，并重新运行必要验证。未知操作、失败和未验证项以 task.json 及 operations.json 为准。凭据不包含在本包中。\n").getBytes(StandardCharsets.UTF_8));
         }
         engine.requireExecutionSettled(id);
+        checkpointHistory.requireCurrent(id, checkpointSnapshot);
+        if (!workspace.isBlank() && !workspaceVersion.equals(runtime.fingerprint(workspace))) throw new ApiException(409, "导出期间文件发生变化，请重新读取当前现场。");
         if (!task.equals(store.get("task", id))) throw new ApiException(409, "导出期间任务记录发生变化，请读取当前状态后重试");
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=task-" + id + ".zip").contentType(MediaType.parseMediaType("application/zip")).body(bytes.toByteArray());
     }

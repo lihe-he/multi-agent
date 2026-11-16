@@ -18,6 +18,7 @@ import java.util.function.BooleanSupplier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.*;
 /**
  * 真实仓库和 SQLite 核对启动选择、根队列与准备租约；模型夹具只记录预算领取。
  */
+@ExtendWith(CheckpointFailureEvidence.class)
 class WorkspaceSelectionEngineTest {
     @TempDir Path directory;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -77,12 +79,20 @@ class WorkspaceSelectionEngineTest {
             "budget", obj("maxCalls", 12, "reserveCalls", 4))), "id");
     }
 
-    private void engine() { engine = new WorkbenchEngine(store, catalog, runtime, new ResourceManager(), mapper); }
+    // 此夹具隔离自动文件归档；真实检查点、普通根计划和 Worker 在 CheckpointEngineTest 中单独验证。
+    private void engine() {
+        engine = new WorkbenchEngine(store, catalog, runtime, new ResourceManager(), mapper) {
+            @Override void automaticCheckpoint(String taskId, String kind, String stage) { }
+        };
+    }
 
     private void blockExecutor() throws Exception {
         controlled = Executors.newSingleThreadExecutor(); release = new CountDownLatch(1); CountDownLatch entered = new CountDownLatch(1);
         controlled.submit(() -> { entered.countDown(); try { release.await(); } catch (InterruptedException exception) { Thread.currentThread().interrupt(); } });
-        assertTrue(entered.await(3, TimeUnit.SECONDS)); engine = new WorkbenchEngine(store, catalog, runtime, new ResourceManager(), mapper, null, controlled);
+        assertTrue(entered.await(3, TimeUnit.SECONDS));
+        engine = new WorkbenchEngine(store, catalog, runtime, new ResourceManager(), mapper, null, controlled) {
+            @Override void automaticCheckpoint(String taskId, String kind, String stage) { }
+        };
     }
 
     @Test
@@ -191,6 +201,11 @@ class WorkspaceSelectionEngineTest {
     private void await(BooleanSupplier condition) throws Exception {
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(15);
         while (System.nanoTime() < deadline) { if (condition.getAsBoolean()) return; Thread.sleep(20); }
+        try {
+            Path evidence = Files.createDirectories(Path.of("target", "workspace-selection-checkpoint-timeout-" + java.util.UUID.randomUUID()));
+            Files.write(evidence.resolve("original-timeout-state.json"), mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(obj("recordedAt", now(), "originalFixture", directory.toString(),
+                "tasks", store.list("task"), "executions", store.list("taskExecution"), "operations", store.list("operation"), "agentRuns", store.list("agentRun"), "checkpoints", store.list("checkpoint"))));
+        } catch (Exception diagnostic) { System.err.println("Original workspace selection timeout evidence gap: " + diagnostic); }
         fail("workspace selection did not reach the expected root boundary");
     }
 

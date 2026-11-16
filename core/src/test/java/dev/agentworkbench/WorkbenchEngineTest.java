@@ -8,6 +8,7 @@ import dev.agentworkbench.runtime.ModelCallObserver;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -27,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(CheckpointFailureEvidence.class)
 class WorkbenchEngineTest {
     @TempDir Path directory;
     private ExecutionStore store;
@@ -80,7 +82,14 @@ class WorkbenchEngineTest {
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(8);
         while (System.nanoTime() < deadline) {
             Map<String, Object> task = store.get("task", id);
-            if (states.contains(str(task, "state"))) { return task; }
+            if (states.contains(str(task, "state"))) {
+                // 原八秒内同时等待根结束回执，文字终态不绕过配置与验收门禁。
+                if (Set.of("AWAITING_ACCEPTANCE", "PAUSED", "CANCELLED", "FAILED", "WAITING_INPUT", "UNKNOWN").contains(str(task, "state"))) {
+                    try { engine.requireExecutionSettled(id); }
+                    catch (ApiException exception) { if (exception.status() != 409) throw exception; Thread.sleep(20); continue; }
+                }
+                return task;
+            }
             Thread.sleep(20);
         }
         fail("Task did not reach expected state: " + store.get("task", id)); return obj();

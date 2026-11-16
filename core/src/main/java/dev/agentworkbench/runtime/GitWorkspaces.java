@@ -140,17 +140,18 @@ final class GitWorkspaces {
         try {
             boolean gitMarker = Files.isDirectory(supplied.resolve(".git"), LinkOption.NOFOLLOW_LINKS) || Files.isRegularFile(supplied.resolve(".git"), LinkOption.NOFOLLOW_LINKS);
             if (!supplied.equals(expected) || !supplied.toRealPath().equals(expected) || !gitMarker) throw new IllegalArgumentException("任务现场缺失、解析目标变化或 Git 标记无效");
+            GitDirectories directories = gitDirectories(supplied);
             Map<String, Object> saved = read(expected.getParent().resolve("selection.json"));
             if (!"READY".equals(str(saved, "state")) || !taskId.equals(str(saved, "taskId")) || !map(map(saved, "facts"), "workspaceOwnership").equals(ownership)
-                    || !taskId.equals(str(ownership, "taskId")) || !gitDirectory(supplied, "--git-dir").equals(str(ownership, "gitDirectory"))
-                    || !gitDirectory(supplied, "--git-common-dir").equals(str(ownership, "commonDirectory"))) throw new IllegalArgumentException("原现场归属回执与实际 Git 目录不一致");
+                    || !taskId.equals(str(ownership, "taskId")) || !directories.git().equals(str(ownership, "gitDirectory"))
+                    || !directories.common().equals(str(ownership, "commonDirectory"))) throw new IllegalArgumentException("原现场归属回执与实际 Git 目录不一致");
             if ("WORKTREE".equals(str(ownership, "strategy"))) {
                 Path source = runtime.projectRoot(str(ownership, "sourcePath"));
                 if (!gitDirectory(source, "--git-common-dir").equals(str(ownership, "commonDirectory"))) throw new IllegalArgumentException("worktree 已失去原仓库关联");
                 Map<String, Object> registered = worktrees(source).stream().filter(item -> workspacePathEquals(str(item, "path"), supplied)).findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("原仓库中没有此任务的 worktree 注册"));
                 if (!str(ownership, "lockReason").equals(str(registered, "locked")) || !bool(registered, "detached", false)) throw new IllegalArgumentException("worktree 锁定归属或 detached 状态已变化，请人工核对");
-            } else if (!gitDirectory(supplied, "--git-common-dir").equals(supplied.resolve(".git").toRealPath().toString())) throw new IllegalArgumentException("独立 clone 已被替换为共享 Git 现场");
+            } else if (!directories.common().equals(supplied.resolve(".git").toRealPath().toString())) throw new IllegalArgumentException("独立 clone 已被替换为共享 Git 现场");
         } catch (IOException exception) { throw new IllegalArgumentException("原现场或归属记录不可读取，目录不会自动重建", exception); }
     }
 
@@ -204,6 +205,18 @@ final class GitWorkspaces {
     private String gitDirectory(Path root, String argument) throws IOException {
         return root.resolve(runtime.git(root, "rev-parse", argument).strip()).normalize().toRealPath().toString();
     }
+
+    /**
+     * 原 Git 目录和共享目录来自同一回执，继续分别核对实际解析目标和归属。
+     */
+    private GitDirectories gitDirectories(Path root) throws IOException {
+        String[] fields = runtime.git(root, "rev-parse", "--git-dir", "--git-common-dir").replace("\r\n", "\n").split("\n", -1);
+        if (fields.length != 3 || !fields[2].isEmpty() || fields[0].isBlank() || fields[1].isBlank() || fields[0].contains("\r") || fields[1].contains("\r"))
+            throw new IllegalArgumentException("原 Git 目录回执缺少完整两项或包含额外输出");
+        return new GitDirectories(root.resolve(fields[0]).normalize().toRealPath().toString(), root.resolve(fields[1]).normalize().toRealPath().toString());
+    }
+
+    private record GitDirectories(String git, String common) { }
 
     private List<Map<String, Object>> worktrees(Path source) {
         List<Map<String, Object>> result = new ArrayList<>(); Map<String, Object> record = obj();

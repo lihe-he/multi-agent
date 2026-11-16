@@ -28,9 +28,17 @@ final class TaskDispatchQueue {
     }
 
     Map<String, Object> enqueue(String taskId, String trigger, Consumer<Map<String, Object>> edit) {
+        return enqueue(taskId, trigger, edit, Map.of());
+    }
+
+    /**
+     * 用户确认的撤销预览与新根动作同事务排队，避免只消费预览而没有执行编号。
+     */
+    Map<String, Object> enqueue(String taskId, String trigger, Consumer<Map<String, Object>> edit, Map<String, List<Map<String, Object>>> related) {
         synchronized (store) {
             Map<String, Object> task = store.get("task", taskId);
-            if (!Set.of("DRAFT", "PAUSED", "WAITING_INPUT", "FAILED").contains(str(task, "state"))) throw new ApiException(409, "当前任务不能建立新的执行尝试");
+            if (!Set.of("DRAFT", "PAUSED", "WAITING_INPUT", "FAILED").contains(str(task, "state"))
+                    && !("USER_CHECKPOINT_RESTORE".equals(trigger) && "AWAITING_ACCEPTANCE".equals(str(task, "state")))) throw new ApiException(409, "当前任务不能建立新的执行尝试");
             if (store.hasUnknownTaskExecution(taskId) || store.hasUnknownEffects(taskId)) throw new ApiException(409, "根执行或外部效果尚未核对，不能建立新尝试");
             String previousState = str(task, "state"), time = now(), executionId = id(), actionId = id();
             edit.accept(task);
@@ -53,7 +61,9 @@ final class TaskDispatchQueue {
             if ("USER_APPROVAL".equals(trigger)) events.add(obj("type", "PLAN_APPROVED", "message", "用户确认了完成约定、范围、路由与预算"));
             if ("USER_RESUME".equals(trigger)) events.add(obj("type", "CONTEXT_REFRESHED", "message", "按当前有效记忆重新组装上下文，旧证据保留"));
             events.add(obj("type", "QUEUED", "message", "任务与第 " + attempt + " 次执行已同事务进入持久队列，动作 " + actionId + " 尚未领取"));
-            store.commitRecords(records(task, execution, action), taskId, events);
+            Map<String, List<Map<String, Object>>> records = records(task, execution, action);
+            if (!Set.of("checkpointRestorePreview").containsAll(related.keySet())) throw new ApiException(400, "根队列包含无效关联记录。");
+            records.putAll(related); store.commitRecords(records, taskId, events);
             return action;
         }
     }

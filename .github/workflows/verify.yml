@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   verify:
-    timeout-minutes: 50
+    timeout-minutes: 75
     strategy:
       fail-fast: false
       matrix:
@@ -45,15 +45,20 @@ jobs:
         working-directory: web
         run: npx playwright install --with-deps chromium
       - name: UI interaction tests
-        run: npm run test:ui --prefix web
+        run: npm run test:ui --prefix web -- --reporter=list,json
         env:
           PLAYWRIGHT_CHANNEL: chromium
+          PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/playwright.json
       - name: Production theme initialization and storage fallback
         run: npm run test:themes:web
         env:
           PLAYWRIGHT_CHANNEL: chromium
       - name: Actual final Jar and production Web file diff review
         run: npm run test:diff-view
+        env:
+          PLAYWRIGHT_CHANNEL: chromium
+      - name: Actual final Jar checkpoint undo and original receipt recovery
+        run: npm run test:checkpoints
         env:
           PLAYWRIGHT_CHANNEL: chromium
       - name: Desktop dependencies
@@ -127,6 +132,7 @@ jobs:
             core/target/team-capacity-failure-*/
             core/target/team-child-start-failure-*/
             core/target/workspace-write-release-gate-*/
+            core/target/checkpoint-evidence-*/
             docs/qa/smoke-*.json
             docs/qa/desktop-*.json
             docs/qa/standalone-*.json
@@ -136,6 +142,7 @@ jobs:
             docs/qa/workspace-writes-*.json
             docs/qa/file-versions-*.json
             docs/qa/diff-view-*.json
+            docs/qa/checkpoints-*.json
             docs/qa/bundled-workspace-writer-*.json
             docs/qa/themes-*.json
             docs/qa/sidebar-*.json
@@ -169,6 +176,12 @@ jobs:
             .runtime/diff-view-*/data/workspaces/
             .runtime/diff-view-*/中文 diff source/
             core/target/diff-view-evidence-*/
+            .runtime/checkpoints-*/reports/
+            .runtime/checkpoints-*/fixture-classes/
+            .runtime/checkpoints-*/data/workbench.sqlite*
+            .runtime/checkpoints-*/data/workspaces/
+            .runtime/checkpoints-*/data/checkpoints/
+            .runtime/checkpoints-*/中文 checkpoint source/
             .runtime/desktop-deps-*.log
             .runtime/desktop-deps-verified.json
             .runtime/desktop-package-*.log
