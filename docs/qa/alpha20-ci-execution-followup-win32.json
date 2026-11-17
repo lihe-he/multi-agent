@@ -1,0 +1,560 @@
+{
+  "recordedAt": "2026-11-17T03:24:45.030Z",
+  "version": "0.2.0-alpha.20",
+  "status": "passed",
+  "baselineCommit": "1d33e954844f6450a3b45836127dd50172da7c5b",
+  "scope": "LOCAL_DIRECT_FACTS_AND_ASYNC_CORE_STOP_RUNNER_FOLLOWUP; COMPLETE_PRODUCTION_UI_226; PRODUCT_CORE_WEB_BYTES_UNCHANGED; THIRD_EXACT_COMMIT_CI_REQUIRED",
+  "productCoreInputsUnchanged": [
+    {
+      "file": "core/pom.xml",
+      "bytes": 2878,
+      "sha256": "ca56b685ea5fab40af965715eec7e7507307417408cd75274b6518be5fbf7d05"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/AgentPermissions.java",
+      "bytes": 5437,
+      "sha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ApiErrors.java",
+      "bytes": 1727,
+      "sha256": "7145d3bb7ac039276895ff72edf7e69ced634f66b4776d93538e2cd8ec68a76e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ApiException.java",
+      "bytes": 321,
+      "sha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/BudgetPolicy.java",
+      "bytes": 1438,
+      "sha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CheckpointExportHistory.java",
+      "bytes": 8002,
+      "sha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CheckpointLedger.java",
+      "bytes": 20976,
+      "sha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CollaborationPolicy.java",
+      "bytes": 6336,
+      "sha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionNodes.java",
+      "bytes": 11344,
+      "sha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+      "bytes": 109266,
+      "sha256": "22f603540c7e4acbc25a87ea240fe3517e213c45cc024b0b365e304fef4523a2"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionWorker.java",
+      "bytes": 747,
+      "sha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+      "bytes": 14106,
+      "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/Json.java",
+      "bytes": 2471,
+      "sha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/LocalAccessFilter.java",
+      "bytes": 4131,
+      "sha256": "80c0dd5d2adda6b050bdaa74e1a1ffaa528fad712f1096c35fe1604182e5fd6e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+      "bytes": 15363,
+      "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+      "bytes": 30456,
+      "sha256": "a7f95270b20ba305823d18fd8248775592bbc71d4adba2911f06cf6636201c26"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/PlanValidator.java",
+      "bytes": 4500,
+      "sha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+      "bytes": 29612,
+      "sha256": "4168ac091632175ae6b96fd1420f1382bdbb5e97dd3acbaf96345bbf0bd7adef"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+      "bytes": 4219,
+      "sha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ResourceManager.java",
+      "bytes": 3028,
+      "sha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/SessionController.java",
+      "bytes": 3712,
+      "sha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+      "bytes": 26102,
+      "sha256": "c5eef79d79595452064e4eaa9839ac34f3832c07829761e3c2d014db95611784"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TeamCoordinator.java",
+      "bytes": 29661,
+      "sha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TerminalController.java",
+      "bytes": 2984,
+      "sha256": "fde23aadcde4edd9a39a88cd9d306d4084539a6b5b977c5f94a12e7ed376d527"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TerminalExportHistory.java",
+      "bytes": 8595,
+      "sha256": "b1be7fa4e85c2b55942b96c841352484d73a83c52affe5f5639ef68a9ca81c68"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TerminalLedger.java",
+      "bytes": 33172,
+      "sha256": "fbec3fec075195ce217cd7e864c7ff4418942df987ec98a9f3714e44ab54d787"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TerminalRequestBody.java",
+      "bytes": 2244,
+      "sha256": "ba46e74648fdcb70b4eb9d2037201eb9a620a9c8c9dbef79a49d16499ed0c4d4"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+      "bytes": 4216,
+      "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchApplication.java",
+      "bytes": 1411,
+      "sha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+      "bytes": 26710,
+      "sha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+      "bytes": 29141,
+      "sha256": "47f972139e908e91c9cd7b5bbf3aa7bbe6ebf9926266a159b46e2b6189cd46a0"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+      "bytes": 95961,
+      "sha256": "79aef61707f8ffc5ff8542f59ff85976e83d64fe788aebb65d5ff956cabe03c4"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchVersion.java",
+      "bytes": 1231,
+      "sha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+      "bytes": 22823,
+      "sha256": "0343d61133910567420575fead4554dfd3a61b700828d8bb65f64bcffb1454f4"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerProcess.java",
+      "bytes": 18654,
+      "sha256": "5ad48e073f8a963dbd93513eccfa6dc2677ddf61ccb231bdabb49526756154aa"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+      "bytes": 33419,
+      "sha256": "5e7cac2ebdf5569f567c38f437928d623058d73be7a812174466590302ee63bc"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerRpc.java",
+      "bytes": 10078,
+      "sha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerWire.java",
+      "bytes": 2857,
+      "sha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+      "bytes": 12241,
+      "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpAccessRegistry.java",
+      "bytes": 2593,
+      "sha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+      "bytes": 8779,
+      "sha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+      "bytes": 34937,
+      "sha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpTaskPolicy.java",
+      "bytes": 12333,
+      "sha256": "9e649ae1c9a378deb9ed90bc24dd0339245c0b447c30e0a17794056d8b409018"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+      "bytes": 21064,
+      "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/AgentToolSession.java",
+      "bytes": 790,
+      "sha256": "39ad743bcbb0e966a126061ac9676f693f75cbcf814eac26090dd3412a7a88a2"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/CheckpointRestoreRejected.java",
+      "bytes": 351,
+      "sha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+      "bytes": 14484,
+      "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitBlobBatch.java",
+      "bytes": 5093,
+      "sha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+      "bytes": 25523,
+      "sha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+      "bytes": 19496,
+      "sha256": "fffac7fa72306f52dfe51525aaf87eb4781ce8d791ce1badc1c040f21000f03f"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/ModelCallObserver.java",
+      "bytes": 904,
+      "sha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/NativePtyBundle.java",
+      "bytes": 11875,
+      "sha256": "78f8dc1c9110b9f01bbdb0d81ad10bfbcc2690663a6a2eae86494340ebcd750d"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/NativePtySession.java",
+      "bytes": 28589,
+      "sha256": "ac10802d78caf783a6b537f84073349849400da4dc5cb7fd4b7f45b6b3dcf296"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/OwnedConPtyInput.java",
+      "bytes": 4660,
+      "sha256": "688e45ab9cde58ce5ed2e254c656678d08d78c9738e55d81c5f06ee0ca4e03ef"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/TerminalOutputArchive.java",
+      "bytes": 17743,
+      "sha256": "3cb4b79b622da1fb038743dd8e9e450647b872ddb795db77d0f8a65e4ed23a12"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+      "bytes": 50350,
+      "sha256": "c126538e41f1effe0af6073a9eab397aeccd247a1e889e42d28a8f11102c4fbc"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+      "bytes": 7349,
+      "sha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceContentSnapshot.java",
+      "bytes": 725,
+      "sha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+      "bytes": 4599,
+      "sha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+      "bytes": 121650,
+      "sha256": "f8abd780b8cb1520fcdc64a601113acc755c8773b923febdeb175e980a7a69bd"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceSelectionConflict.java",
+      "bytes": 375,
+      "sha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+      "bytes": 19338,
+      "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
+    },
+    {
+      "file": "core/src/main/resources/application.properties",
+      "bytes": 437,
+      "sha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39"
+    },
+    {
+      "file": "core/src/main/resources/terminal-native-inventory.json",
+      "bytes": 4724,
+      "sha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9"
+    },
+    {
+      "file": "core/src/main/resources/third-party/SOURCE-OFFER.txt",
+      "bytes": 1766,
+      "sha256": "b13f9c5d6c9e4d9563c63354720973c23f351c89ab404cda0dabb502ce9a1d2d"
+    },
+    {
+      "file": "core/src/main/resources/third-party/THIRD-PARTY-NOTICES.txt",
+      "bytes": 467,
+      "sha256": "179d93e97c4de96898d86cd089402ab6f0e3db9741e740d2f4155ae7d0735d5e"
+    },
+    {
+      "file": "core/src/main/resources/third-party/annotations-24.0.1/LICENSE.txt",
+      "bytes": 11352,
+      "sha256": "8c1e966c7855fb54027bcaf6ebe7a43abe4785791e8cf9148c363761d493d097"
+    },
+    {
+      "file": "core/src/main/resources/third-party/kotlin-stdlib-1.9.22/LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "file": "core/src/main/resources/third-party/kotlin-stdlib-1.9.22/NOTICE.txt",
+      "bytes": 482,
+      "sha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19"
+    },
+    {
+      "file": "core/src/main/resources/third-party/native/OpenConsole-LICENSE.txt",
+      "bytes": 1116,
+      "sha256": "5d177f23ecfeb0ea8e050b6a5a16355e1ae9a0b286436ca8f83ed08b3795be6b"
+    },
+    {
+      "file": "core/src/main/resources/third-party/native/winpty-LICENSE.txt",
+      "bytes": 1085,
+      "sha256": "c39e428064b4f3e4fe81a975bf0fd3b845922b431bc4d9a7ffc8bfb091981836"
+    },
+    {
+      "file": "core/src/main/resources/third-party/origins.json",
+      "bytes": 5075,
+      "sha256": "87e8268ebdc74cbcb31c437c8e08682daa5715e2d9eb9f7d47c5a62c335856e9"
+    },
+    {
+      "file": "core/src/main/resources/third-party/pty4j/LICENSE.txt",
+      "bytes": 11231,
+      "sha256": "3a4a6fe55f67f02b92be0ec9907e347de8ab5c8edf9214c5c8019e5820517884"
+    },
+    {
+      "file": "core/src/main/resources/third-party/pty4j/NOTICE.txt",
+      "bytes": 421,
+      "sha256": "7f1b01b809cecc274e9a0aaeba288ccb36a18cb96a97b8cc1fde58c1e713e845"
+    },
+    {
+      "file": "core/src/main/resources/third-party/pty4j/pty4j-0.13.4-sources.jar",
+      "bytes": 66477,
+      "sha256": "0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01"
+    },
+    {
+      "file": "core/src/main/resources/third-party/xterm-addon-fit/LICENSE.txt",
+      "bytes": 1103,
+      "sha256": "e256f01188af527e4d06d21d06fbf785ae9c50d4b328bf03cbe0ba7f0aa4228f"
+    },
+    {
+      "file": "core/src/main/resources/third-party/xterm/LICENSE.txt",
+      "bytes": 1261,
+      "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd"
+    },
+    {
+      "file": "core/src/main/resources/workbench-build.properties",
+      "bytes": 26,
+      "sha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458"
+    }
+  ],
+  "originalFailure": {
+    "file": "docs/qa/alpha20-ci-second-failure.json",
+    "bytes": 547038,
+    "sha256": "448f8c1e7b3ae8c4309fca73d5d459ad859aeac115959c19eaf7aee34f3e29bf"
+  },
+  "nativeAdapterTests": {
+    "receipt": {
+      "file": ".runtime/alpha20-core-ci-powershell-direct-facts-attempt1/receipt.json",
+      "bytes": 25570,
+      "sha256": "4d67dccf51fb21a8bd1860870a2e447f835a3f2124b1c3d6959b67e3a67ee60e"
+    },
+    "finalSource": {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/NativePtySessionTest.java",
+      "bytes": 38683,
+      "sha256": "0e5d66c3a436f73b06f500c07f44b442d920f57bf267665827bc11b0709be200"
+    },
+    "actualTests": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "file": ".runtime/alpha20-core-ci-powershell-direct-facts-attempt1/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtySessionTest.xml",
+        "bytes": 26940,
+        "sha256": "4921eee003ffe930e81fe35026a6eedf97833bdd9a4e5ef5ce72556d5e17e66f",
+        "tests": 10,
+        "cases": [
+          {
+            "className": "dev.agentworkbench.runtime.NativePtySessionTest",
+            "name": "lostBuilderObjectReturnKeepsUnknownReceiptAndRequiresIndependentOriginalIdentityCleanup",
+            "skipped": false,
+            "failed": false
+          },
+          {
+            "className": "dev.agentworkbench.runtime.NativePtySessionTest",
+            "name": "postLaunchIdentityPublicationFailureSettlesOriginalResourcesBeforeReturningItsReceipt",
+            "skipped": false,
+            "failed": false
+          },
+          {
+            "className": "dev.agentworkbench.runtime.NativePtySessionTest",
+            "name": "actualSystemShellKeepsDimensionsUnicodeAndAllOriginalTailLines",
+            "skipped": false,
+            "failed": false
+          },
+          {
+            "className": "dev.agentworkbench.runtime.NativePtySessionTest",
+            "name": "delayedOriginalTailPublicationStillDrainsBeforeImmediateExit",
+            "skipped": false,
+            "failed": false
+          },
+          {
+            "className": "dev.agentworkbench.runtime.NativePtySessionTest",
+            "name": "delayedFirstPublicationStillDrainsEveryOriginalTailBeforeImmediateExit",
+            "skipped": false,
+            "failed": false
+          },
+          {
+            "className": "dev.agentworkbench.runtime.NativePtySessionTest",
+            "name": "publicationFailureKeepsOriginalRawBytesAndStopsWithoutACompleteTranscriptClaim",
+            "skipped": false,
+            "failed": false
+          },
+          {
+            "className": "dev.agentworkbench.runtime.NativePtySessionTest",
+            "name": "replacingTheOriginalWorkspaceFencesInputAndResizeAndKeepsUnknown",
+            "skipped": false,
+            "failed": false
+          },
+          {
+            "className": "dev.agentworkbench.runtime.NativePtySessionTest",
+            "name": "delayedFinalTailPublicationStillConfirmsImmediateExitAndCompleteOutput",
+            "skipped": false,
+            "failed": false
+          },
+          {
+            "className": "dev.agentworkbench.runtime.NativePtySessionTest",
+            "name": "originalOutputStorageFailureDrainsToNativeEofAndRetainsABoundedUncommittedPrefix",
+            "skipped": false,
+            "failed": false
+          },
+          {
+            "className": "dev.agentworkbench.runtime.NativePtySessionTest",
+            "name": "stoppingARealForegroundChildWaitsForItsOriginalBirthAndTheOutputReader",
+            "skipped": false,
+            "failed": false
+          }
+        ]
+      }
+    ],
+    "originalTimeoutsAndAllNativeAssertionsRetained": true,
+    "originalPowerShellCpuInternalsNotProven": true,
+    "directProcessDirectoryRead": true,
+    "initialJsonUsesDirectDotNetFacts": true
+  },
+  "productionUi": {
+    "receipt": {
+      "file": ".runtime/alpha20-ci-followup-ui-attempt1/receipt.json",
+      "bytes": 45074,
+      "sha256": "59153c17f8a35d38c305fcffcfc3ee931c0109cd0aace080cf53b543640c1eb9"
+    },
+    "report": {
+      "file": ".runtime/alpha20-ci-followup-ui-attempt1/report.json",
+      "bytes": 19793,
+      "sha256": "18b438ddc5bd93910c9bf6aae93971e92308b65b89eab95b8557472dc1f63596"
+    },
+    "exactTestSource": {
+      "file": "web/tests/terminals.spec.ts",
+      "bytes": 31471,
+      "sha256": "1354d9ef014c00e997c38c64e1f08228ad19358aa8022e32b2c37574f0ae5817"
+    },
+    "tests": 226,
+    "terminalCases": 30,
+    "failures": 0,
+    "skipped": 0,
+    "retries": 0,
+    "originalExactThreeOutputRequestsAndOneInputAssertionsRetained": true,
+    "originalFiveSecondOutputDrainWait": true,
+    "assetsUnchanged": true
+  },
+  "actualHttpCoreCrash": {
+    "receipt": {
+      "file": ".runtime/alpha20-ci-followup-http-attempt1/receipt.json",
+      "bytes": 45076,
+      "sha256": "bfa777f9e8e003201872f5ee77081071f8c1e9188a4699a43c0de1fa46deed62"
+    },
+    "report": {
+      "file": ".runtime/alpha20-ci-followup-http-attempt1/report.json",
+      "bytes": 344682,
+      "sha256": "cda4076ecdc344a548dbd0f5edeac372b8722c22927f2910a1834c98a6678750"
+    },
+    "runnerSource": {
+      "file": "tools/terminal-http-smoke.mjs",
+      "bytes": 28710,
+      "sha256": "4f5feb754b8ec255560624dac8e61a8da1784fe4eb7654ad136f580c8db23048"
+    },
+    "checks": 4,
+    "forcedOriginalCoreStop": true,
+    "originalPidBirthProbeUnchanged": true,
+    "fiveSecondStopProbeWaitUnchanged": true,
+    "asyncParentAllowsExitEventReaping": true,
+    "originalCoreWorkerShellAndObservedChildrenStopped": true,
+    "actualOriginalOneInputEffectAndNoReplay": true,
+    "jarSha256": "66d0a60fe86afa9e3a0eef86ab44412ed7a9b4d2eb59950a911d871f029e96fa"
+  },
+  "javaComments": {
+    "receipt": {
+      "file": ".runtime/alpha20-java-comment-audit-ci-direct-directory-facts-attempt1/receipt.json",
+      "bytes": 41964,
+      "sha256": "bc9147c5ef6fe35ab5b77e44f05aee985b5a1af738ddc79845e0807ade01dc93"
+    },
+    "originalCommentsRetained": 370,
+    "newJavadocs": 0
+  },
+  "frozenProductionTargetRestored": {
+    "file": ".runtime/alpha20-production-target-restored-after-direct-facts.json",
+    "bytes": 400,
+    "sha256": "1a7d7c27b6502864fdcf1f13c9be86aa9d182ea255528e957cb9512ba171eecd"
+  },
+  "frozenFull545LocalTestSourceDoesNotIncludeNewTestRepairs": true,
+  "completeProjectGoal": false
+}

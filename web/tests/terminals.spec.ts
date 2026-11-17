@@ -123,6 +123,7 @@ test('离开、返回和重载只重放保存输出，原shell和已发送输入
   await page.getByRole('button', { name: '代码差异', exact: true }).click(); await page.getByRole('button', { name: '终端', exact: true }).click();
   await expect(panel.locator('.terminal-mode')).toHaveText('仅查看'); await expect(panel.locator('.terminal-output-status')).toContainText(`已排空 ${source.settings.bytes.length} 字节`);
   await page.reload(); await page.getByRole('button', { name: '研发任务', exact: true }).click(); await page.getByRole('button', { name: '固定启动现场的任务' }).click(); await page.getByRole('button', { name: '终端', exact: true }).click();
+  await expect(panel.locator('.terminal-output-status')).toContainText(`已排空 ${source.settings.bytes.length} 字节`);
   await expect(panel.locator('.terminal-mode')).toHaveText('仅查看'); expect(source.requests.filter(request => request.body?.kind === 'INPUT')).toHaveLength(1); expect(source.requests.filter(request => request.method === 'POST' && request.path.endsWith('/terminals'))).toHaveLength(0);
   expect(source.original.nativeProcess.pid).toBe(pid); expect(source.requests.filter(request => request.path.endsWith('/output') && request.query.includes('after=0'))).toHaveLength(3); expect(source.errors).toEqual([]);
 });

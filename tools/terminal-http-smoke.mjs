@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { execFileSync, spawn } from 'node:child_process';
+import { execFile, execFileSync, spawn } from 'node:child_process';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { createServer } from 'node:http';
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
@@ -24,6 +24,13 @@ const pause = ms => new Promise(done => setTimeout(done, ms));
 const pass = name => { checks.push({ name, observedAt: new Date().toISOString() }); console.log(JSON.stringify({ passed: name, phase })); };
 async function until(name, action, timeout = 45_000) { const end = Date.now() + timeout; while (Date.now() < end) { const value = await action(); if (value) return value; await pause(80); } throw new Error(`${name} exceeded its original ${timeout}ms boundary`); }
 function probe(kind, identity) { return JSON.parse(execFileSync(java, ['-Dfile.encoding=UTF-8', '-cp', probeClasses, 'ProcessRecoveryProbe', kind, String(identity.pid), identity.processStartedAt || '-'], { windowsHide: true, timeout: 30_000, encoding: 'utf8' }).trim()); }
+function stopOriginalCore(identity) {
+  return new Promise((done, reject) => execFile(java, ['-Dfile.encoding=UTF-8', '-cp', probeClasses, 'ProcessRecoveryProbe', 'stop', String(identity.pid), identity.processStartedAt],
+    { windowsHide: true, timeout: 30_000, encoding: 'utf8' }, (failure, stdout) => {
+      if (failure) { reject(failure); return; }
+      try { done(JSON.parse(stdout.trim())); } catch (failure) { reject(failure); }
+    }));
+}
 function identity(pid) { const value = probe('identity', { pid }); identities.set(`${value.pid}:${value.processStartedAt}`, value); return value; }
 function remember(value) { if (value?.pid > 0 && value.processStartedAt) identities.set(`${value.pid}:${value.processStartedAt}`, { pid: value.pid, processStartedAt: value.processStartedAt }); }
 function git(...args) { return execFileSync('git', ['-C', source, ...args], { windowsHide: true, timeout: 20_000, encoding: 'utf8' }).trim(); }
@@ -125,7 +132,8 @@ try {
   }, 8_000);
   const oldCore = currentCore, originalWorker = (await api(`/workers`)).find(worker => worker.id === terminal.source.workerId); assert.ok(originalWorker); remember({ pid: originalWorker.pid || originalWorker.executorPid, processStartedAt: originalWorker.processStartedAt });
   const callsBeforeCrash = modelCalls.length; save('original-before-core-pid-crash.json', { core: oldCore.identity, worker: originalWorker, terminal, child, task: await api(`/tasks/${taskId}`), originalAction: await api(`/terminals/${terminal.id}/actions/${crashInput.requestId}`), modelCalls: callsBeforeCrash });
-  const forced = probe('stop', oldCore.identity); assert.equal(forced.stopRequested, true); assert.equal(forced.originalStopped, true); save('original-core-forcibly-stopped.json', forced);
+  // The Node parent must keep receiving child exit events while the independent probe waits for original PID removal.
+  const forced = await stopOriginalCore(oldCore.identity); save('original-core-forcibly-stopped.json', forced); assert.equal(forced.stopRequested, true); assert.equal(forced.originalStopped, true);
   await stopObserved(terminal.nativeProcess, 'original-crash-native-stop'); await stopObserved(child, 'original-crash-child-stop');
   const workerIdentity = { pid: originalWorker.pid || originalWorker.executorPid, processStartedAt: originalWorker.processStartedAt }; await stopObserved(workerIdentity, 'original-crash-worker-stop');
   phase = 'recover-without-replay'; await startCore(); assert.notEqual(currentCore.identity.pid, oldCore.identity.pid);

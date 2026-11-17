@@ -172,8 +172,10 @@ class NativePtySessionTest {
     void actualSystemShellKeepsDimensionsUnicodeAndAllOriginalTailLines() throws Exception {
         try (var fixture = new Fixture(false)) {
             if (WINDOWS) {
-                fixture.powershell("[IO.File]::WriteAllText('initial-command-entered.txt','entered');$facts=@{columns=[Console]::WindowWidth;rows=[Console]::WindowHeight;inputRedirected=[Console]::IsInputRedirected;outputRedirected=[Console]::IsOutputRedirected;cwd=(Get-Location).ProviderPath};"
-                    + "[IO.File]::WriteAllText('initial-facts-ready.txt','ready');$json=$facts|ConvertTo-Json -Compress;[IO.File]::WriteAllText('initial.json',$json,[Text.UTF8Encoding]::new($false))");
+                fixture.powershell("[IO.File]::WriteAllText('initial-command-entered.txt','entered');$q=[char]34;$cwd=[IO.Directory]::GetCurrentDirectory().Replace('\\','\\\\').Replace([string]$q,('\\'+$q));"
+                    + "$json='{'+$q+'columns'+$q+':'+[Console]::WindowWidth+','+$q+'rows'+$q+':'+[Console]::WindowHeight+','+$q+'inputRedirected'+$q+':'+[Console]::IsInputRedirected.ToString().ToLowerInvariant()+','"
+                    + "+$q+'outputRedirected'+$q+':'+[Console]::IsOutputRedirected.ToString().ToLowerInvariant()+','+$q+'cwd'+$q+':'+$q+$cwd+$q+'}';"
+                    + "[IO.File]::WriteAllText('initial-facts-ready.txt','ready');[IO.File]::WriteAllText('initial.json',$json,[Text.UTF8Encoding]::new($false))");
                 await(() -> Files.isRegularFile(fixture.work.resolve("initial.json")), 15);
                 Map<String, Object> initial = mapper.readValue(Files.readAllBytes(fixture.work.resolve("initial.json")), new TypeReference<>() { });
                 assertEquals(false, initial.get("inputRedirected")); assertEquals(false, initial.get("outputRedirected"));
@@ -292,7 +294,7 @@ class NativePtySessionTest {
             Path parent = fixture.work.getParent().toRealPath(), proof = parent.resolve("cwd-proof-" + fixture.marker + ".txt");
             if (WINDOWS) {
                 fixture.input("cd /d \"" + parent + "\"\r");
-                fixture.powershell("[IO.File]::WriteAllText('cwd-command-entered.txt','entered');$cwd=(Get-Location).ProviderPath;[IO.File]::WriteAllText('" + proof.getFileName() + "',$cwd,[Text.UTF8Encoding]::new($false))");
+                fixture.powershell("[IO.File]::WriteAllText('cwd-command-entered.txt','entered');$cwd=[IO.Directory]::GetCurrentDirectory();[IO.File]::WriteAllText('" + proof.getFileName() + "',$cwd,[Text.UTF8Encoding]::new($false))");
             } else fixture.input("cd '" + parent.toString().replace("'", "'\\''") + "'; pwd > '" + proof.getFileName() + "'\n");
             await(() -> Files.isRegularFile(proof), 10);
             assertEquals(parent.toString(), Files.readString(proof).strip());

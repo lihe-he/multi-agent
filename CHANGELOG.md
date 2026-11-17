@@ -10,6 +10,8 @@
 
 首轮三端CI的原核心失败保留；按实际证据修正尺寸夹具文件完成时序、终端CR/CR/LF逐行匹配、Git查询两流与Windows ASAR路径，增加原PowerShell等待诊断。产品核心/Web字节保持，本机定向通过不能替代修订提交的完整三端验收，Windows两项原等待原因仍UNKNOWN。协议、固定来源和准确结果见[终端协议](./docs/terminal-contract.md)、[终端研究](./docs/research/terminals-2026-11-16.md)及[实施记录](./docs/implementation-status.md)。
 
+第二轮准确提交的三端失败另存：Windows两项原生夹具等待、macOS重载后输出请求计数竞争、Ubuntu强杀探针的停止确认失败。原trace证明第三次输出响应在断言后3.788ms返回；现等待实际输出排空再核对原三次请求。Windows夹具改用.NET直接读取实际进程目录和控制台事实，保持全部业务断言及15/10秒时限；强杀探针改为异步调用，让拥有核心的Node父进程继续处理退出事件，原PID/出生和5秒核对保持。本机原生10项、完整UI226项及真实HTTP/崩溃恢复4项通过；原Windows内部CPU调用栈和原Ubuntu准确OS状态未保存，完整三端仍待新提交验收。见[原失败](./docs/qa/alpha20-ci-second-failure.json)与[本机跟进](./docs/qa/alpha20-ci-execution-followup-win32.json)。
+
 ## 0.2.0-alpha.19 — 文件检查点与原Worker撤销
 
 增加实际文件/index检查点、稳定历史、独立撤销预览和原Worker逐文件授权恢复。确认核对原归属、当前文件与HEAD/index，保留未参与的用户修改；成功后暂停并要求新现场验证。原文件回执、SQLite确认和日志分别保存，丢失回执保持UNKNOWN，导出核对完整引用与旧版本门禁。

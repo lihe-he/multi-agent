@@ -73,3 +73,15 @@ JNA 5.17.0 与 SLF4J 2.0.17 沿用既有产品依赖。两处 `third-party` 保�
 Windows另两项原15秒/10秒等待保存了已回显命令和原PowerShell子进程，初始JSON/目录证明尚未产生；内部停在哪一步仍未知。没有延长原时限，新增命令开始与事实就绪标记，以及停止前原PID/出生、命令、CPU和结果完成状态。当前本机修订20项终端、3项长路径及10项诊断通过，1135份原native文件、两处输出发布故障和48原身份停止核对；这些成功不改写原CI失败。见[原CI失败](../qa/alpha20-ci-first-failure.json)与[定向跟进](../qa/alpha20-ci-portability-followup-win32.json)。
 
 所有开发和提交集中在 main。修订提交的完整三端CI、完整历史进程树、长期负载、其他 F01–F21 与 M0–M3 条件继续实施；测试失败、UNKNOWN 与现场缺口保持独立事实。
+
+## 第二轮三端原执行与跟进（2026-11-17）
+
+准确提交`1d33e95`的[run 44002160511](https://github.com/lihe-he/multi-agent/actions/runs/44002160511)三端终态failure，原包分别124136451字节（Ubuntu）、80380227字节（macOS）、27772292字节（Windows），整包GitHub digest及内部原XML、native夹具、UI trace均核验。每端完整44套/545项；macOS与Ubuntu核心535通过/10条件跳过，Windows535通过/8条件跳过/2失败。原Windows长路径三项已通过，原POSIX尺寸和完整尾部用例通过，见[准确失败记录](../qa/alpha20-ci-second-failure.json)。
+
+Windows两项原PowerShell等待保留命令进入标记、未完成事实文件和原停止前进程；两个原子PID7784/2696分别耗CPU约13.11/10.06秒。初始脚本在控制台属性与`Get-Location`组合内未到事实就绪；目录脚本在`Get-Location`后未写出证明。没有采到原内部CPU栈，不据此证明具体PowerShell内部缺陷。夹具现直接读取.NET进程当前目录、控制台尺寸和重定向属性，仍用相同实际PTY输入，保留原15/10秒与全部目录替换、尺寸、Unicode和200行尾部断言；本机完整原生套件10项通过。
+
+macOS完整UI225通过/1失败。原trace中请求计数失败时两次`after=0`可见，第三次91字节原输出响应在失败后3.788ms返回。修订先等待既有5秒内的原输出排空状态，再核对准确三次请求、一次原输入及零新shell；本机完整生产UI226项、零失败/跳过/重试，原Web字节保持。
+
+Ubuntu真实终端HTTP前三项通过，强杀时原独立停止探针的`stopRequested`断言通过，但`originalStopped`五秒内仍为false；探针完整返回在原断言后才保存，失败时缺失。拥有核心的Node父进程当时用`execFileSync`阻塞等待探针，其后原核心SIGKILL、所有原身份停止分别可核验，原OS僵尸状态未记录，具体回收归因属于推断。现用异步`execFile`保留相同原PID/出生探针、5秒停止要求和30秒命令外限，Node可继续处理退出事件，且在断言前保存原停止返回。本机实际最终Jar的完整4项HTTP/崩溃恢复通过，UNKNOWN、单次输入效果、预算和零重放均保留。
+
+这三处均未更改产品核心或Web。准确源码、选定10项XML、完整226项UI和实际HTTP4项分别见[本机跟进](../qa/alpha20-ci-execution-followup-win32.json)；原本机545项完整构建的测试源码范围保持，不能称其执行了后来的夹具。原两轮失败与新提交完整三端验证继续独立保存。
