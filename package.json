@@ -1,6 +1,6 @@
 {
   "name": "multi-agent-workbench",
-  "version": "0.2.0-alpha.20",
+  "version": "0.2.0-alpha.21",
   "description": "本地多 Agent 智能研发工作台",
   "private": true,
   "main": "desktop/main.cjs",
@@ -20,6 +20,8 @@
     "smoke": "node tools/smoke-test.mjs",
     "test:integration": "node tools/ci-smoke.mjs",
     "test:desktop": "node tools/desktop-smoke.cjs",
+    "test:previews": "node --test desktop/preview-policy.test.cjs desktop/preview-host.test.cjs desktop/preview-ipc-policy.test.cjs",
+    "test:previews:native": "node tools/preview-native-smoke.cjs",
     "test:packaged": "node tools/ci-desktop.mjs",
     "test:standalone": "node tools/standalone-smoke.mjs",
     "test:recovery": "node tools/process-recovery-smoke.mjs",

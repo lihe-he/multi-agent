@@ -1,0 +1,483 @@
+{
+  "recordedAt": "2026-11-17T12:14:11.802Z",
+  "version": "0.2.0-alpha.21",
+  "platform": "win32",
+  "status": "passed",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\preview-native-8PirVm",
+  "checks": [
+    {
+      "name": "Initial fetch attaches a visible isolated native page; callback loads once and core metadata drops query and fragment",
+      "at": "2026-11-17T12:13:40.906Z"
+    },
+    {
+      "name": "Application dialogs suspend the native page and closing a dialog restores its isolated login",
+      "at": "2026-11-17T12:13:41.191Z"
+    },
+    {
+      "name": "Actual preview has no Node, management bridge or opener; permissions, popups, unbound loopback and core requests are refused",
+      "at": "2026-11-17T12:13:41.224Z"
+    },
+    {
+      "name": "Multiple native tabs share one session; switching sessions destroys old pages and isolates login and local storage",
+      "at": "2026-11-17T12:13:41.954Z"
+    },
+    {
+      "name": "Switching projects preserves each isolated native storage partition and destroys the previous project pages",
+      "at": "2026-11-17T12:13:44.022Z"
+    },
+    {
+      "name": "HttpOnly login and local storage survive full desktop, core and Worker shutdown and restart",
+      "at": "2026-11-17T12:13:54.342Z"
+    },
+    {
+      "name": "Site clear destroys original same-origin pages before clearing cookies and storage and replacing pages",
+      "at": "2026-11-17T12:13:54.778Z"
+    },
+    {
+      "name": "A generation reset after full restart retires the previous process partition ledger and starts empty storage",
+      "at": "2026-11-17T12:14:05.791Z"
+    },
+    {
+      "name": "Port revocation destroys the actual native page without waiting for another user action",
+      "at": "2026-11-17T12:14:06.029Z"
+    }
+  ],
+  "launches": [
+    {
+      "identities": [
+        {
+          "pid": 34416,
+          "processStartedAt": "2026-11-17T12:13:31.130Z"
+        },
+        {
+          "pid": 37612,
+          "processStartedAt": "2026-11-17T12:13:31.353Z"
+        },
+        {
+          "pid": 44228,
+          "processStartedAt": "2026-11-17T12:13:34.126Z"
+        }
+      ],
+      "observationsAfterStop": [
+        {
+          "pid": 34416,
+          "originalStartedAt": "2026-11-17T12:13:31.130Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 37612,
+          "originalStartedAt": "2026-11-17T12:13:31.353Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 44228,
+          "originalStartedAt": "2026-11-17T12:13:34.126Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        }
+      ],
+      "coreVersion": "0.2.0-alpha.21"
+    },
+    {
+      "identities": [
+        {
+          "pid": 44428,
+          "processStartedAt": "2026-11-17T12:13:48.400Z"
+        },
+        {
+          "pid": 35756,
+          "processStartedAt": "2026-11-17T12:13:48.611Z"
+        },
+        {
+          "pid": 23104,
+          "processStartedAt": "2026-11-17T12:13:51.132Z"
+        },
+        {
+          "pid": 44228,
+          "processStartedAt": "2026-11-17T12:13:34.126Z"
+        }
+      ],
+      "observationsAfterStop": [
+        {
+          "pid": 44428,
+          "originalStartedAt": "2026-11-17T12:13:48.400Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 35756,
+          "originalStartedAt": "2026-11-17T12:13:48.611Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 23104,
+          "originalStartedAt": "2026-11-17T12:13:51.132Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 44228,
+          "originalStartedAt": "2026-11-17T12:13:34.126Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        }
+      ],
+      "coreVersion": "0.2.0-alpha.21"
+    },
+    {
+      "identities": [
+        {
+          "pid": 31736,
+          "processStartedAt": "2026-11-17T12:13:59.753Z"
+        },
+        {
+          "pid": 42064,
+          "processStartedAt": "2026-11-17T12:13:59.956Z"
+        },
+        {
+          "pid": 38640,
+          "processStartedAt": "2026-11-17T12:14:02.452Z"
+        },
+        {
+          "pid": 23104,
+          "processStartedAt": "2026-11-17T12:13:51.132Z"
+        },
+        {
+          "pid": 44228,
+          "processStartedAt": "2026-11-17T12:13:34.126Z"
+        }
+      ],
+      "observationsAfterStop": [
+        {
+          "pid": 31736,
+          "originalStartedAt": "2026-11-17T12:13:59.753Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 42064,
+          "originalStartedAt": "2026-11-17T12:13:59.956Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 38640,
+          "originalStartedAt": "2026-11-17T12:14:02.452Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 23104,
+          "originalStartedAt": "2026-11-17T12:13:51.132Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        },
+        {
+          "pid": 44228,
+          "originalStartedAt": "2026-11-17T12:13:34.126Z",
+          "currentStartedAt": "",
+          "alive": false,
+          "matchesOriginal": false,
+          "stopRequested": false,
+          "beforeStopAlive": false,
+          "originalStopped": true
+        }
+      ],
+      "coreVersion": "0.2.0-alpha.21"
+    }
+  ],
+  "requests": [
+    {
+      "path": "/login",
+      "callbackPresent": true,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/whoami",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/login",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/whoami",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/other",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/whoami",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/state",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/whoami",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/login",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/other",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/whoami",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/state",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/whoami",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/login",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/other",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/whoami",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/state",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/login",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/other",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/whoami",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/state",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/other",
+      "callbackPresent": false,
+      "cookiePresent": true,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/state",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/other",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/whoami",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/whoami",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/login",
+      "callbackPresent": true,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/state",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/state",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    },
+    {
+      "path": "/whoami",
+      "callbackPresent": false,
+      "cookiePresent": false,
+      "authorizationPresent": false
+    }
+  ],
+  "pageErrors": [],
+  "inputs": [
+    {
+      "file": "package.json",
+      "sha256": "b10efb4bb22eed88ace139732dd156f6d793c6adc6ce13464c6c80330be8cf76"
+    },
+    {
+      "file": "desktop/main.cjs",
+      "sha256": "c609643cfbce3be93cd7fbd9d87326b25c0c64e8c55fd78c7ab3da4587cc47d5"
+    },
+    {
+      "file": "desktop/preload.cjs",
+      "sha256": "728d50eb7257e060c0188764398dbedf6ff079271a8fbdb05dab60118895e46c"
+    },
+    {
+      "file": "desktop/preview-host.cjs",
+      "sha256": "c4765bf398f2fe9d30858a681d45ae53267ccbeb70ccc9e0fbb85bb96b4ccdda"
+    },
+    {
+      "file": "desktop/preview-policy.cjs",
+      "sha256": "a44b7171abd8018a1afc385021d5fc8e04fa6d3a0ca05683ff3d71cf4400984b"
+    },
+    {
+      "file": "desktop/preview-ipc-policy.cjs",
+      "sha256": "b1c5c47e97176b350762389e3182d138a88c42be269f444fffa1b77f5f552afe"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/PreviewCatalog.java",
+      "sha256": "3bdac663f906018412f9dfb5dbe6c13bad99716ae90ad47832aafb834bf90c0a"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/PreviewController.java",
+      "sha256": "53fb1ec80db788731c83bfced3cef70c2c2d7501b5c69a81e26d9c62f4e75828"
+    },
+    {
+      "file": "web/src/SessionWorkspace.tsx",
+      "sha256": "93990b2da5bf535db141a23aeb60bebfd7bead35077e914208386b463ddf4d85"
+    },
+    {
+      "file": "web/src/App.tsx",
+      "sha256": "30c6a1f2f3d61662e75b93320f219c2bc3e46baa262a7626e7898bcfedc90045"
+    },
+    {
+      "file": "web/dist/assets/index-DDRkHQnO.js",
+      "sha256": "1043b23d0dd8420a7163aadb7f4f195d6d2f2be919c27250e020679e58511d5b"
+    },
+    {
+      "file": "web/dist/assets/index-DkxEUAkg.css",
+      "sha256": "39a1f7232ad3e6899a61292d3aae04f12f67bd687d0a2f2ba390704da1e9204e"
+    },
+    {
+      "file": "web/dist/assets/TaskTerminals-AGoQhemR.js",
+      "sha256": "11a1d160c27eff308ac197bf8dbf17cec3fbef49dbafc564a048dc17e37e6305"
+    },
+    {
+      "file": "web/dist/assets/TaskTerminals-BbT8zRoT.css",
+      "sha256": "cbbcf611656957e8adacaefc7849df70e70db93aa2a6832b5ed771534dddabe5"
+    },
+    {
+      "file": "core/target/agent-workbench-core-0.2.0-alpha.21.jar",
+      "sha256": "0d7fb612133569d6165551306cd9be8a9376a5782347e122ae647b8814fe903f"
+    }
+  ],
+  "sourcesUnchanged": true,
+  "scope": "ACTUAL_DEVELOPMENT_ELECTRON_MAIN_PRELOAD_CORE_AND_WEB; LOCAL_HTTP_LOGIN_FIXTURE; PACKAGED_AND_REMOTE_FORWARDING_SEPARATE"
+}

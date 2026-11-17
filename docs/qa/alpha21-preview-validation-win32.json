@@ -1,0 +1,180 @@
+{
+  "recordedAt": "2026-11-17T12:23:49.510Z",
+  "version": "0.2.0-alpha.21",
+  "platform": "win32",
+  "status": "passed",
+  "baseCommit": "c6360acd3ff7bcc5ef4abd2f34878efa9554c079",
+  "scope": "F05_LOCAL_DEVELOPMENT_DESKTOP_CORE_AND_PRODUCTION_WEB; NOT_PACKAGED_OR_CROSS_PLATFORM_ACCEPTANCE",
+  "core": {
+    "file": "docs/qa/alpha21-core-build-win32.json",
+    "sha256": "68f65f1bd597c2576499c2ebc31b3d1cc36eeae59210be38cacf8ecd2ac60ff3",
+    "suites": 45,
+    "tests": 555,
+    "passed": 545,
+    "skipped": 10,
+    "failures": 0,
+    "errors": 0,
+    "jarSha256": "0d7fb612133569d6165551306cd9be8a9376a5782347e122ae647b8814fe903f",
+    "sourcesUnchanged": true
+  },
+  "ui": {
+    "file": "docs/qa/ui-production-win32.json",
+    "sha256": "ca151e814e1651d4b147924adcfdbe66b446ff5753465ca4e3546df557f9bbb9",
+    "stats": {
+      "startTime": "2026-11-17T11:26:55.889Z",
+      "duration": 259605.059,
+      "expected": 229,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "sourcesUnchanged": true,
+    "assetsUnchanged": true
+  },
+  "native": {
+    "file": "docs/qa/preview-native-win32.json",
+    "sha256": "0503ffa5d8398c266b1cefb3011007a60ed9080a18f7fba2e4973e40d372a003",
+    "checks": 9,
+    "sourcesUnchanged": true,
+    "originalProcessesStopped": true
+  },
+  "javaComments": {
+    "status": "passed",
+    "files": 109,
+    "originalCommentsRetained": 370,
+    "newMultilineJavadocs": 5
+  },
+  "nodeGuards": {
+    "command": "node --test tools/install-desktop-deps.test.mjs tools/package-desktop.test.mjs tools/verify-version.test.mjs tools/connection.test.cjs",
+    "passed": 21
+  },
+  "previewTests": {
+    "command": "npm run test:previews",
+    "passed": 21
+  },
+  "sourceFiles": [
+    {
+      "file": "core/src/main/java/dev/agentworkbench/PreviewCatalog.java",
+      "sha256": "3bdac663f906018412f9dfb5dbe6c13bad99716ae90ad47832aafb834bf90c0a"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/PreviewController.java",
+      "sha256": "53fb1ec80db788731c83bfced3cef70c2c2d7501b5c69a81e26d9c62f4e75828"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/PreviewCatalogTest.java",
+      "sha256": "3b3212413e646f445bfd1ea87477981dfa70fdcee30edf8a4f9573ee736ee554"
+    },
+    {
+      "file": "desktop/preview-host.cjs",
+      "sha256": "c4765bf398f2fe9d30858a681d45ae53267ccbeb70ccc9e0fbb85bb96b4ccdda"
+    },
+    {
+      "file": "desktop/preview-host.test.cjs",
+      "sha256": "5779546fa75ba6b292d9131667a02cf9eb48822e7fd8621b5d60e1de2b5cdadc"
+    },
+    {
+      "file": "desktop/preview-ipc-policy.cjs",
+      "sha256": "b1c5c47e97176b350762389e3182d138a88c42be269f444fffa1b77f5f552afe"
+    },
+    {
+      "file": "desktop/preview-ipc-policy.test.cjs",
+      "sha256": "12d8d02be8abb49e14038128d41e8e854eecb09a3ef9ade5260cce626eed3dbc"
+    },
+    {
+      "file": "desktop/preview-policy.cjs",
+      "sha256": "a44b7171abd8018a1afc385021d5fc8e04fa6d3a0ca05683ff3d71cf4400984b"
+    },
+    {
+      "file": "desktop/preview-policy.test.cjs",
+      "sha256": "e64e80b4d8d07f133e67dd14b21fb015d5b06c7897888add9b39ddd8590b83ab"
+    },
+    {
+      "file": "docs/preview-contract.md",
+      "sha256": "65209f8d646dee44da10607ec532916be51e5d0d7115c031f2f9ad0a48562a49"
+    },
+    {
+      "file": "docs/research/preview-sources-2026-11-17.json",
+      "sha256": "f83f7fa9ea0a8ff9a8f4236884e49abdd9dcefaa17d9ae75daac7a0ce0e8b9aa"
+    },
+    {
+      "file": "docs/research/previews-2026-11-17.md",
+      "sha256": "1ee9ab65479c4fcd75f663dab07b9165dc0f40390c0adc2c8696f6ea04a20206"
+    },
+    {
+      "file": "tools/preview-native-smoke.cjs",
+      "sha256": "4e8678b67e96b7c9a27c67567b53edeccb0d9892d1a6eaf7b5724016bea2e62e"
+    },
+    {
+      "file": "web/tests/session-preview.spec.ts",
+      "sha256": "7ae83da954c0839fdd919853bec7b4818134ed83fae85efd26e67a6c2f48afa2"
+    },
+    {
+      "file": ".github/workflows/verify.yml",
+      "sha256": "a8ed0aa7e3d3cd6be5ae416aa6be444e4b1f411c24fd340f214986f27e7fdabb"
+    },
+    {
+      "file": "CHANGELOG.md",
+      "sha256": "8fd6aaba231f1666f37d0b8aea365b7c18d7376e349c5b184bdc8268adea53c2"
+    },
+    {
+      "file": "README.md",
+      "sha256": "003f771b7ad90befd70f02590472b27feef051574802fa9116e5251097e9933c"
+    },
+    {
+      "file": "core/pom.xml",
+      "sha256": "5cdb8354d02bf3121c0ac8c2620442ae0056259e8d990a0b082c9182b9693bd5"
+    },
+    {
+      "file": "desktop/main.cjs",
+      "sha256": "c609643cfbce3be93cd7fbd9d87326b25c0c64e8c55fd78c7ab3da4587cc47d5"
+    },
+    {
+      "file": "desktop/preload.cjs",
+      "sha256": "728d50eb7257e060c0188764398dbedf6ff079271a8fbdb05dab60118895e46c"
+    },
+    {
+      "file": "docs/implementation-status.md",
+      "sha256": "08a052fed5e871a830dca78605d949271f6dd1b4171513dce565c45b096d3cbb"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "6cd81f6d048998da2f060de3478f81dea57cc61734f2f1ebeb50d070030321a6"
+    },
+    {
+      "file": "package.json",
+      "sha256": "b10efb4bb22eed88ace139732dd156f6d793c6adc6ce13464c6c80330be8cf76"
+    },
+    {
+      "file": "web/package-lock.json",
+      "sha256": "da4b8f952458694622f3f1b4f7b432188b210f4ed42b209ecea21783501d9966"
+    },
+    {
+      "file": "web/package.json",
+      "sha256": "6c40a7f399dc0760381f5547c30695816d8d0b597deb9829a2793fe1b6591dd1"
+    },
+    {
+      "file": "web/src/App.tsx",
+      "sha256": "30c6a1f2f3d61662e75b93320f219c2bc3e46baa262a7626e7898bcfedc90045"
+    },
+    {
+      "file": "web/src/SessionWorkspace.tsx",
+      "sha256": "93990b2da5bf535db141a23aeb60bebfd7bead35077e914208386b463ddf4d85"
+    },
+    {
+      "file": "web/src/sessions.css",
+      "sha256": "5fc534b07eae422e55b84fa7f939e7a4d7f19b30db73e3ad25b78ebb552cb340"
+    },
+    {
+      "file": "web/src/types.ts",
+      "sha256": "1be025ecbaaa8effc0b3f16f854341ab2235e2b64631a2cd995c2d5e315939b7"
+    }
+  ],
+  "remaining": [
+    "Packaged preview acceptance",
+    "Cross-platform exact commit CI",
+    "Remote node forwarding",
+    "External OAuth providers",
+    "Long-running network and storage load"
+  ]
+}

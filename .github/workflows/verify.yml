@@ -74,6 +74,14 @@ jobs:
         run: node --test tools/install-desktop-deps.test.mjs tools/package-desktop.test.mjs tools/verify-version.test.mjs
       - name: Desktop connection policy
         run: node --test tools/connection.test.cjs
+      - name: Session preview policy and host lifecycle
+        run: npm run test:previews
+      - name: Actual desktop session previews and persistent login
+        if: runner.os != 'Linux'
+        run: npm run test:previews:native
+      - name: Actual desktop session previews with virtual display
+        if: runner.os == 'Linux'
+        run: xvfb-run -a npm run test:previews:native
       - name: Actual core crash and original process recovery
         run: npm run test:recovery
         env:
@@ -159,6 +167,7 @@ jobs:
             docs/qa/file-versions-*.json
             docs/qa/diff-view-*.json
             docs/qa/checkpoints-*.json
+            docs/qa/preview-native-*.json
             docs/qa/ui-production-*.json
             docs/qa/terminals-*.json
             docs/qa/bundled-workspace-writer-*.json
@@ -168,6 +177,11 @@ jobs:
             .runtime/ui-production-*/
             .runtime/terminal-http-*/
             .runtime/terminal-native-ui-*/
+            .runtime/preview-native-*/receipt.json
+            .runtime/preview-native-*/runner-source.cjs
+            .runtime/preview-native-*/probe-classes/
+            .runtime/preview-native-*/failure*.json
+            .runtime/preview-native-*/*.png
             .runtime/themes-desktop-*/reports/
             .runtime/themes-desktop-*/probe-classes/
             .runtime/bundled-workspace-writer-*/

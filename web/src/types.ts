@@ -161,12 +161,20 @@ export interface Connection { baseUrl: string; token: string }
 export interface Session { id: string; projectId: string; title: string; version: number; isOpen: boolean; createdAt: string; updatedAt: string }
 export interface SessionMessage { id: string; sessionId: string; projectId: string; sequence: number; role: string; kind: 'NOTE' | 'TASK_GOAL'; content: string; taskId?: string; createdAt: string }
 export interface SessionSearchResult { sessionId: string; sessionTitle: string; messageId: string; sequence: number; taskId?: string; content: string; matchStart: number; matchEnd: number; createdAt: string }
+export interface PreviewTab { id: string; url: string; title: string }
+export interface PreviewSession { id: string; projectId: string; sessionId: string; executionNodeId: string; serverId: string; version: number; authorizationVersion: number; storageGeneration: number; allowedLoopbackPorts: number[]; tabs: PreviewTab[]; activeTabId: string; protocolVersion: number }
+export interface PreviewEvent { projectId?: string; sessionId?: string; tabId?: string; title?: string; url?: string; loading?: boolean; error?: string; closed?: boolean; configuration?: PreviewSession }
 declare global {
   interface Window {
     workbench?: {
       getConnection: () => Promise<Connection>;
       selectDirectory?: () => Promise<string | null>;
       openPath?: (path: string) => Promise<void>;
+      desktopPreview?: {
+        attach: (projectId: string, sessionId: string) => Promise<{ attached: boolean; tabs: PreviewTab[]; activeTabId: string }>;
+        action: (input: { type: string; [key: string]: unknown }) => Promise<unknown>;
+        onEvent: (callback: (event: PreviewEvent) => void) => () => void;
+      };
     };
   }
 }

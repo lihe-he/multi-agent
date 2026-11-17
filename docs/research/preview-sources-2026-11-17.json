@@ -1,0 +1,270 @@
+{
+  "recordedAt": "2026-11-17T11:38:18.496Z",
+  "scope": "PINNED_DESIGN_REFERENCES_ONLY; NO_IMPLEMENTATION_COPIED",
+  "inventories": [
+    {
+      "file": ".runtime/alpha21-preview-references-attempt1/sources.json",
+      "sha256": "3a369350c6baa666105c0801bd7b59139342b5c023edda068b3068800df01f11",
+      "sources": [
+        {
+          "status": "fulfilled",
+          "repository": "anomalyco/opencode",
+          "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+          "path": "packages/gui-plugins/src/browser/policy.ts",
+          "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/gui-plugins/src/browser/policy.ts",
+          "bytes": 3927,
+          "sha256": "aad057d5685cf40573455f1a4e7bcddecca822c8d12e0df27381a5271852d708",
+          "gitBlob": "cf0e3615883a254fd751a74085af31ebef55e7a1",
+          "gitBlobVerified": true,
+          "observedAt": "2026-11-17T02:29:19.834Z"
+        },
+        {
+          "status": "fulfilled",
+          "repository": "anomalyco/opencode",
+          "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+          "path": "packages/gui-plugins/src/browser/policy.test.ts",
+          "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/gui-plugins/src/browser/policy.test.ts",
+          "bytes": 4629,
+          "sha256": "03b90443b656342a6fe80b0c73667eca5cb6de944362089832e3247c46384691",
+          "gitBlob": "3af215efbf4913f9d67b6931f9b7bd9a78a20b86",
+          "gitBlobVerified": true,
+          "observedAt": "2026-11-17T02:29:19.848Z"
+        },
+        {
+          "status": "fulfilled",
+          "repository": "anomalyco/opencode",
+          "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+          "path": "packages/gui-plugins/src/browser/chromium.ts",
+          "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/gui-plugins/src/browser/chromium.ts",
+          "bytes": 69620,
+          "sha256": "e223c0970e54d81ad6c37e3e6bf93c8804a772503d7df64b8fb48765e63d3b72",
+          "gitBlob": "58db743ef775116d82bade23e384d44b399cd1a3",
+          "gitBlobVerified": true,
+          "observedAt": "2026-11-17T02:29:19.991Z"
+        },
+        {
+          "status": "fulfilled",
+          "repository": "anomalyco/opencode",
+          "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+          "path": "packages/gui-plugins/src/browser/ipc.ts",
+          "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/gui-plugins/src/browser/ipc.ts",
+          "bytes": 5967,
+          "sha256": "32f030826b839244c8eaefb6662aa3d66091633f4edc0366e44e71714c40a8bd",
+          "gitBlob": "2bcd0e93ed8986f9a3c71c9b3a80f007254aec9f",
+          "gitBlobVerified": true,
+          "observedAt": "2026-11-17T02:29:19.921Z"
+        },
+        {
+          "status": "fulfilled",
+          "repository": "anomalyco/opencode",
+          "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+          "path": "packages/gui-plugins/src/browser/restore.ts",
+          "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/gui-plugins/src/browser/restore.ts",
+          "bytes": 1633,
+          "sha256": "997f757f5e518b61ce702811c14d6df893799ddd57fd47a009e57d99541347ea",
+          "gitBlob": "b6a8b4cb6bfd0f446d9a1f7b5a9faedb2928187f",
+          "gitBlobVerified": true,
+          "observedAt": "2026-11-17T02:29:19.892Z"
+        },
+        {
+          "status": "fulfilled",
+          "repository": "anomalyco/opencode",
+          "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+          "path": "packages/gui-plugins/src/browser/main-machine.ts",
+          "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/gui-plugins/src/browser/main-machine.ts",
+          "bytes": 4141,
+          "sha256": "dc51473dc6176b55de8ae9b4e8e936c59acdf2f2ab7e3302598c45c0fac1ee31",
+          "gitBlob": "8dab24dd6fb8af7560ebea8248b1e37e9974f343",
+          "gitBlobVerified": true,
+          "observedAt": "2026-11-17T02:29:19.894Z"
+        },
+        {
+          "status": "fulfilled",
+          "repository": "anomalyco/opencode",
+          "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+          "path": "packages/gui-plugins/src/browser/connection.ts",
+          "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/gui-plugins/src/browser/connection.ts",
+          "bytes": 3342,
+          "sha256": "7d5301aa2faf4bb6c48d4b091461b0e8e11b0522b5db69b75e25f9a473560524",
+          "gitBlob": "f763af397fa2f75978567c3e24ebdcd305e9dec4",
+          "gitBlobVerified": true,
+          "observedAt": "2026-11-17T02:29:19.889Z"
+        },
+        {
+          "status": "fulfilled",
+          "repository": "anomalyco/opencode",
+          "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+          "path": "packages/gui-plugins/src/browser/pane-machine.ts",
+          "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/gui-plugins/src/browser/pane-machine.ts",
+          "bytes": 21194,
+          "sha256": "2042abd062ccdcac96cc1bf23ca3049a0eff3de6cf3592a6b9c7325b60c90989",
+          "gitBlob": "47f4a469796a182a831d0e1da8b1f48442411b5b",
+          "gitBlobVerified": true,
+          "observedAt": "2026-11-17T02:29:19.845Z"
+        },
+        {
+          "status": "fulfilled",
+          "repository": "anomalyco/opencode",
+          "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+          "path": "packages/gui-plugins/src/browser/machine.ts",
+          "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/gui-plugins/src/browser/machine.ts",
+          "bytes": 33337,
+          "sha256": "97936f4a59a37c2240278cd1b7f453a30b3bdcaf2282107897bf6104947d8d36",
+          "gitBlob": "a3ae301642fda6dd995755637b9937a2c343bd5a",
+          "gitBlobVerified": true,
+          "observedAt": "2026-11-17T02:29:19.902Z"
+        },
+        {
+          "status": "fulfilled",
+          "repository": "anomalyco/opencode",
+          "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+          "path": "packages/app/test-browser/browser-pane-model.test.ts",
+          "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/app/test-browser/browser-pane-model.test.ts",
+          "bytes": 4722,
+          "sha256": "71afb5ad08ce4ea77f47d5e9144d863ed85e5da5a6cd65d3857cd921ea7aab3c",
+          "gitBlob": "ddf31f50b21f1f819c69ea3a9c4952b1d5dfd654",
+          "gitBlobVerified": true,
+          "observedAt": "2026-11-17T02:29:19.898Z"
+        },
+        {
+          "status": "fulfilled",
+          "repository": "anomalyco/opencode",
+          "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/LICENSE",
+          "bytes": 1065,
+          "sha256": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "gitBlob": "6439474beed8e0271df9862eff97ffd70ec2464c",
+          "gitBlobVerified": true,
+          "observedAt": "2026-11-17T02:29:19.893Z"
+        }
+      ]
+    },
+    {
+      "file": ".runtime/alpha21-electron-preview-references-attempt1/sources.json",
+      "sha256": "c0d7e1d3b4974e2c6f27cec4a1dfdab86e3db353045aae2f8167601002624252",
+      "sources": [
+        {
+          "status": "fulfilled",
+          "repository": "electron/electron",
+          "tag": "v39.2.7",
+          "commit": "4d18062d0f0ca34c455bc7ec032dd7959a0365b6",
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/electron/electron/4d18062d0f0ca34c455bc7ec032dd7959a0365b6/LICENSE",
+          "bytes": 1096,
+          "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d",
+          "gitBlob": "536d54efc3fd36ff7e079f82ce55f82c887758cd",
+          "gitBlobVerified": true
+        },
+        {
+          "status": "fulfilled",
+          "repository": "electron/electron",
+          "tag": "v39.2.7",
+          "commit": "4d18062d0f0ca34c455bc7ec032dd7959a0365b6",
+          "path": "docs/api/web-contents-view.md",
+          "url": "https://raw.githubusercontent.com/electron/electron/4d18062d0f0ca34c455bc7ec032dd7959a0365b6/docs/api/web-contents-view.md",
+          "bytes": 2109,
+          "sha256": "65a5a69a03f08b21fb0b628f3bcb6c05dd38d445cf64d380225612edf9e0497f",
+          "gitBlob": "cae7dabfc563f19287217174aeaf44caf88cc59d",
+          "gitBlobVerified": true
+        },
+        {
+          "status": "fulfilled",
+          "repository": "electron/electron",
+          "tag": "v39.2.7",
+          "commit": "4d18062d0f0ca34c455bc7ec032dd7959a0365b6",
+          "path": "docs/api/session.md",
+          "url": "https://raw.githubusercontent.com/electron/electron/4d18062d0f0ca34c455bc7ec032dd7959a0365b6/docs/api/session.md",
+          "bytes": 72520,
+          "sha256": "a3ced9f97b5049745968335085002fbaa41cf463a018143e182202379aeadf15",
+          "gitBlob": "96f0ab6e9a1b7ca90697f3e2d916c6b46312ef47",
+          "gitBlobVerified": true
+        },
+        {
+          "status": "fulfilled",
+          "repository": "electron/electron",
+          "tag": "v39.2.7",
+          "commit": "4d18062d0f0ca34c455bc7ec032dd7959a0365b6",
+          "path": "docs/api/web-contents.md",
+          "url": "https://raw.githubusercontent.com/electron/electron/4d18062d0f0ca34c455bc7ec032dd7959a0365b6/docs/api/web-contents.md",
+          "bytes": 89714,
+          "sha256": "d84f5f8d9c8ef6b5975f4221c161cadbc6c7366765d1ffddfb6afed27180c917",
+          "gitBlob": "25fd0991c34130c17d52fb02b30e0d80acc87769",
+          "gitBlobVerified": true
+        },
+        {
+          "status": "fulfilled",
+          "repository": "electron/electron",
+          "tag": "v39.2.7",
+          "commit": "4d18062d0f0ca34c455bc7ec032dd7959a0365b6",
+          "path": "docs/api/view.md",
+          "url": "https://raw.githubusercontent.com/electron/electron/4d18062d0f0ca34c455bc7ec032dd7959a0365b6/docs/api/view.md",
+          "bytes": 3665,
+          "sha256": "45dc3694c0255254ebfda53d5b3af449cedd6438e2f62ff07afe41af67a026dd",
+          "gitBlob": "a3388a92e084feaa5fbd7972cdd6b51f037e870e",
+          "gitBlobVerified": true
+        },
+        {
+          "status": "fulfilled",
+          "repository": "electron/electron",
+          "tag": "v39.2.7",
+          "commit": "4d18062d0f0ca34c455bc7ec032dd7959a0365b6",
+          "path": "docs/api/structures/web-preferences.md",
+          "url": "https://raw.githubusercontent.com/electron/electron/4d18062d0f0ca34c455bc7ec032dd7959a0365b6/docs/api/structures/web-preferences.md",
+          "bytes": 11689,
+          "sha256": "3943e3f90d03b5ba6f94554c36756493e475b858a28b0b316d88fe333a947100",
+          "gitBlob": "ceb55730148e2e0acbf44f7aded28659275cd5a8",
+          "gitBlobVerified": true
+        },
+        {
+          "status": "fulfilled",
+          "repository": "electron/electron",
+          "tag": "v39.2.7",
+          "commit": "4d18062d0f0ca34c455bc7ec032dd7959a0365b6",
+          "path": "docs/tutorial/security.md",
+          "url": "https://raw.githubusercontent.com/electron/electron/4d18062d0f0ca34c455bc7ec032dd7959a0365b6/docs/tutorial/security.md",
+          "bytes": 32315,
+          "sha256": "1ce0062ddab5345c2c42cbfe08ac6b42f4459edef72b22db464a04768f0c1c0d",
+          "gitBlob": "1f23cf51403f51f475c6ae73e1a1b7aba1ea31b8",
+          "gitBlobVerified": true
+        },
+        {
+          "status": "fulfilled",
+          "repository": "electron/electron",
+          "tag": "v39.2.7",
+          "commit": "4d18062d0f0ca34c455bc7ec032dd7959a0365b6",
+          "path": "shell/browser/api/electron_api_web_contents_view.cc",
+          "url": "https://raw.githubusercontent.com/electron/electron/4d18062d0f0ca34c455bc7ec032dd7959a0365b6/shell/browser/api/electron_api_web_contents_view.cc",
+          "bytes": 8586,
+          "sha256": "14f5c6840b9c0557d446f0d2fc27bfdb161edddbef0258994f569978902208a9",
+          "gitBlob": "0b9be9bd55dc959ebedadbce0125f34b791c7ebd",
+          "gitBlobVerified": true
+        },
+        {
+          "status": "fulfilled",
+          "repository": "electron/electron",
+          "tag": "v39.2.7",
+          "commit": "4d18062d0f0ca34c455bc7ec032dd7959a0365b6",
+          "path": "lib/browser/api/web-contents-view.ts",
+          "url": "https://raw.githubusercontent.com/electron/electron/4d18062d0f0ca34c455bc7ec032dd7959a0365b6/lib/browser/api/web-contents-view.ts",
+          "bytes": 229,
+          "sha256": "a9eac66bd1834f8854a6ea0dbf54cec1b3975b478a20c1b07e8c5fc0d55f32a3",
+          "gitBlob": "63650ef9265101b1ebfa08b2392314b15e93594c",
+          "gitBlobVerified": true
+        },
+        {
+          "status": "fulfilled",
+          "repository": "electron/electron",
+          "tag": "v39.2.7",
+          "commit": "4d18062d0f0ca34c455bc7ec032dd7959a0365b6",
+          "path": "spec/api-web-contents-view-spec.ts",
+          "url": "https://raw.githubusercontent.com/electron/electron/4d18062d0f0ca34c455bc7ec032dd7959a0365b6/spec/api-web-contents-view-spec.ts",
+          "bytes": 15838,
+          "sha256": "237b6e1606eb667aea2a4d8d96ca1e429737fc9fe6a307fdeee6683ff7b9f1eb",
+          "gitBlob": "3c306a32d8158f492cda0a34b61039e08e983f59",
+          "gitBlobVerified": true
+        }
+      ]
+    }
+  ]
+}

@@ -4,18 +4,23 @@ const { randomBytes } = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const net = require('node:net');
+const { pathToFileURL } = require('node:url');
 const { attachedConnection, compatibleCoreHealth } = require('./connection.cjs');
+const { createPreviewHost } = require('./preview-host.cjs');
+const { validatePreviewInput } = require('./preview-ipc-policy.cjs');
 
 if (process.env.WORKBENCH_USER_DATA) app.setPath('userData', path.resolve(process.env.WORKBENCH_USER_DATA));
 
-let window, core, tray, quitting = false;
+let window, core, tray, previewHost, quitting = false;
 let connection;
 let coreReady = false;
 const root = app.getAppPath();
 
 function trusted(event) {
-  const url = event.senderFrame?.url || '';
-  if (!window || event.sender !== window.webContents || !url.startsWith('file://')) throw new Error('未授权的窗口');
+  let url;
+  try { url = new URL(event.senderFrame?.url || ''); } catch { throw new Error('未授权的窗口'); }
+  const expected = pathToFileURL(path.join(root, 'web/dist/index.html')).href;
+  if (!window || event.sender !== window.webContents || event.senderFrame !== event.sender.mainFrame || url.href !== expected) throw new Error('未授权的窗口');
 }
 
 async function unusedPort() {
@@ -76,7 +81,23 @@ function createWindow() {
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true } });
   window.setMenuBarVisibility(false);
   window.webContents.setWindowOpenHandler(({ url }) => { if (url.startsWith('https://')) shell.openExternal(url); return { action: 'deny' }; });
-  window.webContents.on('will-navigate', (event, url) => { if (!url.startsWith('file://')) event.preventDefault(); });
+  const appPage = pathToFileURL(path.join(root, 'web/dist/index.html')).href;
+  window.webContents.on('will-navigate', (event, url) => { if (url !== appPage) event.preventDefault(); });
+  previewHost = createPreviewHost({ owner: window, connection, authorize: async (projectId, sessionId) => {
+    if (!coreReady) throw new Error('核心连接已中断，预览已停止。');
+    const endpoint = `${connection.baseUrl}/api/projects/${encodeURIComponent(projectId)}/sessions/${encodeURIComponent(sessionId)}/preview/authorization`;
+    const response = await fetch(endpoint, { headers: { Authorization: `Bearer ${connection.token}` }, signal: AbortSignal.timeout(2500) });
+    if (!response.ok) throw new Error(response.status === 401 ? '核心连接令牌已失效，预览已停止。' : `预览授权核对失败（${response.status}）。`);
+    return response.json();
+  }, partitionRegistryPath: path.join(app.getPath('userData'), 'preview-partitions.json'), persist: async (scope, tab, { activate = false } = {}) => {
+    const url = new URL(tab.url), saved = { id: tab.id, url: `${url.origin}${url.pathname}`, title: tab.title.slice(0, 180) };
+    const tabs = scope.tabs.some(value => value.id === tab.id) ? scope.tabs.map(value => value.id === tab.id ? saved : value) : [...scope.tabs, saved];
+    const endpoint = `${connection.baseUrl}/api/projects/${encodeURIComponent(scope.projectId)}/sessions/${encodeURIComponent(scope.sessionId)}/preview`;
+    const response = await fetch(endpoint, { method: 'POST', headers: { Authorization: `Bearer ${connection.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ expectedVersion: scope.version, tabs, ...(activate ? { activeTabId: tab.id } : {}) }), signal: AbortSignal.timeout(2500) });
+    if (!response.ok) throw new Error(response.status === 409 ? '预览配置已在其他操作中变化，请刷新。' : `预览地址保存失败（${response.status}）。`);
+    return response.json();
+  }, publish: event => { if (window && !window.isDestroyed()) window.webContents.send('preview:event', event); } });
   window.once('ready-to-show', () => window.show());
   window.on('close', event => { if (!quitting && tray) { event.preventDefault(); window.hide(); } });
   window.loadFile(path.join(root, 'web/dist/index.html'));
@@ -124,11 +145,17 @@ else {
     ipcMain.handle('workbench:version', event => { trusted(event); return app.getVersion(); });
     ipcMain.handle('workbench:directory', async event => { trusted(event); const result = await dialog.showOpenDialog(window, { properties: ['openDirectory'] }); return result.canceled ? null : result.filePaths[0]; });
     ipcMain.handle('workbench:open-path', async (event, selected) => { trusted(event); if (typeof selected !== 'string' || !path.isAbsolute(selected) || !fs.statSync(selected).isDirectory()) throw new Error('只能打开现有本地目录'); return shell.openPath(selected); });
+    ipcMain.handle('preview:attach', async (event, projectId, sessionId) => {
+      trusted(event);
+      if (![projectId, sessionId].every(value => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(value))) throw new Error('预览会话范围无效。');
+      return previewHost.command({ type: 'attach', projectId, sessionId });
+    });
+    ipcMain.handle('preview:action', (event, input) => { trusted(event); return previewHost.command(validatePreviewInput(input)); });
     try { await startCore(); createWindow(); createTray(); }
     catch (error) { dialog.showErrorBox('Agent Workbench 启动失败', error.message); app.quit(); }
     powerMonitor.on('resume', () => { if (coreReady) window?.webContents.send('workbench:resumed'); });
   });
-  app.on('before-quit', event => { if (quitting) return; event.preventDefault(); quitting = true; shutdown().finally(() => app.quit()); });
+  app.on('before-quit', event => { if (quitting) return; event.preventDefault(); quitting = true; Promise.resolve(previewHost?.close()).catch(() => {}).finally(() => shutdown()).finally(() => app.quit()); });
   app.on('window-all-closed', () => { if (!tray) app.quit(); });
   app.on('activate', () => window?.show());
 }

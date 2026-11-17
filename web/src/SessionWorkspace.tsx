@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { History, MessageSquare, Plus, RefreshCw, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, History, LockKeyhole, MessageSquare, Plus, RefreshCw, RotateCw, ShieldCheck, Trash2, X } from 'lucide-react';
 import { api, currentConnection, post } from './api';
-import type { RunEvent, Session, SessionMessage, SessionSearchResult, Task } from './types';
+import type { PreviewEvent, PreviewSession, PreviewTab, RunEvent, Session, SessionMessage, SessionSearchResult, Task } from './types';
 import { Badge, Empty, Field, formatTime, PageTitle } from './ui';
 import './sessions.css';
 import { AgentRuns } from './AgentRuns';
@@ -13,7 +13,7 @@ type EventPage = { events: RunEvent[]; cursor: number; hasMore: boolean };
 type NoteRequest = { id: string; content: string };
 type SearchTarget = { sessionId: string; sequence: number; messageId: string };
 
-export function SessionWorkspace({ projectId, tasks, connected, focusRequest = 0, onTask, onCreate }: { projectId: string; tasks: Task[]; connected: boolean; focusRequest?: number; onTask: (task: Task) => void; onCreate: (sessionId: string) => void }) {
+export function SessionWorkspace({ projectId, tasks, connected, previewVisible = true, focusRequest = 0, onTask, onCreate }: { projectId: string; tasks: Task[]; connected: boolean; previewVisible?: boolean; focusRequest?: number; onTask: (task: Task) => void; onCreate: (sessionId: string) => void }) {
   const base = `/projects/${encodeURIComponent(projectId)}/sessions`;
   const selectionKey = `workbench-session:${currentConnection().baseUrl}:${projectId}`;
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -118,14 +118,14 @@ export function SessionWorkspace({ projectId, tasks, connected, focusRequest = 0
       <button role="tab" aria-selected={session.id === activeId} aria-controls={`session-panel-${session.id}`} id={`session-tab-${session.id}`} onClick={() => setActiveId(session.id)}><MessageSquare size={14} /><span>{session.title}</span></button>
       <button className="icon-button" aria-label={`关闭会话 ${session.title}`} title="关闭标签，后台任务继续" disabled={busy} onClick={() => void change(session, { isOpen: false })}><X size={13} /></button>
     </div>)}</div>
-    {active ? <SessionPanel key={`${active.id}:${searchTarget?.sessionId === active.id ? searchTarget.messageId : 'latest'}`} session={active} base={base} target={searchTarget?.sessionId === active.id ? searchTarget : null} onLatest={() => setSearchTarget(null)} tasks={tasks.filter(task => task.sessionId === active.id)} onTask={onTask} onCreate={() => onCreate(active.id)}
+    {active ? <SessionPanel key={`${active.id}:${searchTarget?.sessionId === active.id ? searchTarget.messageId : 'latest'}`} session={active} base={base} target={searchTarget?.sessionId === active.id ? searchTarget : null} onLatest={() => setSearchTarget(null)} tasks={tasks.filter(task => task.sessionId === active.id)} connected={connected} previewVisible={previewVisible} onTask={onTask} onCreate={() => onCreate(active.id)}
       noteRequests={noteRequests.current} onNoteSaved={content => setDrafts(current => current[active.id] === content ? { ...current, [active.id]: '' } : current)}
       draft={drafts[active.id] || ''} onDraft={value => setDrafts(current => ({ ...current, [active.id]: value }))} onRename={name => change(active, { title: name })} />
       : <section className="card"><Empty icon={<MessageSquare size={28} />} title="选择或创建一个会话" description="关闭标签后，历史记录与后台任务仍会保留。" /></section>}
   </>;
 }
 
-function SessionPanel({ session, base, target, onLatest, tasks, draft, onDraft, onTask, onCreate, onRename, noteRequests, onNoteSaved }: { session: Session; base: string; target: SearchTarget | null; onLatest: () => void; tasks: Task[]; draft: string; onDraft: (value: string) => void; onTask: (task: Task) => void; onCreate: () => void; onRename: (title: string) => Promise<void>; noteRequests: Record<string, NoteRequest>; onNoteSaved: (content: string) => void }) {
+function SessionPanel({ session, base, target, onLatest, tasks, connected, previewVisible, draft, onDraft, onTask, onCreate, onRename, noteRequests, onNoteSaved }: { session: Session; base: string; target: SearchTarget | null; onLatest: () => void; tasks: Task[]; connected: boolean; previewVisible: boolean; draft: string; onDraft: (value: string) => void; onTask: (task: Task) => void; onCreate: () => void; onRename: (title: string) => Promise<void>; noteRequests: Record<string, NoteRequest>; onNoteSaved: (content: string) => void }) {
   const endpoint = `${base}/${session.id}`;
   const [messages, setMessages] = useState<SessionMessage[]>([]); const [before, setBefore] = useState(0); const [hasOlder, setHasOlder] = useState(false);
   const [events, setEvents] = useState<RunEvent[]>([]); const [moreEvents, setMoreEvents] = useState(false);
@@ -196,6 +196,7 @@ function SessionPanel({ session, base, target, onLatest, tasks, draft, onDraft, 
   return <section className="session-panel" id={`session-panel-${session.id}`} role="tabpanel" aria-labelledby={`session-tab-${session.id}`}>
     <form className="session-title" onSubmit={event => { event.preventDefault(); void onRename(name); }}><Field label="当前会话名称"><input required maxLength={180} value={name} onChange={event => setName(event.target.value)} /></Field><button type="submit" className="button secondary small">重命名</button></form>
     {(error || readError) && <div className="form-error" role="alert">{error || readError}</div>}
+    <PreviewPanel projectId={session.projectId} sessionId={session.id} connected={connected && previewVisible} />
     <div className="session-columns"><section className="card session-records" aria-label="会话记录"><h2>会话记录</h2>
       {target && <p className="form-note">正在查看搜索定位的历史记录。<button className="text-button" onClick={onLatest}>返回最新记录</button></p>}
       {hasOlder && <button className="button secondary small" disabled={busy || !loaded} onClick={() => void older()}>加载更早记录</button>}
@@ -211,6 +212,183 @@ function SessionPanel({ session, base, target, onLatest, tasks, draft, onDraft, 
       <button className="button secondary small" onClick={() => void refresh().catch(e => setError(e.message))}><RefreshCw size={13} />{moreEvents ? '读取后续活动' : '刷新活动'}</button>
     </section></div>
   </section>;
+}
+
+function PreviewPanel({ projectId, sessionId, connected }: { projectId: string; sessionId: string; connected: boolean }) {
+  const base = `/projects/${encodeURIComponent(projectId)}/sessions/${encodeURIComponent(sessionId)}/preview`;
+  const host = window.workbench?.desktopPreview;
+  const viewport = useRef<HTMLDivElement>(null), addressInput = useRef<HTMLInputElement>(null), attached = useRef(false);
+  const [preview, setPreview] = useState<PreviewSession | null>(null);
+  const [activeTab, setActiveTab] = useState(''); const [pageEvents, setPageEvents] = useState<Record<string, PreviewEvent>>({});
+  const [url, setUrl] = useState<string | null>(null); const [portsText, setPortsText] = useState('');
+  const [newTab, setNewTab] = useState(false);
+  const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [message, setMessage] = useState('');
+
+  const refresh = useCallback(async (signal?: AbortSignal) => {
+    const value = await api<PreviewSession>(base, { signal });
+    if (signal?.aborted) return;
+    if (!value || !Number.isSafeInteger(value.version) || !Array.isArray(value.allowedLoopbackPorts)
+      || !Array.isArray(value.tabs) || typeof value.activeTabId !== 'string') {
+      setPreview(null); setPortsText(''); setActiveTab(''); return;
+    }
+    setPreview(current => current && current.version > value.version ? current : value);
+    setActiveTab(current => value.tabs.some(tab => tab.id === current) ? current : value.activeTabId || value.tabs[0]?.id || '');
+  }, [base]);
+
+  const portSignature = preview?.allowedLoopbackPorts.join(', ') ?? '';
+  useEffect(() => { setPortsText(portSignature); }, [portSignature]);
+
+  useEffect(() => {
+    const controller = new AbortController(); let timer: ReturnType<typeof setTimeout>;
+    async function poll() {
+      try { await refresh(controller.signal); setError(''); } catch (cause) { if (!controller.signal.aborted) setError((cause as Error).message); }
+      if (!controller.signal.aborted) timer = setTimeout(poll, 2500);
+    }
+    if (connected) void poll();
+    return () => { controller.abort(); clearTimeout(timer); };
+  }, [connected, refresh]);
+
+  useEffect(() => {
+    if (!host || !preview || !connected) return;
+    let cancelled = false;
+    void host.attach(projectId, sessionId).then(() => { if (!cancelled) attached.current = true; }).catch(cause => { if (!cancelled) setError((cause as Error).message); });
+    return () => { cancelled = true; attached.current = false; void host.action({ type: 'suspend', projectId, sessionId }).catch(() => {}); };
+  }, [host, projectId, sessionId, connected, Boolean(preview), preview?.authorizationVersion, preview?.storageGeneration]);
+
+  useEffect(() => {
+    if (!host) return;
+    return host.onEvent((event: PreviewEvent) => {
+      if (event.projectId && event.projectId !== projectId || event.sessionId && event.sessionId !== sessionId) return;
+      if (event.configuration) {
+        const value = event.configuration;
+        setPreview(current => current && current.version > value.version ? current : value);
+      }
+      if (event.closed) { attached.current = false; setError(event.error || '预览授权已变化，请刷新。'); return; }
+      if (event.tabId) setPageEvents(current => ({ ...current, [event.tabId!]: event }));
+      if (event.error) setError(event.error);
+    });
+  }, [host, projectId, sessionId]);
+
+  useEffect(() => {
+    const element = viewport.current;
+    if (!host || !element || !connected) return;
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const rect = element.getBoundingClientRect();
+        const topbarBottom = document.querySelector('.topbar')?.getBoundingClientRect().bottom || 0;
+        const x = Math.max(0, Math.floor(rect.left)), y = Math.max(0, Math.ceil(topbarBottom), Math.floor(rect.top));
+        const width = Math.min(window.innerWidth, Math.floor(rect.right)) - x, height = Math.min(window.innerHeight, Math.floor(rect.bottom)) - y;
+        if (newTab || width < 100 || height < 100) {
+          void host.action({ type: 'hide', projectId, sessionId }).catch(() => {}); return;
+        }
+        void host.action({ type: 'bounds', projectId, sessionId, bounds: { x, y, width, height } }).catch(cause => setError((cause as Error).message));
+      });
+    };
+    const observer = new ResizeObserver(update); observer.observe(element);
+    window.addEventListener('resize', update); window.addEventListener('scroll', update, true);
+    update(); return () => { cancelAnimationFrame(frame); observer.disconnect(); window.removeEventListener('resize', update); window.removeEventListener('scroll', update, true); void host.action({ type: 'hide', projectId, sessionId }).catch(() => {}); };
+  }, [host, connected, projectId, sessionId, Boolean(preview), preview?.tabs.length, newTab]);
+
+  async function save(next: Partial<Pick<PreviewSession, 'allowedLoopbackPorts' | 'tabs' | 'activeTabId'>>, attach = true) {
+    if (!preview) return;
+    setBusy(true); setError(''); setMessage('');
+    try {
+      const value = await post<PreviewSession>(base, { expectedVersion: preview.version, ...next });
+      setPreview(value); setActiveTab(value.activeTabId || value.tabs[0]?.id || '');
+      if (attach && host && connected) await host.attach(projectId, sessionId);
+      return value;
+    } catch (cause) { setError((cause as Error).message); throw cause; }
+    finally { setBusy(false); }
+  }
+
+  async function bindPorts(event: React.FormEvent) {
+    event.preventDefault();
+    const values = portsText.split(',').map(value => value.trim()).filter(Boolean);
+    if (values.some(value => !/^\d{1,5}$/.test(value))) { setError('端口请填写 1 到 65535 的整数，并用逗号分隔。'); return; }
+    const ports = [...new Set(values.map(Number))];
+    if (ports.length > 16 || ports.some(port => port < 1 || port > 65535)) { setError('每个会话最多绑定 16 个有效端口。'); return; }
+    try { await save({ allowedLoopbackPorts: ports }); setMessage('本机会话端口已更新。'); } catch { }
+  }
+
+  async function go(event: React.FormEvent) {
+    event.preventDefault(); if (!preview || !address.trim()) return;
+    let target: URL;
+    try { target = new URL(address.trim()); if (!['http:', 'https:'].includes(target.protocol) || target.username || target.password) throw new Error(); }
+    catch { setError('请输入不含凭据的完整 HTTP 或 HTTPS 地址。'); return; }
+    const storedUrl = `${target.origin}${target.pathname}`;
+    const tabId = !newTab && activeTab || crypto.randomUUID();
+    const next: PreviewTab[] = preview.tabs.some(tab => tab.id === tabId)
+      ? preview.tabs.map(tab => tab.id === tabId ? { ...tab, url: storedUrl, title: tabEvents(tabId)?.title || tab.title } : tab)
+      : [...preview.tabs, { id: tabId, url: storedUrl, title: '' }];
+    if (next.length > 12) { setError('每个会话最多打开十二个预览标签。'); return; }
+    try {
+      if (host && connected) {
+        setBusy(true); setError(''); setMessage('');
+        const value = await host.action({ type: 'open', projectId, sessionId, tabId, url: target.href, expectedVersion: preview.version }) as PreviewSession;
+        setPreview(value);
+      } else await save({ tabs: next, activeTabId: tabId }, false);
+      setNewTab(false); setUrl(null); setActiveTab(tabId);
+      setPageEvents(current => ({ ...current, [tabId]: { projectId, sessionId, tabId, url: target.href, loading: Boolean(host) } }));
+    } catch (cause) { setError((cause as Error).message); }
+    finally { setBusy(false); }
+  }
+
+  function tabEvents(id: string) { return pageEvents[id]; }
+  async function command(type: string, tabId = activeTab) {
+    if (!host || !tabId) return;
+    try { setError(''); await host.action({ type, projectId, sessionId, tabId }); } catch (cause) { setError((cause as Error).message); }
+  }
+
+  async function closeTab(tabId: string) {
+    if (!preview) return;
+    const tabs = preview.tabs.filter(tab => tab.id !== tabId), selected = activeTab === tabId ? tabs[0]?.id || '' : activeTab;
+    try { await save({ allowedLoopbackPorts: preview.allowedLoopbackPorts, tabs, activeTabId: selected }); setPageEvents(current => { const next = { ...current }; delete next[tabId]; return next; }); } catch { }
+  }
+
+  function startTab() {
+    setNewTab(true); setUrl(''); setError(''); setMessage('');
+    if (host) void host.action({ type: 'hide', projectId, sessionId }).catch(cause => setError((cause as Error).message));
+    addressInput.current?.focus();
+  }
+
+  async function clearSite() {
+    if (!activeTab) return;
+    setBusy(true); setError(''); setMessage('');
+    try { await host?.action({ type: 'clearSite', projectId, sessionId, tabId: activeTab }); setMessage('当前站点的 Cookie 与本地存储已清理。'); }
+    catch (cause) { setError((cause as Error).message); }
+    finally { setBusy(false); }
+  }
+
+  async function reset() {
+    if (!preview) return;
+    setBusy(true); setError(''); setMessage('');
+    try {
+      const value = await post<PreviewSession>(`${base}/reset`, { expectedVersion: preview.version });
+      setPreview(value); setActiveTab(''); setPageEvents({}); setUrl(null); setNewTab(false);
+      if (host && connected) { await host.attach(projectId, sessionId); setMessage('会话存储已重置。'); }
+      else setMessage('重置已记录；桌面端重新打开会话后将清理旧会话存储。');
+    } catch (cause) { setError((cause as Error).message); }
+    finally { setBusy(false); }
+  }
+
+  const current = newTab ? undefined : preview?.tabs.find(tab => tab.id === activeTab);
+  const currentEvent = !newTab && activeTab ? pageEvents[activeTab] : undefined;
+  const address = url ?? currentEvent?.url ?? current?.url ?? '';
+  if (!preview) return null;
+  return <section className="card session-preview" aria-label="会话网页预览">
+    <header className="session-preview-heading"><div><h2>网页预览</h2><span><LockKeyhole size={12} />项目与会话隔离的原生浏览上下文</span></div><div className={`preview-connection ${host && connected ? 'ready' : ''}`}><span />{!connected ? '核心未连接' : host ? '桌面预览就绪' : '独立 Web'}</div></header>
+    <form className="preview-port-form" onSubmit={event => void bindPorts(event)}><Field label="允许访问的本机端口" hint="仅开放明确填写的回环端口；端口代表当前本机服务授权，不证明服务进程身份。"><input aria-label="允许访问的本机端口" inputMode="numeric" value={portsText} onChange={event => setPortsText(event.target.value)} placeholder="例如 5173, 3000" disabled={!connected || busy} /></Field><button className="button secondary small" type="submit" disabled={!connected || busy || !preview}><ShieldCheck size={14} />更新授权</button><button className="icon-button" type="button" aria-label="重置会话存储" title="重置会话存储" disabled={!connected || busy || !preview} onClick={() => void reset()}><Trash2 size={15} /></button></form>
+    <div className="preview-browser-toolbar"><div className="preview-tab-list" role="tablist" aria-label="预览标签">{preview.tabs.map(tab => <div key={tab.id} className={!newTab && activeTab === tab.id ? 'active' : ''}><button role="tab" aria-selected={!newTab && activeTab === tab.id} disabled={busy} onClick={() => { setNewTab(false); setUrl(null); setActiveTab(tab.id); if (host) void command('select', tab.id); else void save({ activeTabId: tab.id }).catch(() => {}); }} title={tabEvents(tab.id)?.title || tab.title || tab.url}>{tabEvents(tab.id)?.title || tab.title || safeHost(tab.url)}</button><button className="icon-button" aria-label={`关闭预览标签 ${tabEvents(tab.id)?.title || tab.title || safeHost(tab.url)}`} onClick={() => void closeTab(tab.id)} disabled={busy}><X size={12} /></button></div>)}</div><div className="preview-actions"><button className="icon-button" aria-label="新建预览标签" title="新建预览标签" disabled={!connected || busy || preview.tabs.length >= 12} onClick={startTab}><Plus size={15} /></button><button className="icon-button" aria-label="返回" title="返回" disabled={!host || !current || busy} onClick={() => void command('back')}><ArrowLeft size={15} /></button><button className="icon-button" aria-label="前进" title="前进" disabled={!host || !current || busy} onClick={() => void command('forward')}><ArrowRight size={15} /></button><button className="icon-button" aria-label="重新加载" title="重新加载" disabled={!host || !current || busy} onClick={() => void command('reload')}><RotateCw size={14} /></button></div></div>
+    <form className="preview-address" onSubmit={event => void go(event)}><label className="sr-only" htmlFor={`preview-address-${sessionId}`}>网页地址</label><input ref={addressInput} id={`preview-address-${sessionId}`} value={address} onChange={event => setUrl(event.target.value)} placeholder="输入要打开的网址" autoComplete="off" disabled={!connected || busy} /><button className="button secondary small" type="submit" disabled={!connected || busy || !address.trim()}><ArrowRight size={14} />转到</button><button className="button secondary small" type="button" disabled={!host || !current || busy} onClick={() => void clearSite()}>清理站点</button></form>
+    <div className="preview-stage" ref={viewport} aria-label="原生网页预览区域">{!host && <div className="preview-capability"><ShieldCheck size={20} /><span>当前为独立 Web 客户端。会话配置可在此维护，原生隔离预览、登录数据和清理操作仅由桌面客户端提供。</span></div>}{host && (!preview.tabs.length || newTab) && <div className="preview-empty">绑定需要的本机端口，然后输入一个 HTTP 或 HTTPS 地址。</div>}</div>
+    <footer className="preview-status" aria-live="polite"><span>{currentEvent?.loading ? '正在加载' : currentEvent?.url || (preview?.tabs.length ? current?.url : '尚未打开页面')}</span>{error && <span className="preview-error" role="alert">{error}</span>}{message && <span>{message}</span>}</footer>
+  </section>;
+}
+
+function safeHost(value: string) {
+  try { return new URL(value).hostname; } catch { return value; }
 }
 
 function highlightMatch(content: string, start: number, end: number) {

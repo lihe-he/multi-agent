@@ -4,7 +4,9 @@
 
 平台使用 Java 21、Spring Boot、SQLite、React、TypeScript 和 Electron。任务在独立工作目录中执行，验证和审查记录绑定代码版本，最终由用户验收。验收操作记录用户决定，不会自动提交、推送或改写原项目。
 
-当前开发版本为 **0.2.0-alpha.20**，本轮任务终端的生产验收正在进行，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
+当前开发版本为 **0.2.0-alpha.21**，新增项目与会话隔离的桌面网页预览，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
+
+“协作会话 → 网页预览”可绑定本机端口、打开多个网页标签，并在桌面完整退出重开后保留登录数据。核心只保存脱敏地址和标签，浏览数据保存在隔离的桌面分区中；支持清理当前站点和重置整个会话存储。独立 Web 明确显示桌面能力提示。端口授权不证明服务进程身份，远程转发与外部 OAuth 尚待分别验收，具体边界见[会话预览约定](./docs/preview-contract.md)。
 
 在“资源与设置 → 外观”选择纯白、纸墨、经典暖色、青瓷、墨夜或墨夜蓝，选择会应用到当前客户端的全部项目和页面。默认跟随系统，浅色使用青瓷、深色使用墨夜；固定选择会跨重新打开保留。浏览器无法保存时，当前窗口仍可切换，并提示未保存。核心离线时也可调整外观，具体来源与验收见[主题研究](./docs/research/themes-2026-11-12.md)。
 
@@ -81,6 +83,8 @@ npm run start
 `npm run test:diff-view` 使用当前最终 Jar、原独立 Worker、真实 clone/worktree 和生产 Web，检查文件修改、原/新行号、旧接口与交付补丁、实际二进制/排除/大小/行限制、版本及 HEAD 冲突、窄屏和显式刷新，并独立核验原 PID/出生停止。实际集成与浏览器协议夹具证据分别保存。
 
 `npm run test:checkpoints` 使用普通最终 Jar、原 Worker 和生产 Web，验证 clone/worktree 的实际文件/index保存、工具请求来源、稳定历史分页、过期预览零写入、撤销与用户后续文件保全、重新验证状态和完整引用 ZIP。两处 SQLite 回执故障分别保留原 APPLIED/ACK/UNKNOWN，重启核对原身份并检查零重放；本机确定性模型、故障注入源码、编译类和完整现场按每次独立运行保存。
+
+`npm run test:previews` 检查端口与导航策略、窄 IPC、配置同步和清理失败边界。`npm run test:previews:native` 启动实际开发桌面、核心与 Worker，用本地 HTTP 登录夹具检查持久 Cookie、项目/会话隔离、多标签、弹窗暂停、站点清理、代次账本与撤权；Linux 需虚拟显示。该入口使用源码构建产物，发行包另行验收。
 
 ![Windows 工作台 · 墨夜蓝](./docs/qa/themes-dark-win32.png)
 
