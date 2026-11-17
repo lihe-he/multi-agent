@@ -167,13 +167,23 @@ export function writeTerminalShellFixture(source, { ui = false } = {}) {
   const script = windows ? `param([string]$Mode)
 $utf8=[Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding=$utf8
+function Save-Stage([string]$Value) {
+  [IO.File]::AppendAllText('terminal-stage.txt',$Value+[Environment]::NewLine,$utf8)
+}
 if ($Mode -eq 'unicode') {
   [IO.File]::AppendAllText('manual-count.txt','1',$utf8)
-  $facts=[ordered]@{}
-  foreach ($name in @('WORKBENCH_TOKEN','WORKBENCH_CORE_TOKEN','OPENAI_API_KEY','ANTHROPIC_API_KEY')) { $facts[$name]=[bool][Environment]::GetEnvironmentVariable($name) }
-  [IO.File]::WriteAllText('${environmentFile}',($facts|ConvertTo-Json -Compress),$utf8)
+  Save-Stage 'COUNT'
+  $facts='{"WORKBENCH_TOKEN":'+$(if ([Environment]::GetEnvironmentVariable('WORKBENCH_TOKEN')) {'true'} else {'false'})+','+
+    '"WORKBENCH_CORE_TOKEN":'+$(if ([Environment]::GetEnvironmentVariable('WORKBENCH_CORE_TOKEN')) {'true'} else {'false'})+','+
+    '"OPENAI_API_KEY":'+$(if ([Environment]::GetEnvironmentVariable('OPENAI_API_KEY')) {'true'} else {'false'})+','+
+    '"ANTHROPIC_API_KEY":'+$(if ([Environment]::GetEnvironmentVariable('ANTHROPIC_API_KEY')) {'true'} else {'false'})+'}'
+  [IO.File]::WriteAllText('${environmentFile}.tmp',$facts,$utf8)
+  [IO.File]::Move('${environmentFile}.tmp','${environmentFile}')
+  Save-Stage 'FACTS'
   [Console]::WriteLine('${marker}'+[char]27+'[32mGREEN'+[char]27+'[0m')
+  Save-Stage 'MARKER'
   [Console]::WriteLine('${markup}')
+  Save-Stage 'MARKUP'
 } elseif ($Mode -eq 'size') {
   [IO.File]::WriteAllText('actual-native-size.txt.tmp',(([Console]::WindowHeight).ToString()+' '+[Console]::WindowWidth),$utf8)
   [IO.File]::Move('actual-native-size.txt.tmp','actual-native-size.txt')

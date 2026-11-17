@@ -1,0 +1,472 @@
+{
+  "recordedAt": "2026-11-17T08:46:25.344Z",
+  "status": "failed",
+  "baselineCommit": "d8846e5f06b94cc257819b3a0ab9d4b22ee22333",
+  "runId": 44037048478,
+  "runAttempt": 1,
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/44037048478",
+  "metadata": [
+    {
+      "file": ".runtime\\alpha20-ci\\run-44037048478-attempt-1\\run.json",
+      "bytes": 13311,
+      "sha256": "812b0357ce9b94b316ee14da58122cae373b33816c2fbdf67d5b86ca2a9bcc8d"
+    },
+    {
+      "file": ".runtime\\alpha20-ci\\run-44037048478-attempt-1\\jobs.json",
+      "bytes": 31197,
+      "sha256": "9d2ebaa4229cf9b131323541d718e3b34b4174b9677d6a4b080044d2b7cfc45c"
+    },
+    {
+      "file": ".runtime\\alpha20-ci\\run-44037048478-attempt-1\\artifacts.json",
+      "bytes": 4075,
+      "sha256": "f603ba2f70aeb161e679807e642f612b8a3e6c634b7665fa4b186e23ec1e8384"
+    }
+  ],
+  "jobs": [
+    {
+      "id": 133882333663,
+      "name": "verify (ubuntu-latest)",
+      "conclusion": "success",
+      "failedSteps": []
+    },
+    {
+      "id": 133882333784,
+      "name": "verify (macos-latest)",
+      "conclusion": "success",
+      "failedSteps": []
+    },
+    {
+      "id": 133882333947,
+      "name": "verify (windows-latest)",
+      "conclusion": "failure",
+      "failedSteps": [
+        "Actual final Jar native terminal and forced core crash recovery"
+      ]
+    }
+  ],
+  "artifact": {
+    "file": ".runtime\\alpha20-ci\\run-44037048478-attempt-1\\evidence-windows-latest-14310001509.zip",
+    "bytes": 134911394,
+    "sha256": "14cf01ee2bf8c9b520ebf73c13fce5d46dac8216d53d5c565a66865b7beb3489",
+    "githubDigest": "sha256:14cf01ee2bf8c9b520ebf73c13fce5d46dac8216d53d5c565a66865b7beb3489",
+    "digestVerified": true
+  },
+  "otherPlatformArtifacts": "METADATA_AND_JOB_LOGS_ONLY_UNTIL_FULL_COLLECTION_FINISHES",
+  "windowsCore": {
+    "suites": 44,
+    "tests": 547,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 8,
+    "passed": 539,
+    "suiteEvidence": [
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.AgentRunStoreTest.xml",
+        "sha256": "c529340647992ecb0692e7f0eeb7319bc8cc6fcc38f461b8b3fc1c4ff1a60c39",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointEngineTest.xml",
+        "sha256": "6de8deae9be25699b3c6e3f58a729c4370755f6b095ae323d6e55bc214dcf0bf",
+        "tests": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointExportHistoryTest.xml",
+        "sha256": "f9e408bb086dfe89d72a451f8cf51a3e2a555c17e7ca8a58d2b926db07b49916",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ExecutionStoreTest.xml",
+        "sha256": "fe7b4a079bee98dc65d44926e2642446f4b866cdfd26dda872278a0c4aaa8b1d",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.FileToolHistoryTest.xml",
+        "sha256": "53ffa0b2f4fa506529cdebef1000406451fb52f09cdf47e959d7ca217ddede40",
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.GitWorkspaceTest.xml",
+        "sha256": "3a9a845cbd8b2e911b5bc628ad10139d23fe316533ecb9a33ee8c6be5d4dffec",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.LocalAccessFilterTest.xml",
+        "sha256": "7845abbfeac1e63f482fe93ba105fe9c7305abb872b30628b7fbdc4dd11c1274",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ManagedProcessLedgerTest.xml",
+        "sha256": "656990a7a9bb6af3eb26a7ee7eed01d1597759db86140d077edce4f736842066",
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.mcp.McpIntegrationTest.xml",
+        "sha256": "833a50db7eaac2ccd49bcbdbe0ff85dd4b113e7fe3a6c2a6e3fe4798b96e151a",
+        "tests": 25,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ModelRequestStoreTest.xml",
+        "sha256": "72d7827ed4dfc3bcdf43074006d38df4110bef2b3e45f37cb5b05b4e477a55d1",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.NativeProcessAccessTest.xml",
+        "sha256": "eb58ea78da13cb835bf28e9d6230ccc8544528d33edbce567dcec88dd9cbc94f",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.PlanAndPolicyTest.xml",
+        "sha256": "7d2d1f609160982993b1a3f79bee3b6d64f339b4ddaff5128492699cabb86511",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+        "sha256": "083543c38b3f887bf7e6f7dce91e5cc229986298c67258db60c2b603a3b67a2e",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RootDispatchEngineTest.xml",
+        "sha256": "fc3aad3e3c10d1ddcb6d74242b7d3b0df5b4d3201704e7373c01e98418cc981b",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.FileVersionRuntimeTest.xml",
+        "sha256": "cb056dac4849a940db55553153e4e06badae8c6ee5f09285badad603e88898e5",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitBlobBatchTest.xml",
+        "sha256": "ef4568883ef762463250f45b7101160663ced06fe2656ce51761933f5b154207",
+        "tests": 22,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitDiffViewTest.xml",
+        "sha256": "d67fa055f349422279dfc6f06cd083ac3c85ff9b8c307ab6f0cbe5be7b3272b4",
+        "tests": 33,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtyBundleTest.xml",
+        "sha256": "dd835b174656a9d0fe62795be2522efe5e0a7241804bf08fa5b6fd3ae2f8ac32",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtySessionTest.xml",
+        "sha256": "ca52c07eb054fb6c8baa6826b09b2b2a466bb025bc68b8bcbfb3950904ae8249",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.TerminalOutputArchiveTest.xml",
+        "sha256": "0eeed9925eb2b8ba5dc8956e3afe3583ca10f3554a7ae73e4fdbeee32d6821f9",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.xml",
+        "sha256": "bf5b0b9de01062086b11a7c514d7e8525b32d377022083d2304de514960f6b49",
+        "tests": 33,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 3
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceWriteGuardTest.xml",
+        "sha256": "ab408448111f3c4849a276668bebe7e115a232583d0e04e4da76e5b0ed0fb79f",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeDelegationTest.xml",
+        "sha256": "1f64b0fb13c3812c21ddcde7e60ce125df37ce5085e728c9cc5f1ab6407d1dbc",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeIntegrationTest.xml",
+        "sha256": "a568c422ebe5ab7f525dc0bb38ae102906a72a5bffa3f352256523827dcf0e8a",
+        "tests": 35,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.SessionStoreTest.xml",
+        "sha256": "5e07a7785e605781f66228bcb087f7bd18337671eed42a06f114b086720b6660",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TaskDispatchQueueTest.xml",
+        "sha256": "7dc535cb806ac3fc084b278bf97f8cc65da2c89e2d1eed5dbe5660da437ad022",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamExecutionTest.xml",
+        "sha256": "ceca94c75f3bd20d64f7219389be023b725d87f8e73b7d39153e7e80b2d59315",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamRecordsTest.xml",
+        "sha256": "cca999ab2f9366de6392dfeb60ff2ec5fb20f17b9ae9b9fe6419faed80c77e63",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalControllerTest.xml",
+        "sha256": "11d11c591a12b06db49d9875e444d21620b7793d3020b023735b079fcf4e5020",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalEngineTest.xml",
+        "sha256": "a04dcf16645fbb2280bb438a9935b68922339cc8c6e4eaebb47f729c3b4cac46",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalExportHistoryTest.xml",
+        "sha256": "6df9604ca78f89557d876258f4974b261dd167217bf36b00cc036ff93dc233bf",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalLedgerTest.xml",
+        "sha256": "2a2011101c0456b31f52f9f7f4dd2359f9e1115dba2d66874a2d8741b50f0809",
+        "tests": 30,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalQueueTest.xml",
+        "sha256": "02ae776df724a86ccbfabd6820e38864b1cd0c0d21bf4724fc8851d01c9e0856",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WindowsProcessSnapshotTest.xml",
+        "sha256": "a99a867685db02baaa664a9edd60750c78888b85ce3b28fed05c1964345575a2",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchEngineTest.xml",
+        "sha256": "e929b808bbaaa733952eaf002dc04d3681f5dcbf9fd262b37aeb8b9f068529cc",
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchVersionTest.xml",
+        "sha256": "59566cd87a07d2d899bffe96d38d9272b55691844074b04c08679aad5196db12",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerLeaseTest.xml",
+        "sha256": "2785bfa05c7c41540f1bfdbb064003cd9c17be6fca3c5476c2502f386ed05316",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerProcessTest.xml",
+        "sha256": "3da6f78d1d5e58c17fb1236a6bbd47a2a7accca8ae99aa9a8d11816241ede57e",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerRpcTest.xml",
+        "sha256": "786981cf1bdb78c69b8fa15942d45058785f3ae6350e9bb4115d8024f7c7d6a7",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerWireTest.xml",
+        "sha256": "b1f1e546248c7a3df701e6d51474576f8eacde1d5a0a92cb18b83172c595308a",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceLongPathTest.xml",
+        "sha256": "f7d45e210a27f2953fb9a6328f8197fd78528369f18f08698e4bb1bff6401149",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceSelectionEngineTest.xml",
+        "sha256": "b41049b5f6434c52713f82158a495f17e310e4a2e916f0724eaa0044eb138a56",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteEngineTest.xml",
+        "sha256": "25648fd60a5b0b9d3bc6a36a2cb8e4869109fa0c203820219a15dec88665a402",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteLedgerTest.xml",
+        "sha256": "1c7c7f86256037bce71ac1171ff73a9ee81a4769b8a99e8a7aa02bf739d0d7ca",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "windowsHttp": {
+    "recordedAt": "2026-11-17T07:53:42.460Z",
+    "status": "failed",
+    "error": {
+      "message": "original actual native Unicode output exceeded its original 20000ms boundary",
+      "stack": "Error: original actual native Unicode output exceeded its original 20000ms boundary\n    at until (file:///D:/a/multi-agent/multi-agent/tools/terminal-http-smoke.mjs:25:197)\n    at async file:///D:/a/multi-agent/multi-agent/tools/terminal-http-smoke.mjs:93:5",
+      "phase": "actual-clone"
+    },
+    "checks": 1,
+    "modelCalls": 3,
+    "jar": {
+      "bytes": 44336386,
+      "sha256": "16e2863de1f1477cc36a00d0ace800e24821685c03f6f717c683a78e62947f34"
+    },
+    "sources": [
+      {
+        "entry": ".runtime/terminal-http-O41PpK/artifact-fixture-source.mjs",
+        "bytes": 17315,
+        "sha256": "3303b7371fa41dfc31543e6ee36ae00d6dca6c4d412414b883dce22021645e1a",
+        "committedSha256": "f3e201bbea38cae6ceafe43dd15cf048dfef1a060620faa975713bee5628e370",
+        "canonicalLineEndingsEqual": true
+      },
+      {
+        "entry": ".runtime/terminal-http-O41PpK/runner-source.mjs",
+        "bytes": 28896,
+        "sha256": "a57a0b63b2f2ed49253de67c2af2f804e896a8216d4c191d178db7a80051f2f3",
+        "committedSha256": "4f5feb754b8ec255560624dac8e61a8da1784fe4eb7654ad136f580c8db23048",
+        "canonicalLineEndingsEqual": true
+      }
+    ],
+    "originalIdentitiesStopped": true,
+    "originalOutput": [
+      {
+        "entry": ".runtime/terminal-http-O41PpK/data/terminal-output/bf7759f0-6d86-4c15-8aec-aed952e05c18/00000000000000000000-000084-4b60c6e1af243189054752bf2dec9778b455ec71c6aeb54bbe07d65bfa50e860.bin",
+        "bytes": 84,
+        "sha256": "4b60c6e1af243189054752bf2dec9778b455ec71c6aeb54bbe07d65bfa50e860"
+      },
+      {
+        "entry": ".runtime/terminal-http-O41PpK/data/terminal-output/bf7759f0-6d86-4c15-8aec-aed952e05c18/00000000000000000084-000166-f74f0f42cf9b5ff8caae4aac760d3a4edba4270f01279cce7792c74c9cea296d.bin",
+        "bytes": 166,
+        "sha256": "f74f0f42cf9b5ff8caae4aac760d3a4edba4270f01279cce7792c74c9cea296d"
+      },
+      {
+        "entry": ".runtime/terminal-http-O41PpK/data/terminal-output/bf7759f0-6d86-4c15-8aec-aed952e05c18/00000000000000000250-000265-073cf665c14237b276a96d4e049c4bb86c0bb8259255de3d988baddff8a35424.bin",
+        "bytes": 265,
+        "sha256": "073cf665c14237b276a96d4e049c4bb86c0bb8259255de3d988baddff8a35424"
+      }
+    ],
+    "totalOutputBytes": 515,
+    "manualCount": "1",
+    "environmentFactsPresent": false,
+    "precisePowerShellInternalCause": "UNKNOWN_NO_INTERNAL_STACK_OR_STAGE_OBSERVATION_SAVED"
+  },
+  "scope": "ORIGINAL_FOURTH_CI_FAILURE_AND_FULL_DIGEST_WINDOWS_ARTIFACT; POSIX_SUCCESS_IS_JOB_STATUS_PENDING_INTERNAL_ARTIFACT_AUDIT",
+  "completeProjectGoal": false
+}

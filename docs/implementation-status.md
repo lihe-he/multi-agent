@@ -30,6 +30,8 @@ POSIX终端尺寸夹具改为同目录临时文件写完后由原`mv`发布，�
 
 新Jar首轮HTTP在Unicode输出先到、环境事实文件尚未产生时ENOENT；夹具改为事实写完后再发布标记，尺寸和崩溃子PID文件写完后原子发布。首轮真实UI又因较长尺寸命令回显将标记挤出重载后的可访问视口而失败，后将真实Console尺寸测量移入同一夹具`size`分支，用短命令调用，保留原重开/重载、尺寸、输入摘要及一次效果断言。两次原失败和原进程停止分别保存。最终准确夹具的HTTP4、真实Web/native5、差异14和协议29均通过，原UNKNOWN、预算、完整ZIP和零重放保持；原Web生产资产未变，本轮没有重复完整226项本机UI。Java106份/370条原注释保持，新增Javadoc0。见[本机收尾跟进](./qa/alpha20-ci-settlement-followup-win32.json)。原三轮CI失败、旧545项Jar和旧发行物保持；新提交的完整三端核心、UI和包内JRE验收待运行，不能以本机成功代替。
 
+第四轮准确提交`d8846e5`的[run 44037048478](https://github.com/lihe-he/multi-agent/actions/runs/44037048478)终态failure：Ubuntu与macOS job成功，Windows在547项核心、实际Jar的HTTP终端、包内JRE步骤之前，于原20秒CLONE Unicode输出边界失败。Windows artifact 134,911,394字节，整包 SHA-256 与GitHub digest一致；内部44套/547项为539通过、8条件跳过、0失败/错误。原手工计数为1，保留输出515字节且无中文目标，环境JSON不存在；脚本停滞的精确PowerShell内部原因仍UNKNOWN。新夹具以追加方式留下`COUNT`、`FACTS`、`MARKER`、`MARKUP`诊断，并保持事实JSON原子发布。Windows PowerShell 5 的HTTP/UI两类脚本各以四种环境变量全有/全无运行，共4/4通过；同一SHA-256 `d24dc14969c84d9425b6646cb683f55c1f3338bf28a0e350efaf18d733f81249`的真实Jar HTTP4项及生产Web/native5项通过，源、Jar、Web资产及原进程停止核验保持。失败artifact、修订前两个tracked QA版本和修订后两份本机原始报告均分别保存。新的完整三端CI仍待准确提交验收。见[第四轮原始失败](./qa/alpha20-ci-fourth-failure.json)与[夹具跟进](./qa/alpha20-ci-fourth-fixture-followup-win32.json)。
+
 API/Worker帧、文件日志和检查点协议分别保持1、2、1，新增终端协议1，SQLite schema为10。原项目逐文件/代码块局部采纳、项目会话与远程终端、完整workflow/备份及其余 F01–F21 / M0–M3 条件继续实施，完整项目目标未完成。
 
 ## 0.2.0-alpha.19 开发迭代

@@ -18,6 +18,8 @@
 
 准确生产提交 `eb666f4` 的三端核心、UI196项、实际撤销及发行/内置JRE验收通过；后续文档提交的独立队列CI失败保留。协议、来源与准确结果见[检查点约定](./docs/checkpoint-contract.md)和[实施记录](./docs/implementation-status.md)。
 
+第四轮准确提交的Ubuntu与macOS CI job成功，Windows核心及实际Jar终端HTTP仍在原20秒中文输出等待处失败，完整artifact和原始失败保留。Windows终端夹具现在以追加阶段标记记录执行进度，并在输出标记之前原子发布环境JSON；Windows PowerShell 5的HTTP/UI脚本四种环境变量组合以及同一最终Jar的HTTP4项、Web/native5项通过。原失败原因没有推断，新的完整三端及发行验收须按后续准确提交重新运行。详见[第四轮失败](./docs/qa/alpha20-ci-fourth-failure.json)、[本机跟进](./docs/qa/alpha20-ci-fourth-fixture-followup-win32.json)和[实施记录](./docs/implementation-status.md)。
+
 ## 0.2.0-alpha.18 — 逐文件差异查看
 
 增加文件树、原/新行坐标、上下文、增删高亮与内容版本绑定，完整还原字节并重新核对现场；二进制、敏感、超限和空文件显示明确状态。过期响应不覆盖新选择，409清除旧行，刷新保留文件选择。修复Windows不完整输出的原子身份与收尾诊断。

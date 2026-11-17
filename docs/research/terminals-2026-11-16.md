@@ -99,3 +99,9 @@ macOS真实HTTP在原尺寸文件刚创建时读取到空文本，原保留文�
 新Jar的首轮本机HTTP在Unicode标记已经可读、环境事实文件尚未产生时失败，原ENOENT及所有原身份停止保留。夹具改为先完成事实文件再输出标记，尺寸和崩溃子PID文件均写完后原子发布。随后HTTP四项通过；首轮真实UI又因较长尺寸命令回显将Unicode标记挤出重载后可访问视口而失败，原截图、输出及停止事实保持。Windows尺寸采集移到同一原脚本的`size`分支，仍读取真实Console尺寸，用短输入调用并保留原长度/摘要/一次动作和重载断言。最终准确夹具的HTTP4项和真实UI5项均通过，UNKNOWN、预算、完整输出ZIP及零重放保持。Git Bash命令体和CR/LF再次绑定最终夹具核对；实际POSIX与包内JRE仍由准确提交三端CI验收。
 
 Java106份/370条原注释与顺序保持，新增Javadoc为0；原TeamExecutionTest源码不变，原RuntimeIntegrationTest的历史用例和边界保留，新增实例单独计数。旧545项Jar和旧发行物继续保存，新Jar及准确提交三端验收各自绑定原回执。
+
+## 第四轮原生终端失败与夹具跟进（2026-11-17）
+
+准确提交`d8846e5`的[run 44037048478](https://github.com/lihe-he/multi-agent/actions/runs/44037048478)中，Ubuntu与macOS job成功；Windows在原20秒CLONE shell Unicode输出边界失败，后续Windows Web/native与发行JRE终端步骤未执行。134,911,394字节Windows artifact完整SHA-256匹配GitHub digest；44套原XML合计547项、539通过、8条件跳过、零失败/错误。原ZIP中的HTTP回执为failed，只有认证检查通过，原manual-count为1，环境文件缺失，三段终端原始输出共515字节且没有目标中文标记。原夹具源码、报告和Jar均从该整包中读取；ZIP提取后将CRLF规范为LF，与基线提交夹具及Runner内容一致。没有原阶段标记或内部CPU栈，不能推断准确PowerShell停滞位置。
+
+恢复被中断的本机夹具跟进时，初版阶段标记用.NET `File.Move`覆盖既有目标；Windows PowerShell 5实际报“文件已存在”，脚本仅记录到COUNT。保留初版失败后，标记改为UTF-8追加行，旧错误与现场在`.runtime/alpha20-terminal-fixture-powershell-recheck-VBMR3J`保留。最终HTTP与UI两类实际Windows PowerShell脚本分别用四个环境变量全缺失和全存在运行，4/4退出0，完整顺序为COUNT/FACTS/MARKER/MARKUP，JSON与Unicode/ANSI/HTML正文逐项核对，无残留临时文件。摘要匹配最终生产Jar的真实HTTP4项和生产Web/native5项通过；各自272/101个进程身份停止，原tracked QA恢复且新回执另存。详见[第四轮失败](../qa/alpha20-ci-fourth-failure.json)及[本机夹具跟进](../qa/alpha20-ci-fourth-fixture-followup-win32.json)。这些Windows本机结果不替代新提交的准确三端CI或包内JRE验收。

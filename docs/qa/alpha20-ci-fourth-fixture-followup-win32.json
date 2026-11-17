@@ -1,0 +1,212 @@
+{
+  "recordedAt": "2026-11-17T08:46:26.829Z",
+  "status": "passed",
+  "baselineCommit": "d8846e5f06b94cc257819b3a0ab9d4b22ee22333",
+  "version": "0.2.0-alpha.20",
+  "originalFailure": {
+    "file": "docs/qa/alpha20-ci-fourth-failure.json",
+    "bytes": 17392,
+    "sha256": "0c430b36049de3848b9d56a554b835c7048f648e0716deae5976f88c7b1b7c3e"
+  },
+  "changedFixture": {
+    "file": "tools/terminal-fixture.mjs",
+    "bytes": 17654,
+    "sha256": "e5c5c133a5604042a1a5b61fb91f386ca48e749576a8709f5436a04c19e89ecd"
+  },
+  "originalDraftIssue": {
+    "directory": ".runtime/alpha20-terminal-fixture-powershell-recheck-VBMR3J",
+    "effect": "SECOND_AND_LATER_STAGE_MOVE_COLLIDED_WITH_EXISTING_FILE; NONTERMINATING_ERRORS_AND_COUNT_ONLY_STAGE",
+    "retained": true
+  },
+  "shellCases": [
+    {
+      "ui": false,
+      "present": false,
+      "exitCode": 0,
+      "stages": [
+        "COUNT",
+        "FACTS",
+        "MARKER",
+        "MARKUP"
+      ],
+      "facts": {
+        "WORKBENCH_TOKEN": false,
+        "WORKBENCH_CORE_TOKEN": false,
+        "OPENAI_API_KEY": false,
+        "ANTHROPIC_API_KEY": false
+      },
+      "script": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\http-absent\\terminal-probe.ps1",
+        "bytes": 1941,
+        "sha256": "0d5c5d67c3aa2a0aad5cafa2d871ec3dbed3a3d205a910740dd568f58b76ede0"
+      },
+      "stdout": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\http-absent\\stdout.bin",
+        "bytes": 91,
+        "sha256": "5b71c4e4629fb3f6cc543ff03eb9bf0bb3b3c6495bfdeb65b24edc9a66defaab"
+      },
+      "stderr": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\http-absent\\stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "ui": false,
+      "present": true,
+      "exitCode": 0,
+      "stages": [
+        "COUNT",
+        "FACTS",
+        "MARKER",
+        "MARKUP"
+      ],
+      "facts": {
+        "WORKBENCH_TOKEN": true,
+        "WORKBENCH_CORE_TOKEN": true,
+        "OPENAI_API_KEY": true,
+        "ANTHROPIC_API_KEY": true
+      },
+      "script": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\http-present\\terminal-probe.ps1",
+        "bytes": 1941,
+        "sha256": "0d5c5d67c3aa2a0aad5cafa2d871ec3dbed3a3d205a910740dd568f58b76ede0"
+      },
+      "stdout": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\http-present\\stdout.bin",
+        "bytes": 91,
+        "sha256": "5b71c4e4629fb3f6cc543ff03eb9bf0bb3b3c6495bfdeb65b24edc9a66defaab"
+      },
+      "stderr": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\http-present\\stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "ui": true,
+      "present": false,
+      "exitCode": 0,
+      "stages": [
+        "COUNT",
+        "FACTS",
+        "MARKER",
+        "MARKUP"
+      ],
+      "facts": {
+        "WORKBENCH_TOKEN": false,
+        "WORKBENCH_CORE_TOKEN": false,
+        "OPENAI_API_KEY": false,
+        "ANTHROPIC_API_KEY": false
+      },
+      "script": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\ui-absent\\native-ui-probe.ps1",
+        "bytes": 1950,
+        "sha256": "8f7aa95e98c4c8ec6877419538fe0b67cc9607338dea8b0151196aed61a69ce5"
+      },
+      "stdout": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\ui-absent\\stdout.bin",
+        "bytes": 97,
+        "sha256": "ffd40f55c6e1cc6ce773f24890bf6db918ba27edd8581c1739c31e8f4428f7d4"
+      },
+      "stderr": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\ui-absent\\stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "ui": true,
+      "present": true,
+      "exitCode": 0,
+      "stages": [
+        "COUNT",
+        "FACTS",
+        "MARKER",
+        "MARKUP"
+      ],
+      "facts": {
+        "WORKBENCH_TOKEN": true,
+        "WORKBENCH_CORE_TOKEN": true,
+        "OPENAI_API_KEY": true,
+        "ANTHROPIC_API_KEY": true
+      },
+      "script": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\ui-present\\native-ui-probe.ps1",
+        "bytes": 1950,
+        "sha256": "8f7aa95e98c4c8ec6877419538fe0b67cc9607338dea8b0151196aed61a69ce5"
+      },
+      "stdout": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\ui-present\\stdout.bin",
+        "bytes": 97,
+        "sha256": "ffd40f55c6e1cc6ce773f24890bf6db918ba27edd8581c1739c31e8f4428f7d4"
+      },
+      "stderr": {
+        "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha20-ci-fourth-followup-attempt1\\ui-present\\stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "integrations": [
+    {
+      "kind": "HTTP",
+      "report": {
+        "file": ".runtime\\terminal-http-v6tNYr\\report.json",
+        "bytes": 364957,
+        "sha256": "bb6a30b1e698da4948b7e5c6758faa83123f3b5be68d1a05c8006eee353e64b2"
+      },
+      "runner": {
+        "file": ".runtime\\terminal-http-v6tNYr\\runner-source.mjs",
+        "bytes": 28710,
+        "sha256": "4f5feb754b8ec255560624dac8e61a8da1784fe4eb7654ad136f580c8db23048"
+      },
+      "fixture": {
+        "file": ".runtime\\terminal-http-v6tNYr\\artifact-fixture-source.mjs",
+        "bytes": 17654,
+        "sha256": "e5c5c133a5604042a1a5b61fb91f386ca48e749576a8709f5436a04c19e89ecd"
+      },
+      "jarSha256": "d24dc14969c84d9425b6646cb683f55c1f3338bf28a0e350efaf18d733f81249",
+      "checks": 4,
+      "modelCalls": 6,
+      "originalIdentitiesStopped": true,
+      "sourceAndJarUnchanged": true,
+      "assetsUnchanged": null,
+      "originalIdentities": 272,
+      "previousTrackedQaRestored": true
+    },
+    {
+      "kind": "WEB_NATIVE",
+      "report": {
+        "file": ".runtime\\terminal-native-ui-ODxRu8\\report.json",
+        "bytes": 12310,
+        "sha256": "6f35f46d8783d59c128d266ed7dc7133590da58290ffea87e610dd99dcfdcba6"
+      },
+      "runner": {
+        "file": ".runtime\\terminal-native-ui-ODxRu8\\runner-source.mjs",
+        "bytes": 31064,
+        "sha256": "b93e85c98a71ae9428d91e3b15c47710631d52e5a7e2b9f18b6ef9838443071b"
+      },
+      "fixture": {
+        "file": ".runtime\\terminal-native-ui-ODxRu8\\artifact-fixture-source.mjs",
+        "bytes": 17654,
+        "sha256": "e5c5c133a5604042a1a5b61fb91f386ca48e749576a8709f5436a04c19e89ecd"
+      },
+      "jarSha256": "d24dc14969c84d9425b6646cb683f55c1f3338bf28a0e350efaf18d733f81249",
+      "checks": 5,
+      "modelCalls": 6,
+      "originalIdentitiesStopped": true,
+      "sourceAndJarUnchanged": true,
+      "assetsUnchanged": true,
+      "originalIdentities": 101,
+      "previousTrackedQaRestored": true
+    }
+  ],
+  "automaticReplayAdded": false,
+  "originalWaitLimitsAndBudgetsRetained": true,
+  "javaAndWebProductChanges": false,
+  "preciseOriginalRemoteCauseConfirmed": false,
+  "exactCommitThreePlatformCi": "PENDING_NEW_PUSH",
+  "scope": "ACTUAL_WINDOWS_POWERSHELL_AND_UNCHANGED_FINAL_PRODUCTION_JAR_HTTP_WEB_NATIVE; ORIGINAL_FOURTH_CI_FAILURE_RETAINED",
+  "completeProjectGoal": false
+}
