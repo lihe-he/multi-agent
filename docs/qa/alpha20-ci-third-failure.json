@@ -1,0 +1,2235 @@
+{
+  "recordedAt": "2026-11-17T06:24:11.458Z",
+  "version": "0.2.0-alpha.20",
+  "status": "failed",
+  "runId": 44011006549,
+  "headSha": "fec42fac360f4ca0c317b5c3164b0a1a386843f9",
+  "runAttempt": 1,
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/44011006549",
+  "collection": {
+    "file": ".runtime/alpha20-ci/run-44011006549-attempt-1/receipt.json",
+    "bytes": 3265,
+    "sha256": "17a58d1cae01cb03b9a0e6e39420dc3994cc08e5774d8ed031245edffc24e649"
+  },
+  "run": {
+    "file": ".runtime/alpha20-ci/run-44011006549-attempt-1/run.json",
+    "bytes": 13333,
+    "sha256": "bd1fa18fec8e14d9d46ca9d9046160604aa7074c73c3e14f180437329a1d84f6"
+  },
+  "jobs": {
+    "file": ".runtime/alpha20-ci/run-44011006549-attempt-1/jobs.json",
+    "bytes": 31197,
+    "sha256": "5feda8e483758be4b0bae7a55abe09a136aa92fde4bb933859fb97b52acfc0bd"
+  },
+  "artifacts": {
+    "file": ".runtime/alpha20-ci/run-44011006549-attempt-1/artifacts.json",
+    "bytes": 2447,
+    "sha256": "de334c46eb74ac04d90aedd44cc75c9f5324f9337988f49c9e4088651cd50101"
+  },
+  "platforms": [
+    {
+      "platform": "win32",
+      "jobId": 133797728440,
+      "status": "failed",
+      "originalFailureStep": "Core tests and package",
+      "artifact": {
+        "id": 14297962273,
+        "bytes": 25215343,
+        "sha256": "340030db9b88e85936dc2ccce2d456f33d5b9ed38bc465391ad6c2304cf4cd41",
+        "wholeDigestVerified": true
+      },
+      "log": {
+        "file": ".runtime/alpha20-ci/run-44011006549-attempt-1/job-133797728440.log",
+        "bytes": 56082,
+        "sha256": "9ad2cd176f09e64c5f3f225ed938c269b914b421911b436627d52aa7afe82b82"
+      },
+      "suiteCount": 44,
+      "tests": 545,
+      "failures": 1,
+      "errors": 2,
+      "skipped": 8,
+      "passed": 534,
+      "suites": [
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.AgentRunStoreTest.xml",
+          "sha256": "8f0846133ff001ce16ca6954d9a16aa66dfc443cf4c00e6c8261f3a8bda36b9e",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointEngineTest.xml",
+          "sha256": "bb24d64191b7e82b206d98bf3eabf921623719614dc35b87105ea014d8ed05f8",
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointExportHistoryTest.xml",
+          "sha256": "0b03063366587ff1ffd5860b16a98317a49c8523c3fe0febc8846e710acf74f3",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ExecutionStoreTest.xml",
+          "sha256": "5dc20e99f01796d8e8dd5912cf48b114b4baa157d6fd5e9eb78174c32cb35c1b",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.FileToolHistoryTest.xml",
+          "sha256": "9209dad39452e6b21083cda9387e2af8d74be199b9e34f36adda507f3b9134b4",
+          "tests": 23,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.GitWorkspaceTest.xml",
+          "sha256": "e3c5aeb3055c9be4e4f80f4089052b32328763fb242a5c6f04c26977288dc482",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.LocalAccessFilterTest.xml",
+          "sha256": "21544500271a42f6a915df46991176e6e58efbcdc112ec2883357d5a3f2b17eb",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ManagedProcessLedgerTest.xml",
+          "sha256": "6e73d99f9f0c00310fc93fda0c8354f1917b8139f236a78ea48b0383f7c6d805",
+          "tests": 19,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+              "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: No restricted live PID on this runner\r\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\r\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\r\n\tat dev.agentworkbench.ManagedProcessLedgerTest.actualRestrictedWindowsPidReuseLeavesTheReplacementRunning(ManagedProcessLedgerTest.java:117)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.mcp.McpIntegrationTest.xml",
+          "sha256": "9f230457c7aee6828cad90342fa850a3c1c4a5223b264985267c6e3d639a521e",
+          "tests": 25,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ModelRequestStoreTest.xml",
+          "sha256": "3f5cce8f9926390b5b0e097f4767987efd61b4a5f1353b5725f7d5a356c18a8a",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.NativeProcessAccessTest.xml",
+          "sha256": "806b81a978cb63d7be46a02b1b7c3f78b04a4f41c843f0501bd10da80b119429",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.PlanAndPolicyTest.xml",
+          "sha256": "fd5e7eba016d8199b8a467de930d25ff2a680752569cdfb431a10ceb296a79fe",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+          "sha256": "49b7f19ad972c33f61a0b4525f29a04e54aa53ececc0361fab7e2ba013c64a54",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RootDispatchEngineTest.xml",
+          "sha256": "f18b70f031f2fa276467e2efbadd03309a516ffbccce745e1ae8b3a152e0a232",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitBlobBatchTest.xml",
+          "sha256": "e1f4d2e6a5a7f3ef8f14369ca8ab6c7e60a507b7b8c65f9fb4efa51bcd85de24",
+          "tests": 22,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.FileVersionRuntimeTest.xml",
+          "sha256": "2f6944a0078cf39b30a9fab42eb0c59a74556e7f5927784de7c7de559196502d",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "successfulTextReplacementPreservesPosixPermissions",
+              "className": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not true\r\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\r\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\r\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:71)\r\n\tat dev.agentworkbench.runtime.FileVersionRuntimeTest.successfulTextReplacementPreservesPosixPermissions(FileVersionRuntimeTest.java:181)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>\n    <system-err><![CDATA[Nov 17, 2026 3:44:32 AM org.junit.jupiter.engine.extension.TempDirectory$CloseablePath close\r\nINFO: Skipping cleanup of temp dir C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\junit-6963537925317365477 for field FileVersionRuntimeTest.temporary due to CleanupMode.ON_SUCCESS.\r\n]]></system-err>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitDiffViewTest.xml",
+          "sha256": "eb1636c44b222caa63c176cb49840628ede2ae6bbcde3c76146ee88c63987b0c",
+          "tests": 33,
+          "failures": 1,
+          "errors": 2,
+          "skipped": 2,
+          "failedCases": [
+            {
+              "name": "legacyFileOmissionsAreExplicitWhileTheOriginalDeliveryDiffRemainsAvailable",
+              "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+              "originalFailure": "\n    <error message=\"差异比较未完整收尾，不能展示本次输出。\" type=\"java.lang.IllegalStateException\"><![CDATA[java.lang.IllegalStateException: 差异比较未完整收尾，不能展示本次输出。\r\n\tat dev.agentworkbench.runtime.GitDiffView.preview(GitDiffView.java:193)\r\n\tat dev.agentworkbench.runtime.GitDiffView.legacy(GitDiffView.java:98)\r\n\tat dev.agentworkbench.runtime.GitDiffView.read(GitDiffView.java:79)\r\n\tat dev.agentworkbench.runtime.GitDiffView.legacy(GitDiffView.java:54)\r\n\tat dev.agentworkbench.runtime.WorkspaceRuntime.legacyDiffView(WorkspaceRuntime.java:372)\r\n\tat dev.agentworkbench.runtime.GitDiffViewTest.legacyFileOmissionsAreExplicitWhileTheOriginalDeliveryDiffRemainsAvailable(GitDiffViewTest.java:275)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></error>\n    <system-err><![CDATA[Nov 17, 2026 3:44:44 AM org.junit.jupiter.engine.extension.TempDirectory$CloseablePath close\r\nINFO: Skipping cleanup of temp dir C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\junit-3405505393401603672 for field GitDiffViewTest.temporary due to CleanupMode.ON_SUCCESS.\r\n]]></system-err>\n  "
+            },
+            {
+              "name": "addedDeletedEmptyStagedAndIgnoredFilesUseTheActualWorkingBytes",
+              "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+              "originalFailure": "\n    <error message=\"差异比较未完整收尾，不能展示本次输出。\" type=\"java.lang.IllegalStateException\"><![CDATA[java.lang.IllegalStateException: 差异比较未完整收尾，不能展示本次输出。\r\n\tat dev.agentworkbench.runtime.GitDiffView.preview(GitDiffView.java:193)\r\n\tat dev.agentworkbench.runtime.GitDiffView.read(GitDiffView.java:80)\r\n\tat dev.agentworkbench.runtime.GitDiffView.read(GitDiffView.java:51)\r\n\tat dev.agentworkbench.runtime.WorkspaceRuntime.diffView(WorkspaceRuntime.java:366)\r\n\tat dev.agentworkbench.runtime.GitDiffViewTest.view(GitDiffViewTest.java:443)\r\n\tat dev.agentworkbench.runtime.GitDiffViewTest.addedDeletedEmptyStagedAndIgnoredFilesUseTheActualWorkingBytes(GitDiffViewTest.java:90)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></error>\n    <system-err><![CDATA[Nov 17, 2026 3:45:01 AM org.junit.jupiter.engine.extension.TempDirectory$CloseablePath close\r\nINFO: Skipping cleanup of temp dir C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\junit-15536069865058597231 for field GitDiffViewTest.temporary due to CleanupMode.ON_SUCCESS.\r\n]]></system-err>\n  "
+            },
+            {
+              "name": "bothControllerInterfacesRejectARealWriteAfterComparisonInsteadOfAttachingTheLaterVersion(boolean)[1]",
+              "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+              "originalFailure": "\n    <failure message=\"Unexpected exception type thrown, expected: &lt;dev.agentworkbench.ApiException&gt; but was: &lt;java.lang.IllegalStateException&gt;\" type=\"org.opentest4j.AssertionFailedError\"><![CDATA[org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <dev.agentworkbench.ApiException> but was: <java.lang.IllegalStateException>\r\n\tat org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)\r\n\tat org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:67)\r\n\tat org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)\r\n\tat org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3128)\r\n\tat dev.agentworkbench.runtime.GitDiffViewTest.bothControllerInterfacesRejectARealWriteAfterComparisonInsteadOfAttachingTheLaterVersion(GitDiffViewTest.java:159)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.Optional.ifPresent(Optional.java:178)\r\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\r\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\r\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\r\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)\r\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\r\n\tat java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)\r\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\r\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\r\n\tat java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)\r\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)\r\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\r\n\tat java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)\r\n\tat java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)\r\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)\r\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\r\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\r\n\tat java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)\r\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)\r\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\r\n\tat java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)\r\n\tat java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)\r\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\r\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\r\n\tat java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)\r\n\tat java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)\r\n\tat java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)\r\n\tat java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)\r\n\tat java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)\r\n\tat java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)\r\n\tat java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)\r\n\tat java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\nCaused by: java.lang.IllegalStateException: 差异比较未完整收尾，不能展示本次输出。\r\n\tat dev.agentworkbench.runtime.GitDiffView.preview(GitDiffView.java:193)\r\n\tat dev.agentworkbench.runtime.GitDiffView.read(GitDiffView.java:80)\r\n\tat dev.agentworkbench.runtime.GitDiffView.read(GitDiffView.java:51)\r\n\tat dev.agentworkbench.runtime.WorkspaceRuntime.diffView(WorkspaceRuntime.java:366)\r\n\tat dev.agentworkbench.WorkbenchController.diffView(WorkbenchController.java:248)\r\n\tat dev.agentworkbench.runtime.GitDiffViewTest.lambda$bothControllerInterfacesRejectARealWriteAfterComparisonInsteadOfAttachingTheLaterVersion$9(GitDiffViewTest.java:159)\r\n\tat org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)\r\n\t... 38 more\r\n]]></failure>\n    <system-err><![CDATA[Nov 17, 2026 3:45:02 AM org.junit.jupiter.engine.extension.TempDirectory$CloseablePath close\r\nINFO: Skipping cleanup of temp dir C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\junit-13294240512367603805 for field GitDiffViewTest.temporary due to CleanupMode.ON_SUCCESS.\r\n]]></system-err>\n  "
+            }
+          ],
+          "conditionalSkips": [
+            {
+              "name": "ordinaryWorkspaceSnapshotDoesNotEnterAnUnreadableGitObjectDirectory",
+              "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+              "originalSkip": "\n    <skipped message=\"Disabled on operating system: Windows Server 2025\"/>\n  "
+            },
+            {
+              "name": "posixTabsNewlinesAndBackslashesStayLiteralAndWhitespaceOnlyNamesAreRejected",
+              "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+              "originalSkip": "\n    <skipped message=\"Disabled on operating system: Windows Server 2025\"/>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtyBundleTest.xml",
+          "sha256": "a7377a709ef660ebaeed73d9343df6e99f8c8d16b714d13450133c688b383ff6",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtySessionTest.xml",
+          "sha256": "f0d559554aa0e7f4f75cbabcfca8b8391b81c14453cc2845e39a3bd6a8c0ffef",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.TerminalOutputArchiveTest.xml",
+          "sha256": "d724519201489620acab48c959d46e3b9c5a2ebb68d52725cd32ddc6329eacd6",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.xml",
+          "sha256": "d7829c699df1e3bacde64ba821151168f8360bc6574ae1516f863739b32dca54",
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 3,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "fileExecutionPermissionsAreRestoredAlongWithTheBytes",
+              "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not false\r\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\r\n\tat org.junit.jupiter.api.Assumptions.assumeFalse(Assumptions.java:196)\r\n\tat org.junit.jupiter.api.Assumptions.assumeFalse(Assumptions.java:147)\r\n\tat dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.fileExecutionPermissionsAreRestoredAlongWithTheBytes(WorkspaceCheckpointArchiveTest.java:537)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>\n    <system-err><![CDATA[Nov 17, 2026 3:46:11 AM org.junit.jupiter.engine.extension.TempDirectory$CloseablePath close\r\nINFO: Skipping cleanup of temp dir C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\junit-2289198583652805580 for field WorkspaceCheckpointArchiveTest.temporary due to CleanupMode.ON_SUCCESS.\r\n]]></system-err>\n  "
+            },
+            {
+              "name": "readOnlyTargetPermissionsAreRestoredWithoutReopeningTheFileForWrite",
+              "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not false\r\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\r\n\tat org.junit.jupiter.api.Assumptions.assumeFalse(Assumptions.java:196)\r\n\tat org.junit.jupiter.api.Assumptions.assumeFalse(Assumptions.java:147)\r\n\tat dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.readOnlyTargetPermissionsAreRestoredWithoutReopeningTheFileForWrite(WorkspaceCheckpointArchiveTest.java:551)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>\n    <system-err><![CDATA[Nov 17, 2026 3:47:08 AM org.junit.jupiter.engine.extension.TempDirectory$CloseablePath close\r\nINFO: Skipping cleanup of temp dir C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\junit-12591645658160826965 for field WorkspaceCheckpointArchiveTest.temporary due to CleanupMode.ON_SUCCESS.\r\n]]></system-err>\n  "
+            },
+            {
+              "name": "symbolicDirectoryAliasesCannotAuthorizeCheckpointCapture(String)",
+              "className": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+              "originalSkip": "\n    <skipped message=\"Disabled on operating system: Windows Server 2025\"/>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceWriteGuardTest.xml",
+          "sha256": "7d2291493ef6b0e7042d79ba9cf36265a751970b12bd45c16801f0b0e509a0aa",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeDelegationTest.xml",
+          "sha256": "31a25cdc5f651e578639e0296c88579678c09c20cdb97c1124be04d74ee75d31",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeIntegrationTest.xml",
+          "sha256": "512f8ecb9fd19468b41e8498027d2ac493691b0c6a05839551965570082a23eb",
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging",
+              "className": "dev.agentworkbench.RuntimeIntegrationTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Requires real POSIX executable permissions\r\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\r\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\r\n\tat dev.agentworkbench.RuntimeIntegrationTest.fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging(RuntimeIntegrationTest.java:563)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.SessionStoreTest.xml",
+          "sha256": "d86e21bd801eabefc5d4ceaa762a5c5dc521391862563470ed9759d38558aaef",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TaskDispatchQueueTest.xml",
+          "sha256": "d191fb85ce2e8250361fd48a89b64558106ca7f02a8d388e41f3679a024ff165",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamExecutionTest.xml",
+          "sha256": "82e8b528063252d2641ac7ebbd4f093697e5253bd5232555f040dce0cdc98e3f",
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamRecordsTest.xml",
+          "sha256": "9c6e721d519d661c3583c3789092f4f546d38a771b0b422e0195545fe026b3dc",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalControllerTest.xml",
+          "sha256": "56875edbd3954ccdfe442752f6027ca23f475a01719959dc037b6b432f4ab90d",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalEngineTest.xml",
+          "sha256": "5a30cd8c19971d2c635094939d893fb7e1164988235c80c5573fd204c5a39169",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalExportHistoryTest.xml",
+          "sha256": "ce95553347c4824bd75a5613e045782c45dba6ce6c35e7fe8358dbed47861f48",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalLedgerTest.xml",
+          "sha256": "3220c7595ad9a0ea6d5deee7fda063f1a3bbf9ba0772aa1c0c60a1590e8c213d",
+          "tests": 30,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalQueueTest.xml",
+          "sha256": "87317f45e931d4466a115676c131029605c839f2b3b97bea67d4785267408ed2",
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WindowsProcessSnapshotTest.xml",
+          "sha256": "7a4fe6c7e12bd1847bd66e5c0d49cc7909a019e5dedea5a445861624ede2996b",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchEngineTest.xml",
+          "sha256": "6bdb707de4fd583cce02a00fb02ac90360ff7e614b68f2f4056ef742b0972a39",
+          "tests": 24,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchVersionTest.xml",
+          "sha256": "3085481b63c5f8ce94f55218eda10af499de2751e7d1897ee5a35b4b32c40bcd",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerLeaseTest.xml",
+          "sha256": "4041ad83e1f412ed6ef6cfe4dce5207f067ef8999a6011b22538f3db7d03c480",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerProcessTest.xml",
+          "sha256": "eada412eec096a0a372dd9adc0b02a3af61f8e2830ee2ab1fb89d9d2fe57a869",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerRpcTest.xml",
+          "sha256": "35d85740e1e24c50f205ac573d033d9571a4d8981d8b8f60d0df9ec765ae1d81",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerWireTest.xml",
+          "sha256": "3d2d655aba55a05f806763b3cba7ac46e781dfc4291be54416f003d8d7219c56",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceLongPathTest.xml",
+          "sha256": "0d88968efaeae53731e50e0740506866570ca4a808d2905a746309afb6bf12e1",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceSelectionEngineTest.xml",
+          "sha256": "b984b0984a9045780a90e8d48ee743fafc1c24a99bcb4189b1ca28481ea74829",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteLedgerTest.xml",
+          "sha256": "f8a448683fa0696c9a5928a1c4a4b80e947e954818d401be529dfb3a52450549",
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteEngineTest.xml",
+          "sha256": "a401da5b4d73d27eaa36aebea5d4a40eee0c114aecd215a93d698e884a61b191",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        }
+      ],
+      "failure": {
+        "scope": "ORIGINAL_GIT_DIFF_VIEW_COMPARISON_SETTLEMENT",
+        "failedCases": [
+          "legacyFileOmissionsAreExplicitWhileTheOriginalDeliveryDiffRemainsAvailable",
+          "addedDeletedEmptyStagedAndIgnoredFilesUseTheActualWorkingBytes",
+          "bothControllerInterfacesRejectARealWriteAfterComparisonInsteadOfAttachingTheLaterVersion(boolean)[1]"
+        ],
+        "originalComparisonState": "UNKNOWN_EXACT_CAUSE; GENERIC_EXCEPTION_DID_NOT_SAVE_EXIT_STREAM_OR_DESCENDANT_FACTS",
+        "originalFailedFixtures": [
+          {
+            "file": "core/target/checkpoint-evidence-test-6025255e-7137-4f54-a15d-bdec77848c9d/fixture-preservation.json",
+            "sha256": "7f76fc286a9f02bc3e5f4e50ee4c70b38c79422cf3c62b1923ef221ab02ce79e",
+            "test": "legacyFileOmissionsAreExplicitWhileTheOriginalDeliveryDiffRemainsAvailable()",
+            "originalFailure": "java.lang.IllegalStateException: 差异比较未完整收尾，不能展示本次输出。",
+            "completeCopy": true,
+            "filesVerified": 49,
+            "comparisonResultReceiptPresent": false
+          },
+          {
+            "file": "core/target/checkpoint-evidence-test-8c1ac885-d9f7-4602-a198-309e1bff8511/fixture-preservation.json",
+            "sha256": "dd7a95fb1a84c28b568b8a4e9269f1611e0a1a73ec79bb8c2180961b6c50c7fe",
+            "test": "addedDeletedEmptyStagedAndIgnoredFilesUseTheActualWorkingBytes()",
+            "originalFailure": "java.lang.IllegalStateException: 差异比较未完整收尾，不能展示本次输出。",
+            "completeCopy": true,
+            "filesVerified": 39,
+            "comparisonResultReceiptPresent": false
+          },
+          {
+            "file": "core/target/checkpoint-evidence-test-e0a082e8-4770-48f5-bd63-eb6913ae75e3/fixture-preservation.json",
+            "sha256": "811a5c6b823666b32e1cf96422614837d7ea302166ee933cd25282d5d81fe3eb",
+            "test": "[1] legacy=false",
+            "originalFailure": "org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <dev.agentworkbench.ApiException> but was: <java.lang.IllegalStateException>",
+            "completeCopy": true,
+            "filesVerified": 33,
+            "comparisonResultReceiptPresent": false
+          }
+        ],
+        "localSingleSuitePassedDoesNotChangeRemoteFailure": true
+      },
+      "downstreamStaleRepositoryReportsNotUsedToInferStepSuccess": true
+    },
+    {
+      "platform": "darwin",
+      "jobId": 133797728794,
+      "status": "failed",
+      "originalFailureStep": "Actual final Jar native terminal and forced core crash recovery",
+      "artifact": {
+        "id": 14297540980,
+        "bytes": 124086597,
+        "sha256": "e14d355e0e4966d69e2fa54c6e594b0ba5cbb54766cb45f17bda8725d112dcff",
+        "wholeDigestVerified": true
+      },
+      "log": {
+        "file": ".runtime/alpha20-ci/run-44011006549-attempt-1/job-133797728794.log",
+        "bytes": 102250,
+        "sha256": "b4aa5ed8170fc90d469a6cd20ad6f2671ecc72ec22a494fd9a09bfaa6afdf0a2"
+      },
+      "suiteCount": 44,
+      "tests": 545,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 10,
+      "passed": 535,
+      "suites": [
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.AgentRunStoreTest.xml",
+          "sha256": "da9603d980dc8e94e7d30b6764d38a00113123e98cd6f3052800538a056bcc51",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointEngineTest.xml",
+          "sha256": "2d6846cd823ea73e97e437f3bea09c754d20065f237335c11856cc4992550626",
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointExportHistoryTest.xml",
+          "sha256": "8c7f8c0dd238ece719ff4f94e0fd5eaa5f384e02902ac1ca85264e4e9eb4a4cc",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ExecutionStoreTest.xml",
+          "sha256": "5d44738d5d5cca0557f9334a818356301789b30994b8a513118318da181f65c3",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.FileToolHistoryTest.xml",
+          "sha256": "b3ffbd8a3b2d8852ad92fb06361d9399ee7788bebcc7090cff91dc86d86aec90",
+          "tests": 23,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.GitWorkspaceTest.xml",
+          "sha256": "117924073ddc087a57f263b36ad97444f94f9069c9358e4e82d21a3ecb315872",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "redirectedWorkspaceRootCannotCreateTaskDirectoriesInsideAForeignJunction",
+              "className": "dev.agentworkbench.GitWorkspaceTest",
+              "originalSkip": "\n    <skipped message=\"Disabled on operating system: Mac OS X\"/>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.LocalAccessFilterTest.xml",
+          "sha256": "ed43c778fa4ba2ca36bb207789535fcc0bcdb762dacd64f49bc6935810873d9a",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ManagedProcessLedgerTest.xml",
+          "sha256": "189658978e69a4be4608d7e1bd173ae4bf29a455e281d06872958af1d12cafa3",
+          "tests": 19,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 3,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+              "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows restricted process identity\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.ManagedProcessLedgerTest.actualRestrictedWindowsPidReuseLeavesTheReplacementRunning(ManagedProcessLedgerTest.java:112)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            },
+            {
+              "name": "failedWindowsSnapshotStillRejectsAnUnverifiableLivePid",
+              "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity failure\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.ManagedProcessLedgerTest.failedWindowsSnapshotStillRejectsAnUnverifiableLivePid(ManagedProcessLedgerTest.java:151)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            },
+            {
+              "name": "missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory",
+              "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity fallback\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.ManagedProcessLedgerTest.missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory(ManagedProcessLedgerTest.java:133)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ModelRequestStoreTest.xml",
+          "sha256": "7eb39aa831b2c092c5a252857e172c033a8274c6410ae96da369c7f561945555",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.NativeProcessAccessTest.xml",
+          "sha256": "3076bb010064ef95f2bd0bbac6f0d682b90a4ea13144cf55390e212f73fbea64",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.PlanAndPolicyTest.xml",
+          "sha256": "2c25fa183ec05a8578aa93f0d8a09ec32dc772766e31ea725306e6de94ab1152",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+          "sha256": "9e460a35811c32d5de98b5aaec9e16ce12a88a53bc235caf195b968aa84cef8c",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RootDispatchEngineTest.xml",
+          "sha256": "f523d3938398617f424527936521baece6eea0083af912e33f498969558e5cd2",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeDelegationTest.xml",
+          "sha256": "e1ff89c77f2212182a742bb4c8a229e9180ce4c36fce6f69713acbae08d0aa31",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeIntegrationTest.xml",
+          "sha256": "b0e6312797013fea6ac9ced93c105a1d67f105cdcd70bd27a228d643abe1e605",
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 2,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "transientWindowsReceiptLockDoesNotReplayCompletedFileTool",
+              "className": "dev.agentworkbench.RuntimeIntegrationTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not true\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:71)\n\tat dev.agentworkbench.RuntimeIntegrationTest.exerciseWindowsReceiptLock(RuntimeIntegrationTest.java:346)\n\tat dev.agentworkbench.RuntimeIntegrationTest.transientWindowsReceiptLockDoesNotReplayCompletedFileTool(RuntimeIntegrationTest.java:334)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            },
+            {
+              "name": "persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay",
+              "className": "dev.agentworkbench.RuntimeIntegrationTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not true\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:71)\n\tat dev.agentworkbench.RuntimeIntegrationTest.exerciseWindowsReceiptLock(RuntimeIntegrationTest.java:346)\n\tat dev.agentworkbench.RuntimeIntegrationTest.persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay(RuntimeIntegrationTest.java:339)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.SessionStoreTest.xml",
+          "sha256": "1468ea82318cf49f6f3763eee01cd9e408ea41fe56f410b55ebe9ad1cfc96e6b",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TaskDispatchQueueTest.xml",
+          "sha256": "4366a6cebf65388302507d3a732747d9488d80ce18cefcb086ded37fae039f2b",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamExecutionTest.xml",
+          "sha256": "cd2481ae1f2d5504e98b05b2284e73adbc67068e94f02eef673bf30b29398a0e",
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalControllerTest.xml",
+          "sha256": "cc5afc5a622df57b049aafd0457a8d36829800adf6ef46b3ede2b2ab570c656a",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamRecordsTest.xml",
+          "sha256": "1fad7672f43d7e98b41fe5926c9797bcd0ea1919277f63b7d5f128f89e05c2a7",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalEngineTest.xml",
+          "sha256": "cc546435224c1c397ff74b1867b9b9295fd0aca4fbae6c4b3f1fcec73e826145",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalExportHistoryTest.xml",
+          "sha256": "5f35c92a355ff28d0ca460d24bedcdc1b624668c14707c5317f5bdcb4db51498",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalQueueTest.xml",
+          "sha256": "ff838c477c49b5ad9e862eea833eca0d90c78bc37884330153b73367f4cb5cd0",
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalLedgerTest.xml",
+          "sha256": "7264ac8f7e458995e5e3ee9c9dbd0c3bd9c71babbd566fb2b50af492c06d861c",
+          "tests": 30,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WindowsProcessSnapshotTest.xml",
+          "sha256": "e73866663add7af8b2cd931452c3957b0a1218c806c42978160770635e2ba885",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "actualWindowsSnapshotMatchesReadableProcessBirths",
+              "className": "dev.agentworkbench.WindowsProcessSnapshotTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows native system process snapshot\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.WindowsProcessSnapshotTest.actualWindowsSnapshotMatchesReadableProcessBirths(WindowsProcessSnapshotTest.java:46)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchEngineTest.xml",
+          "sha256": "336fedc4ffa4500ef19981c6e98a9437b70a9c31caae8b8ce6878c90e1c41117",
+          "tests": 24,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchVersionTest.xml",
+          "sha256": "0218ded9ff5814a21ff9360c0b59786cdc50d477c262428ab788e59c515e08fa",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerLeaseTest.xml",
+          "sha256": "e93bef3efd43e9053da583c6fe10ce3ba8bcc25ab27bcfcb63ede618469dbeac",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerProcessTest.xml",
+          "sha256": "d78b7da429d1ce87cce44eeaba74ef4d3641ca895fe838cc2f7b07db3a0d4836",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerRpcTest.xml",
+          "sha256": "ec5ddb45cacf60d0dd8f945a3abd8180a61fb4bfb1a2ef02012010a88a7dd815",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerWireTest.xml",
+          "sha256": "7c8072822baccbe66bf87be77d03fc27c40ed80a68d0fb7ab1f4ff8bdac66a9e",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceLongPathTest.xml",
+          "sha256": "5bcbfacb605e493d4e5d1426109280354847a02f6dd24ca9a38205bf13d9dbbc",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "windowsLongObjectPathsPreserveOriginalWorkspaceAndReview(String)",
+              "className": "dev.agentworkbench.WorkspaceLongPathTest",
+              "originalSkip": "\n    <skipped message=\"Disabled on operating system: Mac OS X\"/>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceSelectionEngineTest.xml",
+          "sha256": "4debabde219d15a7ae623aeeeb1e76b75cdd9b34897333d50f209335d1c7883f",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteEngineTest.xml",
+          "sha256": "9c66b09d4a64cb2aa804a90f65f8907630c2ab65450ada5f39545b80ecbdcd7c",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteLedgerTest.xml",
+          "sha256": "60469265338dc0250a0f9bb64281fc2ee9fe98471f09757c307226f49947e9d9",
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "savedWindowsShortWorkspaceKeepsItsPhysicalScopeAfterStoreReopen",
+              "className": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+              "originalSkip": "\n    <skipped message=\"Disabled on operating system: Mac OS X\"/>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.mcp.McpIntegrationTest.xml",
+          "sha256": "8a506dc1104e30bd62f3a1c1390a52400a14f1c2eb90f46a7ee55d3af077617a",
+          "tests": 25,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.FileVersionRuntimeTest.xml",
+          "sha256": "b8fa527de7e8da6995e30112af09505fc7158139f6f3be2aa73252b35711e71a",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitBlobBatchTest.xml",
+          "sha256": "5eddec5eb2b198a5d7954bf720e2a4a1345339edfca95e40df75f17e9c7c90fb",
+          "tests": 22,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitDiffViewTest.xml",
+          "sha256": "805afe0e730d70545a1d7243aa5b1123b8b377386c2c1be306c9572f1207f407",
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "windowsJunctionCannotRedirectPreviewCopiesOrCleanup",
+              "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+              "originalSkip": "\n    <skipped message=\"Disabled on operating system: Mac OS X\"/>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtyBundleTest.xml",
+          "sha256": "527b4ea2aec32d155893fdf3a9d93cdb9b3992102b211630e18e8a643a59c158",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtySessionTest.xml",
+          "sha256": "070b4abdf4c2f614ca8f5369910cb26ac4f194e98e3a576dd391b4f6db3e3892",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.TerminalOutputArchiveTest.xml",
+          "sha256": "6384a8bd8bbaffb83f29edc5fcd316594ac6ed04da03fe659d2339ef67f1757c",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.xml",
+          "sha256": "ee66ab63354dda5668123b3c2d884a0725c3af3701da5a7bcbb23f601b65933a",
+          "tests": 35,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceWriteGuardTest.xml",
+          "sha256": "705f7c5be21970481312cb4df1636f6330445f020b71dd4a3b1001e719660722",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        }
+      ],
+      "ui": {
+        "uiTests": 226,
+        "originalFullUiCorpusRetained": 226,
+        "terminalCases": 30,
+        "checkpointCases": 34,
+        "checkpointUiMeasurements": [
+          {
+            "theme": "pure-white",
+            "width": 1105,
+            "count": 172,
+            "minimum": 4.899217388997385,
+            "failures": []
+          },
+          {
+            "theme": "pure-white",
+            "width": 331,
+            "count": 172,
+            "minimum": 4.899217388997385,
+            "failures": []
+          },
+          {
+            "theme": "paper-ink",
+            "width": 1105,
+            "count": 172,
+            "minimum": 5.009369499597516,
+            "failures": []
+          },
+          {
+            "theme": "paper-ink",
+            "width": 331,
+            "count": 172,
+            "minimum": 5.009369499597516,
+            "failures": []
+          },
+          {
+            "theme": "classic-warm",
+            "width": 1105,
+            "count": 172,
+            "minimum": 5.797452059811344,
+            "failures": []
+          },
+          {
+            "theme": "classic-warm",
+            "width": 331,
+            "count": 172,
+            "minimum": 5.797452059811344,
+            "failures": []
+          },
+          {
+            "theme": "celadon",
+            "width": 1105,
+            "count": 172,
+            "minimum": 5.657775585496982,
+            "failures": []
+          },
+          {
+            "theme": "celadon",
+            "width": 331,
+            "count": 172,
+            "minimum": 5.541132522167489,
+            "failures": []
+          },
+          {
+            "theme": "ink-night",
+            "width": 1105,
+            "count": 172,
+            "minimum": 6.882715756988765,
+            "failures": []
+          },
+          {
+            "theme": "ink-night",
+            "width": 331,
+            "count": 172,
+            "minimum": 6.882715756988765,
+            "failures": []
+          },
+          {
+            "theme": "ink-night-blue",
+            "width": 1105,
+            "count": 172,
+            "minimum": 6.280989059191993,
+            "failures": []
+          },
+          {
+            "theme": "ink-night-blue",
+            "width": 331,
+            "count": 172,
+            "minimum": 6.280989059191993,
+            "failures": []
+          }
+        ],
+        "terminalMeasurements": [],
+        "freshness": {
+          "step": "UI interaction tests",
+          "startedAt": "2026-11-17T03:42:09Z",
+          "completedAt": "2026-11-17T03:45:44Z",
+          "reportAt": "2026-11-17T03:45:44.424Z",
+          "completedAtPrecision": "SECOND"
+        },
+        "receiptSha256": "24c8898a43492cca4f5f20de54bc2910a9a7cb872750164c43d21cda59ce0cad",
+        "sourceCount": 84,
+        "assets": [
+          {
+            "file": "assets/index-C6FUt5I0.css",
+            "bytes": 102159,
+            "sha256": "b7b832a24fd25a9bbbb184f1224896a726bbc81897b1f3c4ce9eb4548272b333"
+          },
+          {
+            "file": "assets/index-D6jGRnrT.js",
+            "bytes": 424810,
+            "sha256": "3c301c2187502b71cc9a0570ce252d0e027a39532eaf0283f239b173ecbc5021"
+          },
+          {
+            "file": "assets/TaskTerminals-BbT8zRoT.css",
+            "bytes": 8158,
+            "sha256": "cbbcf611656957e8adacaefc7849df70e70db93aa2a6832b5ed771534dddabe5"
+          },
+          {
+            "file": "assets/TaskTerminals-BjexeebL.js",
+            "bytes": 359579,
+            "sha256": "c60527aeb71bf40f69c155853badb27eaa33e4ec00f1ccee7dae78e0de93be22"
+          },
+          {
+            "file": "index.html",
+            "bytes": 791,
+            "sha256": "eaefc36a731f8a1e63994181e67ca2252b861c89ee451ee37c10e16e83cef61f"
+          },
+          {
+            "file": "theme-init.js",
+            "bytes": 3911,
+            "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+          },
+          {
+            "file": "third-party/annotations-24.0.1/LICENSE.txt",
+            "bytes": 11352,
+            "sha256": "8c1e966c7855fb54027bcaf6ebe7a43abe4785791e8cf9148c363761d493d097"
+          },
+          {
+            "file": "third-party/kotlin-stdlib-1.9.22/LICENSE.txt",
+            "bytes": 11358,
+            "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+          },
+          {
+            "file": "third-party/kotlin-stdlib-1.9.22/NOTICE.txt",
+            "bytes": 482,
+            "sha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19"
+          },
+          {
+            "file": "third-party/native/OpenConsole-LICENSE.txt",
+            "bytes": 1116,
+            "sha256": "5d177f23ecfeb0ea8e050b6a5a16355e1ae9a0b286436ca8f83ed08b3795be6b"
+          },
+          {
+            "file": "third-party/native/winpty-LICENSE.txt",
+            "bytes": 1085,
+            "sha256": "c39e428064b4f3e4fe81a975bf0fd3b845922b431bc4d9a7ffc8bfb091981836"
+          },
+          {
+            "file": "third-party/origins.json",
+            "bytes": 5075,
+            "sha256": "87e8268ebdc74cbcb31c437c8e08682daa5715e2d9eb9f7d47c5a62c335856e9"
+          },
+          {
+            "file": "third-party/pty4j/LICENSE.txt",
+            "bytes": 11231,
+            "sha256": "3a4a6fe55f67f02b92be0ec9907e347de8ab5c8edf9214c5c8019e5820517884"
+          },
+          {
+            "file": "third-party/pty4j/NOTICE.txt",
+            "bytes": 421,
+            "sha256": "7f1b01b809cecc274e9a0aaeba288ccb36a18cb96a97b8cc1fde58c1e713e845"
+          },
+          {
+            "file": "third-party/pty4j/pty4j-0.13.4-sources.jar",
+            "bytes": 66477,
+            "sha256": "0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01"
+          },
+          {
+            "file": "third-party/SOURCE-OFFER.txt",
+            "bytes": 1766,
+            "sha256": "b13f9c5d6c9e4d9563c63354720973c23f351c89ab404cda0dabb502ce9a1d2d"
+          },
+          {
+            "file": "third-party/THIRD-PARTY-NOTICES.txt",
+            "bytes": 467,
+            "sha256": "179d93e97c4de96898d86cd089402ab6f0e3db9741e740d2f4155ae7d0735d5e"
+          },
+          {
+            "file": "third-party/xterm-addon-fit/LICENSE.txt",
+            "bytes": 1103,
+            "sha256": "e256f01188af527e4d06d21d06fbf785ae9c50d4b328bf03cbe0ba7f0aa4228f"
+          },
+          {
+            "file": "third-party/xterm/LICENSE.txt",
+            "bytes": 1261,
+            "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd"
+          },
+          {
+            "file": "workbench-config.json",
+            "bytes": 23,
+            "sha256": "3be957fbf2bc4239f17ca04398c552f2214c74caabe1109ee876ddeca9e8f270"
+          }
+        ],
+        "singleResultPerCase": true,
+        "retries": 0,
+        "noUnexpectedFlakyOrSkippedCases": true,
+        "finalProductionWebServedByRunner": true
+      },
+      "failure": {
+        "scope": "ORIGINAL_HTTP_NATIVE_SIZE_FIXTURE",
+        "originalFailure": {
+          "message": "Expected values to be strictly equal:\n\n'' !== '37 101'\n",
+          "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'' !== '37 101'\n\n    at file:///Users/runner/work/multi-agent/multi-agent/tools/terminal-http-smoke.mjs:98:147\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)",
+          "phase": "actual-clone"
+        },
+        "originalObservedValue": "",
+        "expectedValue": "37 101",
+        "finalRetainedSize": {
+          "file": ".runtime/terminal-http-WRou3y/data/workspaces/32b079d2-0ffe-40e5-ba49-4095181deaaa/work/actual-native-size.txt",
+          "bytes": 7,
+          "sha256": "6522601be31be847758309d3ff28d50bc7eb49d966f209fa550295943c869c3a",
+          "text": "37 101\n"
+        },
+        "classification": "REDIRECTION_CREATED_TARGET_BEFORE_SIZE_COMMAND_COMPLETED",
+        "laterRetainedSizeDoesNotChangeOriginalFailure": true,
+        "diagnostic": {
+          "file": ".runtime/alpha20-ci/run-44011006549-attempt-1/original-macos-terminal-http-diagnostic.json",
+          "bytes": 68052,
+          "sha256": "7f38d810f90900cf9173fdeefc20d77df7680fd9beecf6ac18b33660228e9dce"
+        }
+      },
+      "downstreamStaleRepositoryReportsNotUsedToInferStepSuccess": true
+    },
+    {
+      "platform": "linux",
+      "jobId": 133797728807,
+      "status": "failed",
+      "originalFailureStep": "Actual final Jar and production Web native terminal control",
+      "artifact": {
+        "id": 14297296483,
+        "bytes": 167526169,
+        "sha256": "b8dbfe838eada3876a3660412eb9a0070e3a65402a38fe077ff1573b472e57e4",
+        "wholeDigestVerified": true
+      },
+      "log": {
+        "file": ".runtime/alpha20-ci/run-44011006549-attempt-1/job-133797728807.log",
+        "bytes": 117090,
+        "sha256": "36223ca7329035817165cf6e9f7446865a8ffc7878db5b236399d422cd2cad2e"
+      },
+      "suiteCount": 44,
+      "tests": 545,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 10,
+      "passed": 535,
+      "suites": [
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.AgentRunStoreTest.xml",
+          "sha256": "914e2421b95d7549d99a0ed2a781d37c924b72f8e4d5865660c94023f907d025",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointEngineTest.xml",
+          "sha256": "fede7ab11ef0d2fa468fd7585c2f07a9d3edffeaa579df4f70edf404fe909b33",
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointExportHistoryTest.xml",
+          "sha256": "2b894826927727a6fc60241cb0c89ec60a702dfc45bd6b2961309c53b4e4a8c7",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ExecutionStoreTest.xml",
+          "sha256": "bba2e39327cbdafc4db8796228515bcf4b74364c60d8a43045fa4aa695f6de58",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.FileToolHistoryTest.xml",
+          "sha256": "70aea379e647053c8c82c122dfdc9910c482aba8555818de68d392a81504864a",
+          "tests": 23,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.GitWorkspaceTest.xml",
+          "sha256": "b2bc08cd31dbfdeeb227ca2db0c872db824ce5c1919407c6c2c7bb9176351989",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "redirectedWorkspaceRootCannotCreateTaskDirectoriesInsideAForeignJunction",
+              "className": "dev.agentworkbench.GitWorkspaceTest",
+              "originalSkip": "\n    <skipped message=\"Disabled on operating system: Linux\"/>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.LocalAccessFilterTest.xml",
+          "sha256": "27b5d3cbc14ffd1b3cf04db8b133e0d10bb8418ac2e5380c510c5776674e3c8a",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ManagedProcessLedgerTest.xml",
+          "sha256": "9aa5fc8ab3db85b741f7a4ac11fd1145f5229c5906094c093cb2fb4885d5ef7d",
+          "tests": 19,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 3,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+              "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows restricted process identity\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.ManagedProcessLedgerTest.actualRestrictedWindowsPidReuseLeavesTheReplacementRunning(ManagedProcessLedgerTest.java:112)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            },
+            {
+              "name": "failedWindowsSnapshotStillRejectsAnUnverifiableLivePid",
+              "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity failure\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.ManagedProcessLedgerTest.failedWindowsSnapshotStillRejectsAnUnverifiableLivePid(ManagedProcessLedgerTest.java:151)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            },
+            {
+              "name": "missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory",
+              "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity fallback\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.ManagedProcessLedgerTest.missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory(ManagedProcessLedgerTest.java:133)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ModelRequestStoreTest.xml",
+          "sha256": "aa2da89ceaeedc5f06ed92f95bf5e2954faf83400fb30cd77f2e966fc53095f3",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.NativeProcessAccessTest.xml",
+          "sha256": "3c88f4d99086878bb8751cab1becbac44e00e1ab3c9fa503c985b9ceeb1ca6f5",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.PlanAndPolicyTest.xml",
+          "sha256": "4427fd63d4f0be3b95e1f91f1648e2099e15aa7cfdc8633a0c3f6ad15635ffdd",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+          "sha256": "3a32f9bbf8e605d67e979a899f489f177e7d62c55e20d3840cdd9abb3f203ba9",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RootDispatchEngineTest.xml",
+          "sha256": "ee66c24010746963fa2579162b830f87049de17643b5d495d35f5fd7e5e0ddec",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeDelegationTest.xml",
+          "sha256": "97df5af6a943c0f2724333aa047f7f06288388bf0062a9fda4efba829f890816",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeIntegrationTest.xml",
+          "sha256": "a32a2bb9a317fbaa9a3aa8b179553cbd2e19e526e859cb57c6e4dda1050c2e43",
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 2,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "transientWindowsReceiptLockDoesNotReplayCompletedFileTool",
+              "className": "dev.agentworkbench.RuntimeIntegrationTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not true\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:71)\n\tat dev.agentworkbench.RuntimeIntegrationTest.exerciseWindowsReceiptLock(RuntimeIntegrationTest.java:346)\n\tat dev.agentworkbench.RuntimeIntegrationTest.transientWindowsReceiptLockDoesNotReplayCompletedFileTool(RuntimeIntegrationTest.java:334)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            },
+            {
+              "name": "persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay",
+              "className": "dev.agentworkbench.RuntimeIntegrationTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not true\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:71)\n\tat dev.agentworkbench.RuntimeIntegrationTest.exerciseWindowsReceiptLock(RuntimeIntegrationTest.java:346)\n\tat dev.agentworkbench.RuntimeIntegrationTest.persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay(RuntimeIntegrationTest.java:339)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.SessionStoreTest.xml",
+          "sha256": "b84f6204f962113db29f0397194f9a29350fa593881d92f9d020aa32f0c390af",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TaskDispatchQueueTest.xml",
+          "sha256": "2667a571ed8d3b5e921f069e922e93414716e07ef35f439eb3369bf0b8486f6e",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamExecutionTest.xml",
+          "sha256": "338b073ccc44fd764e3afe0a76fd4b3c1ac57925ed823ad143e3dbc31aef3c86",
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamRecordsTest.xml",
+          "sha256": "048273b82bd248fc92248b8fe9c797ab3cefab77118c3af2a064b196e40013f5",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalControllerTest.xml",
+          "sha256": "9ce824b43417e7ee46ed6f16744e4565f6e860f47874b049654d802e439a01f5",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalEngineTest.xml",
+          "sha256": "c6a1b0d400114369caefaf2fecb281c6ee6ad5e4f6fe73d80a97fcfe67dfb477",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalExportHistoryTest.xml",
+          "sha256": "6b45adcaa0f6f0d276ad50e03ad0e709e0e581726f07338b505695a8b31a5ab0",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalLedgerTest.xml",
+          "sha256": "c5000aba25f2331c4c9310a977fb051036ad7b326d30fdb3189bf57607856957",
+          "tests": 30,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalQueueTest.xml",
+          "sha256": "49a456271b7e73a8b01ddd2af21301a86937171fd6835a4783bb6b3a17fd6b05",
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WindowsProcessSnapshotTest.xml",
+          "sha256": "902dd7d34ce1dff39b5e1af1bff007490ff9c38958bc1259374528d8af554836",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "actualWindowsSnapshotMatchesReadableProcessBirths",
+              "className": "dev.agentworkbench.WindowsProcessSnapshotTest",
+              "originalSkip": "\n    <skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows native system process snapshot\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.WindowsProcessSnapshotTest.actualWindowsSnapshotMatchesReadableProcessBirths(WindowsProcessSnapshotTest.java:46)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchEngineTest.xml",
+          "sha256": "2df23c14da3a39b8a419794b7e335326ec2956da126e8275162f91f061905b06",
+          "tests": 24,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchVersionTest.xml",
+          "sha256": "0029aa6889332088ae95725c6a873977b37c4f09e01f04f53bd6c5f096e7d4d3",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerLeaseTest.xml",
+          "sha256": "40a48c0899378745fff2032254589f1b2552020a371bb45e265777ccb169f23b",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerProcessTest.xml",
+          "sha256": "f14d87bc14d611e2489b40a9c1b03fd58620d042e3d125732adbf21ea7916193",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerRpcTest.xml",
+          "sha256": "c0730358f6d52cdb6fef64d7957012c73f8107bfe216d1c038420ba189b4688e",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerWireTest.xml",
+          "sha256": "90731d162bc995136d26c8ddfa79a5c6224c2c7d4daf1396879f44e065f8a902",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceLongPathTest.xml",
+          "sha256": "f02071068ace6c5d991ea32e0064b8e6dc47b901a957014afd637e860f19071b",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "windowsLongObjectPathsPreserveOriginalWorkspaceAndReview(String)",
+              "className": "dev.agentworkbench.WorkspaceLongPathTest",
+              "originalSkip": "\n    <skipped message=\"Disabled on operating system: Linux\"/>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceSelectionEngineTest.xml",
+          "sha256": "8baa7ecc9d867f084254af828d6f912b08523357d0a31c826e2cbc5daf7faa9b",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteEngineTest.xml",
+          "sha256": "aad041efd9836b721996b27415378165f241dd5822eb0569b79c79f292ba04de",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteLedgerTest.xml",
+          "sha256": "5bb22ad83d9114c1f66804c725aa1262468b70a185711137fdd184ea768d9375",
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "savedWindowsShortWorkspaceKeepsItsPhysicalScopeAfterStoreReopen",
+              "className": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+              "originalSkip": "\n    <skipped message=\"Disabled on operating system: Linux\"/>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.mcp.McpIntegrationTest.xml",
+          "sha256": "2ea1c290e9113b88dc2d33acdc8f99024743f3fffdb048f03133db67325c5f6f",
+          "tests": 25,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.FileVersionRuntimeTest.xml",
+          "sha256": "3b45365a76f6472128cba5ab086204d829704d087fb368b6ae781fc2b840c7ed",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitBlobBatchTest.xml",
+          "sha256": "6511b0f222622b4340ed83e771e339d09de7773330a84d7efe09b99669cd5b8d",
+          "tests": 22,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitDiffViewTest.xml",
+          "sha256": "e8c63936b14387a8f5ea3926c093b4944ef6b435df0220568facf38d4bf436fe",
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "failedCases": [],
+          "conditionalSkips": [
+            {
+              "name": "windowsJunctionCannotRedirectPreviewCopiesOrCleanup",
+              "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+              "originalSkip": "\n    <skipped message=\"Disabled on operating system: Linux\"/>\n  "
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtyBundleTest.xml",
+          "sha256": "f88b1c00c9d8d77e513f93737e9151059d3d771e61c4218febecf34a33066e6a",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtySessionTest.xml",
+          "sha256": "9f4e78c5a8914e752068c0942154a128fc5cdb9ebc6d09f8fb024fe88c97e159",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.TerminalOutputArchiveTest.xml",
+          "sha256": "329e5e09ec3b2070785819fb6fb7280bb4a898e7033c87739646952680faa8a6",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.xml",
+          "sha256": "59cf14b292f86baf20c71bd3528b675b3c90883f63e7cf90e27554ba84324feb",
+          "tests": 35,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceWriteGuardTest.xml",
+          "sha256": "b9369ab047fbf220d060180d523b2372588c065808ff5ece2cb609d13247d157",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "failedCases": [],
+          "conditionalSkips": []
+        }
+      ],
+      "ui": {
+        "uiTests": 226,
+        "originalFullUiCorpusRetained": 226,
+        "terminalCases": 30,
+        "checkpointCases": 34,
+        "checkpointUiMeasurements": [
+          {
+            "theme": "pure-white",
+            "width": 1105,
+            "count": 172,
+            "minimum": 4.899217388997385,
+            "failures": []
+          },
+          {
+            "theme": "pure-white",
+            "width": 331,
+            "count": 172,
+            "minimum": 4.899217388997385,
+            "failures": []
+          },
+          {
+            "theme": "paper-ink",
+            "width": 1105,
+            "count": 172,
+            "minimum": 5.009369499597516,
+            "failures": []
+          },
+          {
+            "theme": "paper-ink",
+            "width": 331,
+            "count": 172,
+            "minimum": 5.009369499597516,
+            "failures": []
+          },
+          {
+            "theme": "classic-warm",
+            "width": 1105,
+            "count": 172,
+            "minimum": 5.627147426978405,
+            "failures": []
+          },
+          {
+            "theme": "classic-warm",
+            "width": 331,
+            "count": 172,
+            "minimum": 5.778179764210669,
+            "failures": []
+          },
+          {
+            "theme": "celadon",
+            "width": 1105,
+            "count": 172,
+            "minimum": 5.554997033851871,
+            "failures": []
+          },
+          {
+            "theme": "celadon",
+            "width": 331,
+            "count": 172,
+            "minimum": 5.541132522167489,
+            "failures": []
+          },
+          {
+            "theme": "ink-night",
+            "width": 1105,
+            "count": 172,
+            "minimum": 6.882715756988765,
+            "failures": []
+          },
+          {
+            "theme": "ink-night",
+            "width": 331,
+            "count": 172,
+            "minimum": 6.882715756988765,
+            "failures": []
+          },
+          {
+            "theme": "ink-night-blue",
+            "width": 1105,
+            "count": 172,
+            "minimum": 6.280989059191993,
+            "failures": []
+          },
+          {
+            "theme": "ink-night-blue",
+            "width": 331,
+            "count": 172,
+            "minimum": 6.280989059191993,
+            "failures": []
+          }
+        ],
+        "terminalMeasurements": [],
+        "freshness": {
+          "step": "UI interaction tests",
+          "startedAt": "2026-11-17T03:41:25Z",
+          "completedAt": "2026-11-17T03:45:06Z",
+          "reportAt": "2026-11-17T03:45:06.625Z",
+          "completedAtPrecision": "SECOND"
+        },
+        "receiptSha256": "7baf507fcb95bfd145cb755b530ba282e297c154dc9340deb42225cae8e5fe07",
+        "sourceCount": 84,
+        "assets": [
+          {
+            "file": "assets/index-C6FUt5I0.css",
+            "bytes": 102159,
+            "sha256": "b7b832a24fd25a9bbbb184f1224896a726bbc81897b1f3c4ce9eb4548272b333"
+          },
+          {
+            "file": "assets/index-D6jGRnrT.js",
+            "bytes": 424810,
+            "sha256": "3c301c2187502b71cc9a0570ce252d0e027a39532eaf0283f239b173ecbc5021"
+          },
+          {
+            "file": "assets/TaskTerminals-BbT8zRoT.css",
+            "bytes": 8158,
+            "sha256": "cbbcf611656957e8adacaefc7849df70e70db93aa2a6832b5ed771534dddabe5"
+          },
+          {
+            "file": "assets/TaskTerminals-BjexeebL.js",
+            "bytes": 359579,
+            "sha256": "c60527aeb71bf40f69c155853badb27eaa33e4ec00f1ccee7dae78e0de93be22"
+          },
+          {
+            "file": "index.html",
+            "bytes": 791,
+            "sha256": "eaefc36a731f8a1e63994181e67ca2252b861c89ee451ee37c10e16e83cef61f"
+          },
+          {
+            "file": "theme-init.js",
+            "bytes": 3911,
+            "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+          },
+          {
+            "file": "third-party/annotations-24.0.1/LICENSE.txt",
+            "bytes": 11352,
+            "sha256": "8c1e966c7855fb54027bcaf6ebe7a43abe4785791e8cf9148c363761d493d097"
+          },
+          {
+            "file": "third-party/kotlin-stdlib-1.9.22/LICENSE.txt",
+            "bytes": 11358,
+            "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+          },
+          {
+            "file": "third-party/kotlin-stdlib-1.9.22/NOTICE.txt",
+            "bytes": 482,
+            "sha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19"
+          },
+          {
+            "file": "third-party/native/OpenConsole-LICENSE.txt",
+            "bytes": 1116,
+            "sha256": "5d177f23ecfeb0ea8e050b6a5a16355e1ae9a0b286436ca8f83ed08b3795be6b"
+          },
+          {
+            "file": "third-party/native/winpty-LICENSE.txt",
+            "bytes": 1085,
+            "sha256": "c39e428064b4f3e4fe81a975bf0fd3b845922b431bc4d9a7ffc8bfb091981836"
+          },
+          {
+            "file": "third-party/origins.json",
+            "bytes": 5075,
+            "sha256": "87e8268ebdc74cbcb31c437c8e08682daa5715e2d9eb9f7d47c5a62c335856e9"
+          },
+          {
+            "file": "third-party/pty4j/LICENSE.txt",
+            "bytes": 11231,
+            "sha256": "3a4a6fe55f67f02b92be0ec9907e347de8ab5c8edf9214c5c8019e5820517884"
+          },
+          {
+            "file": "third-party/pty4j/NOTICE.txt",
+            "bytes": 421,
+            "sha256": "7f1b01b809cecc274e9a0aaeba288ccb36a18cb96a97b8cc1fde58c1e713e845"
+          },
+          {
+            "file": "third-party/pty4j/pty4j-0.13.4-sources.jar",
+            "bytes": 66477,
+            "sha256": "0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01"
+          },
+          {
+            "file": "third-party/SOURCE-OFFER.txt",
+            "bytes": 1766,
+            "sha256": "b13f9c5d6c9e4d9563c63354720973c23f351c89ab404cda0dabb502ce9a1d2d"
+          },
+          {
+            "file": "third-party/THIRD-PARTY-NOTICES.txt",
+            "bytes": 467,
+            "sha256": "179d93e97c4de96898d86cd089402ab6f0e3db9741e740d2f4155ae7d0735d5e"
+          },
+          {
+            "file": "third-party/xterm-addon-fit/LICENSE.txt",
+            "bytes": 1103,
+            "sha256": "e256f01188af527e4d06d21d06fbf785ae9c50d4b328bf03cbe0ba7f0aa4228f"
+          },
+          {
+            "file": "third-party/xterm/LICENSE.txt",
+            "bytes": 1261,
+            "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd"
+          },
+          {
+            "file": "workbench-config.json",
+            "bytes": 23,
+            "sha256": "3be957fbf2bc4239f17ca04398c552f2214c74caabe1109ee876ddeca9e8f270"
+          }
+        ],
+        "singleResultPerCase": true,
+        "retries": 0,
+        "noUnexpectedFlakyOrSkippedCases": true,
+        "finalProductionWebServedByRunner": true
+      },
+      "terminalHttp": {
+        "status": "passed",
+        "checks": 4,
+        "originalIdentitiesStopped": true,
+        "jarSha256": "a242e7d31ea758a67e859bc3f499462efdcb7db4960a3b33ac089cc1a7b28fbe",
+        "reportSha256": "de8ef94ca80943fde4124e9b114dd2aae5b43d9f6c87a613e997153c8421b0c1",
+        "freshness": {
+          "step": "Actual final Jar native terminal and forced core crash recovery",
+          "startedAt": "2026-11-17T03:46:14Z",
+          "completedAt": "2026-11-17T03:46:31Z",
+          "reportAt": "2026-11-17T03:46:31.177Z",
+          "completedAtPrecision": "SECOND"
+        }
+      },
+      "failure": {
+        "scope": "ORIGINAL_NATIVE_UI_PASTED_COMMAND_DIGEST",
+        "originalFailure": {
+          "phase": "real-clone-native-ui",
+          "message": "Each exact original manual command must have one original action.\n\n0 !== 1\n",
+          "stack": "AssertionError [ERR_ASSERTION]: Each exact original manual command must have one original action.\n\n0 !== 1\n\n    at file:///home/runner/work/multi-agent/multi-agent/tools/terminal-native-ui-smoke.mjs:128:14\n    at Array.map (<anonymous>)\n    at file:///home/runner/work/multi-agent/multi-agent/tools/terminal-native-ui-smoke.mjs:126:56\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+        },
+        "classification": "XTERM_PASTE_NORMALIZED_LF_TO_CR; EXACT_EXPECTATION_USED_LF",
+        "commandFacts": [
+          {
+            "originalExpectedCommand": "/bin/sh native-ui-probe.sh unicode\n",
+            "bytes": 35,
+            "lfSha256": "5c323d1a733935979e62b3150acee491792db176d415d2672f3524ac0a5efd52",
+            "actualCrSha256": "9f51fc1329fb6353609b89ba83bf9176af6d7599cf36a3dc841feaafdc94486d",
+            "originalAction": {
+              "terminalId": "bfc3b0d9-c4e7-4cec-a960-461ff4f98f84",
+              "requestId": "6e4cd231-9abd-490e-a1b9-844c3e02e3a9",
+              "kind": "INPUT",
+              "sequence": 2,
+              "controllerId": "24425cc9-4d52-4404-b645-e3db42cfdb43",
+              "controllerGeneration": 1,
+              "length": 35,
+              "sha256": "9f51fc1329fb6353609b89ba83bf9176af6d7599cf36a3dc841feaafdc94486d",
+              "columns": 0,
+              "rows": 0,
+              "id": "bfc3b0d9-c4e7-4cec-a960-461ff4f98f84:6e4cd231-9abd-490e-a1b9-844c3e02e3a9",
+              "protocolVersion": 1,
+              "taskId": "20d60f60-dc51-4011-aa24-eaee83cb78a1",
+              "state": "ACKNOWLEDGED",
+              "dispatchCount": 1,
+              "nativeAuthorizationCount": 1,
+              "createdAt": "2026-11-17T03:46:42.229485832Z",
+              "source": {
+                "workerLeaseId": "b0b09b1a-664e-4575-a4a8-b539f6ad614a",
+                "operationId": "6b9c3556-0b8c-40de-86e5-fddb00703d76",
+                "taskExecutionId": "4fe0b6d8-5972-4631-a505-6ce9a0ad98fd",
+                "dispatchActionId": "9d9825c8-00fa-48b6-b531-63a9f08084cd",
+                "workspaceWriteLeaseId": "853f5064-9363-47c1-b11d-5a33f5699043",
+                "workerId": "65428a0e-52f0-446f-969f-dec0ef79c9f5",
+                "workerEpoch": 1,
+                "executorPid": 62024,
+                "processStartedAt": "2026-11-17T03:46:34.220Z",
+                "executionNodeId": "14fbf72c-b64f-4e30-84be-70feb8afe583",
+                "repositoryBindingId": "154318d5-8c44-41e6-99ed-dd332ab07e31",
+                "bindingVersion": 1,
+                "authorizationVersion": 1
+              },
+              "dispatchedAt": "2026-11-17T03:46:42.231358985Z",
+              "nativeAuthorizedAt": "2026-11-17T03:46:42.245980598Z",
+              "endedAt": "2026-11-17T03:46:42.249077275Z",
+              "nativeReceipt": {
+                "callId": "d836a20b-1e16-4d42-afdd-5ba6bb02090d",
+                "workerLeaseId": "b0b09b1a-664e-4575-a4a8-b539f6ad614a",
+                "operationId": "6b9c3556-0b8c-40de-86e5-fddb00703d76",
+                "terminalId": "bfc3b0d9-c4e7-4cec-a960-461ff4f98f84",
+                "requestId": "6e4cd231-9abd-490e-a1b9-844c3e02e3a9",
+                "sha256": "9f51fc1329fb6353609b89ba83bf9176af6d7599cf36a3dc841feaafdc94486d",
+                "sequence": 2,
+                "effect": {},
+                "executorPid": 62024,
+                "processStartedAt": "2026-11-17T03:46:34.220Z",
+                "state": "ACKNOWLEDGED"
+              }
+            }
+          },
+          {
+            "originalExpectedCommand": "stty size > actual-native-size.txt\n",
+            "bytes": 35,
+            "lfSha256": "0d70ecd1a6c4612a0a55572682d2ca112cbbbf97ff5a67e681c9d4354be171a6",
+            "actualCrSha256": "0a73349c378f4b1dae6ae10faaab00f0ec3cf180ed31402b5a33a77ca31a2d06",
+            "originalAction": {
+              "terminalId": "bfc3b0d9-c4e7-4cec-a960-461ff4f98f84",
+              "requestId": "bdccee16-1b74-49de-bbd3-535c6db78022",
+              "kind": "INPUT",
+              "sequence": 3,
+              "controllerId": "24425cc9-4d52-4404-b645-e3db42cfdb43",
+              "controllerGeneration": 1,
+              "length": 35,
+              "sha256": "0a73349c378f4b1dae6ae10faaab00f0ec3cf180ed31402b5a33a77ca31a2d06",
+              "columns": 0,
+              "rows": 0,
+              "id": "bfc3b0d9-c4e7-4cec-a960-461ff4f98f84:bdccee16-1b74-49de-bbd3-535c6db78022",
+              "protocolVersion": 1,
+              "taskId": "20d60f60-dc51-4011-aa24-eaee83cb78a1",
+              "state": "ACKNOWLEDGED",
+              "dispatchCount": 1,
+              "nativeAuthorizationCount": 1,
+              "createdAt": "2026-11-17T03:46:42.524679382Z",
+              "source": {
+                "workerLeaseId": "b0b09b1a-664e-4575-a4a8-b539f6ad614a",
+                "operationId": "6b9c3556-0b8c-40de-86e5-fddb00703d76",
+                "taskExecutionId": "4fe0b6d8-5972-4631-a505-6ce9a0ad98fd",
+                "dispatchActionId": "9d9825c8-00fa-48b6-b531-63a9f08084cd",
+                "workspaceWriteLeaseId": "853f5064-9363-47c1-b11d-5a33f5699043",
+                "workerId": "65428a0e-52f0-446f-969f-dec0ef79c9f5",
+                "workerEpoch": 1,
+                "executorPid": 62024,
+                "processStartedAt": "2026-11-17T03:46:34.220Z",
+                "executionNodeId": "14fbf72c-b64f-4e30-84be-70feb8afe583",
+                "repositoryBindingId": "154318d5-8c44-41e6-99ed-dd332ab07e31",
+                "bindingVersion": 1,
+                "authorizationVersion": 1
+              },
+              "dispatchedAt": "2026-11-17T03:46:42.528859265Z",
+              "nativeAuthorizedAt": "2026-11-17T03:46:42.538118521Z",
+              "endedAt": "2026-11-17T03:46:42.541325384Z",
+              "nativeReceipt": {
+                "callId": "d836a20b-1e16-4d42-afdd-5ba6bb02090d",
+                "workerLeaseId": "b0b09b1a-664e-4575-a4a8-b539f6ad614a",
+                "operationId": "6b9c3556-0b8c-40de-86e5-fddb00703d76",
+                "terminalId": "bfc3b0d9-c4e7-4cec-a960-461ff4f98f84",
+                "requestId": "bdccee16-1b74-49de-bbd3-535c6db78022",
+                "sha256": "0a73349c378f4b1dae6ae10faaab00f0ec3cf180ed31402b5a33a77ca31a2d06",
+                "sequence": 3,
+                "effect": {},
+                "executorPid": 62024,
+                "processStartedAt": "2026-11-17T03:46:34.220Z",
+                "state": "ACKNOWLEDGED"
+              }
+            }
+          }
+        ],
+        "manualEffectCount": 1,
+        "bothOriginalInputsAcknowledgedOnce": true,
+        "originalStatusRemainsFailed": true,
+        "diagnostic": {
+          "file": ".runtime/alpha20-ci/run-44011006549-attempt-1/original-ubuntu-terminal-ui-diagnostic.json",
+          "bytes": 3765,
+          "sha256": "21fadbc033b4c028c158316c919f3f9022a7f92d7672a37e91c4f0ed7fac00bf"
+        },
+        "actionDiagnostic": {
+          "file": ".runtime/alpha20-ci/run-44011006549-attempt-1/original-ubuntu-terminal-ui-actions.json",
+          "bytes": 19189,
+          "sha256": "8deff21d61001e4f424d75afd6311d6b9e7b8abd5d422e25dcca4c25c167ecdc"
+        }
+      },
+      "downstreamStaleRepositoryReportsNotUsedToInferStepSuccess": true
+    }
+  ],
+  "originalFailuresRemainFailed": true,
+  "completeProjectGoal": false,
+  "scope": "THIRD_EXACT_COMMIT_CI_FAILURE; ORIGINAL_LOGS_XML_FAILED_FIXTURES_AND_COMMAND_DIGESTS_VERIFIED; REMOTE_GIT_COMPARISON_CAUSE_NOT_PROVEN_BY_LOCAL_REPRODUCTION"
+}

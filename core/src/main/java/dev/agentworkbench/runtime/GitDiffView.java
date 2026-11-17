@@ -190,7 +190,7 @@ final class GitDiffView {
             Path first = writeCopy(copies, "before", before), second = writeCopy(copies, "after", after);
             Map<String, Object> compared = runtime.comparePreviewBytes(first, second);
             int exit = ((Number) compared.get("exitCode")).intValue(); String status = str(compared, "status");
-            if (!Set.of(0, 1).contains(exit) || !Set.of("SUCCEEDED", "FAILED").contains(status)) throw new IllegalStateException("差异比较未完整收尾，不能展示本次输出。");
+            if (!Set.of(0, 1).contains(exit) || !Set.of("SUCCEEDED", "FAILED").contains(status)) throw new IllegalStateException("差异比较未完整收尾，不能展示本次输出。status=" + status + ", exitCode=" + exit + ", outputComplete=" + compared.get("outputComplete"));
             if (bool(compared, "truncated", false)) return state(facts, "LIMIT", "差异输出超过预览上限，未展示截断片段。", "PATCH_BYTES", List.of());
             return parse(facts, str(compared, "stdout"), before, after);
         } catch (IOException exception) {

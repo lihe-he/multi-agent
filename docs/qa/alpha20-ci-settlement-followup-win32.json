@@ -1,0 +1,524 @@
+{
+  "recordedAt": "2026-11-17T07:11:36.719Z",
+  "version": "0.2.0-alpha.20",
+  "status": "passed",
+  "baselineCommit": "fec42fac360f4ca0c317b5c3164b0a1a386843f9",
+  "scope": "LOCAL_COMPLETE_547_CASE_CLEAN_VERIFY_AND_NEW_PRODUCTION_JAR_SETTLEMENT_FOLLOWUP; FOURTH_EXACT_COMMIT_THREE_PLATFORM_CI_PENDING; ORIGINAL_REMOTE_WINDOWS_CAUSE_UNCONFIRMED",
+  "originalFailure": {
+    "file": "docs/qa/alpha20-ci-third-failure.json",
+    "bytes": 106836,
+    "sha256": "c2cf502919da5f5f8f7d1ab17f0199f2003f4acc11425ad05d9f3ccaec64249b"
+  },
+  "originalFailureRunId": 44011006549,
+  "originalFailuresRemainFailed": true,
+  "localDeterministicBeforeAndAfter": [
+    {
+      "receipt": {
+        "file": ".runtime/alpha20-diff-exit-settlement-probe-attempt1/receipt.json",
+        "bytes": 280,
+        "sha256": "7bd91b55eba9f0b703b65c814bb860a78c8972a1829ba8b64efbd78f0e640ed1"
+      },
+      "sourceSha256": "f8abd780b8cb1520fcdc64a601113acc755c8773b923febdeb175e980a7a69bd",
+      "observations": [
+        {
+          "originalObservation": {
+            "file": ".runtime/alpha20-diff-exit-settlement-probe-attempt1/exit-0/probe.json",
+            "bytes": 968,
+            "sha256": "f1077e68ce9032042d12315db268e20eba9734bbcb4244ae9d0f23134e2f0514"
+          },
+          "exit": 0,
+          "status": "SUCCEEDED",
+          "outputComplete": true,
+          "naturalExit": true,
+          "originalChild": {
+            "pid": 43640,
+            "processStartedAt": "2026-11-17T06:00:19.633Z",
+            "observedFromPid": 43548,
+            "observedFromStartedAt": "2026-11-17T06:00:19.549Z"
+          },
+          "elapsedMs": 2620.8613
+        },
+        {
+          "originalObservation": {
+            "file": ".runtime/alpha20-diff-exit-settlement-probe-attempt1/exit-1/probe.json",
+            "bytes": 1060,
+            "sha256": "869c80c62396cb11a655acc9a9ac30e4aebfe598119adca1bb73835bdf710b3e"
+          },
+          "exit": 1,
+          "status": "UNKNOWN",
+          "outputComplete": true,
+          "naturalExit": false,
+          "originalChild": {
+            "pid": 43104,
+            "processStartedAt": "2026-11-17T06:00:22.281Z",
+            "observedFromPid": 40236,
+            "observedFromStartedAt": "2026-11-17T06:00:22.208Z"
+          },
+          "elapsedMs": 802.1581
+        }
+      ],
+      "remoteOriginalCauseConfirmed": false
+    },
+    {
+      "receipt": {
+        "file": ".runtime/alpha20-diff-exit-settlement-probe-attempt2/receipt.json",
+        "bytes": 280,
+        "sha256": "2cdb7f14c08a919cd4a6b769c64087a6fc59118f30546031bd63479e9ff818c7"
+      },
+      "sourceSha256": "40bddaf4197bd708b9fedf66d50a11cfb2ab4ce87d5f8d88c871aee754fd5565",
+      "observations": [
+        {
+          "originalObservation": {
+            "file": ".runtime/alpha20-diff-exit-settlement-probe-attempt2/exit-0/probe.json",
+            "bytes": 967,
+            "sha256": "a225abdc453108073ce50fde86aaf72cf0884dc34ababe59d112bbcea57982a5"
+          },
+          "exit": 0,
+          "status": "SUCCEEDED",
+          "outputComplete": true,
+          "naturalExit": true,
+          "originalChild": {
+            "pid": 43304,
+            "processStartedAt": "2026-11-17T06:07:03.348Z",
+            "observedFromPid": 22044,
+            "observedFromStartedAt": "2026-11-17T06:07:03.268Z"
+          },
+          "elapsedMs": 2594.461
+        },
+        {
+          "originalObservation": {
+            "file": ".runtime/alpha20-diff-exit-settlement-probe-attempt2/exit-1/probe.json",
+            "bytes": 964,
+            "sha256": "57127626a13d6e66670981003516140832bb9ca2759aa73d6fbaa31c08865183"
+          },
+          "exit": 1,
+          "status": "FAILED",
+          "outputComplete": true,
+          "naturalExit": true,
+          "originalChild": {
+            "pid": 27116,
+            "processStartedAt": "2026-11-17T06:07:05.974Z",
+            "observedFromPid": 43160,
+            "observedFromStartedAt": "2026-11-17T06:07:05.899Z"
+          },
+          "elapsedMs": 3050.0774
+        }
+      ],
+      "remoteOriginalCauseConfirmed": false
+    }
+  ],
+  "originalRemoteComparisonCause": "UNKNOWN; ORIGINAL_EXCEPTION_DID_NOT_SAVE_STATUS_EXIT_STREAM_OR_DESCENDANT_FACTS",
+  "changedFiles": [
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+      "bytes": 121637,
+      "sha256": "40bddaf4197bd708b9fedf66d50a11cfb2ab4ce87d5f8d88c871aee754fd5565"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+      "bytes": 25617,
+      "sha256": "4ae4f43b2a0ce32b8cfb5ca23126361ec23f0ac9d3aa916dcec6fc719a13e09a"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+      "bytes": 60854,
+      "sha256": "0bb90f73ab500b4a30a380b20127d1175f263587b82caec853555a9f0bcec105"
+    },
+    {
+      "file": "tools/terminal-fixture.mjs",
+      "bytes": 17101,
+      "sha256": "f3e201bbea38cae6ceafe43dd15cf048dfef1a060620faa975713bee5628e370"
+    }
+  ],
+  "originalSelectedAttempts": [
+    {
+      "receipt": {
+        "file": ".runtime/alpha20-core-ci-nonzero-child-settlement-attempt1/receipt.json",
+        "bytes": 26145,
+        "sha256": "b1e5fa9f36da31ebd3346c4630f7f30db35d64a3962aace8a61f0325c8c467ee"
+      },
+      "status": "failed",
+      "tests": 38,
+      "passed": 34,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 3,
+      "originalTimeoutsAndBudgetsRetained": true,
+      "scope": "ORIGINAL_FIXTURE_FAILURE_RETAINED; POWERSHELL_MAPPED_EXIT_37_TO_1"
+    },
+    {
+      "receipt": {
+        "file": ".runtime/alpha20-core-ci-nonzero-child-settlement-attempt2/receipt.json",
+        "bytes": 25823,
+        "sha256": "5fde8b1a8c3567514432f1d469f1aef533086969013036c454654467225e028e"
+      },
+      "status": "passed",
+      "tests": 5,
+      "passed": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "originalTimeoutsAndBudgetsRetained": true,
+      "scope": "EXPLICIT_LASTEXITCODE_FIXTURE; ORIGINAL_EXIT_ZERO_NONZERO_AND_UNKNOWN_DESCENDANT_CASES"
+    }
+  ],
+  "completeCore": {
+    "receipt": {
+      "file": ".runtime/alpha20-core-ci-settlement-full-attempt1/receipt.json",
+      "bytes": 38335,
+      "sha256": "8d2b0b0c6cc13c03989eeb30d9975a2baffd70798b740b9e411175df401d468d"
+    },
+    "tests": 547,
+    "passed": 537,
+    "skipped": 10,
+    "failures": 0,
+    "errors": 0,
+    "suites": 44,
+    "sourcesUnchanged": true,
+    "carrierParallelism": 2,
+    "carrierMaxPoolSize": 2,
+    "original545CaseBuild": {
+      "file": ".runtime/alpha20-core-production-native-snapshot-clean-verify-attempt1/receipt.json",
+      "bytes": 38356,
+      "sha256": "979534b79c4460436ab41037eb61f6adba69766865a1528295e9738f2f2b4974"
+    },
+    "original545CasesRetained": true,
+    "addedCases": [
+      "dev.agentworkbench.RuntimeIntegrationTest#nonzeroParentExitStillWaitsForTheOriginalChildNaturalStop(int, String)[1]",
+      "dev.agentworkbench.RuntimeIntegrationTest#nonzeroParentExitStillWaitsForTheOriginalChildNaturalStop(int, String)[2]"
+    ],
+    "previousTargetPreserved": true
+  },
+  "productionJar": {
+    "receipt": {
+      "file": ".runtime/alpha20-production-jar-audit-ci-settlement-final-attempt1/receipt.json",
+      "bytes": 78757,
+      "sha256": "f62f0f106a42058e0c0cab4b69cea959eaea7e7c5d3f4e48a1112db16b4edfe5"
+    },
+    "bytes": 44336382,
+    "sha256": "d24dc14969c84d9425b6646cb683f55c1f3338bf28a0e350efaf18d733f81249",
+    "classes": 160,
+    "resources": 16,
+    "libraries": 36,
+    "native": 24,
+    "scope": "CLASS_RESOURCE_NESTED_MAVEN_NATIVE_AND_NOTICES_BYTES; LOCAL_PREVIOUS_INSTALLER_RETAINS_OLD_JAR; NEW_RELEASE_ACCEPTANCE_REQUIRES_EXACT_COMMIT_CI"
+  },
+  "originalCoreNativeFixtureAudit": {
+    "receipt": {
+      "file": ".runtime/alpha20-core-native-fixture-audit-ci-settlement-full-native-attempt1/receipt.json",
+      "bytes": 345778,
+      "sha256": "6dcef8f992eff31ce53a54603b203fdb87d3db998fec53d9dbf228fd9bc21495"
+    },
+    "originalFilesVerified": 1164,
+    "outputBoundaries": [
+      {
+        "boundary": "AFTER_COMMIT_BEFORE_ACK",
+        "terminalId": "ca5974a2-ef3a-426f-9e66-c5319168a2a6",
+        "state": "UNKNOWN",
+        "outputIntegrity": "UNCONFIRMED",
+        "committedEnd": 84,
+        "originalDescriptor": {
+          "protocolVersion": 1,
+          "terminalId": "ca5974a2-ef3a-426f-9e66-c5319168a2a6",
+          "epoch": "c1af640b-4317-436a-987a-de9a7cd59e56",
+          "offset": 0,
+          "length": 84,
+          "next": 84,
+          "sha256": "4b60c6e1af243189054752bf2dec9778b455ec71c6aeb54bbe07d65bfa50e860",
+          "id": "ca5974a2-ef3a-426f-9e66-c5319168a2a6:c1af640b-4317-436a-987a-de9a7cd59e56:0",
+          "taskId": "41b41fa7-d020-479e-8681-27728adc3819",
+          "publishedAt": "2026-11-17T06:47:53.269993Z",
+          "source": {
+            "workerLeaseId": "4cafdba3-305a-4c62-86e5-3dcb1c499503",
+            "operationId": "41525675-1e98-48d6-b366-2c61c55f34fb",
+            "taskExecutionId": "9c39bcb3-22e1-4afe-bf7d-db3a65795fb9",
+            "dispatchActionId": "a8a9e7c6-5ba4-499c-ac43-59bc0c5e7988",
+            "workspaceWriteLeaseId": "90a2df32-98d2-4df8-81db-e4b4cac6f399",
+            "workerId": "cf9fb541-6858-4f42-814b-d0dfaf5a315e",
+            "workerEpoch": 1,
+            "executorPid": 42808,
+            "processStartedAt": "2026-11-17T06:47:37.759Z",
+            "executionNodeId": "0028a7fb-2493-47bc-8543-febdc0916c88",
+            "repositoryBindingId": "524b8f9e-a606-4e83-9695-85e853fcaf06",
+            "bindingVersion": 1,
+            "authorizationVersion": 1
+          }
+        },
+        "originalRawFiles": [
+          {
+            "file": "00000000000000000000-000084-4b60c6e1af243189054752bf2dec9778b455ec71c6aeb54bbe07d65bfa50e860.bin",
+            "bytes": 84,
+            "sha256": "4b60c6e1af243189054752bf2dec9778b455ec71c6aeb54bbe07d65bfa50e860"
+          },
+          {
+            "file": "00000000000000000084-000336-fb2c2052c5864b35568ab190ac5bd9e311477e1ee0084259bc2fd972870e1384.bin",
+            "bytes": 336,
+            "sha256": "fb2c2052c5864b35568ab190ac5bd9e311477e1ee0084259bc2fd972870e1384"
+          },
+          {
+            "file": "00000000000000000420-000016-40763f0cb4127a30fa4e20de7fc13a71387c5338286967dbab9f2254cfc2dbd1.bin",
+            "bytes": 16,
+            "sha256": "40763f0cb4127a30fa4e20de7fc13a71387c5338286967dbab9f2254cfc2dbd1"
+          }
+        ],
+        "originalNative": {
+          "pid": 49580,
+          "processStartedAt": "2026-11-17T06:47:53.215Z"
+        },
+        "noReplayOrReferenceRepair": true
+      },
+      {
+        "boundary": "BEFORE_COMMIT",
+        "terminalId": "89d0a204-c5f2-4ee6-a146-f4291cb15575",
+        "state": "UNKNOWN",
+        "outputIntegrity": "UNCONFIRMED",
+        "committedEnd": 0,
+        "originalDescriptor": {
+          "protocolVersion": 1,
+          "terminalId": "89d0a204-c5f2-4ee6-a146-f4291cb15575",
+          "epoch": "f5e98dab-dffe-4421-bd3d-1acd6df70d5f",
+          "offset": 0,
+          "length": 84,
+          "next": 84,
+          "sha256": "4b60c6e1af243189054752bf2dec9778b455ec71c6aeb54bbe07d65bfa50e860",
+          "id": "89d0a204-c5f2-4ee6-a146-f4291cb15575:f5e98dab-dffe-4421-bd3d-1acd6df70d5f:0",
+          "taskId": "9f36dbf6-950c-4ea4-9866-b9fc4b1b7e5a",
+          "publishedAt": "2026-11-17T06:47:31.559257200Z",
+          "source": {
+            "workerLeaseId": "30cff9ec-65f2-428a-a70c-daafe8065dc9",
+            "operationId": "faa51935-eae9-4bd9-95c7-76ec488772d2",
+            "taskExecutionId": "24455d0d-a4d3-4af7-bac1-8bbd084f8130",
+            "dispatchActionId": "f7e37754-d77a-4b62-b8e7-ddd53b99dcd3",
+            "workspaceWriteLeaseId": "e6890342-dae6-4d95-a8ed-34575fea530a",
+            "workerId": "5e43089d-90b8-4784-9156-da891267ddf8",
+            "workerEpoch": 1,
+            "executorPid": 43664,
+            "processStartedAt": "2026-11-17T06:47:12.654Z",
+            "executionNodeId": "c3897233-301d-4697-8332-fad3097c388e",
+            "repositoryBindingId": "fa5bd5c9-2261-44a8-a33b-a397f0846d3e",
+            "bindingVersion": 1,
+            "authorizationVersion": 1
+          }
+        },
+        "originalRawFiles": [
+          {
+            "file": "00000000000000000000-000084-4b60c6e1af243189054752bf2dec9778b455ec71c6aeb54bbe07d65bfa50e860.bin",
+            "bytes": 84,
+            "sha256": "4b60c6e1af243189054752bf2dec9778b455ec71c6aeb54bbe07d65bfa50e860"
+          },
+          {
+            "file": "00000000000000000084-000336-8bb032d50781fe9a60941b94a66d6ed1199ece793f4bae081e50992ffb948071.bin",
+            "bytes": 336,
+            "sha256": "8bb032d50781fe9a60941b94a66d6ed1199ece793f4bae081e50992ffb948071"
+          },
+          {
+            "file": "00000000000000000420-000016-40763f0cb4127a30fa4e20de7fc13a71387c5338286967dbab9f2254cfc2dbd1.bin",
+            "bytes": 16,
+            "sha256": "40763f0cb4127a30fa4e20de7fc13a71387c5338286967dbab9f2254cfc2dbd1"
+          }
+        ],
+        "originalNative": {
+          "pid": 49988,
+          "processStartedAt": "2026-11-17T06:47:31.494Z"
+        },
+        "noReplayOrReferenceRepair": true
+      }
+    ],
+    "builderBoundaries": [
+      {
+        "originalProductStatus": "UNKNOWN",
+        "nativeObjectReturned": false,
+        "productPid": 0,
+        "productBirthAbsent": true,
+        "productCleanupUnconfirmed": true,
+        "independentlyRecordedOriginal": {
+          "pid": 45192,
+          "processStartedAt": "2026-11-17T06:33:32.365Z"
+        },
+        "independentlyRecordedStop": {
+          "pid": 45192,
+          "processStartedAt": "2026-11-17T06:33:32.365Z",
+          "originalStopped": true,
+          "nativeThreadsStopped": 1,
+          "recordedAt": "2026-11-17T06:33:34.463158Z"
+        },
+        "originalProductReceiptNotRewritten": true,
+        "controlledBuilderReturnBoundaryOnly": true
+      }
+    ],
+    "originalIdentitiesIndependentlyStopped": 48,
+    "noCompleteHistoricalTreeClaim": true
+  },
+  "posixFixtureCommandBody": {
+    "receipt": {
+      "file": ".runtime/alpha20-posix-fixture-atomic-cr-check-attempt3/receipt.json",
+      "bytes": 1137,
+      "sha256": "4a76914374a46587a8bc33212a76bf01b832bade4accdbf6aaeaf226cbd4deec"
+    },
+    "observations": [
+      {
+        "ui": false,
+        "exitCode": 0,
+        "signal": null,
+        "samples": 78,
+        "prematureTarget": false,
+        "actual": "37 101\n",
+        "newlineByte": 10,
+        "originalUnicodeCommandSha256": "5bfece6a69a402085fd7f4335c6a02644c12904330f292d49228d24f4e3ec921",
+        "sizeCommand": "stty size > actual-native-size.txt.tmp && mv actual-native-size.txt.tmp actual-native-size.txt\n"
+      },
+      {
+        "ui": true,
+        "exitCode": 0,
+        "signal": null,
+        "samples": 78,
+        "prematureTarget": false,
+        "actual": "37 101\n",
+        "newlineByte": 13,
+        "originalUnicodeCommandSha256": "9f51fc1329fb6353609b89ba83bf9176af6d7599cf36a3dc841feaafdc94486d",
+        "sizeCommand": "stty size > actual-native-size.txt.tmp && mv actual-native-size.txt.tmp actual-native-size.txt\r"
+      }
+    ],
+    "actualGitBashShellBody": true,
+    "actualLinuxAndMacPtyAcceptance": "PENDING_EXACT_COMMIT_CI"
+  },
+  "actualNewJarIntegrations": [
+    {
+      "mode": "http",
+      "receipt": {
+        "file": ".runtime/alpha20-ci-settlement-http-attempt3/receipt.json",
+        "bytes": 45027,
+        "sha256": "994f3e967a31c63e536394fe4fc49391e8a1298d06e6c940f189892f9c8b58bf"
+      },
+      "report": {
+        "file": ".runtime/alpha20-ci-settlement-http-attempt3/report.json",
+        "bytes": 348649,
+        "sha256": "9e1a7bf8d26df1cf521cd88745ee690525b7e797310bae0b69138b36298fdab4"
+      },
+      "checks": 4,
+      "jarSha256": "d24dc14969c84d9425b6646cb683f55c1f3338bf28a0e350efaf18d733f81249",
+      "originalIdentitiesStopped": true,
+      "originalTrackedReportRestored": true
+    },
+    {
+      "mode": "native-ui",
+      "receipt": {
+        "file": ".runtime/alpha20-ci-settlement-native-ui-attempt2/receipt.json",
+        "bytes": 45032,
+        "sha256": "6f4132a3369f3e3d969a0dd7c46222ccb8bbf2c4684bba0193f1e35ade848741"
+      },
+      "report": {
+        "file": ".runtime/alpha20-ci-settlement-native-ui-attempt2/report.json",
+        "bytes": 16019,
+        "sha256": "43409dd34d0a1a002206451adaf729ded96817257b20ddaea7c637bb3128d35e"
+      },
+      "checks": 5,
+      "jarSha256": "d24dc14969c84d9425b6646cb683f55c1f3338bf28a0e350efaf18d733f81249",
+      "originalIdentitiesStopped": true,
+      "originalTrackedReportRestored": true
+    },
+    {
+      "mode": "diff",
+      "receipt": {
+        "file": ".runtime/alpha20-ci-settlement-diff-attempt1/receipt.json",
+        "bytes": 45028,
+        "sha256": "26524840bef5766c3beee4aebbc48cb35402376980660790716851b8348d8c99"
+      },
+      "report": {
+        "file": ".runtime/alpha20-ci-settlement-diff-attempt1/report.json",
+        "bytes": 6943,
+        "sha256": "914f13bc2f6ef0a523ecaebdb17fe9bd5643376568085f0e8d596060748b6de4"
+      },
+      "checks": 14,
+      "jarSha256": "d24dc14969c84d9425b6646cb683f55c1f3338bf28a0e350efaf18d733f81249",
+      "originalTrackedReportRestored": true
+    },
+    {
+      "mode": "protocol",
+      "receipt": {
+        "file": ".runtime/alpha20-ci-settlement-protocol-attempt1/receipt.json",
+        "bytes": 45032,
+        "sha256": "ee7a2c976b86176caf7d35b3196a5661dc1f314ef144d5e8d3ca024f6398e5da"
+      },
+      "report": {
+        "file": ".runtime/alpha20-ci-settlement-protocol-attempt1/report.json",
+        "bytes": 39033,
+        "sha256": "882b5d0e6470b3338ceffd1e58d7da912f7c817938a856a5c95a8a4d98525f51"
+      },
+      "checks": 29,
+      "jarSha256": "d24dc14969c84d9425b6646cb683f55c1f3338bf28a0e350efaf18d733f81249",
+      "originalTrackedReportRestored": true
+    }
+  ],
+  "originalHttpFixtureFailure": {
+    "receipt": {
+      "file": ".runtime/alpha20-ci-settlement-http-attempt1/receipt.json",
+      "bytes": 45027,
+      "sha256": "42338a177f3a99ef68af964faf100fcbffb8daa890fe6551774053db81e3bd6e"
+    },
+    "report": {
+      "file": ".runtime/alpha20-ci-settlement-http-attempt1/report.json",
+      "bytes": 63837,
+      "sha256": "4388e28bdf3abfc560dd9d7141b5b631ebf13803f6e6e8bb4c096ef1bb0ec7e4"
+    },
+    "status": "failed",
+    "originalIdentitiesStopped": true,
+    "classification": "OUTPUT_MARKER_PRECEDED_ENVIRONMENT_FACT_FILE_PUBLICATION; ENOENT_RETAINED",
+    "repair": "PUBLISH_FACTS_BEFORE_OUTPUT_MARKER; ATOMIC_SIZE_AND_CRASH_PID_FILE_PUBLICATION; SAME_INPUT_ACTION_ASSERTIONS"
+  },
+  "intermediateHttpBeforeShortSizeCommand": {
+    "receipt": {
+      "file": ".runtime/alpha20-ci-settlement-http-attempt2/receipt.json",
+      "bytes": 45027,
+      "sha256": "8cc45b876bb316d8944191ffd4ed3dab6bdc4d0fd32362d76ad6b7b2d8ec5bde"
+    },
+    "status": "passed",
+    "checks": 4,
+    "scope": "EARLIER_LONG_ATOMIC_SIZE_COMMAND; FINAL_SHORT_COMMAND_VERIFIED_IN_ATTEMPT3"
+  },
+  "originalNativeUiFixtureFailure": {
+    "receipt": {
+      "file": ".runtime/alpha20-ci-settlement-native-ui-attempt1/receipt.json",
+      "bytes": 45032,
+      "sha256": "e4cd6f4c3e36389760a6d0855d77f2ad3b76ad374df28e840a12223c69c66594"
+    },
+    "report": {
+      "file": ".runtime/alpha20-ci-settlement-native-ui-attempt1/report.json",
+      "bytes": 7789,
+      "sha256": "b78f80b3360e07b1f3bcd3250ccf660009a65fdd6b31ade5ca60d0ab6e51dca3"
+    },
+    "status": "failed",
+    "originalIdentitiesStopped": true,
+    "classification": "LONG_ATOMIC_SIZE_COMMAND_ECHO_SCROLLED_UNICODE_MARKER_OUT_OF_ACCESSIBLE_VIEWPORT_AFTER_RELOAD",
+    "repair": "SAME_NATIVE_DIMENSION_MEASUREMENT_IN_SHORT_EXISTING_FIXTURE_SCRIPT_MODE; ORIGINAL_RELOAD_AND_UNICODE_ASSERTIONS_RETAINED"
+  },
+  "productionUiHistory": {
+    "previousFormalReport": {
+      "file": "docs/qa/alpha20-ci-execution-followup-win32.json",
+      "bytes": 21986,
+      "sha256": "1f6fed42d55af4f2f1a4215f9d53b8a6dc5379cc5a4ea7b9f2020644908c5a38"
+    },
+    "productWebUnchanged": true,
+    "priorCompleteUiTests": 226,
+    "newNativeUiChecks": 5,
+    "entireUiNotRepeatedLocallyForCoreOnlyChange": true
+  },
+  "javaComments": {
+    "receipt": {
+      "file": ".runtime/alpha20-java-comment-audit-ci-settlement-current-attempt1/receipt.json",
+      "bytes": 41964,
+      "sha256": "43bece3c088cb94fc01b7c42d11510c636dd78608a01840ab6eed7d88491d76a"
+    },
+    "files": 106,
+    "originalCommentsRetained": 370,
+    "newJavadocs": 0
+  },
+  "recorder": {
+    "file": ".runtime/alpha20-record-ci-settlement-followup.mjs",
+    "bytes": 13090,
+    "sha256": "db6944d309822a47f8447c0abdc3b11925cc0d04380bad52825cfd305c1d62b3"
+  },
+  "automaticReplayAdded": false,
+  "originalWaitLimitsAndBudgetsRetained": true,
+  "completeProjectGoal": false
+}

@@ -251,22 +251,33 @@ class RuntimeIntegrationTest {
 
     @Test
     void parentExitWaitsForTheOriginalChildNaturalStopBeforeConfirmingTheCommand() throws Exception {
+        parentExitWaitsForOriginalChild(0, "SUCCEEDED");
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1,FAILED", "37,FAILED"})
+    void nonzeroParentExitStillWaitsForTheOriginalChildNaturalStop(int exit, String status) throws Exception {
+        parentExitWaitsForOriginalChild(exit, status);
+    }
+
+    private void parentExitWaitsForOriginalChild(int exit, String status) throws Exception {
         Path root = Files.createDirectories(temporary.resolve("parent returns before child")), receipts = Files.createDirectories(temporary.resolve("receipts"));
         String receiptPath = json.writeValueAsString(receipts.toString());
         Files.writeString(root.resolve("child.mjs"), "import{existsSync,writeFileSync}from'node:fs';import{join}from'node:path';const receipts=" + receiptPath
             + ";setTimeout(()=>process.exit(2),15000);const poll=setInterval(()=>{if(existsSync(join(receipts,'release'))){clearInterval(poll);setTimeout(()=>{writeFileSync(join(receipts,'finished'),'original child exited');process.exit(0)},2000)}},5);\n");
         Files.writeString(root.resolve("parent.mjs"), "import{spawn}from'node:child_process';import{writeFileSync}from'node:fs';import{join}from'node:path';import{fileURLToPath}from'node:url';const receipts=" + receiptPath
-            + ";const child=spawn(process.execPath,[fileURLToPath(new URL('child.mjs',import.meta.url))],{detached:true,windowsHide:true,stdio:'ignore'});writeFileSync(join(receipts,'child-pid'),String(child.pid));child.unref();setTimeout(()=>{writeFileSync(join(receipts,'release'),'parent exiting');process.exit(0)},1000);\n");
+            + ";const child=spawn(process.execPath,[fileURLToPath(new URL('child.mjs',import.meta.url))],{detached:true,windowsHide:true,stdio:'ignore'});writeFileSync(join(receipts,'child-pid'),String(child.pid));child.unref();setTimeout(()=>{writeFileSync(join(receipts,'release'),'parent exiting');process.exit(" + exit + ")},1000);\n");
         WorkspaceRuntime runtime = runtime();
         List<Map<String, Object>> observations = new java.util.concurrent.CopyOnWriteArrayList<>(); runtime.observeProcesses(observations::add);
         ProcessHandle child = null;
         try {
-            Map<String, Object> result = runtime.verify(root.toString(), "node parent.mjs", () -> false, ignored -> {});
+            String command = "node parent.mjs" + (System.getProperty("os.name").toLowerCase().contains("win") ? "; exit $LASTEXITCODE" : "");
+            Map<String, Object> result = runtime.verify(root.toString(), command, () -> false, ignored -> {});
             long pid = Long.parseLong(Files.readString(receipts.resolve("child-pid")));
             child = originalFixtureChild(receipts.resolve("child-pid"), pid);
             Map<String, Object> original = observations.stream().filter(value -> ((Number) value.get("pid")).longValue() == pid).findFirst().orElseThrow();
-            assertEquals("SUCCEEDED", result.get("status"), result.toString());
-            assertEquals(0, result.get("exitCode"));
+            assertEquals(status, result.get("status"), result.toString());
+            assertEquals(exit, result.get("exitCode"));
             assertTrue(Files.exists(receipts.resolve("finished")), "original child must finish naturally before command confirmation");
             assertTrue(ManagedProcessLedger.observedProcessStopped(pid, original.get("processStartedAt").toString()));
             assertFalse(child != null && child.isAlive());

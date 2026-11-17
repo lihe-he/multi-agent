@@ -134,7 +134,7 @@ export function terminalCoreEnvironment(directory, packaged) {
     }
   } else {
     path = join(directory, 'system-path'); mkdirSync(path);
-    for (const executable of ['git', 'stty', 'sleep']) {
+    for (const executable of ['git', 'stty', 'sleep', 'mv']) {
       const original = execFileSync('/bin/sh', ['-c', `command -v ${executable}`], { encoding: 'utf8' }).trim();
       assert.ok(original.startsWith('/')); symlinkSync(realpathSync(original), join(path, executable));
     }
@@ -160,7 +160,7 @@ export function inspectOriginalTerminalBundle(terminal, core) {
 }
 
 export function writeTerminalShellFixture(source, { ui = false } = {}) {
-  const windows = process.platform === 'win32', newline = windows ? '\r' : '\n', basename = ui ? 'native-ui-probe' : 'terminal-probe';
+  const windows = process.platform === 'win32', newline = windows || ui ? '\r' : '\n', basename = ui ? 'native-ui-probe' : 'terminal-probe';
   const marker = ui ? 'ORIGINAL_NATIVE_UI_中文_' : 'ORIGINAL_PTY_中文_', markup = ui ? '<script>window.__nativeUiMarkupExecuted=true</script>' : '<script>window.__terminalMarkupExecuted=true</script>';
   const environmentFile = ui ? 'actual-environment.json' : 'shell-environment.json', sourceText = ui ? 'original native UI source\n' : 'original source\n';
   writeFileSync(join(source, '.gitattributes'), '* -text\n'); writeFileSync(join(source, 'app.txt'), sourceText);
@@ -169,16 +169,20 @@ $utf8=[Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding=$utf8
 if ($Mode -eq 'unicode') {
   [IO.File]::AppendAllText('manual-count.txt','1',$utf8)
-  [Console]::WriteLine('${marker}'+[char]27+'[32mGREEN'+[char]27+'[0m')
-  [Console]::WriteLine('${markup}')
   $facts=[ordered]@{}
   foreach ($name in @('WORKBENCH_TOKEN','WORKBENCH_CORE_TOKEN','OPENAI_API_KEY','ANTHROPIC_API_KEY')) { $facts[$name]=[bool][Environment]::GetEnvironmentVariable($name) }
   [IO.File]::WriteAllText('${environmentFile}',($facts|ConvertTo-Json -Compress),$utf8)
+  [Console]::WriteLine('${marker}'+[char]27+'[32mGREEN'+[char]27+'[0m')
+  [Console]::WriteLine('${markup}')
+} elseif ($Mode -eq 'size') {
+  [IO.File]::WriteAllText('actual-native-size.txt.tmp',(([Console]::WindowHeight).ToString()+' '+[Console]::WindowWidth),$utf8)
+  [IO.File]::Move('actual-native-size.txt.tmp','actual-native-size.txt')
 } elseif ($Mode -eq 'forbidden') {
   [IO.File]::WriteAllText('must-not-execute.txt','forbidden after revocation',$utf8)
 } elseif ($Mode -eq 'hold') {
   [IO.File]::AppendAllText('crash-count.txt','1',$utf8)
-  [IO.File]::WriteAllText('crash-child-pid.txt',[string]$PID,$utf8)
+  [IO.File]::WriteAllText('crash-child-pid.txt.tmp',[string]$PID,$utf8)
+  [IO.File]::Move('crash-child-pid.txt.tmp','crash-child-pid.txt')
   [Console]::WriteLine('ORIGINAL_CORE_CRASH_OUTPUT')
   while ($true) { [Console]::WriteLine('original pending output 中文'); [Threading.Thread]::Sleep(20) }
 } else { exit 3 }
@@ -186,14 +190,14 @@ if ($Mode -eq 'unicode') {
 case "$1" in
 unicode)
   printf '1' >> manual-count.txt
+  printf '{"WORKBENCH_TOKEN":%s,"WORKBENCH_CORE_TOKEN":%s,"OPENAI_API_KEY":%s,"ANTHROPIC_API_KEY":%s}\n' "$(present "\${WORKBENCH_TOKEN+x}")" "$(present "\${WORKBENCH_CORE_TOKEN+x}")" "$(present "\${OPENAI_API_KEY+x}")" "$(present "\${ANTHROPIC_API_KEY+x}")" > ${environmentFile}
   printf '${marker}\\033[32mGREEN\\033[0m\\n'
   printf '%s\\n' '${markup}'
-  printf '{"WORKBENCH_TOKEN":%s,"WORKBENCH_CORE_TOKEN":%s,"OPENAI_API_KEY":%s,"ANTHROPIC_API_KEY":%s}\\n' "$(present "\${WORKBENCH_TOKEN+x}")" "$(present "\${WORKBENCH_CORE_TOKEN+x}")" "$(present "\${OPENAI_API_KEY+x}")" "$(present "\${ANTHROPIC_API_KEY+x}")" > ${environmentFile}
   ;;
 forbidden) printf '%s' 'forbidden after revocation' > must-not-execute.txt ;;
 hold)
   printf '1' >> crash-count.txt
-  printf '%s' "$$" > crash-child-pid.txt
+  printf '%s' "$$" > crash-child-pid.txt.tmp && mv crash-child-pid.txt.tmp crash-child-pid.txt
   printf 'ORIGINAL_CORE_CRASH_OUTPUT\\n'
   while :; do printf 'original pending output 中文\\n'; sleep 0.02; done
   ;;
@@ -206,5 +210,5 @@ esac
   const baselineCommand = windows ? `if ([IO.File]::ReadAllText('app.txt') -cne '${sourceText}') { exit 2 }; [Console]::WriteLine('ORIGINAL_TERMINAL_BASELINE')`
     : `IFS= read -r original < app.txt; [ "$original" = '${sourceText.trim()}' ] || exit 2; printf 'ORIGINAL_TERMINAL_BASELINE\\n'`;
   return { sourceText, unicodeCommand: command('unicode'), forbiddenCommand: command('forbidden'), crashCommand: command('hold'), baselineCommand,
-    sizeCommand: windows ? `powershell.exe -NoLogo -NoProfile -NonInteractive -Command "[IO.File]::WriteAllText('actual-native-size.txt',(([Console]::WindowHeight).ToString()+' '+[Console]::WindowWidth))"${newline}` : `stty size > actual-native-size.txt${newline}` };
+    sizeCommand: windows ? command('size') : `stty size > actual-native-size.txt.tmp && mv actual-native-size.txt.tmp actual-native-size.txt${newline}` };
 }

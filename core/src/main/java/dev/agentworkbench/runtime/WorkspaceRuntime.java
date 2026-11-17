@@ -1515,7 +1515,7 @@ public class WorkspaceRuntime {
             }
             int exit = process.isAlive() ? -1 : process.exitValue();
             List<ObservedChild> unconfirmed = unconfirmedChildren(observedChildren);
-            if (state.equals("SUCCEEDED") && exit == 0 && outputComplete && !truncated.get() && !unconfirmed.isEmpty()) {
+            if (state.equals("SUCCEEDED") && outputComplete && !truncated.get() && !unconfirmed.isEmpty()) {
                 long settleDeadline = Math.min(deadline, System.nanoTime() + Duration.ofSeconds(3).toNanos());
                 // 父进程返回与原后代退出可能不同步；只等待同一身份收尾，不重启进程或重放命令。
                 while (!unconfirmed.isEmpty() && !cancelled.getAsBoolean() && System.nanoTime() < settleDeadline) {

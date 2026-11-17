@@ -85,3 +85,17 @@ macOS完整UI225通过/1失败。原trace中请求计数失败时两次`after=0`
 Ubuntu真实终端HTTP前三项通过，强杀时原独立停止探针的`stopRequested`断言通过，但`originalStopped`五秒内仍为false；探针完整返回在原断言后才保存，失败时缺失。拥有核心的Node父进程当时用`execFileSync`阻塞等待探针，其后原核心SIGKILL、所有原身份停止分别可核验，原OS僵尸状态未记录，具体回收归因属于推断。现用异步`execFile`保留相同原PID/出生探针、5秒停止要求和30秒命令外限，Node可继续处理退出事件，且在断言前保存原停止返回。本机实际最终Jar的完整4项HTTP/崩溃恢复通过，UNKNOWN、单次输入效果、预算和零重放均保留。
 
 这三处均未更改产品核心或Web。准确源码、选定10项XML、完整226项UI和实际HTTP4项分别见[本机跟进](../qa/alpha20-ci-execution-followup-win32.json)；原本机545项完整构建的测试源码范围保持，不能称其执行了后来的夹具。原两轮失败与新提交完整三端验证继续独立保存。
+
+## 第三轮三端原执行与跟进（2026-11-17）
+
+准确提交`fec42fa`的[run 44011006549](https://github.com/lihe-he/multi-agent/actions/runs/44011006549)终态failure。Windows完整44套/545项为534通过、8条件跳过、1失败和2错误，均停在原Git差异比较的收尾拒绝；三个原失败现场完整保存，但异常没有记录原status、exitCode、流和后代状态，不能由本机重跑通过反推原因。macOS与Ubuntu核心各535通过/10条件跳过，完整UI各226通过。三份ZIP及GitHub digest、原XML和请求现场见[第三轮原CI失败](../qa/alpha20-ci-third-failure.json)。
+
+macOS真实HTTP在原尺寸文件刚创建时读取到空文本，原保留文件最终为`37 101\n`。夹具现在先将`stty size`写入同目录临时文件，再由原`mv`发布目标；实际发行最小PATH加入`mv`。Ubuntu真实HTTP四项已经通过，真实UI的两条人工输入分别一次ACK，且各只有一次原生派发/授权；失败来自摘要预期LF、实际xterm发送CR。生成UI命令改用CR，HTTP POSIX仍用LF，保持原长度、SHA-256、一次效果及完整输出断言。Git Bash的延迟分段`stty()`命令体核对通过，不作为实际macOS/Linux PTY验收。
+
+本机另用相同生产类确定性复现非零退出的后代收尾缺陷：退出0会等原子进程自然结束，退出1则直接停止尚未结束的原后代并返回UNKNOWN。`git diff --no-index`以退出1表示存在差异，因此修复相关，但远端原异常未保存准确返回值，因果归属仍未证实。现对非零退出沿用原有最多3秒及总命令截止时间内的同身份等待；取消、超时、输出不完整、截断和未确认原后代的规则保持。差异拒绝补上status、exitCode和outputComplete诊断，不接纳部分结果。
+
+原自然退出用例委托同一夹具，新增退出1/37两项实例；首次定向38项中的退出37被PowerShell转为1，独立保留原失败。Windows夹具显式`exit $LASTEXITCODE`后五项自然退出/非零退出/UNKNOWN回归通过。新完整生产`clean verify`为44套/547项，537通过、10条件跳过、零失败或错误，40分56秒；全部当前核心输入摘要保持，原545项保留，仅新增两个退出实例。新Jar为44,336,382字节，SHA-256 `d24dc14969c84d9425b6646cb683f55c1f3338bf28a0e350efaf18d733f81249`，160个class、16份资源、36份依赖、24份native和13份许可资源逐项核对。原生故障现场1,164份文件及48原身份停止独立核验，两处输出UNKNOWN和构造器回执缺口保持。
+
+新Jar的首轮本机HTTP在Unicode标记已经可读、环境事实文件尚未产生时失败，原ENOENT及所有原身份停止保留。夹具改为先完成事实文件再输出标记，尺寸和崩溃子PID文件均写完后原子发布。随后HTTP四项通过；首轮真实UI又因较长尺寸命令回显将Unicode标记挤出重载后可访问视口而失败，原截图、输出及停止事实保持。Windows尺寸采集移到同一原脚本的`size`分支，仍读取真实Console尺寸，用短输入调用并保留原长度/摘要/一次动作和重载断言。最终准确夹具的HTTP4项和真实UI5项均通过，UNKNOWN、预算、完整输出ZIP及零重放保持。Git Bash命令体和CR/LF再次绑定最终夹具核对；实际POSIX与包内JRE仍由准确提交三端CI验收。
+
+Java106份/370条原注释与顺序保持，新增Javadoc为0；原TeamExecutionTest源码不变，原RuntimeIntegrationTest的历史用例和边界保留，新增实例单独计数。旧545项Jar和旧发行物继续保存，新Jar及准确提交三端验收各自绑定原回执。
