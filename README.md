@@ -84,7 +84,7 @@ npm run start
 
 `npm run test:checkpoints` 使用普通最终 Jar、原 Worker 和生产 Web，验证 clone/worktree 的实际文件/index保存、工具请求来源、稳定历史分页、过期预览零写入、撤销与用户后续文件保全、重新验证状态和完整引用 ZIP。两处 SQLite 回执故障分别保留原 APPLIED/ACK/UNKNOWN，重启核对原身份并检查零重放；本机确定性模型、故障注入源码、编译类和完整现场按每次独立运行保存。
 
-`npm run test:previews` 检查端口与导航策略、窄 IPC、配置同步和清理失败边界。`npm run test:previews:native` 启动实际开发桌面、核心与 Worker，用本地 HTTP 登录夹具检查持久 Cookie、项目/会话隔离、多标签、弹窗暂停、站点清理、代次账本与撤权；Linux 需虚拟显示。该入口使用源码构建产物，发行包另行验收。
+`npm run test:previews` 检查端口与导航策略、窄 IPC、配置同步和清理失败边界。`npm run test:previews:native` 启动实际开发桌面、核心与 Worker，用本地 HTTP 登录夹具检查持久 Cookie、项目/会话隔离、多标签、弹窗暂停、站点清理、代次账本与撤权。完成 `npm run package:prepared` 后，`npm run test:previews:packaged` 核对包内 Jar、JRE 与全部桌面/Web 字节，移除 PATH 中的外部 Java/Node 后对实际发行程序运行相同九组检查。两个原生入口在 Linux 均需虚拟显示；安装器生命周期、外部 OAuth 与远程转发分别验收。
 
 ![Windows 工作台 · 墨夜蓝](./docs/qa/themes-dark-win32.png)
 

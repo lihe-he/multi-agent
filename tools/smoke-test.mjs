@@ -16,6 +16,10 @@ const checks = [];
 const calls = [];
 const teamProtocol = createTeamProtocol();
 const teamReports = [];
+const cancellationObservations = [];
+const delayedRequests = [];
+let releaseDelayed;
+const delayedResponseGate = new Promise(resolve => { releaseDelayed = resolve; });
 let routeId;
 let routeConfig;
 let server;
@@ -86,10 +90,14 @@ async function startFixture() {
       const stage = prompt.match(/阶段 kind=([A-Z_]+)/)?.[1] || 'UNSPECIFIED';
       const reviewing = stage === 'REVIEW';
       const kind = reviewing ? 'review' : writable ? 'implementation' : 'analysis';
-      calls.push({ number: calls.length + 1, path: incoming.url, kind, stage, tools: toolNames, completedTools: completedTools.length,
+      calls.push({ number: calls.length + 1, path: incoming.url, kind, stage, tools: toolNames, completedTools: completedTools.length, arrivedAt: new Date().toISOString(), delayed: prompt.includes('SMOKE_DELAY'),
         proposalIncludesPriorHandoffs: stage === 'PROPOSAL' && prompt.includes('已完成阶段交接资料') });
       if (teamProtocol.matches(body)) { reply(response, await teamProtocol.message(body)); return; }
-      if (prompt.includes('SMOKE_DELAY')) await new Promise(resolve => setTimeout(resolve, 1_500));
+      if (prompt.includes('SMOKE_DELAY')) {
+        const pending = { callNumber: calls.length, arrivedAt: new Date().toISOString(), releasedAt: null, closedAt: null };
+        delayedRequests.push(pending); response.once('close', () => { pending.closedAt = new Date().toISOString(); });
+        await delayedResponseGate; pending.releasedAt = new Date().toISOString();
+      }
       if (completedTools.length === 0 && toolNames.includes('read_file')) {
         reply(response, { content: null, tool_calls: [tool('read_file', { path: 'src/greeting.txt' })] });
       } else if (writable && completedTools.length === 1) {
@@ -443,9 +451,28 @@ try {
     const value = (await request('/tasks', { ...definition, title: `SMOKE cancel ${Date.now()}`, goal: `${definition.goal}\nSMOKE_DELAY` }, { expected: [200, 201] })).data;
     await request(`/tasks/${value.id}/approve`, {});
     const deadline = Date.now() + 30_000;
-    while (calls.length === start && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 100));
-    assert.ok(calls.length > start, 'The delayed model request must actually start before cancellation');
+    const delayedCall = () => calls.find((call, index) => index >= start && call.delayed && Date.parse(call.arrivedAt) <= deadline);
+    let observed;
+    while (!delayedCall() && Date.now() < deadline) {
+      observed = (await request(`/tasks/${value.id}`)).data;
+      const facts = { at: new Date().toISOString(), taskId: value.id, state: observed.state, error: observed.error, taskExecution: observed.taskExecution,
+        activeOperation: observed.activeOperation, activeStageId: observed.activeStageId, modelCalls: calls.length - start };
+      if (JSON.stringify({ ...facts, at: undefined }) !== JSON.stringify({ ...cancellationObservations.at(-1), at: undefined })) cancellationObservations.push(facts);
+      if (['FAILED', 'UNKNOWN', 'WAITING_INPUT'].includes(observed.state)) break;
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    if (!delayedCall()) {
+      const endpoints = ['task-executions?limit=100', 'dispatch-actions?limit=100', 'operations', 'model-requests?limit=100', 'worker-leases?limit=100', 'events?after=0&limit=100'];
+      const snapshots = await Promise.allSettled(endpoints.map(endpoint => request(`/tasks/${value.id}/${endpoint}`)));
+      cancellationObservations.push({ at: new Date().toISOString(), taskId: value.id, boundary: 'MODEL_REQUEST_NOT_OBSERVED_BEFORE_CANCELLATION', task: observed,
+        snapshots: snapshots.map((result, index) => ({ endpoint: endpoints[index], ...(result.status === 'fulfilled' ? { data: result.value.data } : { error: result.reason.message }) })) });
+    }
+    assert.ok(delayedCall(), `The delayed model request must actually start before cancellation; task=${value.id}, state=${observed?.state || 'UNOBSERVED'}, error=${observed?.error || ''}`);
+    const pending = delayedRequests.find(request => request.callNumber === delayedCall().number);
+    assert.ok(pending && !pending.releasedAt && !pending.closedAt, 'The exact delayed response must still be held when cancellation is requested');
+    cancellationObservations.push({ at: new Date().toISOString(), taskId: value.id, boundary: 'EXACT_DELAYED_RESPONSE_HELD_BEFORE_CANCEL', callNumber: pending.callNumber });
     await request(`/tasks/${value.id}/cancel`, {});
+    releaseDelayed();
     const cancelled = await untilTask(value.id, ['CANCELLED', 'UNKNOWN'], 30_000);
     assert.ok(['CANCELLED', 'UNKNOWN'].includes(cancelled.state));
     if (cancelled.state === 'UNKNOWN') assert.ok(cancelled.error || cancelled.issues?.length || cancelled.evidence?.length);
@@ -459,6 +486,7 @@ try {
   console.error(error.stack || error.message);
   process.exitCode = 1;
 } finally {
+  releaseDelayed();
   if (routeId) {
     try { await request('/routes', { ...routeConfig, id: routeId, enabled: false }, { expected: null }); } catch { /* Keep the report even if the core stopped. */ }
   }
@@ -466,7 +494,7 @@ try {
     server.closeAllConnections();
     await new Promise(resolve => server.close(resolve));
   }
-  const report = { createdAt: new Date().toISOString(), platform: process.platform, status: process.exitCode ? 'failed' : 'passed', baseUrl, fixture, projectPath, checks, calls, teams: teamReports, scope: 'Local deterministic model protocol fixture only; not external provider, CLI or cross-platform certification.' };
+  const report = { createdAt: new Date().toISOString(), platform: process.platform, status: process.exitCode ? 'failed' : 'passed', baseUrl, fixture, projectPath, checks, calls, teams: teamReports, cancellationObservations, delayedRequests, scope: 'Local deterministic model protocol fixture only; not external provider, CLI or cross-platform certification.' };
   const serialized = JSON.stringify(report, (_key, value) => typeof value === 'string'
     ? value.replaceAll(token, '[REDACTED]').replaceAll('test-only-not-a-secret', '[REDACTED_FIXTURE_KEY]')
     : value, 2);

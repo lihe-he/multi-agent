@@ -1,0 +1,96 @@
+{
+  "recordedAt": "2026-11-17T14:04:52.881Z",
+  "status": "passed",
+  "version": "0.2.0-alpha.21",
+  "scope": "ACTUAL_DEVELOPMENT_ELECTRON_MAIN_PRELOAD_CORE_AND_WEB; LOCAL_HTTP_LOGIN_FIXTURE; PACKAGED_AND_REMOTE_FORWARDING_SEPARATE",
+  "checks": 9,
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\preview-native-i21zhg",
+  "receipt": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha21-preview-development-followup-44ca851355464e0a8e7629f9464e3ce4\\current-preview-native-win32.json",
+  "receiptSha256": "9fc2d5c8c7cb184825374303538fdd83c1c5041c0d8a5cb93e4b91f00a3db69c",
+  "inputs": [
+    {
+      "file": "package.json",
+      "sha256": "5ad0245b92c36eb3a3fc271ed489062c0bb9202ef6003e9326427738d4c99005"
+    },
+    {
+      "file": "tools/preview-native-smoke.cjs",
+      "sha256": "2fad77ad91a7c78ab3b72c453963e869efddd848929fa552a5fc654fd30c9482"
+    },
+    {
+      "file": "tools/terminal-fixture.mjs",
+      "sha256": "e5c5c133a5604042a1a5b61fb91f386ca48e749576a8709f5436a04c19e89ecd"
+    },
+    {
+      "file": "tools/ProcessRecoveryProbe.java",
+      "sha256": "633c55a392cb4bda1bd1b3a1e4b6347eabbcd14b6507dd62f2ff67925b1b3268"
+    },
+    {
+      "file": "desktop/main.cjs",
+      "sha256": "c609643cfbce3be93cd7fbd9d87326b25c0c64e8c55fd78c7ab3da4587cc47d5"
+    },
+    {
+      "file": "desktop/preload.cjs",
+      "sha256": "728d50eb7257e060c0188764398dbedf6ff079271a8fbdb05dab60118895e46c"
+    },
+    {
+      "file": "desktop/preview-host.cjs",
+      "sha256": "c4765bf398f2fe9d30858a681d45ae53267ccbeb70ccc9e0fbb85bb96b4ccdda"
+    },
+    {
+      "file": "desktop/preview-policy.cjs",
+      "sha256": "a44b7171abd8018a1afc385021d5fc8e04fa6d3a0ca05683ff3d71cf4400984b"
+    },
+    {
+      "file": "desktop/preview-ipc-policy.cjs",
+      "sha256": "b1c5c47e97176b350762389e3182d138a88c42be269f444fffa1b77f5f552afe"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/PreviewCatalog.java",
+      "sha256": "3bdac663f906018412f9dfb5dbe6c13bad99716ae90ad47832aafb834bf90c0a"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/PreviewController.java",
+      "sha256": "53fb1ec80db788731c83bfced3cef70c2c2d7501b5c69a81e26d9c62f4e75828"
+    },
+    {
+      "file": "web/src/SessionWorkspace.tsx",
+      "sha256": "93990b2da5bf535db141a23aeb60bebfd7bead35077e914208386b463ddf4d85"
+    },
+    {
+      "file": "web/src/App.tsx",
+      "sha256": "30c6a1f2f3d61662e75b93320f219c2bc3e46baa262a7626e7898bcfedc90045"
+    },
+    {
+      "file": "web/dist/assets/index-DDRkHQnO.js",
+      "sha256": "1043b23d0dd8420a7163aadb7f4f195d6d2f2be919c27250e020679e58511d5b"
+    },
+    {
+      "file": "web/dist/assets/index-DkxEUAkg.css",
+      "sha256": "39a1f7232ad3e6899a61292d3aae04f12f67bd687d0a2f2ba390704da1e9204e"
+    },
+    {
+      "file": "web/dist/assets/TaskTerminals-AGoQhemR.js",
+      "sha256": "11a1d160c27eff308ac197bf8dbf17cec3fbef49dbafc564a048dc17e37e6305"
+    },
+    {
+      "file": "web/dist/assets/TaskTerminals-BbT8zRoT.css",
+      "sha256": "cbbcf611656957e8adacaefc7849df70e70db93aa2a6832b5ed771534dddabe5"
+    },
+    {
+      "file": "core/target/agent-workbench-core-0.2.0-alpha.21.jar",
+      "sha256": "0d7fb612133569d6165551306cd9be8a9376a5782347e122ae647b8814fe903f"
+    }
+  ],
+  "originalIdentitiesVerifiedStopped": 12,
+  "isolatedDesktop": {
+    "Desktop": "Alpha21DevelopmentFollowupf5776cc284764c69a2f56c8528f5505d",
+    "InputDesktopBefore": "Default",
+    "InputDesktopAfter": "Default",
+    "RunnerThreadDesktop": "Default",
+    "ProcessId": 15228,
+    "ExitCode": 0,
+    "StartedAt": "2026-11-17T14:01:41.1070761Z",
+    "CompletedAt": "2026-11-17T14:02:32.5362857Z",
+    "DesktopHandleClosed": true
+  }
+}

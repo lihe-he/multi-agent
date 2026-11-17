@@ -22,6 +22,7 @@
     "test:desktop": "node tools/desktop-smoke.cjs",
     "test:previews": "node --test desktop/preview-policy.test.cjs desktop/preview-host.test.cjs desktop/preview-ipc-policy.test.cjs",
     "test:previews:native": "node tools/preview-native-smoke.cjs",
+    "test:previews:packaged": "node tools/preview-native-smoke.cjs --packaged",
     "test:packaged": "node tools/ci-desktop.mjs",
     "test:standalone": "node tools/standalone-smoke.mjs",
     "test:recovery": "node tools/process-recovery-smoke.mjs",

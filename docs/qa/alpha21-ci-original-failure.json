@@ -1,0 +1,686 @@
+{
+  "recordedAt": "2026-11-17T13:42:50.401Z",
+  "status": "failed",
+  "headSha": "3c70a083141a70c9aadd0fc229980028ccab7edc",
+  "runId": 44082980225,
+  "runAttempt": 1,
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/44082980225",
+  "authority": "EXACT_GITHUB_RUN_AND_JOB_METADATA_WITH_THREE_DOWNLOADED_JOB_LOGS_AND_WHOLE_DIGEST_VERIFIED_WINDOWS_ZIP; OTHER_ZIPS_PENDING",
+  "jobs": [
+    {
+      "id": 134038031297,
+      "name": "verify (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "failedSteps": [],
+      "coreSummaryFromOriginalJobLog": {
+        "tests": 555,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 10
+      },
+      "uiPassedFromOriginalJobLog": true,
+      "nativePreviewChecksFromOriginalJobLog": 9,
+      "log": {
+        "file": ".runtime/alpha21-ci/run-44082980225-attempt-1/job-134038031297.log",
+        "bytes": 210332,
+        "sha256": "f89dd92d403bff49f0643601101502c3583b6febf3d7205da40a2e8081bdbe9a"
+      }
+    },
+    {
+      "id": 134038031452,
+      "name": "verify (windows-latest)",
+      "status": "completed",
+      "conclusion": "failure",
+      "failedSteps": [
+        "Full local protocol lifecycle"
+      ],
+      "coreSummaryFromOriginalJobLog": {
+        "tests": 555,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8
+      },
+      "uiPassedFromOriginalJobLog": false,
+      "nativePreviewChecksFromOriginalJobLog": null,
+      "log": {
+        "file": ".runtime/alpha21-ci/run-44082980225-attempt-1/job-134038031452.log",
+        "bytes": 50938,
+        "sha256": "c15451647d6742f3a6f8e26286a2c161f39d5d96b85614b2d4f81c26813310c5"
+      }
+    },
+    {
+      "id": 134038031808,
+      "name": "verify (macos-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "failedSteps": [],
+      "coreSummaryFromOriginalJobLog": {
+        "tests": 555,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 10
+      },
+      "uiPassedFromOriginalJobLog": true,
+      "nativePreviewChecksFromOriginalJobLog": 9,
+      "log": {
+        "file": ".runtime/alpha21-ci/run-44082980225-attempt-1/job-134038031808.log",
+        "bytes": 198357,
+        "sha256": "093611c223e672b1a5ecb5484996f421605452c47be42cbf4157a5a761075e8b"
+      }
+    }
+  ],
+  "windowsFailure": {
+    "assertion": "The delayed model request must actually start before cancellation",
+    "source": "tools/smoke-test.mjs:447",
+    "observedWaitMs": 30000,
+    "previousChecksPassed": 28,
+    "exactTaskStateSaved": false,
+    "exactRootCause": "UNKNOWN",
+    "originalFailedCheckNotChangedByLocalSuccess": true
+  },
+  "artifacts": [
+    {
+      "id": 14330531161,
+      "name": "evidence-windows-latest",
+      "size": 67231380,
+      "digest": "sha256:ad5f1c1e4771a3434cc33e408a3dc927b6f932cc83b0ab5cc38f25b6cf3c7dd5",
+      "downloadedAndDigestVerified": true,
+      "file": ".runtime\\alpha21-ci\\windows-small-ranges-attempt1\\evidence-windows-latest-14330531161.zip"
+    },
+    {
+      "id": 14330285059,
+      "name": "desktop-ubuntu-latest",
+      "size": 189953498,
+      "digest": "sha256:31f5895c420519a09de9065a033d966496c1a9f18536edbcccb7cfcd3edf183c",
+      "downloadedAndDigestVerified": false
+    },
+    {
+      "id": 14329538553,
+      "name": "evidence-macos-latest",
+      "size": 298619650,
+      "digest": "sha256:63318ab12f8fbd79c6a5ce829d2123ad9af2efe84b12883a06eb6d518387903d",
+      "downloadedAndDigestVerified": false
+    },
+    {
+      "id": 14329376795,
+      "name": "evidence-ubuntu-latest",
+      "size": 311693588,
+      "digest": "sha256:13cae58e3b6bef17f5649833baf7fdf18eb59faf9d47d84ad6929bfb1a9e6633",
+      "downloadedAndDigestVerified": false
+    },
+    {
+      "id": 14328909898,
+      "name": "desktop-macos-latest",
+      "size": 180543533,
+      "digest": "sha256:7a5e032330b7940f440d9f2faed94486fe1d81610164fdd0778a7d4756157233",
+      "downloadedAndDigestVerified": false
+    }
+  ],
+  "metadata": [
+    {
+      "file": ".runtime/alpha21-ci/run-44082980225-attempt-1/run.json",
+      "sha256": "7c7dd17643e0017d053b4ab32b46605b7309f74e954975be603d860622cacb7e"
+    },
+    {
+      "file": ".runtime/alpha21-ci/run-44082980225-attempt-1/jobs.json",
+      "sha256": "2ef778b516a4b144f86d4ca94d2e1ff461df4ee4d5b08b9d60646fdd89c299ef"
+    },
+    {
+      "file": ".runtime/alpha21-ci/run-44082980225-attempt-1/artifacts.json",
+      "sha256": "598ce3001060b5b37975ff8f1eda557ff3f4c3135cb524242e187672bdb7d716"
+    }
+  ],
+  "preservation": {
+    "directory": ".runtime/alpha21-ci/run-44082980225-attempt-1",
+    "partialRangesKept": true,
+    "wholeArtifactVerificationPending": true
+  },
+  "windowsArtifactAudit": {
+    "recordedAt": "2026-11-17T13:42:50.400Z",
+    "status": "failed",
+    "runId": 44082980225,
+    "headSha": "3c70a083141a70c9aadd0fc229980028ccab7edc",
+    "artifact": {
+      "recordedAt": "2026-11-17T13:39:31.235Z",
+      "runId": 44082980225,
+      "headSha": "3c70a083141a70c9aadd0fc229980028ccab7edc",
+      "artifactId": 14330531161,
+      "file": ".runtime\\alpha21-ci\\windows-small-ranges-attempt1\\evidence-windows-latest-14330531161.zip",
+      "size": 67231380,
+      "sha256": "ad5f1c1e4771a3434cc33e408a3dc927b6f932cc83b0ab5cc38f25b6cf3c7dd5",
+      "digestVerified": true
+    },
+    "suites": 45,
+    "core": {
+      "tests": 555,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 8,
+      "passed": 547
+    },
+    "suiteEvidence": [
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.AgentRunStoreTest.xml",
+        "sha256": "732bc60ddf6a288d84b80411fe9ce80ab9266095a4a9e2c432d97fcf034be70d",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointEngineTest.xml",
+        "sha256": "b6a5f537f82c041505b9b8db8c39835aebfc7ff24a66901ba7cbe6b2df30b772",
+        "tests": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointExportHistoryTest.xml",
+        "sha256": "937cb20516256a06dbd57ec6e3413c80d04d3e59b131da25f5412641a4abe743",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ExecutionStoreTest.xml",
+        "sha256": "0a452b83438023dbaf69d4aff4506f4f5caf2eab0f7128be68f79cfb4ca24e09",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.FileToolHistoryTest.xml",
+        "sha256": "625af1236e0a040485f29cb8d6b646519f88e6fb34122649a88d2b332659b63e",
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.GitWorkspaceTest.xml",
+        "sha256": "eb659a39f80f1c2d848d844c87de57abcaa18f346da4fd19206e18c84604fae7",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.LocalAccessFilterTest.xml",
+        "sha256": "bb6449f15221e4c20050c869b665f3f1b770ec03ee6905545ee21162221ad2db",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ManagedProcessLedgerTest.xml",
+        "sha256": "63f3bb42c07eb1685ca131cd851674d1e4038c1971121d260bf5a2dab1dbc43b",
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.mcp.McpIntegrationTest.xml",
+        "sha256": "619c09cb6acc192d37c95d87b142a1c8a0fa9d083d43067a72db750e664d1e6b",
+        "tests": 25,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ModelRequestStoreTest.xml",
+        "sha256": "4b9d2ba84b0f1ab4291b972ff7df99af5a5e8c20b75999d68888b97ca9f549c0",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.NativeProcessAccessTest.xml",
+        "sha256": "8d153358162a3073bacd53e4ee66de99d33cb66dff45151bd09995dd902879aa",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.PlanAndPolicyTest.xml",
+        "sha256": "5164072a8b2ac35cc2965acbe472a22425322c14e0c0087aa255504b711da247",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.PreviewCatalogTest.xml",
+        "sha256": "43ceaf635ca6b9c0b0c2c5da3a12d6d0a6ee9041e439c26bc5437ea6358017a4",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+        "sha256": "da82c601939d773dcc51e3b7b8bbd5a4bd2c1c5a08e864339450664af9b6eb96",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RootDispatchEngineTest.xml",
+        "sha256": "c20ed8855a242760b2172f3f5b2a818f14dc79f7787f273bb41e6aaebcb9c05f",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.FileVersionRuntimeTest.xml",
+        "sha256": "53e77e310acc8494bfdc21a7e210f61fd48739f03e8471e1789aa42f4633ead5",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitBlobBatchTest.xml",
+        "sha256": "37f94e18e37b82f81f73a95d3d8d8d5b35fa7744ef2270785079db968030dd61",
+        "tests": 22,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitDiffViewTest.xml",
+        "sha256": "93e046544acdba7a5e8c35f7dd107109408664a011a7190a4f96d29671cdf73c",
+        "tests": 33,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtyBundleTest.xml",
+        "sha256": "feef8aadd8e963ba0a2873260eff9a5ddd7f914e2e0d4b1f265845d546a20a1a",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtySessionTest.xml",
+        "sha256": "18286baa084e4886fa66553c0eae76e26f25f9275187a2404f0eb47aedd9c280",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.TerminalOutputArchiveTest.xml",
+        "sha256": "7ec3a326d922c68cfc11a792bd87183d25786c841caa9e4e35f3e7e526b4febb",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.xml",
+        "sha256": "4536fc97288a2f4e633899a5a31acbe6f681cfbd9b7fed8114982367b47c0c61",
+        "tests": 33,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 3
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceWriteGuardTest.xml",
+        "sha256": "faa59cccd51b8ab914b1f34c5d4cb864dcb45484660875fece61b356eb692701",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeDelegationTest.xml",
+        "sha256": "edc3f5bf8cd7950355a2caddcc810e0f2dec8758f803780a6547ef14cddbd60e",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeIntegrationTest.xml",
+        "sha256": "e6911ebb9e8bf99622660a965ba4e461517617477bdbaa567a0e8c75959b9a4d",
+        "tests": 35,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.SessionStoreTest.xml",
+        "sha256": "3aad148e0486ac09fe7b4f6d08386aec54ec155f7f78875261aac32075a80667",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TaskDispatchQueueTest.xml",
+        "sha256": "2768679c07897b9dd039d5c913d14c00f69829157a3f7c2f6bce648625495493",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamExecutionTest.xml",
+        "sha256": "a8a0eb1db898ac68df61ef7c9058353753bf3447a638eea1ef81c97c5e1bacee",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamRecordsTest.xml",
+        "sha256": "a438596c14aba0e9892b3c6b53b15468320a4377b9aa8ae8d912ad1c8a3a31ac",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalControllerTest.xml",
+        "sha256": "6b0af9d71954809512ff78a862a4d4bdfb90043acee16a41f881c5415fa1771d",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalEngineTest.xml",
+        "sha256": "a05a8230cb588de49110fce781e4fedce87062133fb1dd6c6589645c704c143a",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalExportHistoryTest.xml",
+        "sha256": "6817402c0ee4dc1762b0da2f80ad5aff8f31c1fa963e12a37114b73dce1b0de8",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalLedgerTest.xml",
+        "sha256": "9b43f1147d35ca796fd0b128ca60d42d3c56c603f70b1f37caf434c3fa15a3b4",
+        "tests": 30,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalQueueTest.xml",
+        "sha256": "85b874f5b978dcf54c6c836a99fef4466ddadfbd98887dd339642751df0a3f81",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WindowsProcessSnapshotTest.xml",
+        "sha256": "bfd72cb65a18387e5a0db0b224c3a9aa4062884c9b609301c392ebf1759b6c7c",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchEngineTest.xml",
+        "sha256": "a2df88615f0898bc73eee300c6774b0fcfd0c142165d152c00a51c26123c2b35",
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchVersionTest.xml",
+        "sha256": "c75be8f8602ce3d29ec1ff4a8572eaa9527b13cc41cb00e81241a064040a5272",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerLeaseTest.xml",
+        "sha256": "4e9dce210876da4ce210445be8f69deb89b6e7cfbcdda982c5589d1f2095045f",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerProcessTest.xml",
+        "sha256": "5e024b224d963222c25442be16def813c7684db4912668472a0c34d180346957",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerRpcTest.xml",
+        "sha256": "ff5b6ac099354a8f2455eb54404d2a973152ae749b4c06ebab731bb06ea568ed",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerWireTest.xml",
+        "sha256": "ea52140e568aff5c532726405037c0d5a16d83517774d60186e47424c969d0e5",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceLongPathTest.xml",
+        "sha256": "940abb2f5cf907ab37f052993e55d05045d836812c853896e915cb5ab053cf75",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceSelectionEngineTest.xml",
+        "sha256": "c9fb44c8b04189ea760737360244184cbc662d671ca1eececc0ffc6112e3128e",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteEngineTest.xml",
+        "sha256": "14bd5125927661cae17942c35af13c554e234b759dffcd714aaf5ed86f8a1bd3",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteLedgerTest.xml",
+        "sha256": "275bd0b04b527d8c31d9357cfc69c5ebf8da24bff16b305aa02f03988141ee5c",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "smoke": {
+      "file": ".runtime\\alpha21-ci\\windows-original-audit-attempt1\\docs\\qa\\smoke-win32.json",
+      "sha256": "3f29144c0e7e49406775cf55d1e410c43779d887a4cbf542ac0dfcacb25f1057",
+      "checks": [
+        {
+          "name": "API rejects missing access token",
+          "status": "passed",
+          "durationMs": 29
+        },
+        {
+          "name": "Core returns persisted state",
+          "status": "passed",
+          "durationMs": 18
+        },
+        {
+          "name": "Import real Git repository with Chinese and spaced path",
+          "status": "passed",
+          "durationMs": 353
+        },
+        {
+          "name": "Local execution node and repository binding are authoritative and versioned",
+          "status": "passed",
+          "durationMs": 61
+        },
+        {
+          "name": "Search reports source locations and coverage",
+          "status": "passed",
+          "durationMs": 76
+        },
+        {
+          "name": "Session routes require authentication and preserve server-owned message identity",
+          "status": "passed",
+          "durationMs": 87
+        },
+        {
+          "name": "Save project knowledge with an explicit source",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "name": "Reject unsupported permission in an imported role template",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "name": "Reject cyclic execution plan before dispatch",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "name": "Configure local protocol test route",
+          "status": "passed",
+          "durationMs": 8
+        },
+        {
+          "name": "Create task with fixed contract and route locks",
+          "status": "passed",
+          "durationMs": 23
+        },
+        {
+          "name": "One session carries multiple tasks with source goals and scoped activity",
+          "status": "passed",
+          "durationMs": 45
+        },
+        {
+          "name": "Reject route that does not match the hard model lock",
+          "status": "passed",
+          "durationMs": 8
+        },
+        {
+          "name": "Reject acceptance before required execution and evidence",
+          "status": "passed",
+          "durationMs": 9
+        },
+        {
+          "name": "Execute actual Java API tool loop, verification and independent review",
+          "status": "passed",
+          "durationMs": 13553
+        },
+        {
+          "name": "Agent runs persist real calls, scoped pages and evidence identity",
+          "status": "passed",
+          "durationMs": 27
+        },
+        {
+          "name": "Durable root attempt keeps its original action, owner and execution receipt",
+          "status": "passed",
+          "durationMs": 56
+        },
+        {
+          "name": "Model request trace binds each API round to budget, usage and provider receipt",
+          "status": "passed",
+          "durationMs": 41
+        },
+        {
+          "name": "Preserve source Git worktree and staged state",
+          "status": "passed",
+          "durationMs": 109
+        },
+        {
+          "name": "Diff and evidence are bound to the delivered version",
+          "status": "passed",
+          "durationMs": 590
+        },
+        {
+          "name": "Persistent events can be replayed with a cursor",
+          "status": "passed",
+          "durationMs": 7
+        },
+        {
+          "name": "Reject acceptance and export when content changes after review",
+          "status": "passed",
+          "durationMs": 123
+        },
+        {
+          "name": "Manual acceptance records completion without writing source",
+          "status": "passed",
+          "durationMs": 65
+        },
+        {
+          "name": "Export portable delivery archive",
+          "status": "passed",
+          "durationMs": 668
+        },
+        {
+          "name": "Disable knowledge while preserving its revision",
+          "status": "passed",
+          "durationMs": 8
+        },
+        {
+          "name": "Complete LEAD stages under the same root budget",
+          "status": "passed",
+          "durationMs": 12202
+        },
+        {
+          "name": "Complete ROUNDTABLE stages under the same root budget",
+          "status": "passed",
+          "durationMs": 20391
+        },
+        {
+          "name": "Actual dynamic team shares the root budget, adopts dependencies and preserves MCP source in the ZIP",
+          "status": "passed",
+          "durationMs": 19502
+        },
+        {
+          "name": "Cancel an in-flight task and keep source intact",
+          "status": "failed",
+          "durationMs": 30037,
+          "message": "The delayed model request must actually start before cancellation"
+        }
+      ],
+      "calls": 55
+    },
+    "gaps": {
+      "coreLifecycleLog": 0,
+      "coreDatabase": 0,
+      "cancellationTaskState": false,
+      "externalTempFixturePreserved": false
+    },
+    "exactRootCause": "UNKNOWN",
+    "directory": ".runtime/alpha21-ci/windows-original-audit-attempt1"
+  }
+}

@@ -117,6 +117,12 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Packaged application lifecycle
         run: npm run test:packaged
+      - name: Actual packaged session previews without external Java or Node
+        if: runner.os != 'Linux'
+        run: npm run test:previews:packaged
+      - name: Actual packaged session previews with virtual display
+        if: runner.os == 'Linux'
+        run: xvfb-run -a npm run test:previews:packaged
       - name: Actual packaged themes, sidebar and preference restart
         run: npm run test:layout:packaged
       - name: Actual packaged Java workspace writer
@@ -175,10 +181,17 @@ jobs:
             docs/qa/sidebar-*.json
             .runtime/themes-web-*/
             .runtime/ui-production-*/
+            .runtime/ci-*/
             .runtime/terminal-http-*/
             .runtime/terminal-native-ui-*/
             .runtime/preview-native-*/receipt.json
             .runtime/preview-native-*/runner-source.cjs
+            .runtime/preview-native-*/artifact-fixture-source.mjs
+            .runtime/preview-native-*/artifact-inputs.json
+            .runtime/preview-native-*/packaged-system-path.json
+            .runtime/preview-native-*/ProcessRecoveryProbe.java
+            .runtime/preview-native-*/sources/
+            .runtime/preview-native-*/actual-native-preview-bounds.json
             .runtime/preview-native-*/probe-classes/
             .runtime/preview-native-*/failure*.json
             .runtime/preview-native-*/*.png

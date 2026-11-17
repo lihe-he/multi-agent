@@ -8,21 +8,38 @@ const path = require('node:path');
 
 (async () => {
   const root = path.resolve(__dirname, '..'), version = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8')).version;
+  const packaged = process.argv.slice(2).includes('--packaged');
+  assert.ok(process.argv.slice(2).every(value => value === '--packaged'), 'Only --packaged is supported');
   mkdirSync(path.join(root, '.runtime'), { recursive: true });
-  const directory = mkdtempSync(path.join(root, '.runtime', 'preview-native-'));
+  const directory = mkdtempSync(path.join(root, '.runtime', packaged ? 'preview-native-packaged-' : 'preview-native-'));
   const hash = bytes => createHash('sha256').update(bytes).digest('hex');
   const save = (file, value) => writeFileSync(path.join(directory, file), JSON.stringify(value, null, 2) + '\n');
-  const inputs = ['package.json', 'desktop/main.cjs', 'desktop/preload.cjs', 'desktop/preview-host.cjs', 'desktop/preview-policy.cjs', 'desktop/preview-ipc-policy.cjs',
+  const inputs = ['package.json', 'tools/preview-native-smoke.cjs', 'tools/terminal-fixture.mjs', 'tools/ProcessRecoveryProbe.java', 'desktop/main.cjs', 'desktop/preload.cjs', 'desktop/preview-host.cjs', 'desktop/preview-policy.cjs', 'desktop/preview-ipc-policy.cjs',
     'core/src/main/java/dev/agentworkbench/PreviewCatalog.java', 'core/src/main/java/dev/agentworkbench/PreviewController.java', 'web/src/SessionWorkspace.tsx', 'web/src/App.tsx',
     ...readdirSync(path.join(root, 'web/dist/assets')).map(file => `web/dist/assets/${file}`), `core/target/agent-workbench-core-${version}.jar`]
     .map(file => ({ file, sha256: hash(readFileSync(path.join(root, file))) }));
   copyFileSync(__filename, path.join(directory, 'runner-source.cjs'));
   const { javaHome } = await import('./java-runtime.mjs');
-  const home = javaHome(root), java = path.join(home, 'bin', process.platform === 'win32' ? 'java.exe' : 'java');
-  const classes = path.join(directory, 'probe-classes'); mkdirSync(classes);
-  const probeSource = path.join(root, 'tools/ProcessRecoveryProbe.java');
-  execFileSync(path.join(home, 'bin', process.platform === 'win32' ? 'javac.exe' : 'javac'), ['-encoding', 'UTF-8', '-d', classes, probeSource], { windowsHide: true, timeout: 30000 });
-  copyFileSync(probeSource, path.join(classes, 'ProcessRecoveryProbe.java'));
+  let artifactInputs, launchEnvironment = {}, executable = process.env.WORKBENCH_ELECTRON_PATH;
+  let home = javaHome(root), java = path.join(home, 'bin', process.platform === 'win32' ? 'java.exe' : 'java'), classes = path.join(directory, 'probe-classes');
+  if (packaged) {
+    const { freezeTerminalArtifacts, terminalCoreEnvironment } = await import('./terminal-fixture.mjs');
+    copyFileSync(path.join(root, 'tools/terminal-fixture.mjs'), path.join(directory, 'artifact-fixture-source.mjs'));
+    artifactInputs = freezeTerminalArtifacts(directory, { withWeb: true, packaged: true });
+    ({ java, javaRoot: home, probeClasses: classes } = artifactInputs);
+    launchEnvironment = terminalCoreEnvironment(directory, true);
+    const metadata = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8')), resources = artifactInputs.core.resources;
+    executable = process.platform === 'darwin' ? path.resolve(resources, '../MacOS', metadata.build.productName)
+      : path.resolve(resources, '..', process.platform === 'win32' ? `${metadata.build.productName}.exe` : metadata.build.linux.executableName || metadata.name.toLowerCase());
+    assert.ok(existsSync(executable), 'The verified packaged executable must exist');
+    for (const file of [executable, path.join(resources, 'app.asar'), artifactInputs.core.originalJar,
+      ...artifactInputs.core.packagedRuntimeFiles.map(value => path.join(home, value.file))]) inputs.push({ file, sha256: hash(readFileSync(file)) });
+  } else {
+    mkdirSync(classes);
+    const probeSource = path.join(root, 'tools/ProcessRecoveryProbe.java');
+    execFileSync(path.join(home, 'bin', process.platform === 'win32' ? 'javac.exe' : 'javac'), ['-encoding', 'UTF-8', '-d', classes, probeSource], { windowsHide: true, timeout: 30000 });
+    copyFileSync(probeSource, path.join(classes, 'ProcessRecoveryProbe.java'));
+  }
   const probe = (pid, birth = '-', mode = 'identity') => JSON.parse(execFileSync(java,
     ['-Dfile.encoding=UTF-8', '-cp', classes, 'ProcessRecoveryProbe', mode, String(pid), birth], { windowsHide: true, encoding: 'utf8', timeout: 30000 }));
   const source = path.join(directory, 'original preview project'); mkdirSync(source);
@@ -48,7 +65,7 @@ const path = require('node:path');
     throw new Error(`${name} exceeded ${timeout}ms`);
   }
   let electron, page, connection, status = 'failed', failure, project, firstSession, secondSession;
-  const env = { ...process.env, WORKBENCH_USER_DATA: path.join(directory, 'user-data'), WORKBENCH_JAVA_HOME: home,
+  const env = { ...process.env, WORKBENCH_JAVA_HOME: home, ...launchEnvironment, WORKBENCH_USER_DATA: path.join(directory, 'user-data'),
     WORKBENCH_CORE_URL: '', WORKBENCH_CORE_TOKEN: '', JAVA_TOOL_OPTIONS: '-Dfile.encoding=UTF-8 -Djdk.virtualThreadScheduler.parallelism=2 -Djdk.virtualThreadScheduler.maxPoolSize=2' };
   delete env.ELECTRON_RUN_AS_NODE;
   async function api(endpoint, body) {
@@ -58,8 +75,14 @@ const path = require('node:path');
     const value = await response.json(); assert.equal(response.status, 200, `${endpoint}: ${JSON.stringify(value)}`); return value;
   }
   async function launch() {
-    electron = await _electron.launch({ args: [root, ...(process.platform === 'linux' ? ['--no-sandbox'] : [])], executablePath: process.env.WORKBENCH_ELECTRON_PATH, env, timeout: 60000 });
+    electron = await _electron.launch({ args: [...(packaged ? [] : [root]), ...(process.platform === 'linux' ? ['--no-sandbox'] : [])], executablePath: executable, env, timeout: 60000 });
     const record = { identities: [probe(electron.process().pid)], observationsAfterStop: [] }; launches.push(record);
+    record.application = await electron.evaluate(({ app }) => ({ packaged: app.isPackaged, version: app.getVersion(), appPath: app.getAppPath(), resourcesPath: process.resourcesPath }));
+    assert.equal(record.application.packaged, packaged); assert.equal(record.application.version, version);
+    if (packaged) {
+      assert.equal(path.resolve(record.application.resourcesPath), path.resolve(artifactInputs.core.resources));
+      assert.equal(path.resolve(record.application.appPath), path.join(artifactInputs.core.resources, 'app.asar'));
+    }
     page = await electron.firstWindow({ timeout: 60000 }); page.on('pageerror', error => errors.push(error.message));
     await page.getByRole('button', { name: '本地核心已连接', exact: true }).waitFor({ timeout: 45000 });
     connection = await page.evaluate(() => window.workbench.getConnection());
@@ -222,12 +245,15 @@ const path = require('node:path');
   } finally {
     try { await stop(); } catch (error) { failure = [failure, error.stack].filter(Boolean).join('\n'); status = 'failed'; process.exitCode = 1; }
     server.closeAllConnections(); await new Promise(done => server.close(done));
-    const sourcesUnchanged = inputs.every(input => hash(readFileSync(path.join(root, input.file))) === input.sha256);
+    const sourcesUnchanged = inputs.every(input => hash(readFileSync(path.resolve(root, input.file))) === input.sha256);
     if (!sourcesUnchanged) { status = 'failed'; process.exitCode = 1; }
     const receipt = { recordedAt: new Date().toISOString(), version, platform: process.platform, status, failure, directory, checks, launches, requests, pageErrors: errors,
-      inputs, sourcesUnchanged, scope: 'ACTUAL_DEVELOPMENT_ELECTRON_MAIN_PRELOAD_CORE_AND_WEB; LOCAL_HTTP_LOGIN_FIXTURE; PACKAGED_AND_REMOTE_FORWARDING_SEPARATE' };
+      inputs, sourcesUnchanged, packaged, runtimeJava: java, externalNodeAndJavaUnavailableOnPath: packaged,
+      artifactInputsFile: artifactInputs ? path.join(directory, 'artifact-inputs.json') : null,
+      scope: packaged ? 'ACTUAL_PACKAGED_ELECTRON_MAIN_PRELOAD_JRE_JAR_AND_ASAR_WEB; LOCAL_HTTP_LOGIN_FIXTURE; EXTERNAL_OAUTH_REMOTE_FORWARDING_AND_INSTALLER_SEPARATE'
+        : 'ACTUAL_DEVELOPMENT_ELECTRON_MAIN_PRELOAD_CORE_AND_WEB; LOCAL_HTTP_LOGIN_FIXTURE; PACKAGED_AND_REMOTE_FORWARDING_SEPARATE' };
     save('receipt.json', receipt);
-    if (status === 'passed') { mkdirSync(path.join(root, 'docs/qa'), { recursive: true }); writeFileSync(path.join(root, `docs/qa/preview-native-${process.platform}.json`), JSON.stringify(receipt, null, 2) + '\n'); }
+    if (status === 'passed') { mkdirSync(path.join(root, 'docs/qa'), { recursive: true }); writeFileSync(path.join(root, `docs/qa/preview-native${packaged ? '-packaged' : ''}-${process.platform}.json`), JSON.stringify(receipt, null, 2) + '\n'); }
     console.log(JSON.stringify({ directory, status, checks: checks.length, failure }));
   }
 })().catch(error => { console.error(error); process.exitCode = 1; });

@@ -12,10 +12,17 @@ F05 已增加本机开发桌面预览：窄IPC与原生WebContentsView、核心/
 | Electron策略与宿主 | 21/21通过，覆盖管理端口、回环绑定、危险URL、窄IPC、原范围动作、回调一次加载、活动标签、撤权、代次与清理失败 |
 | 完整生产UI | 冻结当前dist的229/229通过，零失败/跳过/重试；保留原226项并新增3项预览用例，源码/产物摘要保持，44张历史截图恢复原字节。见[完整UI](./qa/ui-production-win32.json) |
 | 实际开发桌面 | 当前main/preload、生产Web和alpha.21 Jar九组通过：可见原生页面、登录回调一次加载、弹窗暂停恢复、无Node/管理桥接、项目/会话隔离、多标签、完整桌面/核心/Worker退出后HttpOnly Cookie与localStorage恢复、站点清理、重启后旧代次账本和Cookie清理、撤权销毁；原PID/出生停止独立核验。见[真实预览](./qa/preview-native-win32.json)。使用本地HTTP登录夹具，外部OAuth与发行包另验 |
+| Windows发行预览 | 实际alpha.21解包发行程序九组通过，包内Jar与本机最终Jar摘要一致，31份桌面/Web文件、207份JRE文件逐项核对；PATH无外部Java/Node，三次完整启动及12个桌面/核心/Worker原PID/出生停止核验。独立非输入Windows测试桌面复验通过，输入桌面保持Default。安装器157,724,967字节，SHA-256 `0917e9cff3fe84b377b72c664f5dc7946e80692a1ec44fe6509d28690605a291`，NotSigned，安装/卸载本轮未重测。见[发行预览](./qa/alpha21-packaged-preview-validation-win32.json) |
 | Java注释与版本 | 109份Java词法审计，370条原注释保持，5条新增Javadoc为标准多行；根/Web npm声明与Maven统一0.2.0-alpha.21 |
 | 前版CI | 准确提交c6360ac的[run44049918025](https://github.com/lihe-he/multi-agent/actions/runs/44049918025)终态failure；Ubuntu成功，Windows长路径WORKTREE准备报`$GIT_DIR too big`，macOS检查点UI在任务入口点击超时。三份原日志及Ubuntu/macOS整包artifact大小和digest已核对，Windows缺少一段，原下载失败保留，本轮本机通过不改变前版CI失败 |
 
-当前保留：远程执行节点端口转发、外部OAuth矩阵、发行包预览、跨平台最终CI与长期存储/网络负载。端口授权不证明服务PID，URL路径/标题仍会保存；撤权按主动核验与一秒轮询检测，不能撤销已发到服务端的效果。
+生产提交`3c70a083141a70c9aadd0fc229980028ccab7edc`的[run44082980225](https://github.com/lihe-he/multi-agent/actions/runs/44082980225)终态failure。GitHub元数据及三份原日志显示Ubuntu、macOS整条成功，两端555核心/10条件跳过、UI229及实际开发预览九组通过；Windows整包67,231,380字节的SHA-256已匹配GitHub digest，45套XML确认555核心/8条件跳过、零失败或错误，协议原回执前28项通过，最后取消夹具在原30秒内未观测到延迟模型请求。原工具未保存该任务状态、队列、核心数据库和完整现场，准确原因未确定；后续本机成功不改写远端失败。POSIX证据ZIP继续收集，不以日志结论代替整包核验。见[原CI失败回执](./qa/alpha21-ci-original-failure.json)。
+
+跟进增强验收工具：取消等待保留原30秒期限，逐变化保存任务与原执行摘要，失败时保存队列、操作、模型请求、Worker租约和事件；CI保存独立核心日志、SQLite与原始Git夹具。取消对象明确匹配带SMOKE_DELAY的准确请求，原固定1.5秒响应改为持有至取消请求返回，新增断言确认取消时该响应仍在途。相同最终Jar完整协议29/29通过，零新增后续模型请求；此前仅加诊断的29项成功另存。见[准确在途响应回执](./qa/alpha21-protocol-held-response-win32.json)与[初次诊断回执](./qa/alpha21-protocol-diagnostics-win32.json)。本轮未改核心、桌面或Web产品代码，最新工具提交仍需完整三端CI。
+
+更新后的同一预览工具另行复验开发入口九组通过，12个原身份停止，独立非输入Windows测试桌面保持；原开发与协议历史报告恢复原字节，本次结果单独保存。见[开发入口跟进](./qa/alpha21-preview-tools-followup-win32.json)。依赖/打包/版本/连接守卫21/21、工具语法与声明版本校验通过。
+
+当前保留：远程执行节点端口转发、外部OAuth矩阵、三端发行预览、安装器生命周期、跨平台最终CI与长期存储/网络负载。端口授权不证明服务PID，URL路径/标题仍会保存；撤权按主动核验与一秒轮询检测，不能撤销已发到服务端的效果。
 
 本轮汇总见[预览验证回执](./qa/alpha21-preview-validation-win32.json)。[原生页面截图](./qa/alpha21-native-preview.png)与[工作台外壳截图](./qa/alpha21-workbench-chrome.png)分别捕获，后者不包含独立原生视图的合成画面。
 
@@ -496,7 +503,7 @@ run `42229839029` 验证 Linux 的 `--no-sandbox` 修复成功；随后 macOS UI
 | F02 全文搜索 | 项目内跨会话消息搜索、Ctrl/Cmd K、纯文本片段和原记录定位已验证 | 文件/符号/语义混合检索及校准 |
 | F03 启动现场 | 固定SHA clone/locked detached worktree、READY/根队列及整次原Worker锁已验证；alpha.15执行/路径绑定完整读取、旧覆盖/删除拒绝、重新读取恢复、权限保留及未解决冲突等待，在准确Jar 9项及核心版本13项中验证 | 当前目录执行、跨核心现场协调/一般文件CAS、完整worktree归档恢复、远程队列/配对和完整历史树 |
 | F04 Diff 与撤销 | alpha.19文件/index检查点、独立预览、实际原Worker撤销、完整引用ZIP与UNKNOWN恢复已验；准确生产提交三端核心win32 452/darwin与linux 454项、UI196项、真实撤销16项及逐文件撤权均通过。原差异与后续用户修改保全保留 | 原项目逐文件/代码块局部采纳、根目录外副执行归档及完整workflow接续 |
-| F05 预览浏览器 | alpha.21本机开发桌面已实现会话/项目/代次隔离、明确端口授权、多标签、真实登录持久化、站点/旧代次清理与撤权销毁；核心8项、Electron21项、完整UI229项及真实主程序九组验收通过 | 远程节点端口转发、外部OAuth矩阵、发行包、三端最终CI与长期负载 |
+| F05 预览浏览器 | alpha.21本机开发桌面已实现会话/项目/代次隔离、明确端口授权、多标签、真实登录持久化、站点/旧代次清理与撤权销毁；核心8项、Electron21项、完整UI229项及真实主程序九组验收通过，Windows包内JRE/asar发行预览九组通过 | 远程节点端口转发、外部OAuth矩阵、三端发行预览、安装器、三端最终CI与长期负载 |
 | F06 五档权限 | 计划确认、文件范围、动态能力交集、未知操作人工核对已验证 | 五档预设、逐操作审批事务、反问和跨设备审批 |
 | F07 模型资源 | API/两类原生 CLI 配置与能力探测入口；凭据仅核心会话内 | 正式账号接入核验、系统凭据服务、额度组/跨账号接管及本地模型发现 |
 | F08 图像 | 待实现 | 附件、生成/编辑、供应商能力、取消与用量 |

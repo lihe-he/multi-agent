@@ -1,0 +1,122 @@
+{
+  "recordedAt": "2026-11-17T13:18:51.071Z",
+  "status": "passed",
+  "version": "0.2.0-alpha.21",
+  "scope": "ACTUAL_CURRENT_FINAL_JAR_LOCAL_PROTOCOL_WITH_UNCHANGED_30_SECOND_CANCELLATION_REQUEST_BOUNDARY; ORIGINAL_REMOTE_FAILURE_NOT_RESOLVED_BY_LOCAL_SUCCESS",
+  "jarSha256": "0d7fb612133569d6165551306cd9be8a9376a5782347e122ae647b8814fe903f",
+  "checks": 29,
+  "cancellationObservations": [
+    {
+      "at": "2026-11-17T13:16:38.354Z",
+      "taskId": "52b8076b-9a4a-4f28-96b7-1dfabe13af19",
+      "state": "QUEUED",
+      "taskExecution": {
+        "id": "1f9aa174-5e36-4c61-8947-1ed93b954764",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-17T13:16:38.304146Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "modelCalls": 0
+    },
+    {
+      "at": "2026-11-17T13:16:38.465Z",
+      "taskId": "52b8076b-9a4a-4f28-96b7-1dfabe13af19",
+      "state": "QUEUED",
+      "taskExecution": {
+        "id": "1f9aa174-5e36-4c61-8947-1ed93b954764",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-17T13:16:38.304146Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "activeOperation": "79b6f254-08b2-4286-b2cc-263bface2371",
+      "modelCalls": 0
+    },
+    {
+      "at": "2026-11-17T13:16:40.708Z",
+      "taskId": "52b8076b-9a4a-4f28-96b7-1dfabe13af19",
+      "state": "RUNNING",
+      "taskExecution": {
+        "id": "1f9aa174-5e36-4c61-8947-1ed93b954764",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-17T13:16:38.304146Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "modelCalls": 0
+    },
+    {
+      "at": "2026-11-17T13:16:43.437Z",
+      "taskId": "52b8076b-9a4a-4f28-96b7-1dfabe13af19",
+      "state": "RUNNING",
+      "taskExecution": {
+        "id": "1f9aa174-5e36-4c61-8947-1ed93b954764",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-17T13:16:38.304146Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "activeOperation": "09d49e9d-0bbb-4ed1-8c09-e7f1a9ca096d",
+      "modelCalls": 0
+    },
+    {
+      "at": "2026-11-17T13:16:44.057Z",
+      "taskId": "52b8076b-9a4a-4f28-96b7-1dfabe13af19",
+      "state": "RUNNING",
+      "taskExecution": {
+        "id": "1f9aa174-5e36-4c61-8947-1ed93b954764",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-17T13:16:38.304146Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "modelCalls": 0
+    },
+    {
+      "at": "2026-11-17T13:16:46.651Z",
+      "taskId": "52b8076b-9a4a-4f28-96b7-1dfabe13af19",
+      "state": "RUNNING",
+      "taskExecution": {
+        "id": "1f9aa174-5e36-4c61-8947-1ed93b954764",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-17T13:16:38.304146Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "activeOperation": "8931cbac-e319-474d-ac14-5715c3d3f6fa",
+      "modelCalls": 0
+    }
+  ],
+  "receipt": ".runtime/ci-MgUgyr/fixtures/agent-workbench-smoke-Y4PQrI/smoke-report.json",
+  "lifecycle": {
+    "recordedAt": "2026-11-17T13:16:50.553Z",
+    "version": "0.2.0-alpha.21",
+    "corePid": 40080,
+    "exitCode": 0,
+    "signalCode": null,
+    "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\ci-MgUgyr",
+    "fixtureRoot": "D:\\Projects\\多Agent研发工作台\\.runtime\\ci-MgUgyr\\fixtures",
+    "scope": "OBSERVED_CORE_EXIT_ONLY; COMPLETE_ORIGINAL_PROCESS_TREE_REQUIRES_SEPARATE_RECOVERY_ACCEPTANCE"
+  },
+  "sources": [
+    {
+      "file": "tools/ci-smoke.mjs",
+      "sha256": "3867579b3ee63d698dc11daa88f51f4477f20b65fd318ba516bb9ea72853c114"
+    },
+    {
+      "file": "tools/smoke-test.mjs",
+      "sha256": "811918680daeba62fbbeacb849cb6282f720a5c8e0fb83adcc335e413974fd78"
+    },
+    {
+      "file": "tools/team-smoke-fixture.mjs",
+      "sha256": "136e5f4a17a099efb9cf6bc088068e495e97dd3e2daff70ab77853a3523eae5c"
+    }
+  ]
+}
