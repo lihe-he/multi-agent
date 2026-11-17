@@ -36,16 +36,18 @@ public class WorkbenchController {
     private final ConfigurableApplicationContext application;
     private final FileToolHistory fileTools;
     private final CheckpointExportHistory checkpointHistory;
+    private final TerminalExportHistory terminalHistory;
 
     public WorkbenchController(ExecutionStore store, WorkbenchCatalog catalog, WorkbenchEngine engine, WorkspaceRuntime runtime, ResourceManager resources, PlanValidator validator, ObjectMapper mapper, ConfigurableApplicationContext application) {
         this.store = store; this.catalog = catalog; this.engine = engine; this.runtime = runtime; this.resources = resources; this.validator = validator; this.mapper = mapper;
         this.application = application;
         this.fileTools = new FileToolHistory(store, catalog, runtime);
         this.checkpointHistory = new CheckpointExportHistory(store, runtime, mapper);
+        this.terminalHistory = new TerminalExportHistory(store, mapper);
     }
 
     @GetMapping("/health")
-    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", WorkbenchVersion.CURRENT, "apiVersion", 1, "schemaVersion", 9, "workspaceSelectionVersion", 1, "fileToolProtocolVersion", 2, "diffViewProtocolVersion", 1, "checkpointProtocolVersion", 1, "corePid", ProcessHandle.current().pid()); }
+    public Map<String, Object> health() { return obj("status", store.healthy() ? "UP" : "DEGRADED", "version", WorkbenchVersion.CURRENT, "apiVersion", 1, "schemaVersion", ExecutionStore.SCHEMA_VERSION, "workspaceSelectionVersion", 1, "fileToolProtocolVersion", 2, "diffViewProtocolVersion", 1, "checkpointProtocolVersion", 1, "terminalProtocolVersion", 1, "terminalLimits", TerminalController.limits(), "corePid", ProcessHandle.current().pid()); }
 
     @PostMapping("/shutdown")
     public Map<String, Object> shutdown() {
@@ -68,7 +70,7 @@ public class WorkbenchController {
         return obj("projects", store.list("project"), "tasks", summaries, "routes", catalog.routes(), "memories", store.list("memory"), "profiles", store.list("profile"), "agentDefinitions", store.list("agentDefinition"),
             "executionNodes", executionNodes(), "repositoryBindings", store.list("repositoryBinding"), "workers", workers(), "processRecovery", engine.processRecovery(),
             "system", obj("version", WorkbenchVersion.CURRENT, "modelCapacity", 2, "activeModels", resources.activeModels(), "resources", resources.snapshot(), "storageHealthy", store.healthy(),
-                "eventCursor", store.latestEvent(), "credentialStorage", "SESSION_ONLY", "releaseStatus", "DEVELOPMENT_PREVIEW", "capabilities", List.of("Git 隔离工作目录", "三模式阶段编排", "根预算与验证预留", "独立审查与人工验收", "结果未知保护", "持久事件续读"),
+                "eventCursor", store.latestEvent(), "credentialStorage", "SESSION_ONLY", "releaseStatus", "DEVELOPMENT_PREVIEW", "terminalProtocolVersion", 1, "terminalLimits", TerminalController.limits(), "capabilities", List.of("Git 隔离工作目录", "三模式阶段编排", "根预算与验证预留", "独立审查与人工验收", "结果未知保护", "持久事件续读", "原现场持久交互终端"),
                 "limitations", List.of("API 兼容性须按实际端点验证", "原生 CLI 费用与内部请求数为软预算", "本机工作目录隔离不等于操作系统安全隔离", "MCP、自动采纳、三端打包与长期性能尚待发布验收")));
     }
 
@@ -146,6 +148,11 @@ public class WorkbenchController {
         Map<String, Object> snapshot = new java.util.LinkedHashMap<>(task);
         snapshot.put("diffViewProtocolVersion", 1);
         snapshot.put("checkpointProtocolVersion", 1);
+        snapshot.put("terminalProtocolVersion", 1);
+        String terminalId = str(task, "pendingTerminalId");
+        if (terminalId.isBlank()) terminalId = str(task, "lastTerminalId");
+        if (!terminalId.isBlank()) snapshot.put("terminal", engine.terminal(terminalId));
+        snapshot.put("terminalHistoryPresent", !objects(engine.terminalPage(str(task, "id"), 0, 1).get("terminals")).isEmpty());
         if (task.containsKey("workspaceSelection")) snapshot.put("workspacePreparationPresent", runtime.hasWorkspacePreparation(str(task, "id")));
         if (!str(task, "workspaceWriteLeaseId").isBlank()) snapshot.put("workspaceWrite", store.get("workspaceWriteLease", str(task, "workspaceWriteLeaseId")));
         snapshot.put("workspaceWriteHistoryPresent", !store.taskDispatchRecords("workspaceWriteLease", str(task, "id")).isEmpty());
@@ -317,16 +324,20 @@ public class WorkbenchController {
         if (List.of("RUNNING", "QUEUED", "WAITING_RESOURCE", "PAUSING", "CANCELLING").contains(str(task, "state"))) { throw new ApiException(409, "请先暂停任务并等待停止确认后导出一致成果"); }
         String workspaceVersion = workspace.isBlank() ? "" : runtime.fingerprint(workspace);
         boolean unknownRestore = "UNKNOWN".equals(str(task, "state")) && !str(task, "pendingCheckpointRestoreId").isBlank();
-        if (!workspace.isBlank() && !str(task, "version").equals(workspaceVersion) && !unknownRestore) { throw new ApiException(409, "当前文件与任务记录的版本不同，请先重新验证，避免将新补丁与旧证据混合导出"); }
+        boolean unknownTerminal = "UNKNOWN".equals(str(task, "state")) && !str(task, "pendingTerminalId").isBlank();
+        if (!workspace.isBlank() && !str(task, "version").equals(workspaceVersion) && !unknownRestore && !unknownTerminal) { throw new ApiException(409, "当前文件与任务记录的版本不同，请先重新验证，避免将新补丁与旧证据混合导出"); }
         String patch = workspace.isBlank() ? "" : runtime.exportPatch(workspace);
         if (!workspace.isBlank() && !workspaceVersion.equals(runtime.fingerprint(workspace))) { throw new ApiException(409, "生成补丁时文件发生变化，请停止外部修改并重新验证"); }
         FileToolHistory.Snapshot fileToolSnapshot = fileTools.snapshot(id);
         CheckpointExportHistory.Snapshot checkpointSnapshot = checkpointHistory.snapshot(id);
+        TerminalExportHistory.Snapshot terminalSnapshot = terminalHistory.snapshot(id);
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (ZipOutputStream zip = new ZipOutputStream(bytes, StandardCharsets.UTF_8)) {
             putZip(zip, "manifest.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(obj("schemaVersion", 1, "taskId", id, "exportedAt", now(), "version", task.get("version"), "baseline", task.get("baseline"), "state", task.get("state"), "outcome", task.get("outcome"), "credentialsIncluded", false,
-                "workspaceVersion", workspaceVersion, "workspaceMatchesRecordedVersion", workspace.isBlank() || str(task, "version").equals(workspaceVersion), "unknownRestoreEffects", unknownRestore, "checkpointProtocolVersion", 1,
-                "checkpointArchiveBytes", checkpointSnapshot.bytes(), "checkpointArchiveScope", "REFERENCED_ROOT_FILES_INDEX_AND_ORIGINAL_RESTORE_JOURNALS")));
+                "workspaceVersion", workspaceVersion, "workspaceMatchesRecordedVersion", workspace.isBlank() || str(task, "version").equals(workspaceVersion), "unknownRestoreEffects", unknownRestore, "unknownTerminalEffects", unknownTerminal, "checkpointProtocolVersion", 1,
+                "checkpointArchiveBytes", checkpointSnapshot.bytes(), "checkpointArchiveScope", "REFERENCED_ROOT_FILES_INDEX_AND_ORIGINAL_RESTORE_JOURNALS", "terminalProtocolVersion", 1,
+                "terminalSessions", terminalSnapshot.sessions().size(), "terminalArchiveBytes", terminalSnapshot.bytes(), "terminalArchiveScope", "ORIGINAL_OUTPUT_FILES_UNPUBLISHED_SEGMENTS_AND_RECORDED_GAPS",
+                "terminalInputLedgerIncluded", false, "terminalControllerDigestsIncluded", false, "terminalOutputMayEchoInput", true)));
             putZip(zip, "task.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(task));
             putZip(zip, "changes.patch", patch.getBytes(StandardCharsets.UTF_8));
             putZip(zip, "operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(operations(id)));
@@ -336,6 +347,9 @@ public class WorkbenchController {
             putZip(zip, "checkpoint-restores.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(checkpointSnapshot.restores()));
             putZip(zip, "checkpoint-restore-journal-sources.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(checkpointSnapshot.journals()));
             for (var entry : checkpointSnapshot.files().entrySet()) putZip(zip, entry.getKey(), entry.getValue());
+            putZip(zip, "terminals.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(terminalSnapshot.sessions()));
+            putZip(zip, "terminal-output-sources.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(terminalSnapshot.outputSources()));
+            for (var entry : terminalSnapshot.files().entrySet()) putZip(zip, entry.getKey(), entry.getValue());
             putZip(zip, "agent-runs.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("agentRun").stream().filter(run -> id.equals(str(run, "taskId"))).toList()));
             putZip(zip, "task-executions.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.taskDispatchRecords("taskExecution", id)));
             putZip(zip, "dispatch-actions.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.taskDispatchRecords("dispatchAction", id)));
@@ -363,6 +377,7 @@ public class WorkbenchController {
         }
         engine.requireExecutionSettled(id);
         checkpointHistory.requireCurrent(id, checkpointSnapshot);
+        terminalHistory.requireCurrent(id, terminalSnapshot);
         if (!workspace.isBlank() && !workspaceVersion.equals(runtime.fingerprint(workspace))) throw new ApiException(409, "导出期间文件发生变化，请重新读取当前现场。");
         if (!task.equals(store.get("task", id))) throw new ApiException(409, "导出期间任务记录发生变化，请读取当前状态后重试");
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=task-" + id + ".zip").contentType(MediaType.parseMediaType("application/zip")).body(bytes.toByteArray());

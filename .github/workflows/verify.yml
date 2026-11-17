@@ -45,10 +45,9 @@ jobs:
         working-directory: web
         run: npx playwright install --with-deps chromium
       - name: UI interaction tests
-        run: npm run test:ui --prefix web -- --reporter=list,json
+        run: npm run test:ui:production
         env:
           PLAYWRIGHT_CHANNEL: chromium
-          PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/playwright.json
       - name: Production theme initialization and storage fallback
         run: npm run test:themes:web
         env:
@@ -59,6 +58,12 @@ jobs:
           PLAYWRIGHT_CHANNEL: chromium
       - name: Actual final Jar checkpoint undo and original receipt recovery
         run: npm run test:checkpoints
+        env:
+          PLAYWRIGHT_CHANNEL: chromium
+      - name: Actual final Jar native terminal and forced core crash recovery
+        run: npm run test:terminals:http
+      - name: Actual final Jar and production Web native terminal control
+        run: npm run test:terminals:ui
         env:
           PLAYWRIGHT_CHANNEL: chromium
       - name: Desktop dependencies
@@ -108,6 +113,10 @@ jobs:
         run: npm run test:layout:packaged
       - name: Actual packaged Java workspace writer
         run: npm run test:bundled-writer
+      - name: Actual packaged Java and Web native terminals without external Java or Node
+        run: npm run test:terminals:packaged
+        env:
+          PLAYWRIGHT_CHANNEL: chromium
       - name: Preserve desktop distributions
         uses: actions/upload-artifact@v4
         with:
@@ -129,10 +138,16 @@ jobs:
             core/target/agent-workbench-core-*.jar
             web/dist/
             release/**/core/core.jar
+            release/**/resources/app.asar
+            release/**/Resources/app.asar
+            release/**/jre/
             core/target/team-capacity-failure-*/
             core/target/team-child-start-failure-*/
             core/target/workspace-write-release-gate-*/
             core/target/checkpoint-evidence-*/
+            core/target/native-pty-evidence-*/
+            core/target/terminal-native-evidence-*/
+            core/target/windows-long-path-evidence-*/
             docs/qa/smoke-*.json
             docs/qa/desktop-*.json
             docs/qa/standalone-*.json
@@ -143,10 +158,15 @@ jobs:
             docs/qa/file-versions-*.json
             docs/qa/diff-view-*.json
             docs/qa/checkpoints-*.json
+            docs/qa/ui-production-*.json
+            docs/qa/terminals-*.json
             docs/qa/bundled-workspace-writer-*.json
             docs/qa/themes-*.json
             docs/qa/sidebar-*.json
             .runtime/themes-web-*/
+            .runtime/ui-production-*/
+            .runtime/terminal-http-*/
+            .runtime/terminal-native-ui-*/
             .runtime/themes-desktop-*/reports/
             .runtime/themes-desktop-*/probe-classes/
             .runtime/bundled-workspace-writer-*/
@@ -154,7 +174,10 @@ jobs:
             .runtime/dispatch-queue-*/reports/
             .runtime/dispatch-queue-*/fixture-classes/
             .runtime/dispatch-queue-*/queue-data/workbench.sqlite*
+            .runtime/dispatch-queue-*/queue-data/workspaces/
             .runtime/dispatch-queue-*/fault-data/workbench.sqlite*
+            .runtime/dispatch-queue-*/fault-data/workspaces/
+            .runtime/dispatch-queue-*/中文 空格 queue project/
             .runtime/workspace-selection-*/reports/
             .runtime/workspace-selection-*/fixture-classes/
             .runtime/workspace-selection-*/data/workbench.sqlite*

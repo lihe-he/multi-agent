@@ -18,7 +18,8 @@ public class ApiErrors {
     @ExceptionHandler(WorkspaceSelectionConflict.class)
     public ResponseEntity<Map<String, Object>> workspaceSelection(WorkspaceSelectionConflict exception) { return ResponseEntity.status(409).body(Json.obj("error", exception.getMessage(), "status", 409)); }
 
-    @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class, org.springframework.web.bind.MissingServletRequestParameterException.class,
+        org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class})
     public ResponseEntity<Map<String, Object>> badRequest(Exception exception) { return ResponseEntity.badRequest().body(Json.obj("error", "请求格式或参数无效", "status", 400)); }
 
     @ExceptionHandler(Exception.class)

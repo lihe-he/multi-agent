@@ -138,6 +138,13 @@ final class WorkerProcess implements AutoCloseable {
         return rpc.request("INVOKE", obj("callId", callId, "lease", lease, "claimToken", token, "callSequence", callSequence, "method", method, "parameters", parameters));
     }
 
+    CompletableFuture<Object> terminalControl(String callId, Map<String, Object> lease, String token, long callSequence, Map<String, Object> action, byte[] input) {
+        requireAvailable();
+        return rpc.request("TERMINAL_CONTROL", obj("callId", callId, "workerLeaseId", lease.get("id"), "operationId", lease.get("operationId"),
+            "claimToken", token, "callSequence", callSequence, "terminalId", lease.get("terminalId"), "action", action,
+            "inputBase64", java.util.Base64.getEncoder().encodeToString(input)));
+    }
+
     void cancel(String taskId) {
         if (!available()) return;
         rpc.request("CANCEL", obj("taskId", taskId));

@@ -1,0 +1,576 @@
+{
+  "recordedAt": "2026-11-17T01:08:10.420Z",
+  "status": "passed",
+  "phase": "actual-repository-binding-authorization-revocation",
+  "packageDirectory": "D:\\Projects\\多Agent研发工作台\\core\\target\\agent-workbench-core-0.2.0-alpha.20.jar",
+  "buildDirectory": "D:\\Projects\\多Agent研发工作台\\web\\dist",
+  "jarSha256": "66d0a60fe86afa9e3a0eef86ab44412ed7a9b4d2eb59950a911d871f029e96fa",
+  "jarUnchanged": true,
+  "sourcesUnchanged": true,
+  "assetsUnchanged": true,
+  "version": "0.2.0-alpha.20",
+  "schemaVersion": 10,
+  "terminalProtocolVersion": 1,
+  "browserChannel": "chromium-headless-shell",
+  "browsersPath": "D:\\Projects\\多Agent研发工作台\\.runtime\\playwright",
+  "serverOwnedByRunner": true,
+  "modelTransport": "LOCAL_FIXTURE_CONNECTION_CLOSE_WITH_NO_APPLICATION_RETRY",
+  "runtimeConfiguration": {
+    "apiBaseUrl": "/service",
+    "sha256": "8f6079d7ac2b109c6481ae9f37c1193d66e4ef56e37277911f44a11ad2044f56",
+    "containsCredentials": false
+  },
+  "checks": [
+    {
+      "name": "Actual production Web authenticated by core Bearer header against the exact production Jar and its real independent Worker",
+      "at": "2026-11-17T01:06:34.537Z"
+    },
+    {
+      "name": "CLONE: real native Unicode, actual shell dimensions, explicit control, leave/reopen/reload, original PID and two once-only manual commands matched the frozen Web; native focus reports were separately matched by exact bytes and digest",
+      "at": "2026-11-17T01:07:12.373Z"
+    },
+    {
+      "name": "Actual UI stop retained complete original terminal output ZIP, ended the original shell, preserved budget and reset current verification/review",
+      "at": "2026-11-17T01:07:25.590Z"
+    },
+    {
+      "name": "WORKTREE: real native Unicode, actual shell dimensions, explicit control, leave/reopen/reload, original PID and two once-only manual commands matched the frozen Web; native focus reports were separately matched by exact bytes and digest",
+      "at": "2026-11-17T01:08:02.351Z"
+    },
+    {
+      "name": "Actual repository binding disable stopped the original native shell and fenced the UI; original task, terminal, root and unconfirmed output remained UNKNOWN, with no post-revocation native authorization or new model budget",
+      "at": "2026-11-17T01:08:07.739Z"
+    }
+  ],
+  "modelCalls": [
+    {
+      "ordinal": 1,
+      "kind": "INVESTIGATE",
+      "at": "2026-11-17T01:06:53.368Z"
+    },
+    {
+      "ordinal": 2,
+      "kind": "IMPLEMENT",
+      "at": "2026-11-17T01:06:54.936Z"
+    },
+    {
+      "ordinal": 3,
+      "kind": "REVIEW",
+      "at": "2026-11-17T01:06:59.919Z"
+    },
+    {
+      "ordinal": 4,
+      "kind": "INVESTIGATE",
+      "at": "2026-11-17T01:07:42.995Z"
+    },
+    {
+      "ordinal": 5,
+      "kind": "IMPLEMENT",
+      "at": "2026-11-17T01:07:44.790Z"
+    },
+    {
+      "ordinal": 6,
+      "kind": "REVIEW",
+      "at": "2026-11-17T01:07:50.120Z"
+    }
+  ],
+  "tasks": [
+    {
+      "taskId": "5ae5fece-f374-4517-b606-d08ac2193483",
+      "strategy": "CLONE"
+    },
+    {
+      "taskId": "7edcbc2a-b72f-42c8-8936-1dacba80d188",
+      "strategy": "WORKTREE"
+    }
+  ],
+  "pageErrors": [],
+  "originalCore": {
+    "pid": 45760,
+    "processStartedAt": "2026-11-17T01:06:22.750Z"
+  },
+  "originalIdentities": [
+    {
+      "pid": 45760,
+      "processStartedAt": "2026-11-17T01:06:22.750Z"
+    },
+    {
+      "pid": 25160,
+      "processStartedAt": "2026-11-17T01:06:26.542Z"
+    },
+    {
+      "pid": 36244,
+      "processStartedAt": "2026-11-17T01:07:04.380Z"
+    },
+    {
+      "pid": 56256,
+      "processStartedAt": "2026-11-17T01:07:12.975Z"
+    },
+    {
+      "pid": 37828,
+      "processStartedAt": "2026-11-17T01:07:12.570Z"
+    },
+    {
+      "pid": 23860,
+      "processStartedAt": "2026-11-17T01:07:07.970Z"
+    },
+    {
+      "pid": 38532,
+      "processStartedAt": "2026-11-17T01:07:07.066Z"
+    },
+    {
+      "pid": 18308,
+      "processStartedAt": "2026-11-17T01:07:06.678Z"
+    },
+    {
+      "pid": 57792,
+      "processStartedAt": "2026-11-17T01:07:06.134Z"
+    },
+    {
+      "pid": 23132,
+      "processStartedAt": "2026-11-17T01:07:06.034Z"
+    },
+    {
+      "pid": 24596,
+      "processStartedAt": "2026-11-17T01:07:06.028Z"
+    },
+    {
+      "pid": 13396,
+      "processStartedAt": "2026-11-17T01:07:05.866Z"
+    },
+    {
+      "pid": 10112,
+      "processStartedAt": "2026-11-17T01:07:05.861Z"
+    },
+    {
+      "pid": 18696,
+      "processStartedAt": "2026-11-17T01:07:04.107Z"
+    },
+    {
+      "pid": 26808,
+      "processStartedAt": "2026-11-17T01:07:03.798Z"
+    },
+    {
+      "pid": 43096,
+      "processStartedAt": "2026-11-17T01:07:03.792Z"
+    },
+    {
+      "pid": 44836,
+      "processStartedAt": "2026-11-17T01:07:03.124Z"
+    },
+    {
+      "pid": 29832,
+      "processStartedAt": "2026-11-17T01:07:03.118Z"
+    },
+    {
+      "pid": 19900,
+      "processStartedAt": "2026-11-17T01:06:59.475Z"
+    },
+    {
+      "pid": 50580,
+      "processStartedAt": "2026-11-17T01:06:59.469Z"
+    },
+    {
+      "pid": 46956,
+      "processStartedAt": "2026-11-17T01:06:59.408Z"
+    },
+    {
+      "pid": 26772,
+      "processStartedAt": "2026-11-17T01:06:59.402Z"
+    },
+    {
+      "pid": 30924,
+      "processStartedAt": "2026-11-17T01:06:59.338Z"
+    },
+    {
+      "pid": 10392,
+      "processStartedAt": "2026-11-17T01:06:59.332Z"
+    },
+    {
+      "pid": 39252,
+      "processStartedAt": "2026-11-17T01:06:59.265Z"
+    },
+    {
+      "pid": 41912,
+      "processStartedAt": "2026-11-17T01:06:59.260Z"
+    },
+    {
+      "pid": 51624,
+      "processStartedAt": "2026-11-17T01:06:59.195Z"
+    },
+    {
+      "pid": 40800,
+      "processStartedAt": "2026-11-17T01:06:59.189Z"
+    },
+    {
+      "pid": 50280,
+      "processStartedAt": "2026-11-17T01:06:59.123Z"
+    },
+    {
+      "pid": 31092,
+      "processStartedAt": "2026-11-17T01:06:59.118Z"
+    },
+    {
+      "pid": 51788,
+      "processStartedAt": "2026-11-17T01:06:59.056Z"
+    },
+    {
+      "pid": 44740,
+      "processStartedAt": "2026-11-17T01:06:59.037Z"
+    },
+    {
+      "pid": 8640,
+      "processStartedAt": "2026-11-17T01:06:59.032Z"
+    },
+    {
+      "pid": 31176,
+      "processStartedAt": "2026-11-17T01:06:58.814Z"
+    },
+    {
+      "pid": 39024,
+      "processStartedAt": "2026-11-17T01:06:58.794Z"
+    },
+    {
+      "pid": 38788,
+      "processStartedAt": "2026-11-17T01:06:58.789Z"
+    },
+    {
+      "pid": 45644,
+      "processStartedAt": "2026-11-17T01:06:58.719Z"
+    },
+    {
+      "pid": 16116,
+      "processStartedAt": "2026-11-17T01:06:58.714Z"
+    },
+    {
+      "pid": 51888,
+      "processStartedAt": "2026-11-17T01:06:58.627Z"
+    },
+    {
+      "pid": 50328,
+      "processStartedAt": "2026-11-17T01:06:58.621Z"
+    },
+    {
+      "pid": 50920,
+      "processStartedAt": "2026-11-17T01:06:58.558Z"
+    },
+    {
+      "pid": 22968,
+      "processStartedAt": "2026-11-17T01:06:58.552Z"
+    },
+    {
+      "pid": 49032,
+      "processStartedAt": "2026-11-17T01:06:58.489Z"
+    },
+    {
+      "pid": 56976,
+      "processStartedAt": "2026-11-17T01:06:58.484Z"
+    },
+    {
+      "pid": 23132,
+      "processStartedAt": "2026-11-17T01:06:58.409Z"
+    },
+    {
+      "pid": 8556,
+      "processStartedAt": "2026-11-17T01:06:58.403Z"
+    },
+    {
+      "pid": 30524,
+      "processStartedAt": "2026-11-17T01:06:58.329Z"
+    },
+    {
+      "pid": 12792,
+      "processStartedAt": "2026-11-17T01:06:58.323Z"
+    },
+    {
+      "pid": 49332,
+      "processStartedAt": "2026-11-17T01:06:56.875Z"
+    },
+    {
+      "pid": 15048,
+      "processStartedAt": "2026-11-17T01:06:56.865Z"
+    },
+    {
+      "pid": 668,
+      "processStartedAt": "2026-11-17T01:06:56.789Z"
+    },
+    {
+      "pid": 7096,
+      "processStartedAt": "2026-11-17T01:06:56.783Z"
+    },
+    {
+      "pid": 52692,
+      "processStartedAt": "2026-11-17T01:06:54.822Z"
+    },
+    {
+      "pid": 58216,
+      "processStartedAt": "2026-11-17T01:06:54.816Z"
+    },
+    {
+      "pid": 40848,
+      "processStartedAt": "2026-11-17T01:06:53.200Z"
+    },
+    {
+      "pid": 26040,
+      "processStartedAt": "2026-11-17T01:06:53.189Z"
+    },
+    {
+      "pid": 38952,
+      "processStartedAt": "2026-11-17T01:06:51.291Z"
+    },
+    {
+      "pid": 34804,
+      "processStartedAt": "2026-11-17T01:06:51.263Z"
+    },
+    {
+      "pid": 37404,
+      "processStartedAt": "2026-11-17T01:06:51.179Z"
+    },
+    {
+      "pid": 55232,
+      "processStartedAt": "2026-11-17T01:06:49.398Z"
+    },
+    {
+      "pid": 38956,
+      "processStartedAt": "2026-11-17T01:06:49.392Z"
+    },
+    {
+      "pid": 16712,
+      "processStartedAt": "2026-11-17T01:06:49.302Z"
+    },
+    {
+      "pid": 30648,
+      "processStartedAt": "2026-11-17T01:06:49.296Z"
+    },
+    {
+      "pid": 23632,
+      "processStartedAt": "2026-11-17T01:06:49.210Z"
+    },
+    {
+      "pid": 22196,
+      "processStartedAt": "2026-11-17T01:06:49.204Z"
+    },
+    {
+      "pid": 28268,
+      "processStartedAt": "2026-11-17T01:06:47.208Z"
+    },
+    {
+      "pid": 39188,
+      "processStartedAt": "2026-11-17T01:06:47.125Z"
+    },
+    {
+      "pid": 21532,
+      "processStartedAt": "2026-11-17T01:06:47.119Z"
+    },
+    {
+      "pid": 14416,
+      "processStartedAt": "2026-11-17T01:06:47.042Z"
+    },
+    {
+      "pid": 29384,
+      "processStartedAt": "2026-11-17T01:06:47.035Z"
+    },
+    {
+      "pid": 48272,
+      "processStartedAt": "2026-11-17T01:06:46.959Z"
+    },
+    {
+      "pid": 43972,
+      "processStartedAt": "2026-11-17T01:06:46.906Z"
+    },
+    {
+      "pid": 22904,
+      "processStartedAt": "2026-11-17T01:06:46.881Z"
+    },
+    {
+      "pid": 32340,
+      "processStartedAt": "2026-11-17T01:06:46.870Z"
+    },
+    {
+      "pid": 28932,
+      "processStartedAt": "2026-11-17T01:06:46.792Z"
+    },
+    {
+      "pid": 32792,
+      "processStartedAt": "2026-11-17T01:06:46.786Z"
+    },
+    {
+      "pid": 12648,
+      "processStartedAt": "2026-11-17T01:06:46.703Z"
+    },
+    {
+      "pid": 13876,
+      "processStartedAt": "2026-11-17T01:06:46.696Z"
+    },
+    {
+      "pid": 53656,
+      "processStartedAt": "2026-11-17T01:06:46.610Z"
+    },
+    {
+      "pid": 38948,
+      "processStartedAt": "2026-11-17T01:06:46.604Z"
+    },
+    {
+      "pid": 35444,
+      "processStartedAt": "2026-11-17T01:06:46.513Z"
+    },
+    {
+      "pid": 36156,
+      "processStartedAt": "2026-11-17T01:06:46.506Z"
+    },
+    {
+      "pid": 29148,
+      "processStartedAt": "2026-11-17T01:06:46.433Z"
+    },
+    {
+      "pid": 3588,
+      "processStartedAt": "2026-11-17T01:06:46.409Z"
+    },
+    {
+      "pid": 42932,
+      "processStartedAt": "2026-11-17T01:06:46.403Z"
+    },
+    {
+      "pid": 35388,
+      "processStartedAt": "2026-11-17T01:06:46.316Z"
+    },
+    {
+      "pid": 55172,
+      "processStartedAt": "2026-11-17T01:06:46.302Z"
+    },
+    {
+      "pid": 16260,
+      "processStartedAt": "2026-11-17T01:06:46.216Z"
+    },
+    {
+      "pid": 20404,
+      "processStartedAt": "2026-11-17T01:06:46.209Z"
+    },
+    {
+      "pid": 26348,
+      "processStartedAt": "2026-11-17T01:06:46.138Z"
+    },
+    {
+      "pid": 11768,
+      "processStartedAt": "2026-11-17T01:06:46.133Z"
+    },
+    {
+      "pid": 4460,
+      "processStartedAt": "2026-11-17T01:06:46.060Z"
+    },
+    {
+      "pid": 7436,
+      "processStartedAt": "2026-11-17T01:06:46.054Z"
+    },
+    {
+      "pid": 51536,
+      "processStartedAt": "2026-11-17T01:06:45.976Z"
+    },
+    {
+      "pid": 38516,
+      "processStartedAt": "2026-11-17T01:06:45.969Z"
+    },
+    {
+      "pid": 39820,
+      "processStartedAt": "2026-11-17T01:06:45.825Z"
+    },
+    {
+      "pid": 56776,
+      "processStartedAt": "2026-11-17T01:06:45.819Z"
+    },
+    {
+      "pid": 56256,
+      "processStartedAt": "2026-11-17T01:06:45.684Z"
+    },
+    {
+      "pid": 29116,
+      "processStartedAt": "2026-11-17T01:06:45.533Z"
+    },
+    {
+      "pid": 53524,
+      "processStartedAt": "2026-11-17T01:06:45.509Z"
+    },
+    {
+      "pid": 50716,
+      "processStartedAt": "2026-11-17T01:06:45.503Z"
+    },
+    {
+      "pid": 37828,
+      "processStartedAt": "2026-11-17T01:06:45.409Z"
+    },
+    {
+      "pid": 37116,
+      "processStartedAt": "2026-11-17T01:06:45.401Z"
+    },
+    {
+      "pid": 53932,
+      "processStartedAt": "2026-11-17T01:06:45.288Z"
+    },
+    {
+      "pid": 55052,
+      "processStartedAt": "2026-11-17T01:06:45.266Z"
+    },
+    {
+      "pid": 16144,
+      "processStartedAt": "2026-11-17T01:06:45.154Z"
+    },
+    {
+      "pid": 43032,
+      "processStartedAt": "2026-11-17T01:06:44.988Z"
+    },
+    {
+      "pid": 28560,
+      "processStartedAt": "2026-11-17T01:06:44.859Z"
+    },
+    {
+      "pid": 43156,
+      "processStartedAt": "2026-11-17T01:06:44.731Z"
+    },
+    {
+      "pid": 31704,
+      "processStartedAt": "2026-11-17T01:06:44.568Z"
+    },
+    {
+      "pid": 17908,
+      "processStartedAt": "2026-11-17T01:06:44.444Z"
+    },
+    {
+      "pid": 5988,
+      "processStartedAt": "2026-11-17T01:06:44.299Z"
+    },
+    {
+      "pid": 45224,
+      "processStartedAt": "2026-11-17T01:06:44.161Z"
+    },
+    {
+      "pid": 35040,
+      "processStartedAt": "2026-11-17T01:06:44.048Z"
+    },
+    {
+      "pid": 46712,
+      "processStartedAt": "2026-11-17T01:06:43.927Z"
+    },
+    {
+      "pid": 20472,
+      "processStartedAt": "2026-11-17T01:06:43.805Z"
+    },
+    {
+      "pid": 10444,
+      "processStartedAt": "2026-11-17T01:06:43.656Z"
+    },
+    {
+      "pid": 41504,
+      "processStartedAt": "2026-11-17T01:06:43.527Z"
+    },
+    {
+      "pid": 55284,
+      "processStartedAt": "2026-11-17T01:07:55.202Z"
+    }
+  ],
+  "originalIdentitiesStopped": true,
+  "packaged": false,
+  "runtimeJava": "D:\\Projects\\多Agent研发工作台\\.runtime\\jdk-21.0.13+9\\bin\\java.exe",
+  "runtimeJavaSha256": "f8dc082a7dedbfd2924c3562405a5a1fd12efd2641808c92e2de819c76a58b7e",
+  "externalNodeAndJavaUnavailableOnPath": false,
+  "scope": "ACTUAL_PRODUCTION_MAIN_JAR_WEB_REAL_INDEPENDENT_WORKER_AND_NATIVE_SHELL; PACKAGED_JRE_AND_COMPLETE_HISTORICAL_PROCESS_TREE_ACCEPTANCE_SEPARATE"
+}

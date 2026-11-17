@@ -1,3 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 *.md whitespace=-blank-at-eol
+core/src/main/resources/third-party/** -text
+web/public/third-party/** -text
+core/src/main/resources/terminal-native-inventory.json -text

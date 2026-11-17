@@ -32,6 +32,10 @@ import static dev.agentworkbench.Json.*;
  */
 @Component
 public class ExecutionStore implements AutoCloseable {
+    /**
+     * 结构化状态版本包含终端会话、原动作与字节游标索引。
+     */
+    public static final int SCHEMA_VERSION = 10;
     private final Connection connection;
     private final ObjectMapper mapper;
     private final Path directory;
@@ -67,7 +71,7 @@ public class ExecutionStore implements AutoCloseable {
                 int schemaVersion;
                 try (var version = statement.executeQuery("PRAGMA user_version")) {
                     schemaVersion = version.next() ? version.getInt(1) : 0;
-                    if (schemaVersion > 9) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
+                    if (schemaVersion > SCHEMA_VERSION) throw new IllegalStateException("数据版本高于当前核心支持范围，请使用兼容版本");
                 }
                 statement.execute("PRAGMA journal_mode=WAL");
                 statement.execute("PRAGMA synchronous=FULL");
@@ -100,6 +104,14 @@ public class ExecutionStore implements AutoCloseable {
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_workspace_write_root ON entities(json_extract(body,'$.taskExecutionId')) WHERE kind='workspaceWriteLease'");
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_workspace_write_scope ON entities(json_extract(body,'$.scopeKey')) WHERE kind='workspaceWriteLease' AND json_extract(body,'$.protectionReleased')=0");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_workspace_write_task ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.state')) WHERE kind='workspaceWriteLease'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_terminal_active_task ON entities(json_extract(body,'$.taskId')) WHERE kind='terminalSession' AND json_extract(body,'$.state') IN ('QUEUED','STARTING','RUNNING','STOPPING')");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_terminal_task ON entities(json_extract(body,'$.taskId')) WHERE kind='terminalSession'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_terminal_start_request ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.startRequestId')) WHERE kind='terminalSession' AND json_extract(body,'$.startRequestId') IS NOT NULL");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_terminal_action_request ON entities(json_extract(body,'$.terminalId'),json_extract(body,'$.requestId')) WHERE kind='terminalAction'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_terminal_action_sequence ON entities(json_extract(body,'$.terminalId'),json_extract(body,'$.sequence')) WHERE kind='terminalAction'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_terminal_action_state ON entities(json_extract(body,'$.terminalId'),json_extract(body,'$.state')) WHERE kind='terminalAction'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_terminal_output_offset ON entities(json_extract(body,'$.terminalId'),json_extract(body,'$.epoch'),json_extract(body,'$.offset')) WHERE kind='terminalOutputSegment'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_terminal_output_next ON entities(json_extract(body,'$.terminalId'),json_extract(body,'$.epoch'),json_extract(body,'$.next')) WHERE kind='terminalOutputSegment'");
                 boolean rebuildSearch;
                 try (var tables = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_search'")) { rebuildSearch = schemaVersion < 3 || !tables.next(); }
                 statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS session_search USING fts5(project_id UNINDEXED,session_id UNINDEXED,message_id UNINDEXED,sequence UNINDEXED,content,tokenize='trigram case_sensitive 1')");
@@ -110,7 +122,7 @@ public class ExecutionStore implements AutoCloseable {
                     statement.execute("DELETE FROM session_search");
                     statement.execute("INSERT INTO session_search(rowid,project_id,session_id,message_id,sequence,content) SELECT sequence,json_extract(body,'$.projectId'),session_id,id,sequence,session_search_fold(json_extract(body,'$.content')) FROM session_messages");
                 }
-                statement.execute("PRAGMA user_version=9");
+                statement.execute("PRAGMA user_version=" + SCHEMA_VERSION);
                 opened.commit(); opened.setAutoCommit(true);
             }
             connection = opened; ownershipChannel = channel; ownershipLock = lock;
@@ -336,6 +348,87 @@ public class ExecutionStore implements AutoCloseable {
                 while (rows.next()) { if (records.size() == limit) { more = true; break; } cursor = rows.getLong(1); Map<String, Object> record = decode(rows.getString(2)); record.put("sequence", cursor); records.add(record); }
             }
             return obj(key, records, "cursor", cursor, "hasMore", more);
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    /**
+     * 控制门禁查询原终端的未决动作，不把全部输入历史装入内存。
+     */
+    synchronized boolean terminalHasUnsettledAction(String terminalId) {
+        try (var query = connection.prepareStatement("SELECT 1 FROM entities WHERE kind='terminalAction' AND json_extract(body,'$.terminalId')=? AND json_extract(body,'$.state') IN ('INTENT','DISPATCHED','UNKNOWN') LIMIT 1")) {
+            query.setString(1, terminalId); try (var rows = query.executeQuery()) { return rows.next(); }
+        } catch (SQLException exception) { throw failure(exception); }
+    }
+
+    synchronized int activeTerminalCount() {
+        try (var query = connection.prepareStatement("SELECT count(*) FROM entities WHERE kind='terminalSession' AND json_extract(body,'$.state') IN ('QUEUED','STARTING','RUNNING','STOPPING')")) {
+            try (var rows = query.executeQuery()) { return rows.next() ? rows.getInt(1) : 0; }
+        } catch (SQLException exception) { throw failure(exception); }
+    }
+
+    synchronized boolean taskHasActiveTerminal(String taskId) {
+        try (var query = connection.prepareStatement("SELECT 1 FROM entities WHERE kind='terminalSession' AND json_extract(body,'$.taskId')=? AND json_extract(body,'$.state') IN ('QUEUED','STARTING','RUNNING','STOPPING') LIMIT 1")) {
+            query.setString(1, taskId); try (var rows = query.executeQuery()) { return rows.next(); }
+        } catch (SQLException exception) { throw failure(exception); }
+    }
+
+    synchronized Map<String, Object> terminalStartRequest(String taskId, String requestId) {
+        get("task", taskId);
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='terminalSession' AND json_extract(body,'$.taskId')=? AND json_extract(body,'$.startRequestId')=? LIMIT 1")) {
+            query.setString(1, taskId); query.setString(2, requestId);
+            try (var rows = query.executeQuery()) { return rows.next() ? decode(rows.getString(1)) : obj(); }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    /**
+     * 核对只读取原任务未核对的未知终端记录，原 UNKNOWN 状态继续保留。
+     */
+    synchronized List<Map<String, Object>> unreconciledTerminalRecords(String kind, String taskId) {
+        if (!Set.of("terminalSession", "terminalAction").contains(kind)) throw new IllegalArgumentException("Invalid terminal reconciliation kind");
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind=? AND json_extract(body,'$.taskId')=? AND json_extract(body,'$.state')='UNKNOWN' AND json_extract(body,'$.reconciliation') IS NULL ORDER BY rowid LIMIT 50001")) {
+            query.setString(1, kind); query.setString(2, taskId);
+            try (var rows = query.executeQuery()) {
+                List<Map<String, Object>> records = new ArrayList<>();
+                while (rows.next()) { if (records.size() >= 50_000) throw new ApiException(409, "未知终端记录超过完整核对边界"); records.add(decode(rows.getString(1))); }
+                return records;
+            }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    synchronized boolean hasUnknownTerminalEffects(String taskId) {
+        try (var query = connection.prepareStatement("SELECT 1 FROM entities WHERE kind IN ('terminalSession','terminalAction') AND json_extract(body,'$.taskId')=? AND json_extract(body,'$.state')='UNKNOWN' AND json_extract(body,'$.reconciliation') IS NULL LIMIT 1")) {
+            query.setString(1, taskId); try (var rows = query.executeQuery()) { return rows.next(); }
+        } catch (SQLException exception) { throw failure(exception); }
+    }
+
+    /**
+     * 字节游标按原终端和 epoch 找到包含该偏移的完整片段，保留长整数。
+     */
+    synchronized Map<String, Object> terminalOutputAt(String terminalId, String epoch, long after) {
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='terminalOutputSegment' AND json_extract(body,'$.terminalId')=? AND json_extract(body,'$.epoch')=? AND json_extract(body,'$.next')>? AND json_extract(body,'$.offset')<=? ORDER BY json_extract(body,'$.offset') LIMIT 1")) {
+            query.setString(1, terminalId); query.setString(2, epoch); query.setLong(3, after); query.setLong(4, after);
+            try (var rows = query.executeQuery()) { return rows.next() ? decode(rows.getString(1)) : obj(); }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    public synchronized Map<String, Object> terminalPage(String taskId, long before, int requestedLimit) {
+        return dispatchRecordPage("terminalSession", "terminals", taskId, before, requestedLimit, "");
+    }
+
+    public synchronized Map<String, Object> terminalActionPage(String terminalId, long before, int requestedLimit) {
+        Map<String, Object> terminal = get("terminalSession", terminalId); get("task", str(terminal, "taskId"));
+        if (before < 0) throw new ApiException(400, "终端动作游标无效");
+        int limit = Math.max(1, Math.min(100, requestedLimit));
+        try (var query = connection.prepareStatement("SELECT rowid,body FROM entities WHERE kind='terminalAction' AND json_extract(body,'$.terminalId')=?" + (before > 0 ? " AND rowid<?" : "") + " ORDER BY rowid DESC LIMIT ?")) {
+            int index = 1; query.setString(index++, terminalId); if (before > 0) query.setLong(index++, before); query.setInt(index, limit + 1);
+            List<Map<String, Object>> actions = new ArrayList<>(); long cursor = before; boolean more = false;
+            try (var rows = query.executeQuery()) {
+                while (rows.next()) {
+                    if (actions.size() == limit) { more = true; break; }
+                    Map<String, Object> action = decode(rows.getString(2)); cursor = rows.getLong(1); action.put("historyCursor", cursor); actions.add(action);
+                }
+            }
+            return obj("actions", actions, "cursor", cursor, "hasMore", more);
         } catch (Exception exception) { throw failure(exception); }
     }
 
@@ -843,7 +936,7 @@ public class ExecutionStore implements AutoCloseable {
     }
 
     public synchronized boolean hasUnknownEffects(String taskId) {
-        try (var query = connection.prepareStatement("SELECT 1 FROM entities WHERE (kind IN ('operation','mcpOperation','teamOperation') OR (kind='workspaceWriteLease' AND json_extract(body,'$.protectionReleased')=0)) AND json_extract(body,'$.taskId')=? AND json_extract(body,'$.state')='UNKNOWN' LIMIT 1")) {
+        try (var query = connection.prepareStatement("SELECT 1 FROM entities WHERE (kind IN ('operation','mcpOperation','teamOperation') OR (kind IN ('terminalSession','terminalAction') AND json_extract(body,'$.reconciliation') IS NULL) OR (kind='workspaceWriteLease' AND json_extract(body,'$.protectionReleased')=0)) AND json_extract(body,'$.taskId')=? AND json_extract(body,'$.state')='UNKNOWN' LIMIT 1")) {
             query.setString(1, taskId); try (var rows = query.executeQuery()) { return rows.next(); }
         } catch (SQLException exception) { throw failure(exception); }
     }

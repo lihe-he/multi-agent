@@ -1,6 +1,23 @@
 # 实施与验收记录
 
-产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-16。
+产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-17。
+
+## 0.2.0-alpha.20 开发迭代
+
+按 F01/F12 增加任务实际隔离目录中的交互终端。启动与持久根、写入意图同事务保存，原 Worker 保持完整调用与锁；多个查看者和一个显式控制者分离。输入/resize/停止记录原意图、派发、一次原生授权和 ACK，丢失回执只核对原动作，禁止重放。原始字节先持久保存再发布 SQLite 引用，UTF-8/ANSI 与实际尺寸由 xterm 排空回调和测量核对。停止后任务暂停并重新验证/审查，撤权或回执缺失保留 UNKNOWN。使用和导出边界见[任务终端协议](./terminal-contract.md)，来源与原失败见[终端研究](./research/terminals-2026-11-16.md)。
+
+| 检查 | 当前准确状态 |
+| --- | --- |
+| 原生产核心构建 | 原 main 的 clean verify 完整执行43套/542项，529通过、10条件跳过、3失败，源码保持；未生成最终Jar。两项原团队60秒根收尾超时和一项20秒子请求未到达分别保存，临时现场缺口保留。原完整构建的1133份native夹具文件、两处输出发布边界、构造器对象返回丢失及48原身份停止独立核对；子集通过不改变整套失败。见[原构建失败](./qa/alpha20-production-core-original-team-failure-win32.json) |
+| 当前核心跟进 | 完整Windows原生快照复用PID与出生事实，读取失败保留原系统枚举回退，停止仍核验原句柄。新增3项身份/刷新/不可读取边界及原3项团队用例均通过；定向29项为28通过/1原有条件跳过，原时限、预算、两份旧用例源码及载体2/2保持。临时汇总器零跳过误判另存，按原XML独立核对，实际JFR启动核验。见[定向跟进](./qa/alpha20-native-snapshot-team-repair-win32.json)。新完整clean verify为44套/545项，535通过/10条件跳过，零失败或错误，33分钟；源码前后摘要保持。最终Jar 44,336,302字节，SHA-256 `66d0a60fe86afa9e3a0eef86ab44412ed7a9b4d2eb59950a911d871f029e96fa`，160个class、16份资源、36份依赖与24份native逐项核对。Spring Boot内嵌工具Jar按原打包插件内实际字节核对，审计器两次定位错误保留。见[完整核心](./qa/alpha20-core-build-win32.json) |
+| 生产 Web 与 UI | 独立干净 tsc/Vite 构建通过，20 个产物文件，13 份 third-party 资源逐项核对。自有随机端口、冻结生产 dist 的完整 UI 226/226，0跳过/失败/重试，261秒，源码与产物摘要保持；原196项与新增30项保留，44张历史截图另存本次结果后恢复原字节。见[生产 UI](./qa/ui-production-win32.json) |
+| 三项原边界 | 输出提交前丢失、提交后ACK丢失、原生对象未交还三项定向全部通过；独立核对195原文件、原SQLite与游标、一次实际shell及8原身份停止。输出 UNKNOWN 不补造引用，构造器产品回执 PID 0/出生空/清理未确认；此为受控夹具边界，未推断任意上游内部失败覆盖 |
+| 来源与许可 | 36份固定参考/许可证/NOTICE按原字节、SHA-256和Git blob核对；main xterm安装170份原npm字节，160份源绑定固定blob。pty4j原发布Jar及24份native、私有ConPTY class ABI、sources.jar与13份当前资源核对；实际native build commit与上游xterm bundle可复现构建缺口保留。见[正式来源清单](./research/terminal-sources-2026-11-16.json) |
+| 原真实 UI 失败 | 计划等待、显示等待、第三条实际焦点报告、导出409及撤权UNKNOWN等待分别保留。最后两份461原文件独立核对；停止终端不等于根已结束，撤权不补造完整终端回执。后续暂存成功不回写原失败 |
+| Java与历史 | 当前106份Java词法审计保留304原注释及顺序，64新增Javadoc均为标准多行；原RuntimeIntegrationTest与TeamExecutionTest源码、断言、时限和预算保持。旧alpha.19生产成功与文档CI失败回执独立保存 |
+| 最终运行与发行 | 最终普通Jar的真实HTTP4项、生产Web/native5项通过，CLONE/WORKTREE原尺寸、Unicode、查看/接管/重载、完整输出ZIP与撤权UNKNOWN分别核对；真实强杀原核心后Worker、shell和已观察子进程停止，重启保留原UNKNOWN/缺口与一次输入效果，未重放。HTTP602份现场文件及221原身份、Web119原身份停止保持；见[HTTP](./qa/terminals-http-win32.json)与[Web/native](./qa/terminals-native-ui-win32.json)。原协议29项通过，临时汇总器因旧报告无版本字段误判的原回执与独立Jar绑定核验另存。原生命周期回归、发行物和准确提交的三端CI继续执行；暂存成功不替代生产结果 |
+
+API/Worker帧、文件日志和检查点协议分别保持1、2、1，新增终端协议1，SQLite schema为10。原项目逐文件/代码块局部采纳、项目会话与远程终端、完整workflow/备份及其余 F01–F21 / M0–M3 条件继续实施，完整项目目标未完成。
 
 ## 0.2.0-alpha.19 开发迭代
 
@@ -24,6 +41,8 @@
 | 逐文件撤销授权与键盘修复 | 原RESTORE_CHECKPOINT的每个停止/写入边界同步调用原CHECK_CURRENT，后续文件效果等待核心授权回执；CLONE/WORKTREE新增两项在首个文件后撤回授权，任务、根动作和日志保留UNKNOWN，原模型预算为0、恢复次数为1、旧resume返回409。定向核心25/25，两个导出补丁各有八个路径，其中一个已恢复、七个保持原现场，原Worker PID/出生停止分别核对；临时工作区原文件未另复制，证据范围明确。原暂停/取消断言、时限和预算保持。键盘用例仅在原focus/Enter前等待按钮enabled，Edge与Chromium headless shell各34/34；生产Web字节与原两浏览器196项完整结果保持。两份受改Java的原六条注释保持，新增两条Javadoc为标准多行 |
 | 逐文件修复产物复验 | clean verify 34套/452项，442通过/10条件跳过，零失败或错误，45:34分钟，源码摘要保持；原356/447/450项逐项保留。新Jar SHA-256 `7db450e119112484f971c7d2276a1a39a13438cce35484f4598370ef1adf568f`，138个class与编译产物/Jar逐项绑定。相对450项产物，Worker四个class变化，其中两个仅LineNumberTable变化，去除这些属性后的原/新字节完全相同；依赖、许可证和版本保持。普通Jar检查点16、协议29、队列13、恢复11、工作区15、写入22、文件版本9、差异14均通过。原构建器的新安装器152743970字节、SHA-256 `54e988d3ce3166ebf7ae1d4fa17d724f32382a644d678cbb847635d8af0375f6`，NotSigned；发行程序禁用外部Java后的实际启动、内置JRE写入、原进程停止与守卫21/21均通过，包内Jar及全部Web/桌面字节核对。见[新核心](./qa/alpha19-per-file-boundary-repair-core-win32.json)与[完整本机冻结](./qa/alpha19-per-file-boundary-repair-validation-win32.json) |
 | 本轮证据与三端 CI | 接受源码206份及12组本机回执保持原字节，绑定准确生产提交 `eb666f4120a45139f56d2d46224a985ea2eefb75` 的 [run 43834820969](https://github.com/lihe-he/multi-agent/actions/runs/43834820969) 三端终态success，三份实际证据ZIP大小/SHA-256均匹配GitHub digest。每端34套，win32 452项/444通过/8条件跳过，darwin 454项/445通过/9条件跳过，linux 454项/445通过/9条件跳过，零失败或错误，载体2/2；Windows停用的符号目录参数容器在POSIX展开三项，原源码完全一致且三项通过，具体映射保存。完整UI196、四项关键修复、CLONE/WORKTREE各一个恢复/七个原路径、原UNKNOWN及Worker停止核对；检查点16、差异14、协议29、恢复11、队列13、工作区15、写入22、文件版本9、发行主题12/侧栏10、独立客户端和内置JRE均通过。[正式成功回执](./qa/alpha19-per-file-boundary-ci-success-receipt.json)另增；原三条CI失败、本机PENDING快照、114份历史文件及证据缺口保持。首次验证器把Windows停用容器按名称直接匹配POSIX展开项而失败，原失败保留，明确映射后核验通过；发行附件仅列出元数据 |
+| 文档提交的独立CI失败 | 文档提交 `e06f770` 的 [run 43851324554](https://github.com/lihe-he/multi-agent/actions/runs/43851324554) 终态failure，三份实际ZIP大小及GitHub摘要全部核对。macOS/Linux每端454项/445通过/9条件跳过、UI196及完整实际核验通过；Windows452项/444通过/8条件跳过、UI196、差异14、检查点16、恢复11通过，在队列held根首次模型调用等待处失败。原modelRequest 9ms UNKNOWN/ExecutionException、预算1/派发1，模型服务仅观察前一任务三次调用，未到强杀核心；原26份队列文件、SQLite、原完整pending ZIP与停止记录核对。206份产品接受源码与先前三端成功生产提交完全一致。底层传输cause/message/socket、held工作区与原准确poll缺口保留；上传清理后SQLite与failure-before-cleanup分别记录；历史tracked队列成功报告不计作本步成功。见[独立失败回执](./qa/alpha19-documentation-ci-original-queue-failure-receipt.json)，先前生产成功回执保持原字节 |
+
 
 API/Worker帧仍为1，SQLite schema为9，文件日志协议仍为2，检查点协议为1。根目录外副执行归档、原项目逐文件/代码块局部采纳、完整workflow和备份、PTY/远程能力及其余F01–F21/M0–M3退出条件继续实施，完整项目目标未完成。
 

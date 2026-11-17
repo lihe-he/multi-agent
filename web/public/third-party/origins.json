@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "releaseVersion": "0.2.0-alpha.20",
+  "components": [
+    {
+      "file": "pty4j/pty4j-0.13.4-sources.jar",
+      "bytes": 66477,
+      "sha256": "0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01",
+      "origin": {
+        "url": "https://repo.maven.apache.org/maven2/org/jetbrains/pty4j/pty4j/0.13.4/pty4j-0.13.4-sources.jar",
+        "version": "0.13.4",
+        "type": "UNMODIFIED_RELEASED_MAVEN_JAVA_SOURCES",
+        "nativeBuildCommitProven": false
+      }
+    },
+    {
+      "file": "pty4j/LICENSE.txt",
+      "bytes": 11231,
+      "sha256": "3a4a6fe55f67f02b92be0ec9907e347de8ab5c8edf9214c5c8019e5820517884",
+      "origin": {
+        "url": "https://github.com/JetBrains/pty4j/blob/7dd1378d167cb451fe6c50f4b73e129ec2925897/LICENSE",
+        "commit": "7dd1378d167cb451fe6c50f4b73e129ec2925897",
+        "spdx": "EPL-1.0",
+        "releasePomDeclaresSameLicense": true
+      }
+    },
+    {
+      "file": "pty4j/NOTICE.txt",
+      "bytes": 421,
+      "sha256": "7f1b01b809cecc274e9a0aaeba288ccb36a18cb96a97b8cc1fde58c1e713e845",
+      "origin": {
+        "url": "https://github.com/JetBrains/pty4j/blob/7dd1378d167cb451fe6c50f4b73e129ec2925897/NOTICE",
+        "commit": "7dd1378d167cb451fe6c50f4b73e129ec2925897",
+        "type": "FIXED_UPSTREAM_NOTICE; RELEASE_JAR_HAS_NO_NOTICE_ENTRY"
+      }
+    },
+    {
+      "file": "native/winpty-LICENSE.txt",
+      "bytes": 1085,
+      "sha256": "c39e428064b4f3e4fe81a975bf0fd3b845922b431bc4d9a7ffc8bfb091981836",
+      "origin": {
+        "url": "https://api.github.com/repos/rprichard/winpty/license?ref=7e59fe2d09adf0fa2aa606492e7ca98efbc5184e",
+        "repository": "rprichard/winpty",
+        "commit": "7e59fe2d09adf0fa2aa606492e7ca98efbc5184e",
+        "gitBlob": "246fbe01135727bcb06d31c29b966b4301de21ed",
+        "spdx": "MIT",
+        "nativeBuildCommitProven": false
+      }
+    },
+    {
+      "file": "native/OpenConsole-LICENSE.txt",
+      "bytes": 1116,
+      "sha256": "5d177f23ecfeb0ea8e050b6a5a16355e1ae9a0b286436ca8f83ed08b3795be6b",
+      "origin": {
+        "url": "https://api.github.com/repos/microsoft/terminal/license?ref=f6de9e0618015def1c9dda5b82f9d3abf03eb799",
+        "repository": "microsoft/terminal",
+        "commit": "f6de9e0618015def1c9dda5b82f9d3abf03eb799",
+        "gitBlob": "017b9885a46ad4c7f4367ad2949fb66fb56f977f",
+        "spdx": "MIT",
+        "nativeBuildCommitProven": false
+      }
+    },
+    {
+      "file": "xterm/LICENSE.txt",
+      "bytes": 1261,
+      "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd",
+      "origin": {
+        "url": "https://registry.npmjs.org/@xterm/xterm/-/xterm-6.0.0.tgz",
+        "package": "@xterm/xterm",
+        "version": "6.0.0",
+        "spdx": "MIT",
+        "declaredCommit": "f447274f430fd22513f6adbf9862d19524471c04",
+        "npmBytesBoundToFixedSourceBlobs": true
+      }
+    },
+    {
+      "file": "xterm-addon-fit/LICENSE.txt",
+      "bytes": 1103,
+      "sha256": "e256f01188af527e4d06d21d06fbf785ae9c50d4b328bf03cbe0ba7f0aa4228f",
+      "origin": {
+        "url": "https://registry.npmjs.org/@xterm/addon-fit/-/addon-fit-0.11.0.tgz",
+        "package": "@xterm/addon-fit",
+        "version": "0.11.0",
+        "spdx": "MIT",
+        "declaredCommit": "f447274f430fd22513f6adbf9862d19524471c04",
+        "npmBytesBoundToFixedSourceBlobs": true
+      }
+    },
+    {
+      "file": "kotlin-stdlib-1.9.22/LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "origin": {
+        "repository": "JetBrains/kotlin",
+        "tag": "v1.9.22",
+        "commit": "44ed2e94f57d63b380a81ad9dceba95b57f2f33d",
+        "url": "https://github.com/JetBrains/kotlin/blob/44ed2e94f57d63b380a81ad9dceba95b57f2f33d/license/LICENSE.txt",
+        "gitBlob": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+        "spdx": "Apache-2.0"
+      }
+    },
+    {
+      "file": "kotlin-stdlib-1.9.22/NOTICE.txt",
+      "bytes": 482,
+      "sha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19",
+      "origin": {
+        "repository": "JetBrains/kotlin",
+        "tag": "v1.9.22",
+        "commit": "44ed2e94f57d63b380a81ad9dceba95b57f2f33d",
+        "url": "https://github.com/JetBrains/kotlin/blob/44ed2e94f57d63b380a81ad9dceba95b57f2f33d/license/NOTICE.txt",
+        "gitBlob": "dad8493892a75c045237ca8edf0da21023242ce9",
+        "spdx": "Apache-2.0"
+      }
+    },
+    {
+      "file": "annotations-24.0.1/LICENSE.txt",
+      "bytes": 11352,
+      "sha256": "8c1e966c7855fb54027bcaf6ebe7a43abe4785791e8cf9148c363761d493d097",
+      "origin": {
+        "repository": "JetBrains/java-annotations",
+        "tag": "24.0.1",
+        "commit": "784429a1111930d51904cf8dcf4259f077d6bc7f",
+        "url": "https://github.com/JetBrains/java-annotations/blob/784429a1111930d51904cf8dcf4259f077d6bc7f/LICENSE.txt",
+        "gitBlob": "4c4a741bfd6103cc173315b0c699ea93bfe71383",
+        "spdx": "Apache-2.0"
+      }
+    }
+  ],
+  "nativeBuildCommitProven": false,
+  "upstreamImplementationModified": false
+}

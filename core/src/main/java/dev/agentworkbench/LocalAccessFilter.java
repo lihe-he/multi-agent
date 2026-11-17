@@ -62,6 +62,10 @@ public class LocalAccessFilter extends OncePerRequestFilter {
         String authorization = request.getHeader("Authorization");
         byte[] actual = authorization == null ? new byte[0] : authorization.getBytes(StandardCharsets.UTF_8);
         if (!MessageDigest.isEqual(("Bearer " + token).getBytes(StandardCharsets.UTF_8), actual) && !mcpAccess.permits(authorization, request.getRequestURI(), request.getMethod())) { reject(response, 401, "连接令牌无效、已撤销或不适用于此范围"); return; }
+        if (TerminalRequestBody.applies(request)) {
+            try { request = TerminalRequestBody.bounded(request); }
+            catch (TerminalRequestBody.TooLarge exception) { reject(response, 413, "终端请求体超过允许范围，未派发到原 shell"); return; }
+        }
         chain.doFilter(request, response);
     }
 

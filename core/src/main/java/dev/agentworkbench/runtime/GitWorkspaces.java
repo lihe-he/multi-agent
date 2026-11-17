@@ -109,9 +109,9 @@ final class GitWorkspaces {
             if ("WORKTREE".equals(str(selection, "strategy"))) {
                 runtime.git(source, "worktree", "add", "--detach", "--lock", "--reason", reason, "--", target.toString(), str(selection, "baseline"));
             } else {
-                runtime.git(target.getParent(), "-c", "protocol.file.allow=always", "clone", "--no-checkout", "--no-hardlinks", "--no-local", "--", source.toString(), target.toString());
+                runtime.cloneRepository(source, target, str(selection, "baseline"), false);
                 // 远程跟踪引用的提交可能未被普通 clone 下载，仍按原 SHA 获取，不重新解析分支。
-                runtime.git(target, "-c", "protocol.file.allow=always", "fetch", "--no-tags", "--no-write-fetch-head", "--", source.toString(), str(selection, "baseline"));
+                runtime.fetchLocalRepository(target, source, str(selection, "baseline"));
                 runtime.git(target, "checkout", "--detach", str(selection, "baseline"));
                 runtime.git(target, "remote", "remove", "origin");
                 runtime.git(target, "config", "user.name", "Agent Workbench");

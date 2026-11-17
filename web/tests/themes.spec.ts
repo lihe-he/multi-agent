@@ -122,7 +122,7 @@ test('已保存深色在 React 入口到达前应用', async ({ page }) => {
   await fixture(page); await page.emulateMedia({ colorScheme: 'light' });
   await page.addInitScript(() => localStorage.setItem('workbench-theme', 'ink-night-blue'));
   let release!: () => void; const delayed = new Promise<void>(resolve => { release = resolve; });
-  await page.route('**/src/main.tsx', async route => { await delayed; await route.continue(); });
+  await page.route(/\/(?:src\/main\.tsx|assets\/index-[A-Za-z0-9_-]+\.js)(?:\?.*)?$/, async route => { await delayed; await route.continue(); });
   try {
     await page.goto('/', { waitUntil: 'commit' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'ink-night-blue');

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.agentworkbench.runtime.AgentToolSession;
 import dev.agentworkbench.runtime.ModelCallObserver;
 import dev.agentworkbench.runtime.WorkspaceRuntime;
+import dev.agentworkbench.runtime.NativePtySession;
+import dev.agentworkbench.runtime.TerminalOutputArchive;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -45,6 +47,7 @@ public final class WorkerProcessMain {
     private final WorkerRpc rpc;
     private volatile Map<String, Object> assignment = obj();
     private volatile WorkspaceRuntime runtime;
+    private volatile Path terminalData;
 
     private WorkerProcessMain() {
         rpc = new WorkerRpc(new WorkerWire(mapper, new FileInputStream(FileDescriptor.in), new FileOutputStream(FileDescriptor.out)), this::handle,
@@ -67,6 +70,7 @@ public final class WorkerProcessMain {
         } finally {
             worker.stop(); worker.rpc.close();
             worker.rpc.awaitHandlers(5, TimeUnit.SECONDS);
+            worker.awaitTerminals();
             if (worker.runtime != null) worker.runtime.stop("");
             if (worker.runtime != null) worker.runtime.closeWorkspaceWrites();
             try { Runtime.getRuntime().removeShutdownHook(hook); } catch (IllegalStateException ignored) { }
@@ -77,6 +81,7 @@ public final class WorkerProcessMain {
         return switch (method) {
             case "BIND" -> bind(arguments);
             case "INVOKE" -> invoke(arguments);
+            case "TERMINAL_CONTROL" -> terminalControl(arguments);
             case "CANCEL" -> cancel(arguments);
             case "RELEASE" -> release(arguments);
             case "RELEASE_WORKSPACE_WRITE" -> releaseWorkspaceWrite(arguments);
@@ -84,7 +89,7 @@ public final class WorkerProcessMain {
         };
     }
 
-    private synchronized Map<String, Object> bind(Map<String, Object> arguments) {
+    private synchronized Map<String, Object> bind(Map<String, Object> arguments) throws java.io.IOException {
         if (stopping.get() || !assignment.isEmpty()) throw new ApiException(409, "Worker 只能绑定一次原核心会话");
         Map<String, Object> worker = map(arguments, "worker");
         if (integer(worker, "pid") != pid || !startedAt.equals(str(worker, "processStartedAt")) || integer(worker, "protocolVersion") != WorkerWire.PROTOCOL_VERSION
@@ -94,6 +99,7 @@ public final class WorkerProcessMain {
         Path data = Path.of(str(arguments, "dataDirectory"));
         if (!data.isAbsolute()) throw new IllegalArgumentException("Worker 数据目录必须绝对定位");
         runtime = new WorkspaceRuntime(mapper, data.normalize().toString()); assignment = new LinkedHashMap<>(worker);
+        terminalData = data.toRealPath();
         runtime.observeProcesses(facts -> {
             Map<String, Object> event = identity("PROCESS_OBSERVED"); event.put("process", facts);
             try { rpc.event("PROCESS_OBSERVED", event); } catch (Exception ignored) { stop(); }
@@ -139,6 +145,7 @@ public final class WorkerProcessMain {
             case "DELEGATION_COPY" -> runtime.delegationCopy(str(p, "workspace"), str(p, "subjectId"), str(p, "version"));
             case "INTEGRATE" -> runtime.integrateDelegation(str(p, "baseline"), str(p, "working"), str(p, "targetWorkspace"), str(p, "expectedResult"), map(p, "permissions"));
             case "RESTORE_CHECKPOINT" -> runtime.restoreCheckpoint(str(p, "workspace"), str(p, "taskId"), str(p, "operationId"), map(p, "preview"), call::checkedStop);
+            case "TERMINAL" -> executeTerminal(call);
             case "VERIFY" -> runtime.verify(str(p, "workspace"), str(p, "command"), call::stopped, text -> call.callback("LOG", obj("text", text)));
             case "RUN" -> runtime.runWithMcp(map(p, "route"), str(p, "apiKey"), str(p, "workspace"), str(p, "prompt"), bool(p, "readOnly", true), strings(p.get("scope")),
                 call::stopped, text -> call.callback("LOG", obj("text", text)), call.observer, objects(p.get("mcpBindings")), new WorkspaceRuntime.FixedToolInvoker() {
@@ -165,7 +172,7 @@ public final class WorkerProcessMain {
                 if (claims.size() >= 32_768) throw new ApiException(409, "Worker 原领取数量超过会话边界");
                 original = new Claim(new LinkedHashMap<>(lease)); claims.put(operation, original);
             }
-            for (String field : List.of("id", "operationId", "operationKind", "taskId", "projectId", "agentRunId", "taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId", "workspaceWriteIdentity", "workerId", "epoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "authorizationVersion", "workingDirectory", "realWorkingDirectory", "operationType", "subjectId", "claimDigest", "workspaceSelection", "workspaceOwnership")) {
+            for (String field : List.of("id", "operationId", "operationKind", "taskId", "projectId", "agentRunId", "taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId", "workspaceWriteIdentity", "workerId", "epoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "authorizationVersion", "workingDirectory", "realWorkingDirectory", "operationType", "subjectId", "claimDigest", "workspaceSelection", "workspaceOwnership", "terminalId")) {
                 if (!java.util.Objects.equals(original.lease.get(field), lease.get(field))) throw new ApiException(403, "原领取的固定来源已变化");
             }
             if (original.released.get() || sequence != original.sequence + 1 || !original.active.compareAndSet(false, true)) throw new ApiException(409, "Worker 原领取不能重放、并发或跳过调用");
@@ -178,6 +185,7 @@ public final class WorkerProcessMain {
             case "WORKSPACE" -> Set.of("PREPARE");
             case "WORKSPACE_WRITE" -> Set.of("ACQUIRE_WRITE");
             case "CHECKPOINT_RESTORE" -> Set.of("RESTORE_CHECKPOINT");
+            case "TERMINAL" -> Set.of("TERMINAL");
             case "MODEL", "SUBAGENT_MODEL", "REVIEW" -> Set.of("RUN");
             case "VERIFICATION" -> Set.of("VERIFY");
             case "REVIEW_SNAPSHOT" -> Set.of("REVIEW_COPY");
@@ -195,6 +203,9 @@ public final class WorkerProcessMain {
         if (!path.isAbsolute() || !ExecutionNodes.samePath(path.normalize().toString(), str(lease, "workingDirectory"))
                 || !ExecutionNodes.samePath(path.toRealPath().toString(), str(lease, "realWorkingDirectory"))) throw new ApiException(403, "现场目录不属于原领取或解析目标已变化");
         if ("PREPARE".equals(method) && !str(lease, "taskId").equals(str(parameters, "taskId"))) throw new ApiException(403, "准备目录不属于原根任务");
+        if ("TERMINAL".equals(method) && (!parameters.keySet().equals(Set.of("workspace", "terminalId", "recipe", "columns", "rows"))
+                || str(lease, "terminalId").isBlank() || !str(lease, "terminalId").equals(str(parameters, "terminalId"))
+                || map(lease, "workspaceWriteIdentity").isEmpty())) throw new ApiException(403, "终端参数不属于原意图和整次现场保护");
         if ("RESTORE_CHECKPOINT".equals(method) && (!str(lease, "taskId").equals(str(parameters, "taskId")) || !str(lease, "operationId").equals(str(parameters, "operationId"))
                 || !str(lease, "taskId").equals(str(map(parameters, "preview"), "taskId")) || map(lease, "workspaceWriteIdentity").isEmpty())) throw new ApiException(403, "撤销参数不属于原根文件操作与实际写入保护");
         if ("PREPARE".equals(method) && !map(lease, "workspaceSelection").equals(map(parameters, "workspaceSelection"))) throw new ApiException(403, "准备提交与原 Worker 领取不一致");
@@ -209,6 +220,104 @@ public final class WorkerProcessMain {
         if (taskId.isBlank()) throw new IllegalArgumentException("Worker 停止缺少原任务");
         for (Call call : calls.values()) if (taskId.equals(str(call.lease, "taskId"))) { call.cancelled.set(true); count++; }
         runtime.stop(taskId); return obj("requested", true, "calls", count);
+    }
+
+    /**
+     * 原 TERMINAL 调用持有整次保护，输出读取及原生清理结束后才返回。
+     */
+    private Map<String, Object> executeTerminal(Call call) {
+        Map<String, Object> context = valueMap(call.callback("TERMINAL_CONTEXT", obj()));
+        if (!str(call.parameters, "terminalId").equals(str(context, "terminalId"))) throw new ApiException(403, "终端输出上下文失去原编号");
+        TerminalOutputArchive.Writer output = new TerminalOutputArchive(mapper, terminalData).create(str(context, "terminalId"), str(context, "epoch"), map(context, "owner"), integer(context, "outputLimit"));
+        call.callback("TERMINAL_LAUNCH", obj());
+        java.util.function.Consumer<Map<String, Object>> publish = descriptor -> call.callback("TERMINAL_OUTPUT", descriptor);
+        NativePtySession terminal;
+        try {
+            terminal = NativePtySession.open(terminalData, Path.of(str(call.lease, "realWorkingDirectory")), str(call.parameters, "recipe"),
+                Math.toIntExact(integer(call.parameters, "columns")), Math.toIntExact(integer(call.parameters, "rows")), facts -> {
+                    Map<String, Object> event = identity("PROCESS_OBSERVED"); event.put("process", facts);
+                    try { rpc.event("PROCESS_OBSERVED", event); } catch (Exception exception) { stop(); }
+                }, output, publish);
+        } catch (NativePtySession.StartupFailure failure) {
+            return publishTerminalEnd(call, failure.receipt());
+        } catch (java.io.IOException exception) { throw new IllegalStateException("原终端启动缺少完整身份，Worker 与原后代必须核对", exception); }
+        synchronized (call.terminalAdmission) { call.terminal = terminal; call.terminalAccepting = true; }
+        boolean startupAcknowledged = true;
+        try { call.callback("TERMINAL_STARTED", terminal.started()); }
+        catch (RuntimeException exception) { startupAcknowledged = false; call.cancelled.set(true); terminal.requestStop(); }
+        Map<String, Object> result;
+        try { result = terminal.execute(call::stopped, output, publish); }
+        finally {
+            synchronized (call.terminalAdmission) { call.terminalAccepting = false; }
+            boolean interrupted = false;
+            while (call.terminalControls.get() > 0) {
+                try { TimeUnit.MILLISECONDS.sleep(20); }
+                catch (InterruptedException exception) { interrupted = true; terminal.requestStop(); }
+            }
+            if (interrupted) Thread.currentThread().interrupt();
+        }
+        result.put("startupAcknowledged", startupAcknowledged);
+        if (!startupAcknowledged) result.put("status", "UNKNOWN");
+        return publishTerminalEnd(call, result);
+    }
+
+    /**
+     * 原生完整收尾后发布原结束描述，启动失败和正常停止共用原回执边界。
+     */
+    private Map<String, Object> publishTerminalEnd(Call call, Map<String, Object> result) {
+        try { call.callback("TERMINAL_OUTPUT_END", map(result, "outputEnd")); }
+        catch (RuntimeException exception) { result.put("endPublicationAcknowledged", false); result.put("status", "UNKNOWN"); }
+        return result;
+    }
+
+    /**
+     * 控制仍定位原在途调用，原生写入前消费一次核心持久授权。
+     */
+    private Map<String, Object> terminalControl(Map<String, Object> request) throws Exception {
+        requireBound(); Call call = calls.get(str(request, "callId"));
+        if (call == null || !"TERMINAL".equals(str(call.lease, "operationType")) || call.stopped()
+                || !str(call.lease, "id").equals(str(request, "workerLeaseId")) || !str(call.lease, "operationId").equals(str(request, "operationId"))
+                || !str(call.lease, "claimDigest").equals(digest(str(request, "claimToken"))) || call.sequence != integer(request, "callSequence")
+                || !str(call.lease, "terminalId").equals(str(request, "terminalId"))) throw new ApiException(403, "控制不属于原在途终端调用");
+        Map<String, Object> action = map(request, "action");
+        byte[] bytes;
+        String encoded = str(request, "inputBase64"); if (encoded.length() > 21_848) throw new ApiException(413, "终端输入越过原帧边界");
+        try { bytes = java.util.Base64.getDecoder().decode(encoded); }
+        catch (IllegalArgumentException exception) { throw new ApiException(400, "终端输入编码无效"); }
+        String kind = str(action, "kind");
+        if (!str(request, "terminalId").equals(str(action, "terminalId")) || bytes.length != integer(action, "length")
+                || ("INPUT".equals(kind) && (bytes.length < 1 || bytes.length > TerminalLedger.MAX_INPUT_BYTES))
+                || (!"INPUT".equals(kind) && bytes.length != 0) || !Set.of("INPUT", "RESIZE", "STOP").contains(kind)) throw new ApiException(403, "终端控制事实与原输入不一致");
+        byte[] facts = "INPUT".equals(kind) ? bytes : (kind + ":" + integer(action, "columns") + ":" + integer(action, "rows")).getBytes(StandardCharsets.US_ASCII);
+        if (!HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(facts)).equals(str(action, "sha256"))) throw new ApiException(403, "终端控制摘要与原输入不一致");
+        synchronized (call.terminalAdmission) {
+            if (!call.terminalAccepting || call.terminal == null || !call.terminalRequestIds.add(str(action, "requestId"))) throw new ApiException(409, "原终端控制已结束或原编号已使用");
+            call.terminalControls.incrementAndGet();
+        }
+        try {
+            requireTarget(call.lease, "TERMINAL", call.parameters);
+            call.callback("TERMINAL_AUTHORIZE", action);
+            Map<String, Object> effect = obj();
+            switch (kind) {
+                case "INPUT" -> call.terminal.input(bytes);
+                case "RESIZE" -> effect = call.terminal.resize(Math.toIntExact(integer(action, "columns")), Math.toIntExact(integer(action, "rows")));
+                case "STOP" -> call.terminal.requestStop();
+                default -> throw new ApiException(403, "终端控制未获支持");
+            }
+            return obj("callId", call.id, "workerLeaseId", call.lease.get("id"), "operationId", call.lease.get("operationId"), "terminalId", call.lease.get("terminalId"),
+                "requestId", action.get("requestId"), "sha256", action.get("sha256"), "sequence", action.get("sequence"), "effect", effect,
+                "executorPid", pid, "processStartedAt", startedAt, "state", "ACKNOWLEDGED");
+        } finally { call.terminalControls.decrementAndGet(); }
+    }
+
+    private void awaitTerminals() {
+        boolean interrupted = false;
+        while (calls.values().stream().anyMatch(call -> "TERMINAL".equals(str(call.lease, "operationType")))) {
+            for (Call call : calls.values()) if (call.terminal != null) call.terminal.requestStop();
+            try { TimeUnit.MILLISECONDS.sleep(20); }
+            catch (InterruptedException exception) { interrupted = true; }
+        }
+        if (interrupted) Thread.currentThread().interrupt();
     }
 
     private Map<String, Object> release(Map<String, Object> arguments) throws Exception {
@@ -275,6 +384,11 @@ public final class WorkerProcessMain {
         final RemoteObserver observer = new RemoteObserver();
         private final ReentrantLock callbackLock = new ReentrantLock();
         private long callbacks;
+        private final Object terminalAdmission = new Object();
+        private final java.util.concurrent.atomic.AtomicInteger terminalControls = new java.util.concurrent.atomic.AtomicInteger();
+        private final Set<String> terminalRequestIds = ConcurrentHashMap.newKeySet();
+        private volatile NativePtySession terminal;
+        private boolean terminalAccepting;
         Call(String id, Map<String, Object> lease, Map<String, Object> parameters, long sequence) { this.id = id; this.lease = lease; this.parameters = parameters; this.sequence = sequence; }
         boolean stopped() { return cancelled.get() || stopping.get() || !rpc.open(); }
 
@@ -294,7 +408,7 @@ public final class WorkerProcessMain {
                     "processStartedAt", startedAt, "callSequence", sequence, "callbackSequence", ++callbacks, "action", action, "arguments", arguments));
                 try {
                     while (true) {
-                        if (stopped() && !Set.of("MODEL_END", "RESOURCE_CLOSE", "MCP", "TOOL").contains(action)) throw new CancellationException("原 Worker 调用已停止");
+                        if (stopped() && !Set.of("MODEL_END", "RESOURCE_CLOSE", "MCP", "TOOL", "TERMINAL_OUTPUT", "TERMINAL_OUTPUT_END").contains(action)) throw new CancellationException("原 Worker 调用已停止");
                         try { return result.get(150, TimeUnit.MILLISECONDS); } catch (TimeoutException ignored) { }
                     }
                 } catch (InterruptedException exception) { Thread.currentThread().interrupt(); throw new CancellationException("原 Worker 回调被停止"); }

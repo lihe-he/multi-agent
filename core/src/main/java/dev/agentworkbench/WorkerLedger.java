@@ -82,6 +82,14 @@ final class WorkerLedger {
                 "claimDigest", digest, "state", "ACTIVE", "stopState", "RUNNING", "workingDirectory", Path.of(workspace).toAbsolutePath().normalize().toString(),
                 "createdAt", time.toString(), "heartbeatAt", time.toString(), "expiresAt", time.plusMillis(LEASE_MILLIS).toString());
             lease.putAll(obj("operationType", operation.get("kind"), "subjectId", subject(operation, task), "deployment", worker.get("deployment"), "executorPid", worker.get("pid"), "processStartedAt", worker.get("processStartedAt")));
+            if ("TERMINAL".equals(str(operation, "kind"))) {
+                Map<String, Object> terminal = store.get("terminalSession", str(task, "pendingTerminalId"));
+                if (!"QUEUED".equals(str(terminal, "state")) || !str(task, "id").equals(str(terminal, "taskId"))
+                        || !str(operation, "taskExecutionId").equals(str(terminal, "taskExecutionId"))
+                        || !str(operation, "dispatchActionId").equals(str(terminal, "dispatchActionId"))
+                        || !str(terminal, "id").equals(str(details, "terminalId")) || writeIdentity.isEmpty()) throw new ApiException(403, "终端不属于原根意图和整次写入保护");
+                lease.put("terminalId", terminal.get("id"));
+            }
             if ("WORKSPACE".equals(str(operation, "kind")) && task.containsKey("workspaceSelection")) {
                 if (!map(operation, "workspaceSelection").equals(map(task, "workspaceSelection"))) throw new ApiException(403, "准备操作不属于当前启动选择");
                 lease.put("workspaceSelection", task.get("workspaceSelection"));

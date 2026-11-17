@@ -163,7 +163,39 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
 
     @Override public void stop(String taskId) { if (process != null && !taskId.isBlank()) process.cancel(taskId); }
 
+    Map<String, Object> executeTerminal(Map<String, Object> terminal, TerminalLedger ledger, BooleanSupplier cancelled) {
+        return objectValue(invoke("TERMINAL", obj("workspace", terminal.get("workspace"), "terminalId", terminal.get("id"),
+            "recipe", terminal.get("recipe"), "columns", terminal.get("columns"), "rows", terminal.get("rows")), cancelled, ignored -> {}, null, null, ledger));
+    }
+
+    /**
+     * 控制请求复用原在途调用，等待回调期间不持有 SQLite monitor。
+     */
+    Map<String, Object> controlTerminal(String terminalId, Map<String, Object> action, byte[] input) {
+        Invocation call = invocations.values().stream().filter(value -> "TERMINAL".equals(value.method) && terminalId.equals(str(value.claim.lease, "terminalId"))).findFirst()
+            .orElseThrow(() -> new ApiException(409, "原终端尚未启动或调用已收尾"));
+        requireCurrent(call.claim, call.cancelled);
+        try {
+            Map<String, Object> result = objectValue(process.terminalControl(call.id, call.claim.lease, call.claim.token, call.sequence, action, input).get(10, TimeUnit.SECONDS));
+            if (!"ACKNOWLEDGED".equals(str(result, "state")) || !call.id.equals(str(result, "callId"))
+                    || !str(call.claim.lease, "id").equals(str(result, "workerLeaseId")) || !str(call.claim.lease, "operationId").equals(str(result, "operationId"))
+                    || !terminalId.equals(str(result, "terminalId")) || !str(action, "requestId").equals(str(result, "requestId"))
+                    || !str(action, "sha256").equals(str(result, "sha256")) || integer(action, "sequence") != integer(result, "sequence")
+                    || integer(result, "executorPid") != process.pid() || !str(process.processIdentity(), "processStartedAt").equals(str(result, "processStartedAt"))) throw new IllegalStateException("原终端控制回执失去调用或输入来源");
+            if ("RESIZE".equals(str(action, "kind")) && (integer(action, "columns") != integer(map(result, "effect"), "columns") || integer(action, "rows") != integer(map(result, "effect"), "rows"))) throw new IllegalStateException("原终端实际尺寸与控制回执不一致");
+            return result;
+        } catch (InterruptedException exception) { Thread.currentThread().interrupt(); throw new IllegalStateException("原终端控制等待被中断，输入回执未知", exception); }
+        catch (ExecutionException exception) {
+            if (exception.getCause() instanceof WorkerRpc.RemoteFailure remote && "API".equals(remote.category()) && remote.status() < 500) throw new ApiException(remote.status(), remote.getMessage());
+            throw new IllegalStateException("原终端控制未取得完整回执，禁止再次发送输入", exception);
+        } catch (TimeoutException exception) { throw new IllegalStateException("原终端控制回执超时，禁止再次发送输入", exception); }
+    }
+
     private Object invoke(String method, Map<String, Object> parameters, BooleanSupplier cancelled, Consumer<String> log, ModelCallObserver observer, FixedToolInvoker mcp) {
+        return invoke(method, parameters, cancelled, log, observer, mcp, null);
+    }
+
+    private Object invoke(String method, Map<String, Object> parameters, BooleanSupplier cancelled, Consumer<String> log, ModelCallObserver observer, FixedToolInvoker mcp, TerminalLedger terminalLedger) {
         Claim claim = current.get();
         if (claim == null) throw new ApiException(403, "现场执行必须持有核心的原 Worker 领取");
         requireCurrent(claim, cancelled);
@@ -172,11 +204,11 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
             if (!claim.active.compareAndSet(false, true)) throw new ApiException(409, "同一原领取仍有实际在途调用");
             sequence = ++claim.sequence;
         }
-        Invocation call = new Invocation(id(), claim, sequence, method, cancelled, log, observer, mcp); invocations.put(call.id, call);
+        Invocation call = new Invocation(id(), claim, sequence, method, cancelled, log, observer, mcp, terminalLedger); invocations.put(call.id, call);
         boolean interrupted = false;
         try {
             var result = process.invoke(call.id, claim.lease, claim.token, sequence, method, parameters);
-            long deadline = System.nanoTime() + Duration.ofMinutes(16).toNanos();
+            long deadline = "TERMINAL".equals(method) ? Long.MAX_VALUE : System.nanoTime() + Duration.ofMinutes(16).toNanos();
             Map<String, Object> response;
             while (true) {
                 if ((cancelled.getAsBoolean() || !worker.current(str(claim.lease, "taskId"))) && call.cancelSent.compareAndSet(false, true)) process.cancel(str(claim.lease, "taskId"));
@@ -269,6 +301,7 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         final ModelCallObserver observer;
         final AgentToolSession tools;
         final FixedToolInvoker mcp;
+        final TerminalLedger terminalLedger;
         final AtomicBoolean cancelSent = new AtomicBoolean();
         /**
          * 阻塞回调保持原顺序，同时允许 Java 21 虚拟线程释放载体供子调用推进。
@@ -278,9 +311,10 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         long callbacks;
         boolean requestInFlight;
         boolean closed;
-        Invocation(String id, Claim claim, long sequence, String method, BooleanSupplier cancelled, Consumer<String> log, ModelCallObserver observer, FixedToolInvoker mcp) {
+        Invocation(String id, Claim claim, long sequence, String method, BooleanSupplier cancelled, Consumer<String> log, ModelCallObserver observer, FixedToolInvoker mcp, TerminalLedger terminalLedger) {
             this.id = id; this.claim = claim; this.sequence = sequence; this.method = method; this.cancelled = cancelled; this.log = log; this.observer = observer;
             this.tools = observer == null ? null : observer.tools(); this.mcp = mcp;
+            this.terminalLedger = terminalLedger;
         }
 
         Object callback(Map<String, Object> message) throws Exception {
@@ -293,9 +327,22 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
                     || integer(message, "callSequence") != sequence || integer(message, "callbackSequence") != callbacks + 1) throw new ApiException(403, "回调失去原 Worker、领取或调用顺序");
             callbacks++;
             String action = str(message, "action"); Map<String, Object> arguments = map(message, "arguments");
-            if (!List.of("MODEL_END", "RESOURCE_CLOSE", "LOG").contains(action)) requireCurrent(claim, cancelled);
+            if (!List.of("MODEL_END", "RESOURCE_CLOSE", "LOG", "TERMINAL_OUTPUT", "TERMINAL_OUTPUT_END").contains(action)) requireCurrent(claim, cancelled);
             return switch (action) {
                 case "CHECK_CURRENT" -> { if (tools != null) tools.checkCurrent(); yield true; }
+                case "TERMINAL_CONTEXT", "TERMINAL_LAUNCH", "TERMINAL_STARTED", "TERMINAL_OUTPUT", "TERMINAL_OUTPUT_END", "TERMINAL_AUTHORIZE" -> {
+                    if (!"TERMINAL".equals(method) || terminalLedger == null || str(lease, "terminalId").isBlank()) throw new ApiException(403, "终端回调缺少原调用来源");
+                    String terminalId = str(lease, "terminalId");
+                    yield switch (action) {
+                        case "TERMINAL_CONTEXT" -> terminalLedger.outputContext(terminalId);
+                        case "TERMINAL_LAUNCH" -> { terminalLedger.nativeLaunch(terminalId); yield true; }
+                        case "TERMINAL_STARTED" -> { terminalLedger.started(terminalId, arguments); yield true; }
+                        case "TERMINAL_OUTPUT" -> terminalLedger.publishOutput(terminalId, arguments);
+                        case "TERMINAL_OUTPUT_END" -> terminalLedger.finishOutput(terminalId, arguments);
+                        case "TERMINAL_AUTHORIZE" -> terminalLedger.authorize(terminalId, arguments);
+                        default -> throw new ApiException(403, "终端回调未获支持");
+                    };
+                }
                 case "LOG" -> { log.accept(str(arguments, "text")); yield true; }
                 case "MODEL_BEGIN" -> {
                     if (!"RUN".equals(method) || observer == null || requestInFlight) throw new ApiException(409, "模型派发不属于原空闲请求边界");

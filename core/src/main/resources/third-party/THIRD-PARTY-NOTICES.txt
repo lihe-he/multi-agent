@@ -1,0 +1,3 @@
+Third-party notices for the terminal distribution
+
+Read SOURCE-OFFER.txt for source availability, component versions and native provenance limits. Original license and notice texts are supplied in their component directories. Dependency and Java source JARs retain their release bytes. Browser bundles are built from the verified npm files, with their original MIT licenses provided separately. Exact resource hashes and source references are listed in origins.json.

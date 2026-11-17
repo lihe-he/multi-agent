@@ -1,0 +1,1656 @@
+{
+  "recordedAt": "2026-11-17T01:18:38.054Z",
+  "status": "passed",
+  "version": "0.2.0-alpha.20",
+  "platform": "win32",
+  "originalBuild": {
+    "file": ".runtime/alpha20-core-production-native-snapshot-clean-verify-attempt1/receipt.json",
+    "bytes": 38356,
+    "sha256": "979534b79c4460436ab41037eb61f6adba69766865a1528295e9738f2f2b4974"
+  },
+  "originalJarAudit": {
+    "file": ".runtime/alpha20-production-jar-audit-production-native-snapshot-final-attempt3/receipt.json",
+    "bytes": 78737,
+    "sha256": "150158350f3b77cbf99e6ddd16bbf54d514f1884ac561e8c413ecd895b31dcae"
+  },
+  "originalNativeAudit": {
+    "file": ".runtime/alpha20-core-native-fixture-audit-production-full-native-snapshot-attempt1/receipt.json",
+    "bytes": 338964,
+    "sha256": "967b903b21fabd9d5d6780b6017d34b5197c0bbb7064c4d561ffc8958d8ea14f"
+  },
+  "startedAt": "2026-11-16T14:44:26.003Z",
+  "completedAt": "2026-11-16T15:17:29.566Z",
+  "suiteCount": 44,
+  "tests": 545,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 10,
+  "passed": 535,
+  "carrierParallelism": 2,
+  "carrierMaxPoolSize": 2,
+  "jar": {
+    "file": ".runtime\\alpha20-core-production-native-snapshot-clean-verify-attempt1\\target\\agent-workbench-core-0.2.0-alpha.20.jar",
+    "bytes": 44336302,
+    "sha256": "66d0a60fe86afa9e3a0eef86ab44412ed7a9b4d2eb59950a911d871f029e96fa",
+    "classes": 160,
+    "resources": 16,
+    "nestedLibraries": 36
+  },
+  "sources": [
+    {
+      "file": "core/pom.xml",
+      "bytes": 2878,
+      "sha256": "ca56b685ea5fab40af965715eec7e7507307417408cd75274b6518be5fbf7d05"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/AgentPermissions.java",
+      "bytes": 5437,
+      "sha256": "689ad652b06e61cabce5449e59e050bf575fbac73e17998e38a77adc439dc0b8"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ApiErrors.java",
+      "bytes": 1727,
+      "sha256": "7145d3bb7ac039276895ff72edf7e69ced634f66b4776d93538e2cd8ec68a76e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ApiException.java",
+      "bytes": 321,
+      "sha256": "062ac9698433cd2629679d74b99f17445645f15f9881c704804608712cbb370c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/BudgetPolicy.java",
+      "bytes": 1438,
+      "sha256": "20b848ccdb3a020a489b4b1ddb69354cb557eb17fcf65abd9229eb5e9f84b4a7"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CheckpointExportHistory.java",
+      "bytes": 8002,
+      "sha256": "09a91d077202e3e159a9c6e2fd1650caa6ac89e607115e54e122679232ce344c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CheckpointLedger.java",
+      "bytes": 20976,
+      "sha256": "ad7123c5b8b6ff0e5438ce781f5e21606ee8429c2e980b588c618c5b726fd8b8"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/CollaborationPolicy.java",
+      "bytes": 6336,
+      "sha256": "9ccded3abff0c9bd5c150727499affe27d5c9ba1a978b8aded01c651b8332277"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionNodes.java",
+      "bytes": 11344,
+      "sha256": "22ea42117d12b5753f1549e4701ea9158763f3699eafdf3b54d3fd33afc0aaba"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+      "bytes": 109266,
+      "sha256": "22f603540c7e4acbc25a87ea240fe3517e213c45cc024b0b365e304fef4523a2"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionWorker.java",
+      "bytes": 747,
+      "sha256": "78d2e6747036e5063820920a2d12f9f97434f5969d6b83929f4735a794f897f5"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/FileToolHistory.java",
+      "bytes": 14106,
+      "sha256": "7e1fca7fe0454d091a293643191f51c81123e15a116964926545f4a7a4f26a4c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/Json.java",
+      "bytes": 2471,
+      "sha256": "0f1739eefb3977f8d463abd577f007f71bbf2f960bb596636a02040954ac0e62"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/LocalAccessFilter.java",
+      "bytes": 4131,
+      "sha256": "80c0dd5d2adda6b050bdaa74e1a1ffaa528fad712f1096c35fe1604182e5fd6e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/LocalExecutionWorker.java",
+      "bytes": 15363,
+      "sha256": "ca941ce505f7437a1b0a6b5ee08b1c5b75bd9ee865d13e0fb636d5f052c71998"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ManagedProcessLedger.java",
+      "bytes": 30456,
+      "sha256": "a7f95270b20ba305823d18fd8248775592bbc71d4adba2911f06cf6636201c26"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/PlanValidator.java",
+      "bytes": 4500,
+      "sha256": "60d9742b53b3d54f66adc641b94c40b655126b5703690f4e0aac119fbf80c091"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+      "bytes": 29612,
+      "sha256": "4168ac091632175ae6b96fd1420f1382bdbb5e97dd3acbaf96345bbf0bd7adef"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+      "bytes": 4219,
+      "sha256": "5298459ec9a316a0c4f4f02c2e99d349fe7d92678e63eac2d93c53450a024df2"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ResourceManager.java",
+      "bytes": 3028,
+      "sha256": "a853dd983276ad14a8031429847fb50d11ca3e88e8b696e8590d58c35389627c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/SessionController.java",
+      "bytes": 3712,
+      "sha256": "36bb653f56502090837db1dc36a18b7883ef4673fa2f6aba961b3e522ff211f1"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TaskDispatchQueue.java",
+      "bytes": 26102,
+      "sha256": "c5eef79d79595452064e4eaa9839ac34f3832c07829761e3c2d014db95611784"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TeamCoordinator.java",
+      "bytes": 29661,
+      "sha256": "85f3f2dd9296a02983bb2a761f484ba3aa0ecb4d4e5812865b264e2522fa585e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TerminalController.java",
+      "bytes": 2984,
+      "sha256": "fde23aadcde4edd9a39a88cd9d306d4084539a6b5b977c5f94a12e7ed376d527"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TerminalExportHistory.java",
+      "bytes": 8595,
+      "sha256": "b1be7fa4e85c2b55942b96c841352484d73a83c52affe5f5639ef68a9ca81c68"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TerminalLedger.java",
+      "bytes": 33172,
+      "sha256": "fbec3fec075195ce217cd7e864c7ff4418942df987ec98a9f3714e44ab54d787"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/TerminalRequestBody.java",
+      "bytes": 2244,
+      "sha256": "ba46e74648fdcb70b4eb9d2037201eb9a620a9c8c9dbef79a49d16499ed0c4d4"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WindowsProcessSnapshot.java",
+      "bytes": 4216,
+      "sha256": "e994a710697d321d8a3cc7b96cc2bef4b2e997458bd3d5db47970d1c26d76a1c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchApplication.java",
+      "bytes": 1411,
+      "sha256": "f4b157fa0fe5ea34fc0bac8427e25d87951f1d306425070419442a1052bba961"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+      "bytes": 26710,
+      "sha256": "48f8d018bf12e15fd9e60c415462b08087079dddcf4666c3209ae88aafd27dbc"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+      "bytes": 29141,
+      "sha256": "47f972139e908e91c9cd7b5bbf3aa7bbe6ebf9926266a159b46e2b6189cd46a0"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchEngine.java",
+      "bytes": 95961,
+      "sha256": "79aef61707f8ffc5ff8542f59ff85976e83d64fe788aebb65d5ff956cabe03c4"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchVersion.java",
+      "bytes": 1231,
+      "sha256": "f85900539c811a04e9066d3b93822d4903359decc8a8a739dab5098e850d9c45"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerLedger.java",
+      "bytes": 22823,
+      "sha256": "0343d61133910567420575fead4554dfd3a61b700828d8bb65f64bcffb1454f4"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerProcess.java",
+      "bytes": 18654,
+      "sha256": "5ad48e073f8a963dbd93513eccfa6dc2677ddf61ccb231bdabb49526756154aa"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerProcessMain.java",
+      "bytes": 33419,
+      "sha256": "5e7cac2ebdf5569f567c38f437928d623058d73be7a812174466590302ee63bc"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerRpc.java",
+      "bytes": 10078,
+      "sha256": "08570f5e8a9f3174d4d355fa789293391082fdf273ad3334f9c45fd902bb8572"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkerWire.java",
+      "bytes": 2857,
+      "sha256": "96dfe5b5af98af983db97891eb5fff4a1ca81f206dabef86963e9359dea38a61"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkspaceWriteLedger.java",
+      "bytes": 12241,
+      "sha256": "cf95c4d970cac293e20afb433e1bcbef49932eda9ef9a309dccaf6959e5a3c1c"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpAccessRegistry.java",
+      "bytes": 2593,
+      "sha256": "e6183d194b127627781273c13883d127a53f8ccedd56b517ff94b0b44561fc4f"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpController.java",
+      "bytes": 8779,
+      "sha256": "9b2d97b36becff1c8ffe246fdbc222cb2d3fc7e86aad356e08366244bae24a2e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpManager.java",
+      "bytes": 34937,
+      "sha256": "3a4da1460a1343cc5930df479b115c5d79624fa790129de305df89da3101d906"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpTaskPolicy.java",
+      "bytes": 12333,
+      "sha256": "9e649ae1c9a378deb9ed90bc24dd0339245c0b447c30e0a17794056d8b409018"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/mcp/McpTransport.java",
+      "bytes": 21064,
+      "sha256": "34b8ed96fad9293878c61546e87c7d540d16fedb8612dfde2af48638b4d2137e"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/AgentToolSession.java",
+      "bytes": 790,
+      "sha256": "39ad743bcbb0e966a126061ac9676f693f75cbcf814eac26090dd3412a7a88a2"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/CheckpointRestoreRejected.java",
+      "bytes": 351,
+      "sha256": "ae36d6345f29bb2600e5f5c9cc47535f8c0d589062cd2779bb05dd6719be3434"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/FileEditSession.java",
+      "bytes": 14484,
+      "sha256": "2e0c163777e8f35ebe5f33e8f70ae8922902706ee01bb1633f7091eabf231931"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitBlobBatch.java",
+      "bytes": 5093,
+      "sha256": "1987e99126e20238c1cde54b4214052dcdddb98592ee2bd0aaaf7e24d12ed0aa"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitDiffView.java",
+      "bytes": 25523,
+      "sha256": "ab7cfd99e2349a6812712955d06c9c7c1ec1e5109a2843b2c73e63437e972423"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+      "bytes": 19496,
+      "sha256": "fffac7fa72306f52dfe51525aaf87eb4781ce8d791ce1badc1c040f21000f03f"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/ModelCallObserver.java",
+      "bytes": 904,
+      "sha256": "0d9b577d062242834596076c4a8f34fe19af3e859f33aed6a1a56b42f092cb3a"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/NativePtyBundle.java",
+      "bytes": 11875,
+      "sha256": "78f8dc1c9110b9f01bbdb0d81ad10bfbcc2690663a6a2eae86494340ebcd750d"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/NativePtySession.java",
+      "bytes": 28589,
+      "sha256": "ac10802d78caf783a6b537f84073349849400da4dc5cb7fd4b7f45b6b3dcf296"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/OwnedConPtyInput.java",
+      "bytes": 4660,
+      "sha256": "688e45ab9cde58ce5ed2e254c656678d08d78c9738e55d81c5f06ee0ca4e03ef"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/TerminalOutputArchive.java",
+      "bytes": 17743,
+      "sha256": "3cb4b79b622da1fb038743dd8e9e450647b872ddb795db77d0f8a65e4ed23a12"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchive.java",
+      "bytes": 50350,
+      "sha256": "c126538e41f1effe0af6073a9eab397aeccd247a1e889e42d28a8f11102c4fbc"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceCheckpointOwnership.java",
+      "bytes": 7349,
+      "sha256": "6744090889e9d3f6e70bac38816771e9712f80aa067a10bbdbd3338756d5e448"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceContentSnapshot.java",
+      "bytes": 725,
+      "sha256": "99ecd6232333ed76d9d6ed6f7655b747f4a170585465744c22efde9276fafa79"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceFileIdentity.java",
+      "bytes": 4599,
+      "sha256": "363b6c0310d3a846c506208d12920340df9b0e0f907444d5f86862db9dafcad3"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+      "bytes": 121650,
+      "sha256": "f8abd780b8cb1520fcdc64a601113acc755c8773b923febdeb175e980a7a69bd"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceSelectionConflict.java",
+      "bytes": 375,
+      "sha256": "b2116022762bc850a02102b7cba3423caab945ea9d5bcb161cc0ccdbea461195"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceWriteGuard.java",
+      "bytes": 19338,
+      "sha256": "ecee6413ef6c85651054e22d36c9ca36151d39920f4840e5556fbaeae60e4360"
+    },
+    {
+      "file": "core/src/main/resources/application.properties",
+      "bytes": 437,
+      "sha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39"
+    },
+    {
+      "file": "core/src/main/resources/terminal-native-inventory.json",
+      "bytes": 4724,
+      "sha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9"
+    },
+    {
+      "file": "core/src/main/resources/third-party/SOURCE-OFFER.txt",
+      "bytes": 1766,
+      "sha256": "b13f9c5d6c9e4d9563c63354720973c23f351c89ab404cda0dabb502ce9a1d2d"
+    },
+    {
+      "file": "core/src/main/resources/third-party/THIRD-PARTY-NOTICES.txt",
+      "bytes": 467,
+      "sha256": "179d93e97c4de96898d86cd089402ab6f0e3db9741e740d2f4155ae7d0735d5e"
+    },
+    {
+      "file": "core/src/main/resources/third-party/annotations-24.0.1/LICENSE.txt",
+      "bytes": 11352,
+      "sha256": "8c1e966c7855fb54027bcaf6ebe7a43abe4785791e8cf9148c363761d493d097"
+    },
+    {
+      "file": "core/src/main/resources/third-party/kotlin-stdlib-1.9.22/LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "file": "core/src/main/resources/third-party/kotlin-stdlib-1.9.22/NOTICE.txt",
+      "bytes": 482,
+      "sha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19"
+    },
+    {
+      "file": "core/src/main/resources/third-party/native/OpenConsole-LICENSE.txt",
+      "bytes": 1116,
+      "sha256": "5d177f23ecfeb0ea8e050b6a5a16355e1ae9a0b286436ca8f83ed08b3795be6b"
+    },
+    {
+      "file": "core/src/main/resources/third-party/native/winpty-LICENSE.txt",
+      "bytes": 1085,
+      "sha256": "c39e428064b4f3e4fe81a975bf0fd3b845922b431bc4d9a7ffc8bfb091981836"
+    },
+    {
+      "file": "core/src/main/resources/third-party/origins.json",
+      "bytes": 5075,
+      "sha256": "87e8268ebdc74cbcb31c437c8e08682daa5715e2d9eb9f7d47c5a62c335856e9"
+    },
+    {
+      "file": "core/src/main/resources/third-party/pty4j/LICENSE.txt",
+      "bytes": 11231,
+      "sha256": "3a4a6fe55f67f02b92be0ec9907e347de8ab5c8edf9214c5c8019e5820517884"
+    },
+    {
+      "file": "core/src/main/resources/third-party/pty4j/NOTICE.txt",
+      "bytes": 421,
+      "sha256": "7f1b01b809cecc274e9a0aaeba288ccb36a18cb96a97b8cc1fde58c1e713e845"
+    },
+    {
+      "file": "core/src/main/resources/third-party/pty4j/pty4j-0.13.4-sources.jar",
+      "bytes": 66477,
+      "sha256": "0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01"
+    },
+    {
+      "file": "core/src/main/resources/third-party/xterm-addon-fit/LICENSE.txt",
+      "bytes": 1103,
+      "sha256": "e256f01188af527e4d06d21d06fbf785ae9c50d4b328bf03cbe0ba7f0aa4228f"
+    },
+    {
+      "file": "core/src/main/resources/third-party/xterm/LICENSE.txt",
+      "bytes": 1261,
+      "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd"
+    },
+    {
+      "file": "core/src/main/resources/workbench-build.properties",
+      "bytes": 26,
+      "sha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/AgentRunStoreTest.java",
+      "bytes": 6064,
+      "sha256": "b89ee4f4f690f0aeaf622ba857fe4999fbc1698cac5d8377d09b953f919b7ff0"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/CheckpointEngineTest.java",
+      "bytes": 36961,
+      "sha256": "410e7d4bb25e5b5a978f2d5a53bc4fec2be869e27276f30ab91b2509875f9fc0"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/CheckpointExportHistoryTest.java",
+      "bytes": 14835,
+      "sha256": "8c8c65c25392cc4b2b267c7445f84a6115f13cca4d8687d65415b0db61a902a6"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/CheckpointFailureEvidence.java",
+      "bytes": 6324,
+      "sha256": "dab58ec5fd4d2c6f0a0f10148cbf2a0f94600379a1b4300e38c5dfe6ce5109f3"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ExecutionStoreTest.java",
+      "bytes": 6486,
+      "sha256": "8637357b07997d0926e0f1c50b45fcc91079ac34db95815cf5f68251aa856be6"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/FileToolHistoryTest.java",
+      "bytes": 30872,
+      "sha256": "a5c94d4bb58f819e22754440e08859732b2b77845af8180da076e45da15139c3"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/GitWorkspaceTest.java",
+      "bytes": 18875,
+      "sha256": "fcca217c250775136f8a87606ebe3025bb69f7118c46b07d1aa92c1d2d429a83"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/LocalAccessFilterTest.java",
+      "bytes": 5953,
+      "sha256": "82fd736e1dd022e0321e7e263a2aa52613d0eb5e3dfc6a0a4ebd36678be16ed2"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ManagedProcessLedgerTest.java",
+      "bytes": 35021,
+      "sha256": "e90a36110da90715131950c22b14e79b1f64091db2d60770a99c7387b3ec7883"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ModelRequestStoreTest.java",
+      "bytes": 6165,
+      "sha256": "14da9dfb4b329f9fe587bbe42c1397eb0a0425c7ba4907340bf80e55d519c603"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/NativeProcessAccessTest.java",
+      "bytes": 3973,
+      "sha256": "3462442dd53638ed302c6acab12f7d45e5754f3001c7ad95de3e48905b13e370"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/PlanAndPolicyTest.java",
+      "bytes": 4910,
+      "sha256": "18316f11c6d518b3fb774ff2a0f12a02104eed8c7269d6549eeb8c28b2aecc3c"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
+      "bytes": 22576,
+      "sha256": "afb3ec15ced14ff5bdcbf39a5007b9d2e67a73f6c7bdc5d630279d2a68185d9c"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/RootDispatchEngineTest.java",
+      "bytes": 18447,
+      "sha256": "d61111294835c4e2a348b856fa1eff2ba088ec49cfff3a17a6c72186778c0b3c"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/RuntimeDelegationTest.java",
+      "bytes": 13733,
+      "sha256": "0a76b668b9ad77f80f8648fa8f4c155272d4dab4ae16cc2a090eb84304882be7"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+      "bytes": 60307,
+      "sha256": "409cc2ef7d95a36128b325870607708751f953f27892235d3231a4f7c7de57e3"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/SessionStoreTest.java",
+      "bytes": 17162,
+      "sha256": "265ffb3660201b3ab6e1ac0e718649308e00f14a3515a3706feb6dbd7e467b62"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TaskDispatchQueueTest.java",
+      "bytes": 18474,
+      "sha256": "0c0550093cdf92e83cb8af98761706304c0e362323b315516ffbff0ce6e9a263"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+      "bytes": 47963,
+      "sha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TeamRecordsTest.java",
+      "bytes": 32340,
+      "sha256": "a2fdbe303f28a2d9938c5d6bdc17510d3ae6ebaae6196348a21becc5801883ef"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TerminalControllerTest.java",
+      "bytes": 6656,
+      "sha256": "295f4b0832fbe498578718b32f4f055ff3c1fdaa17572038eb21a4eec134bd57"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TerminalEngineTest.java",
+      "bytes": 37980,
+      "sha256": "7f6efd9c5d3ec51b2a84e4a1d627ae56d2551881257051db909fb2779fade4a3"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TerminalExportHistoryTest.java",
+      "bytes": 8211,
+      "sha256": "f0b2a4535aa918d6d9354939dc49ca3788037b606c109cfb1344ed1d29a0c7cb"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TerminalLedgerTest.java",
+      "bytes": 27461,
+      "sha256": "4568536579d3bd0f928b521c25267c8775084be0b1a5ea713524d9569f08c102"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TerminalQueueTest.java",
+      "bytes": 16300,
+      "sha256": "f82857d033574d5de05383b0379d00da3a8b794c38b4a0d08a98d205dd9652eb"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WindowsProcessSnapshotTest.java",
+      "bytes": 3228,
+      "sha256": "d0964cb3901c74753556aa42f41e55a5aba16b7041ecb14c26aa28281c1e54b1"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkbenchEngineTest.java",
+      "bytes": 41588,
+      "sha256": "14601d8e0087715b1328ffb19faedc5948c334bd341175525d5011d748fa0e69"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkbenchVersionTest.java",
+      "bytes": 682,
+      "sha256": "e57175347caca9522b3f27f5430d4d0a3c30d938c805f51e8506c99c92e84c28"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkerLeaseTest.java",
+      "bytes": 17990,
+      "sha256": "c8c68bf14bc87d383c15d6fca3e95d335b7b5084b69f8bcb8bfbbc6ec5b5a53a"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkerProcessTest.java",
+      "bytes": 12800,
+      "sha256": "5828d2b4096694ace9fc42a010b5e24c10bc5b80edd0d0d40229a3e24ce543d1"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkerRpcTest.java",
+      "bytes": 6744,
+      "sha256": "bcce0d726d4c6062e86d2eb9739130164ff1ba764f8bae7688e1835af0cc92bb"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkerWireTest.java",
+      "bytes": 3172,
+      "sha256": "2d9281413f324523c9e073509ef6b094e2aae8d84b8918c498fe7e7380f172a4"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkspaceLongPathTest.java",
+      "bytes": 7071,
+      "sha256": "1ddd7d5b9a25b40c3685511fc154a067aeb81826af1c03469e31b24eb2751744"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkspaceSelectionEngineTest.java",
+      "bytes": 19950,
+      "sha256": "ab55298e2db11d03fe3ade4cdf828ee48a8b3afcbbca73bb5ad748d0016dd015"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteEngineTest.java",
+      "bytes": 30004,
+      "sha256": "af4d3e85987751fab3a7d3ce89861eec14dac64ce461e2e2191005575c1e60b3"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkspaceWriteLedgerTest.java",
+      "bytes": 23725,
+      "sha256": "4ebbf9a5083cca2dcad89854127bea3b985a62b8a8291c3aee2b81c7cedc4af8"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/mcp/McpIntegrationTest.java",
+      "bytes": 44691,
+      "sha256": "5a23d5c113b2b1b6b63f2751bb0b816ad8e5bababd1b4e62b14a1147a09eb202"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/FileVersionRuntimeTest.java",
+      "bytes": 26646,
+      "sha256": "4284d7296801ab736dfa43296b3c73e126a28f9d4c8bf8bbe207a85b000fc0f7"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/GitBlobBatchTest.java",
+      "bytes": 5812,
+      "sha256": "48c3b499f9bddeed65dbc87171bab5f09f89365c244d201a0d64811c29855295"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/GitDiffViewTest.java",
+      "bytes": 40128,
+      "sha256": "cd626f66c1e3f2608351c0965b82d38a8d7d8bed0ab183a46ddc758b91a4b81c"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/NativePtyBundleTest.java",
+      "bytes": 4543,
+      "sha256": "f01254a326bd891aa744bc6ac887b80d00e9d48770cd4490c368f71cad8bec60"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/NativePtySessionTest.java",
+      "bytes": 37080,
+      "sha256": "614177f4b3aca0ecf11b441a661cd46d1ef8f71d99ce67db761fcb4cfbad6023"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/TerminalOutputArchiveTest.java",
+      "bytes": 6795,
+      "sha256": "939335cfe8bd8f4fe8a77d3b74c5764feb9af5c321340cb9deb9fa675d166e28"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceCheckpointArchiveTest.java",
+      "bytes": 44600,
+      "sha256": "a0c8dc3af0e7288a2817da5657e5372a8ea5c768a70881738448301a8588a23b"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/WorkspaceWriteGuardTest.java",
+      "bytes": 17807,
+      "sha256": "c908cae1564817b7aa0520109456942603e609252271ebe5e1cdeae4eaa0ccf9"
+    }
+  ],
+  "sourcesUnchanged": true,
+  "suites": [
+    {
+      "file": "TEST-dev.agentworkbench.AgentRunStoreTest.xml",
+      "name": "dev.agentworkbench.AgentRunStoreTest",
+      "sha256": "b1cb9ccd949070bab5cb8b4f1655be696c67af95ac79c5e7ee14876112a12467",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.CheckpointEngineTest.xml",
+      "name": "dev.agentworkbench.CheckpointEngineTest",
+      "sha256": "a2d150b0cf6086b86eb48438ffb72b644b9f3ac2ffc5ec2330f1899346665e8e",
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.CheckpointExportHistoryTest.xml",
+      "name": "dev.agentworkbench.CheckpointExportHistoryTest",
+      "sha256": "af5e924c014e12dcebb481345d8ae4137c4b0c9a1d35814b1cf857d1a91c640b",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.ExecutionStoreTest.xml",
+      "name": "dev.agentworkbench.ExecutionStoreTest",
+      "sha256": "f983e80cccf0acea80eca5eeb278ed0398e974c7f68c0160dd0e64626598c40d",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.FileToolHistoryTest.xml",
+      "name": "dev.agentworkbench.FileToolHistoryTest",
+      "sha256": "fb1533c2b050aa07a6e265c2e2c04479a4219f5b0658008cbbb37cf71050ceca",
+      "tests": 23,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.GitWorkspaceTest.xml",
+      "name": "dev.agentworkbench.GitWorkspaceTest",
+      "sha256": "3abfc346cfc3c1c6bde9137af1d88a733eaf3e8c121de1115e3945c80868b7e7",
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    {
+      "file": "TEST-dev.agentworkbench.LocalAccessFilterTest.xml",
+      "name": "dev.agentworkbench.LocalAccessFilterTest",
+      "sha256": "ed24edc49c816817b5f1e5c7e8820e048ac256b449ea17a22075814b668fff95",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.ManagedProcessLedgerTest.xml",
+      "name": "dev.agentworkbench.ManagedProcessLedgerTest",
+      "sha256": "6ae668ca7b6a72eb7ecbd0c9685b9ff7d1873e2ba5b7bc3aa7d001c7696e00ff",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    {
+      "file": "TEST-dev.agentworkbench.mcp.McpIntegrationTest.xml",
+      "name": "dev.agentworkbench.mcp.McpIntegrationTest",
+      "sha256": "e4c9e13f37bca9882a79e9e0e5ce7625d523fdd8148158f39f68b4e317d3aa37",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.ModelRequestStoreTest.xml",
+      "name": "dev.agentworkbench.ModelRequestStoreTest",
+      "sha256": "128e2600fe23a90a0cc8437a1e80e19a326be8a0e0ea783dc384ac04710f0bcf",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.NativeProcessAccessTest.xml",
+      "name": "dev.agentworkbench.NativeProcessAccessTest",
+      "sha256": "df534a884ab8fec26002f2dd8cb100833f338b79ba2a86a68a9da809234e7787",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.PlanAndPolicyTest.xml",
+      "name": "dev.agentworkbench.PlanAndPolicyTest",
+      "sha256": "9113611adbe9c1d228121efed6c4b671b299df45e22f88382895876c9b8bce0d",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+      "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+      "sha256": "b60886a74999e4b2a1b205792b8f6b88bacfa8542737cb565af4411d996494a7",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.RootDispatchEngineTest.xml",
+      "name": "dev.agentworkbench.RootDispatchEngineTest",
+      "sha256": "65a6c1533e65e516a22a08d09f79b4f9ea37983cfe49f6644986467ebeca3b5f",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.runtime.FileVersionRuntimeTest.xml",
+      "name": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+      "sha256": "4cc10116ee970e58623a9dbc36a3e5656d6ab1bc90c0d11ce9e3ee93e27fe046",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    {
+      "file": "TEST-dev.agentworkbench.runtime.GitBlobBatchTest.xml",
+      "name": "dev.agentworkbench.runtime.GitBlobBatchTest",
+      "sha256": "64c27e9eb9e7dc025c184a0df40ba72389e2305578ab7ca934da677848664541",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.runtime.GitDiffViewTest.xml",
+      "name": "dev.agentworkbench.runtime.GitDiffViewTest",
+      "sha256": "b6a8bb3ba9b248c58ce42a8fd683c5946d5fcc5f2ed7750be61be37660ef5daf",
+      "tests": 33,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3
+    },
+    {
+      "file": "TEST-dev.agentworkbench.runtime.NativePtyBundleTest.xml",
+      "name": "dev.agentworkbench.runtime.NativePtyBundleTest",
+      "sha256": "b05eb87a90000afac72d73eaa5824280a09b0ce317665a533008d0e672b3a2b0",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.runtime.NativePtySessionTest.xml",
+      "name": "dev.agentworkbench.runtime.NativePtySessionTest",
+      "sha256": "b1304a18c6decc9d14409eb6bf504bb0189d44962542631ebed5bcc989083ced",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.runtime.TerminalOutputArchiveTest.xml",
+      "name": "dev.agentworkbench.runtime.TerminalOutputArchiveTest",
+      "sha256": "80c3511268ceb32e2441a224ddd1a94cf524633d45fbcd0d00018c4ad6582baf",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.xml",
+      "name": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+      "sha256": "ee8c718875ed07669e65c2b11111fab7d0408f449de68cdcdb016049a5b66813",
+      "tests": 33,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3
+    },
+    {
+      "file": "TEST-dev.agentworkbench.runtime.WorkspaceWriteGuardTest.xml",
+      "name": "dev.agentworkbench.runtime.WorkspaceWriteGuardTest",
+      "sha256": "4d40a81e52b848a6ddbe6352320ec5f3678eae81fa4d6b640604b47dea0b05b6",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.RuntimeDelegationTest.xml",
+      "name": "dev.agentworkbench.RuntimeDelegationTest",
+      "sha256": "d49609e110e54af04f8af42b47f465daab17767073f36b1d48fee72e91c15b22",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.RuntimeIntegrationTest.xml",
+      "name": "dev.agentworkbench.RuntimeIntegrationTest",
+      "sha256": "021ecd4878f07452b7bd631d00cbaa888f69dc635b1b78b8064d6c5a29101167",
+      "tests": 33,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    {
+      "file": "TEST-dev.agentworkbench.SessionStoreTest.xml",
+      "name": "dev.agentworkbench.SessionStoreTest",
+      "sha256": "19c4a45d102451c5d59d637b779d387b16907034cb312760c72e8363ebcbd519",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.TaskDispatchQueueTest.xml",
+      "name": "dev.agentworkbench.TaskDispatchQueueTest",
+      "sha256": "8a27fdd01c0b6ef1a2b11b55bca35aeb12300ae47c76d4f3d87de58b9370ee3e",
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.TeamExecutionTest.xml",
+      "name": "dev.agentworkbench.TeamExecutionTest",
+      "sha256": "d9dd9a75871df462b7932b3076e9dae279cb16868abdb34ffc6777bcff32b4a0",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.TeamRecordsTest.xml",
+      "name": "dev.agentworkbench.TeamRecordsTest",
+      "sha256": "c12b6b0e656854cf4fda1b1a2b4e8e9fd31139aa34cbf20509a15985508831be",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.TerminalControllerTest.xml",
+      "name": "dev.agentworkbench.TerminalControllerTest",
+      "sha256": "d41d7d70430a5e0556d57c01cf5f13588179e6b9ba78b73edca93b60f6a766a4",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.TerminalEngineTest.xml",
+      "name": "dev.agentworkbench.TerminalEngineTest",
+      "sha256": "23267b0e434e67b684bb7d7e60b3bbdceed1ff7f886a290b6a92edff9cce692d",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.TerminalExportHistoryTest.xml",
+      "name": "dev.agentworkbench.TerminalExportHistoryTest",
+      "sha256": "036fe0eaf09023a13ed611a97ed71e31da7627ea693ff6631cc572e5c7c93e0d",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.TerminalLedgerTest.xml",
+      "name": "dev.agentworkbench.TerminalLedgerTest",
+      "sha256": "be5f5740bafb03d212e35dc840106404aa0ea55c80a35e76c7986ceef535abdd",
+      "tests": 30,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.TerminalQueueTest.xml",
+      "name": "dev.agentworkbench.TerminalQueueTest",
+      "sha256": "6435e40ec64723bb05532ea5023214bcc6af01dcc7018e32d88fb30c2cc8bed8",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.WindowsProcessSnapshotTest.xml",
+      "name": "dev.agentworkbench.WindowsProcessSnapshotTest",
+      "sha256": "3e42e3e8df68bcda943d0214d69f7babd0c7d3f4ae1a364f3decb93cbd54f97e",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.WorkbenchEngineTest.xml",
+      "name": "dev.agentworkbench.WorkbenchEngineTest",
+      "sha256": "187093b1e90b0f6e60c89b236f283c8a4d3eaa84b29440958d1142f6c64c30a1",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.WorkbenchVersionTest.xml",
+      "name": "dev.agentworkbench.WorkbenchVersionTest",
+      "sha256": "e17703a7e4095db9b63fccb996bc1cc609c1bf79702c4379cb16c4394fe542bd",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.WorkerLeaseTest.xml",
+      "name": "dev.agentworkbench.WorkerLeaseTest",
+      "sha256": "af87c822d82961fe44fefcb107e238dfce08be7217b638f59b97ef5e4d9b07f9",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.WorkerProcessTest.xml",
+      "name": "dev.agentworkbench.WorkerProcessTest",
+      "sha256": "ccd2ed9044bd6d93fef37f309120f0c987c3b490c84cf59398334c01c94d4e55",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.WorkerRpcTest.xml",
+      "name": "dev.agentworkbench.WorkerRpcTest",
+      "sha256": "0f53cec94672768a37a3ee6bf95307402a94a623c6a42d9e8e5154247b1afdbe",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.WorkerWireTest.xml",
+      "name": "dev.agentworkbench.WorkerWireTest",
+      "sha256": "4a0d03b06eaba04ed4d56bfdcec3e1b7f2ee2cc5146dcd71b8a46009132d0041",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.WorkspaceLongPathTest.xml",
+      "name": "dev.agentworkbench.WorkspaceLongPathTest",
+      "sha256": "fd9d7b37c1b1fdc171d902e1fbe1b5d517c3eaab0c93c281fbb747dac543c248",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.WorkspaceSelectionEngineTest.xml",
+      "name": "dev.agentworkbench.WorkspaceSelectionEngineTest",
+      "sha256": "3d57684878ed3ba5393e12558a541d28c210098565ade7c3a376bac479c4ffb9",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.WorkspaceWriteEngineTest.xml",
+      "name": "dev.agentworkbench.WorkspaceWriteEngineTest",
+      "sha256": "c7ee2413df04652664efa9b1bd9dad35a6d6cf35d689fa8820a105798c2d143f",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.WorkspaceWriteLedgerTest.xml",
+      "name": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+      "sha256": "52786eae641366e8c594736ead16cd22360bdccc8a1a82bc9d5c52f274fe1f21",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "skippedReasons": [
+    {
+      "suite": "dev.agentworkbench.GitWorkspaceTest",
+      "test": "redirectedTaskParentAndTraversalIdsAreRejected",
+      "originalXmlReason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: 平台未授予符号链接创建权限\r\n\tat org.junit.jupiter.api.Assumptions.abort(Assumptions.java:300)\r\n\tat dev.agentworkbench.GitWorkspaceTest.redirectedTaskParentAndTraversalIdsAreRejected(GitWorkspaceTest.java:174)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>"
+    },
+    {
+      "suite": "dev.agentworkbench.ManagedProcessLedgerTest",
+      "test": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+      "originalXmlReason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: No restricted live PID on this runner\r\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\r\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\r\n\tat dev.agentworkbench.ManagedProcessLedgerTest.actualRestrictedWindowsPidReuseLeavesTheReplacementRunning(ManagedProcessLedgerTest.java:117)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>"
+    },
+    {
+      "suite": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+      "test": "successfulTextReplacementPreservesPosixPermissions",
+      "originalXmlReason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not true\r\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\r\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\r\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:71)\r\n\tat dev.agentworkbench.runtime.FileVersionRuntimeTest.successfulTextReplacementPreservesPosixPermissions(FileVersionRuntimeTest.java:181)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>"
+    },
+    {
+      "suite": "dev.agentworkbench.runtime.GitDiffViewTest",
+      "test": "ordinaryWorkspaceSnapshotDoesNotEnterAnUnreadableGitObjectDirectory",
+      "originalXmlReason": "<skipped message=\"Disabled on operating system: Windows 11\"/>"
+    },
+    {
+      "suite": "dev.agentworkbench.runtime.GitDiffViewTest",
+      "test": "posixTabsNewlinesAndBackslashesStayLiteralAndWhitespaceOnlyNamesAreRejected",
+      "originalXmlReason": "<skipped message=\"Disabled on operating system: Windows 11\"/>"
+    },
+    {
+      "suite": "dev.agentworkbench.runtime.GitDiffViewTest",
+      "test": "redirectedPreviewRootCannotWriteIntoAForeignOrInternalLinkedDirectory",
+      "originalXmlReason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: 平台未授予符号链接创建权限\r\n\tat org.junit.jupiter.api.Assumptions.abort(Assumptions.java:300)\r\n\tat dev.agentworkbench.runtime.GitDiffViewTest.redirectedPreviewRootCannotWriteIntoAForeignOrInternalLinkedDirectory(GitDiffViewTest.java:401)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>"
+    },
+    {
+      "suite": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+      "test": "fileExecutionPermissionsAreRestoredAlongWithTheBytes",
+      "originalXmlReason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not false\r\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\r\n\tat org.junit.jupiter.api.Assumptions.assumeFalse(Assumptions.java:196)\r\n\tat org.junit.jupiter.api.Assumptions.assumeFalse(Assumptions.java:147)\r\n\tat dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.fileExecutionPermissionsAreRestoredAlongWithTheBytes(WorkspaceCheckpointArchiveTest.java:537)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>"
+    },
+    {
+      "suite": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+      "test": "readOnlyTargetPermissionsAreRestoredWithoutReopeningTheFileForWrite",
+      "originalXmlReason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not false\r\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\r\n\tat org.junit.jupiter.api.Assumptions.assumeFalse(Assumptions.java:196)\r\n\tat org.junit.jupiter.api.Assumptions.assumeFalse(Assumptions.java:147)\r\n\tat dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.readOnlyTargetPermissionsAreRestoredWithoutReopeningTheFileForWrite(WorkspaceCheckpointArchiveTest.java:551)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>"
+    },
+    {
+      "suite": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+      "test": "symbolicDirectoryAliasesCannotAuthorizeCheckpointCapture(String)",
+      "originalXmlReason": "<skipped message=\"Disabled on operating system: Windows 11\"/>"
+    },
+    {
+      "suite": "dev.agentworkbench.RuntimeIntegrationTest",
+      "test": "fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging",
+      "originalXmlReason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Requires real POSIX executable permissions\r\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\r\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\r\n\tat dev.agentworkbench.RuntimeIntegrationTest.fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging(RuntimeIntegrationTest.java:563)\r\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\r\n]]></skipped>"
+    }
+  ],
+  "libraries": [
+    {
+      "name": "BOOT-INF/lib/annotations-24.0.1.jar",
+      "bytes": 30651,
+      "sha256": "61666dbce7e42e6c85b43c04fcfb8293a21dcb55b3c80e869270ce42c01a6b35",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/jetbrains/annotations/24.0.1/annotations-24.0.1.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/jackson-annotations-2.19.2.jar",
+      "bytes": 79309,
+      "sha256": "e516743a316dcf83c572ffc9cb6e8c5e8c134880c8c5155b02f7b34e9c5dc3cf",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/com/fasterxml/jackson/core/jackson-annotations/2.19.2/jackson-annotations-2.19.2.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/jackson-core-2.19.2.jar",
+      "bytes": 591418,
+      "sha256": "aa77eaf29293a868c47372194f7c5287d77d9370b04ea25d3fffc1e4904b5880",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/com/fasterxml/jackson/core/jackson-core/2.19.2/jackson-core-2.19.2.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/jackson-databind-2.19.2.jar",
+      "bytes": 1679351,
+      "sha256": "0a1bd4e9b0d670e632d40ee8c625ad376233502f03c2f5889baea95d025b47a7",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/com/fasterxml/jackson/core/jackson-databind/2.19.2/jackson-databind-2.19.2.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/jackson-datatype-jdk8-2.19.2.jar",
+      "bytes": 36217,
+      "sha256": "6055fef10756e8bd1b0e8807aa1d881338c63ca95d59271e1da4922b9a17581e",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.19.2/jackson-datatype-jdk8-2.19.2.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/jackson-datatype-jsr310-2.19.2.jar",
+      "bytes": 136961,
+      "sha256": "9709f43e0fa5625633ee66db6c078fb1e8c7ca02092696ba95ea785dbf0fa6a1",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.19.2/jackson-datatype-jsr310-2.19.2.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/jackson-module-parameter-names-2.19.2.jar",
+      "bytes": 10394,
+      "sha256": "5cafef98759b40a418631e91257930a5e30abc162d9a690c1e365dbbdacdfecb",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.19.2/jackson-module-parameter-names-2.19.2.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/jakarta.annotation-api-2.1.1.jar",
+      "bytes": 26141,
+      "sha256": "5f65fdaf424eee2b55e1d882ba9bb376be93fb09b37b808be6e22e8851c909fe",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/jna-5.17.0.jar",
+      "bytes": 2002589,
+      "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/net/java/dev/jna/jna/5.17.0/jna-5.17.0.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/jna-platform-5.17.0.jar",
+      "bytes": 1378617,
+      "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/net/java/dev/jna/jna-platform/5.17.0/jna-platform-5.17.0.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/jul-to-slf4j-2.0.17.jar",
+      "bytes": 6349,
+      "sha256": "a7afcd23b9cfd1475e55c94f943b808c5922035e7e2c2a5c65a487a4106bc538",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/slf4j/jul-to-slf4j/2.0.17/jul-to-slf4j-2.0.17.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/kotlin-stdlib-1.9.22.jar",
+      "bytes": 1718956,
+      "sha256": "6abe146c27864138b874ccccfe5f534e3eb923c99a1b7b5d45494ee5694f3e0a",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/jetbrains/kotlin/kotlin-stdlib/1.9.22/kotlin-stdlib-1.9.22.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/log4j-api-2.24.3.jar",
+      "bytes": 348513,
+      "sha256": "5b4a0a0cd0e751ded431c162442bdbdd53328d1f8bb2bae5fc1bbeee0f66d80f",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/apache/logging/log4j/log4j-api/2.24.3/log4j-api-2.24.3.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/log4j-to-slf4j-2.24.3.jar",
+      "bytes": 23834,
+      "sha256": "c7f2b0c612a4eb05b1587d1c880eb4cf5f4f53850676a8ede8da2b8fabb4f73f",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/apache/logging/log4j/log4j-to-slf4j/2.24.3/log4j-to-slf4j-2.24.3.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/logback-classic-1.5.20.jar",
+      "bytes": 307222,
+      "sha256": "1228db99e1af602e191a2b142252d8aaf68129e643c19e7f92137ce5f7209ad3",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/ch/qos/logback/logback-classic/1.5.20/logback-classic-1.5.20.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/logback-core-1.5.20.jar",
+      "bytes": 635627,
+      "sha256": "29fe095bb7b7f850907aec3fddeb40c8d399d85e5680e8d3533e3da5d9aae917",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/ch/qos/logback/logback-core/1.5.20/logback-core-1.5.20.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/micrometer-commons-1.15.5.jar",
+      "bytes": 49213,
+      "sha256": "55fc55ec22f8e2965fa9a7c3521d4e5f1fc020bf236f919a12cbb68cafabf83f",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/io/micrometer/micrometer-commons/1.15.5/micrometer-commons-1.15.5.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/micrometer-observation-1.15.5.jar",
+      "bytes": 75054,
+      "sha256": "69fac03f20b5b6b4f90abcf463682e0134b21e27925b0e223f2c3a64ca04e0c3",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/io/micrometer/micrometer-observation/1.15.5/micrometer-observation-1.15.5.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/pty4j-0.13.4.jar",
+      "bytes": 3050593,
+      "sha256": "bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/jetbrains/pty4j/pty4j/0.13.4/pty4j-0.13.4.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/slf4j-api-2.0.17.jar",
+      "bytes": 69908,
+      "sha256": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/snakeyaml-2.4.jar",
+      "bytes": 339825,
+      "sha256": "ef779af5d29a9dde8cc70ce0341f5c6f7735e23edff9685ceaa9d35359b7bb7f",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/yaml/snakeyaml/2.4/snakeyaml-2.4.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/spring-aop-6.2.12.jar",
+      "bytes": 420268,
+      "sha256": "befc1dc092de62dab3aae3c7a0e11f797c6060fffc2121e1fe8fb95c94272655",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/springframework/spring-aop/6.2.12/spring-aop-6.2.12.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/spring-beans-6.2.12.jar",
+      "bytes": 890323,
+      "sha256": "26ab8ce28a42fe951b0a4ebaf8dbe97478effca833a7b2f51b45d6540fe7179f",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/springframework/spring-beans/6.2.12/spring-beans-6.2.12.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/spring-boot-3.5.7.jar",
+      "bytes": 1900579,
+      "sha256": "fdb3611f0baaa3a55b59b69c420d3bffac45cfb8868aaec8d6ee64451fb68e08",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/springframework/boot/spring-boot/3.5.7/spring-boot-3.5.7.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/spring-boot-autoconfigure-3.5.7.jar",
+      "bytes": 2084226,
+      "sha256": "0f078fa10ab1deaf41f1aeb0133c08661d06592e7e50c7bcaafa9ec0b62b8a19",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/springframework/boot/spring-boot-autoconfigure/3.5.7/spring-boot-autoconfigure-3.5.7.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/spring-boot-jarmode-tools-3.5.7.jar",
+      "bytes": 51687,
+      "sha256": "0b2e56b36aae7bd49d0523adea1999ffbf3a95122398b6e6f24ef1ea4d49e70e",
+      "matchingOriginalMavenArtifacts": [],
+      "matchingEmbeddedPluginLibraries": [
+        {
+          "container": "D:/JAVA/Apahce-Maven/repository/org/springframework/boot/spring-boot-loader-tools/3.5.7/spring-boot-loader-tools-3.5.7.jar",
+          "containerSha256": "3a1358d45d51ea78a9e91568dad07320556ea543ad2eb8b8e905a868e592b23b",
+          "entry": "META-INF/jarmode/spring-boot-jarmode-tools.jar",
+          "bytes": 51687,
+          "sha256": "0b2e56b36aae7bd49d0523adea1999ffbf3a95122398b6e6f24ef1ea4d49e70e"
+        }
+      ]
+    },
+    {
+      "name": "BOOT-INF/lib/spring-context-6.2.12.jar",
+      "bytes": 1358015,
+      "sha256": "0439fb9cb09a8b8d04c4e37dcba592e489b690882c56940aa33b58cf3f0b69cb",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/springframework/spring-context/6.2.12/spring-context-6.2.12.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/spring-core-6.2.12.jar",
+      "bytes": 1969697,
+      "sha256": "bddc5a5be2d94191ebcfbadc672fa4d81e6ab51e38a9eaf41d5d035cb17548d4",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/springframework/spring-core/6.2.12/spring-core-6.2.12.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/spring-expression-6.2.12.jar",
+      "bytes": 317835,
+      "sha256": "62e68f4f18b8c5580180de6ef8578b1d1fc170ed993b5a7d59b946b63e5ebefd",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/springframework/spring-expression/6.2.12/spring-expression-6.2.12.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/spring-jcl-6.2.12.jar",
+      "bytes": 24541,
+      "sha256": "8244ee2a515291f41ed4f99aa89b4cd41fc13961c21d7c271a381210f6075fed",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/springframework/spring-jcl/6.2.12/spring-jcl-6.2.12.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/spring-web-6.2.12.jar",
+      "bytes": 2091087,
+      "sha256": "caff724ebb7c423696e1d2c7690245fbbafe218695b3a4479faa668af0400e6d",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/springframework/spring-web/6.2.12/spring-web-6.2.12.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/spring-webmvc-6.2.12.jar",
+      "bytes": 1091805,
+      "sha256": "530d3b2fd82c97ca4418bb4b200d7626f042cc2c78c705bdd5176dcc580c84e1",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/springframework/spring-webmvc/6.2.12/spring-webmvc-6.2.12.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/sqlite-jdbc-3.50.3.0.jar",
+      "bytes": 14346720,
+      "sha256": "a3f53a2aa15ae9425a9e793bbe9c8e5288febeb4b65ef5c1a4e80d4c2045cf08",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/xerial/sqlite-jdbc/3.50.3.0/sqlite-jdbc-3.50.3.0.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/tomcat-embed-core-10.1.48.jar",
+      "bytes": 3651962,
+      "sha256": "a9137d3526a05ce2f9359cfc7b108240bd3d01ff323b37986e5bd43208ff0f56",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.48/tomcat-embed-core-10.1.48.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/tomcat-embed-el-10.1.48.jar",
+      "bytes": 264301,
+      "sha256": "e7bd9eca5dd6b5e97bef17eb94266a4f87a58a9ebc5fc85800d017003c9b0f2f",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.48/tomcat-embed-el-10.1.48.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    },
+    {
+      "name": "BOOT-INF/lib/tomcat-embed-websocket-10.1.48.jar",
+      "bytes": 284010,
+      "sha256": "d445d0ba335bcf06e6d02257a07c68d1c3c471d10c68330360af51db9ee47faa",
+      "matchingOriginalMavenArtifacts": [
+        "D:/JAVA/Apahce-Maven/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.48/tomcat-embed-websocket-10.1.48.jar"
+      ],
+      "matchingEmbeddedPluginLibraries": []
+    }
+  ],
+  "resources": [
+    {
+      "file": "application.properties",
+      "sourceSha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39",
+      "archivedSha256": "63c626160add9f4156c1c2c31ebbcfb3e2293a6a6cf5a954b541a89190626e39",
+      "versionFiltered": false
+    },
+    {
+      "file": "terminal-native-inventory.json",
+      "sourceSha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9",
+      "archivedSha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/SOURCE-OFFER.txt",
+      "sourceSha256": "b13f9c5d6c9e4d9563c63354720973c23f351c89ab404cda0dabb502ce9a1d2d",
+      "archivedSha256": "b13f9c5d6c9e4d9563c63354720973c23f351c89ab404cda0dabb502ce9a1d2d",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/THIRD-PARTY-NOTICES.txt",
+      "sourceSha256": "179d93e97c4de96898d86cd089402ab6f0e3db9741e740d2f4155ae7d0735d5e",
+      "archivedSha256": "179d93e97c4de96898d86cd089402ab6f0e3db9741e740d2f4155ae7d0735d5e",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/annotations-24.0.1/LICENSE.txt",
+      "sourceSha256": "8c1e966c7855fb54027bcaf6ebe7a43abe4785791e8cf9148c363761d493d097",
+      "archivedSha256": "8c1e966c7855fb54027bcaf6ebe7a43abe4785791e8cf9148c363761d493d097",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/kotlin-stdlib-1.9.22/LICENSE.txt",
+      "sourceSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "archivedSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/kotlin-stdlib-1.9.22/NOTICE.txt",
+      "sourceSha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19",
+      "archivedSha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/native/OpenConsole-LICENSE.txt",
+      "sourceSha256": "5d177f23ecfeb0ea8e050b6a5a16355e1ae9a0b286436ca8f83ed08b3795be6b",
+      "archivedSha256": "5d177f23ecfeb0ea8e050b6a5a16355e1ae9a0b286436ca8f83ed08b3795be6b",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/native/winpty-LICENSE.txt",
+      "sourceSha256": "c39e428064b4f3e4fe81a975bf0fd3b845922b431bc4d9a7ffc8bfb091981836",
+      "archivedSha256": "c39e428064b4f3e4fe81a975bf0fd3b845922b431bc4d9a7ffc8bfb091981836",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/origins.json",
+      "sourceSha256": "87e8268ebdc74cbcb31c437c8e08682daa5715e2d9eb9f7d47c5a62c335856e9",
+      "archivedSha256": "87e8268ebdc74cbcb31c437c8e08682daa5715e2d9eb9f7d47c5a62c335856e9",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/pty4j/LICENSE.txt",
+      "sourceSha256": "3a4a6fe55f67f02b92be0ec9907e347de8ab5c8edf9214c5c8019e5820517884",
+      "archivedSha256": "3a4a6fe55f67f02b92be0ec9907e347de8ab5c8edf9214c5c8019e5820517884",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/pty4j/NOTICE.txt",
+      "sourceSha256": "7f1b01b809cecc274e9a0aaeba288ccb36a18cb96a97b8cc1fde58c1e713e845",
+      "archivedSha256": "7f1b01b809cecc274e9a0aaeba288ccb36a18cb96a97b8cc1fde58c1e713e845",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/pty4j/pty4j-0.13.4-sources.jar",
+      "sourceSha256": "0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01",
+      "archivedSha256": "0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/xterm-addon-fit/LICENSE.txt",
+      "sourceSha256": "e256f01188af527e4d06d21d06fbf785ae9c50d4b328bf03cbe0ba7f0aa4228f",
+      "archivedSha256": "e256f01188af527e4d06d21d06fbf785ae9c50d4b328bf03cbe0ba7f0aa4228f",
+      "versionFiltered": false
+    },
+    {
+      "file": "third-party/xterm/LICENSE.txt",
+      "sourceSha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd",
+      "archivedSha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd",
+      "versionFiltered": false
+    },
+    {
+      "file": "workbench-build.properties",
+      "sourceSha256": "a05491a42096ba89d5c2c8427789ba36886319067180e433df3ad3fe569dd458",
+      "archivedSha256": "334c1033ca1f9e6ab95cfc43706b6b45811218e5a57cadefd01c4451ff45d664",
+      "versionFiltered": true
+    }
+  ],
+  "nativeInventoryFiles": 24,
+  "notices": [
+    {
+      "file": "third-party/SOURCE-OFFER.txt",
+      "bytes": 1766,
+      "sha256": "b13f9c5d6c9e4d9563c63354720973c23f351c89ab404cda0dabb502ce9a1d2d"
+    },
+    {
+      "file": "third-party/THIRD-PARTY-NOTICES.txt",
+      "bytes": 467,
+      "sha256": "179d93e97c4de96898d86cd089402ab6f0e3db9741e740d2f4155ae7d0735d5e"
+    },
+    {
+      "file": "third-party/annotations-24.0.1/LICENSE.txt",
+      "bytes": 11352,
+      "sha256": "8c1e966c7855fb54027bcaf6ebe7a43abe4785791e8cf9148c363761d493d097"
+    },
+    {
+      "file": "third-party/kotlin-stdlib-1.9.22/LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "file": "third-party/kotlin-stdlib-1.9.22/NOTICE.txt",
+      "bytes": 482,
+      "sha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19"
+    },
+    {
+      "file": "third-party/native/OpenConsole-LICENSE.txt",
+      "bytes": 1116,
+      "sha256": "5d177f23ecfeb0ea8e050b6a5a16355e1ae9a0b286436ca8f83ed08b3795be6b"
+    },
+    {
+      "file": "third-party/native/winpty-LICENSE.txt",
+      "bytes": 1085,
+      "sha256": "c39e428064b4f3e4fe81a975bf0fd3b845922b431bc4d9a7ffc8bfb091981836"
+    },
+    {
+      "file": "third-party/origins.json",
+      "bytes": 5075,
+      "sha256": "87e8268ebdc74cbcb31c437c8e08682daa5715e2d9eb9f7d47c5a62c335856e9"
+    },
+    {
+      "file": "third-party/pty4j/LICENSE.txt",
+      "bytes": 11231,
+      "sha256": "3a4a6fe55f67f02b92be0ec9907e347de8ab5c8edf9214c5c8019e5820517884"
+    },
+    {
+      "file": "third-party/pty4j/NOTICE.txt",
+      "bytes": 421,
+      "sha256": "7f1b01b809cecc274e9a0aaeba288ccb36a18cb96a97b8cc1fde58c1e713e845"
+    },
+    {
+      "file": "third-party/pty4j/pty4j-0.13.4-sources.jar",
+      "bytes": 66477,
+      "sha256": "0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01"
+    },
+    {
+      "file": "third-party/xterm-addon-fit/LICENSE.txt",
+      "bytes": 1103,
+      "sha256": "e256f01188af527e4d06d21d06fbf785ae9c50d4b328bf03cbe0ba7f0aa4228f"
+    },
+    {
+      "file": "third-party/xterm/LICENSE.txt",
+      "bytes": 1261,
+      "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd"
+    }
+  ],
+  "originalNativeFixtureFilesVerified": 1139,
+  "independentlyStoppedNativeIdentities": 48,
+  "unchangedOriginalTests": [
+    {
+      "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+      "bytes": 60307,
+      "sha256": "409cc2ef7d95a36128b325870607708751f953f27892235d3231a4f7c7de57e3"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+      "bytes": 47963,
+      "sha256": "14f83b65bf7c485c92f9da8583bf0e401146723996874f7bde203d8bcc052409"
+    }
+  ],
+  "javaCommentAudit": {
+    "file": ".runtime/alpha20-java-comment-audit-production-native-snapshot-original-team-repair-attempt1/receipt.json",
+    "bytes": 40319,
+    "sha256": "d17ca734d8abecf79549bc6b80fc19dffeeb75f068a1ed0c33f1b2f2cf2ea9f0"
+  },
+  "previousFullFailure": {
+    "file": "docs/qa/alpha20-production-core-original-team-failure-win32.json",
+    "bytes": 49924,
+    "sha256": "a20463673bcc8996cb25d73e1fcad523b131be1bee25ec011b28e25e9e340d42"
+  },
+  "jarAuditorFollowup": {
+    "originalFailurePreserved": true,
+    "attempts": [
+      {
+        "file": ".runtime/alpha20-production-jar-audit-production-native-snapshot-final-attempt1/auditor-source.mjs",
+        "bytes": 8839,
+        "sha256": "1af23343ba7b5c29decc98ac814e987842ff060359b520ca0bbd06cd2acab379"
+      },
+      {
+        "file": ".runtime/alpha20-production-jar-audit-production-native-snapshot-final-attempt2/auditor-source.mjs",
+        "bytes": 9543,
+        "sha256": "17075d1ee0dae6b46a0e8bab9f3e6880f2f83f7ff037353759cb8da602148cf9"
+      }
+    ],
+    "classification": "SPRING_BOOT_JARMODE_LIBRARY_IS_EMBEDDED_IN_ORIGINAL_LOADER_TOOLS_PLUGIN_JAR",
+    "exactEmbeddedSource": [
+      {
+        "container": "D:/JAVA/Apahce-Maven/repository/org/springframework/boot/spring-boot-loader-tools/3.5.7/spring-boot-loader-tools-3.5.7.jar",
+        "containerSha256": "3a1358d45d51ea78a9e91568dad07320556ea543ad2eb8b8e905a868e592b23b",
+        "entry": "META-INF/jarmode/spring-boot-jarmode-tools.jar",
+        "bytes": 51687,
+        "sha256": "0b2e56b36aae7bd49d0523adea1999ffbf3a95122398b6e6f24ef1ea4d49e70e"
+      }
+    ]
+  },
+  "scope": "ACTUAL_PRODUCTION_CLEAN_VERIFY_FINAL_JAR_CLASSES_RESOURCES_DEPENDENCIES_AND_ORIGINAL_NATIVE_FIXTURES; OS_TREE_COVERAGE_OBSERVED_ONLY; RELEASE_AND_THREE_PLATFORM_CI_SEPARATE",
+  "completeProjectGoal": false
+}

@@ -104,7 +104,7 @@ async function startCore() {
     const port = instance.logs.match(/Tomcat started on port (\d+)/)?.[1];
     if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; }
   });
-  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 9); assert.equal(health.corePid, core.pid);
+  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 10); assert.equal(health.corePid, core.pid);
   return instance;
 }
 

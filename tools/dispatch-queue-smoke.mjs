@@ -21,7 +21,7 @@ if (!existsSync(jar) || !existsSync(join(root, 'web/dist/index.html'))) throw ne
 mkdirSync(join(root, '.runtime'), { recursive: true });
 const dir = mkdtempSync(join(root, '.runtime/dispatch-queue-')), evidence = join(dir, 'reports'); mkdirSync(evidence);
 const token = randomBytes(32).toString('hex'), jarSha256 = createHash('sha256').update(readFileSync(jar)).digest('hex');
-const cores = [], checks = [], modelCalls = [], heldResponses = [], pageErrors = [], identities = new Map();
+const cores = [], checks = [], modelCalls = [], heldResponses = [], heldAwaitPolls = [], pageErrors = [], identities = new Map();
 const wait = ms => new Promise(done => setTimeout(done, ms));
 const save = (name, data) => writeFileSync(join(evidence, name), JSON.stringify(data, null, 2) + '\n');
 const pass = name => { checks.push({ name, status: 'passed', at: new Date().toISOString() }); console.log(`PASS ${name}`); };
@@ -91,7 +91,7 @@ async function startCore(data, controlled = false) {
     if (child.exitCode !== null || child.signalCode !== null) throw new Error(`第 ${number} 个 Jar 核心提前退出`);
     const port = core.logs.match(/Tomcat started on port (\d+)/)?.[1]; if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; }
   });
-  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 9); assert.equal(health.corePid, child.pid);
+  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 10); assert.equal(health.corePid, child.pid);
   if (controlled) { assert.ok(core.logs.includes('CONTROLLED_DISPATCH_FIXTURE engine=jar:')); assert.ok(core.logs.includes('BOOT-INF/classes/')); }
   core.worker = (await api('/workers')).find(worker => worker.state === 'RUNNING'); assert.ok(core.worker); remember(core.worker);
   assert.notEqual(core.worker.pid, child.pid); assert.equal(core.worker.deployment, 'LOCAL_PROCESS');
@@ -222,7 +222,12 @@ try {
   pass('Full task ZIP kept execution completion separate from human acceptance');
 
   phase = 'actual claimed root crash'; heldTask = await createTask(project, route, '领取后显式继续', 'DISPATCH_HOLD_ROOT'); await api(`/tasks/${heldTask.id}/approve`, {});
-  await until('原根已领取且模型请求在途', async () => { const facts = await taskFacts(heldTask.id); return facts.actions[0]?.state === 'CLAIMED' && facts.requests[0]?.state === 'DISPATCHING' && heldResponses.length === 1 && facts; });
+  await until('原根已领取且模型请求在途', async () => {
+    const startedAt = new Date().toISOString(), facts = await taskFacts(heldTask.id), heldResponseCount = heldResponses.length;
+    heldAwaitPolls.push({ startedAt, completedAt: new Date().toISOString(), heldResponseCount, facts, readScope: 'SEVEN_ORIGINAL_SEQUENTIAL_API_READS_NOT_AN_ATOMIC_SQLITE_SNAPSHOT' });
+    return facts.actions[0]?.state === 'CLAIMED' && facts.requests[0]?.state === 'DISPATCHING' && heldResponseCount === 1 && facts;
+  });
+  save('held-await-original-polls.json', heldAwaitPolls);
   const claimed = await taskFacts(heldTask.id); save('claimed-before-crash.json', claimed); assert.equal(claimed.actions[0].dispatchCount, 1); assert.equal(claimed.task.budget.usedCalls, 1);
   await stopCore(second, true); save('original-claimed-worker-stop.json', inspectProcess(second.worker.pid, second.worker.processStartedAt, 'stop'));
   pass('Core exited after real claim and in-flight HTTP dispatch');
@@ -260,6 +265,8 @@ try {
   const failure = { recordedAt: new Date().toISOString(), version, status: 'failed', phase, error: error.message.replaceAll(token, '[REDACTED]'), stack: error.stack?.replaceAll(token, '[REDACTED]'), checks, modelCalls, pageErrors, jarSha256, evidenceDirectory: evidence };
   if (page && !page.isClosed()) { try { await page.screenshot({ path: join(evidence, 'browser-before-cleanup.png'), fullPage: true, mask: [page.getByLabel('访问令牌', { exact: true })] }); } catch {} }
   try { if (baseUrl) failure.processRecoveryBeforeCleanup = await api('/process-recovery'); } catch {}
+  save('held-await-original-polls.json', heldAwaitPolls);
+  failure.originalHeldAwaitPolls = { file: join(evidence, 'held-await-original-polls.json'), count: heldAwaitPolls.length, containsOriginalSequentialApiResults: true };
   save('failure-before-cleanup.json', failure); console.error(`${phase}: ${error.message}; 清理前事实保留在 ${evidence}`); process.exitCode = 1;
 } finally {
   if (browser) await browser.close();

@@ -1,0 +1,128 @@
+{
+  "protocolVersion": 1,
+  "version": "0.13.4",
+  "jarSha256": "bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc",
+  "sourceJarSha256": "0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01",
+  "native": [
+    {
+      "name": "resources/com/pty4j/native/freebsd/x86-64/libpty.so",
+      "bytes": 14496,
+      "sha256": "6bf2cf3a6ac0929d0f23529b4bfc7f97348219260f86dc84f2a0140ec611dd7c"
+    },
+    {
+      "name": "resources/com/pty4j/native/freebsd/x86/libpty.so",
+      "bytes": 11584,
+      "sha256": "67088c6eb1ac32f4c82c43e0386cb86e9df68f6869ee4900cb68039cb0121598"
+    },
+    {
+      "name": "resources/com/pty4j/native/linux/mips64el/libpty.so",
+      "bytes": 26632,
+      "sha256": "7d97ff835049dcfe1137812e17a09f1d70c4b5fd32cdcfc54a6f7d703f9dc69d"
+    },
+    {
+      "name": "resources/com/pty4j/native/linux/x86-64/libpty.so",
+      "bytes": 27248,
+      "sha256": "cffeae023d0849036c64b2fe5e7b262760ede1a4fc0af06cc57729457f59f4f7"
+    },
+    {
+      "name": "resources/com/pty4j/native/linux/riscv64/libpty.so",
+      "bytes": 18592,
+      "sha256": "e101b0a4282fef079d32bb0202d2ec5e2869579f45e72f09ceae5c6d0388f372"
+    },
+    {
+      "name": "resources/com/pty4j/native/linux/x86/libpty.so",
+      "bytes": 16800,
+      "sha256": "a0502637d32147f81e43b46ec31789ca06e89747ec12fbb24f1ebd1b6a0f67f7"
+    },
+    {
+      "name": "resources/com/pty4j/native/linux/ppc64le/libpty.so",
+      "bytes": 74848,
+      "sha256": "60d5f3c23625eae9cd19b4c36a1b1cc540b03d500bae2bae7891cdd7be5533d8"
+    },
+    {
+      "name": "resources/com/pty4j/native/linux/arm/libpty.so",
+      "bytes": 13688,
+      "sha256": "a272c1d2495138007654cf9dd1e8e57faab62e9c3eb2a1a0cc32b1a613a79a58"
+    },
+    {
+      "name": "resources/com/pty4j/native/linux/aarch64/libpty.so",
+      "bytes": 19504,
+      "sha256": "f91dbdc91a21735f2982fa8a8e16d04411f3c969d23c888d0b2f52233dfcceb9"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/x86-64/win-helper.dll",
+      "bytes": 42904,
+      "sha256": "d1777570d51da29d94444cbfc17632e0a6b934578fb57cc39b0de7ebc0bbecc8"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/x86-64/conpty.dll",
+      "bytes": 102912,
+      "sha256": "15f4f7eb67135120c73d516fa83b0f550344b019fb25f0b9ddee96e5ac342d3d"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/x86-64/winpty.dll",
+      "bytes": 654728,
+      "sha256": "21c6480093859d4811525dd68ece1905324014bbd8c1a11fea6a78b2933009f4"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/x86-64/winpty-agent.exe",
+      "bytes": 747416,
+      "sha256": "2afff3901ae320437161c204a3ecdbb48e3713f074f533387f105acc44dc2fc6"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/x86-64/cyglaunch.exe",
+      "bytes": 28416,
+      "sha256": "5d2d8da1066eb931bf86aa0895bb5cec3d7320faf258b7b20d722f16136cb3ca"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/x86-64/OpenConsole.exe",
+      "bytes": 1398272,
+      "sha256": "837e5ac001cd451f86ae463568603901a421cf1c37eef7db8db152bd77760140"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/x86/winpty.dll",
+      "bytes": 523144,
+      "sha256": "c77c5b1b19bd72d714e64c783bc0a4f0afa06dfaa684ce4105eb55be3cf3e705"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/x86/winpty-agent.exe",
+      "bytes": 599960,
+      "sha256": "1ecf08c02b534c4aed342e8a0d5a5d31d6956638d199a59ad6fbbe6519b6aa33"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/aarch64/win-helper.dll",
+      "bytes": 40856,
+      "sha256": "b4d01792ba6ec8a7c5df2516a1170e19a0a82f0937a506673818a9510052802a"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/aarch64/conpty.dll",
+      "bytes": 93696,
+      "sha256": "0d5f4c166448bad6930570e65893e7f41ea6b1dc4688cf86f8289bc15e5bc99f"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/aarch64/winpty.dll",
+      "bytes": 921992,
+      "sha256": "99c8aa61319c2a83278e4da60cdc584fe29a6818e24edc362399314d3a3e5808"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/aarch64/winpty-agent.exe",
+      "bytes": 1052056,
+      "sha256": "055ab03294342b665d666f2e7fce2ec1fe182e3bd97af6b95219d046af9bf36b"
+    },
+    {
+      "name": "resources/com/pty4j/native/win/aarch64/OpenConsole.exe",
+      "bytes": 1508352,
+      "sha256": "edba820ff2f1d0af9282ad30543fc57da7e401d55cf860be79da6ef2da333fe1"
+    },
+    {
+      "name": "resources/com/pty4j/native/darwin/libpty.dylib",
+      "bytes": 153104,
+      "sha256": "23f58005abd62b014c3da665d15ee9700e58e99fc2f584c69c021a260a7bb5dd"
+    },
+    {
+      "name": "resources/com/pty4j/native/darwin/pty4j-unix-spawn-helper",
+      "bytes": 151488,
+      "sha256": "43804fedb8eb2c3272e1596b73135bf616f0cd12f3075eb8b0a72c6b89d7e4e8"
+    }
+  ]
+}

@@ -387,8 +387,18 @@ public final class ManagedProcessLedger {
         default Inspection inspection() { return () -> {}; }
     }
 
-    private static final class NativeProcessAccess implements ProcessAccess {
+    static final class NativeProcessAccess implements ProcessAccess {
         private final ThreadLocal<VisibleProcesses> inspection = new ThreadLocal<>();
+        private final boolean windows;
+        private final java.util.function.Supplier<Map<Long, String>> windowsSnapshot;
+        private final java.util.function.Supplier<Set<Long>> processIds;
+        NativeProcessAccess() {
+            this(System.getProperty("os.name", "").startsWith("Windows"), WindowsProcessSnapshot::capture,
+                () -> ProcessHandle.allProcesses().map(ProcessHandle::pid).collect(java.util.stream.Collectors.toSet()));
+        }
+        NativeProcessAccess(boolean windows, java.util.function.Supplier<Map<Long, String>> windowsSnapshot, java.util.function.Supplier<Set<Long>> processIds) {
+            this.windows = windows; this.windowsSnapshot = windowsSnapshot; this.processIds = processIds;
+        }
         @Override public Inspection inspection() {
             if (inspection.get() != null) return () -> {};
             inspection.set(new VisibleProcesses()); return inspection::remove;
@@ -402,24 +412,28 @@ public final class ManagedProcessLedger {
             String birth = alive ? handle.info().startInstant().map(Object::toString).orElse("") : "";
             if (!birth.isBlank()) return new ProcessSnapshot(true, birth);
             VisibleProcesses visible = inspection.get();
-            Set<Long> listed;
-            if (visible == null) listed = visiblePids();
-            else { if (visible.pids == null) visible.pids = visiblePids(); listed = visible.pids; }
-            alive |= listed.contains(pid);
-            if (alive && System.getProperty("os.name", "").startsWith("Windows")) {
+            if (visible == null) visible = new VisibleProcesses();
+            if (visible.pids == null) visible.pids = visiblePids(visible);
+            alive |= visible.pids.contains(pid);
+            if (alive && windows) {
                 // 受限的新进程可能复用旧 PID；快照只补充出生事实，停止仍核验原句柄。
-                VisibleProcesses snapshot = visible == null ? new VisibleProcesses() : visible;
-                if (!snapshot.windowsAttempted) {
-                    snapshot.windowsAttempted = true;
-                    try { snapshot.windowsBirths = WindowsProcessSnapshot.capture(); }
-                    catch (RuntimeException | LinkageError ignored) { snapshot.windowsBirths = Map.of(); }
-                }
-                birth = snapshot.windowsBirths.getOrDefault(pid, "");
+                birth = visible.windowsBirths.getOrDefault(pid, "");
             }
             return new ProcessSnapshot(alive, birth);
         }
-        private Set<Long> visiblePids() { return ProcessHandle.allProcesses().map(ProcessHandle::pid).collect(java.util.stream.Collectors.toSet()); }
-        private static final class VisibleProcesses { Set<Long> pids; Map<Long, String> windowsBirths; boolean windowsAttempted; }
+        /**
+         * 完整 Windows 原生快照共用可见 PID 与出生事实；读取失败时保留原枚举回退。
+         */
+        private Set<Long> visiblePids(VisibleProcesses visible) {
+            if (windows) {
+                try {
+                    visible.windowsBirths = Map.copyOf(windowsSnapshot.get());
+                    if (!visible.windowsBirths.isEmpty()) return visible.windowsBirths.keySet();
+                } catch (RuntimeException | LinkageError ignored) { visible.windowsBirths = Map.of(); }
+            }
+            return Set.copyOf(processIds.get());
+        }
+        private static final class VisibleProcesses { Set<Long> pids; Map<Long, String> windowsBirths = Map.of(); }
         @Override public void stop(long pid, String startedAt) {
             ProcessHandle original = matching(pid, startedAt);
             if (original != null && pid != ProcessHandle.current().pid()) original.destroyForcibly();

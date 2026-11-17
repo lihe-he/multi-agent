@@ -36,6 +36,8 @@ export interface Task {
   locks?: Record<string, string>; baseline?: string; workspace?: string; version?: string;
   diffViewProtocolVersion?: number;
   checkpointProtocolVersion?: number;
+  terminalProtocolVersion?: number;
+  terminalHistoryPresent?: boolean; pendingTerminalId?: string; lastTerminalId?: string; terminal?: TerminalSession;
   plan?: Stage[] | { stages?: Stage[] }; evidence?: Evidence[]; invalidatedEvidence?: string[];
   review?: { status?: string; output?: string; version?: string };
   context?: { id?: string; kind?: string; content?: string; source?: string; version?: string | number }[];
@@ -60,6 +62,28 @@ export interface WorkbenchState {
   system: { version?: string; modelCapacity?: number; activeModels?: number; storageHealthy?: boolean; capabilities?: (string | { name?: string; available?: boolean; message?: string })[] };
 }
 export interface RunEvent { id: number; taskId?: string; type: string; message: string; createdAt?: string }
+export interface TerminalSession {
+  id: string; protocolVersion: number; taskId: string; projectId: string; sessionId?: string; startRequestId: string;
+  workspace: string; recipe: string; epoch: string; state: string; columns: number; rows: number;
+  createdAt: string; startedAt?: string; runningAt?: string; endedAt?: string; historyCursor?: number;
+  controllerId?: string; controllerGeneration: number; lastActionSequence: number; inputFenced: boolean; inputUnconfirmed?: boolean;
+  outputEnd: number; outputLimit: number; outputSegments: number; outputIntegrity: string; outputGap?: string; reason?: string;
+  nativeProcess?: { pid: number; processStartedAt: string; backend?: string; [key: string]: unknown };
+  source?: { workerId?: string; workerLeaseId?: string; workerEpoch?: number; executorPid?: number; processStartedAt?: string; operationId?: string; taskExecutionId?: string; dispatchActionId?: string; workspaceWriteLeaseId?: string; [key: string]: unknown };
+  reconciliation?: { note?: string; createdAt?: string };
+}
+export interface TerminalOutputPage {
+  terminalId: string; epoch: string; offset: number; length: number; next: number; sha256: string; dataBase64: string;
+  publishedEnd: number; hasMore: boolean; terminalState: string; outputIntegrity: string;
+}
+export interface TerminalAction {
+  id: string; terminalId: string; taskId: string; requestId: string; kind: 'INPUT' | 'RESIZE' | 'STOP'; sequence: number;
+  controllerId: string; controllerGeneration: number; length: number; sha256: string; columns?: number; rows?: number;
+  state: string; dispatchCount: number; nativeAuthorizationCount: number; createdAt: string; endedAt?: string; reason?: string; historyCursor?: number;
+}
+export interface TerminalControl {
+  terminal: TerminalSession; controlSecret: string; generation: number; nextSequence: number;
+}
 export interface AgentRun {
   id: string; taskId: string; sessionId: string; stage: string; kind: string; title?: string; role: string;
   attempt: number; state: string; createdAt: string; startedAt?: string; endedAt?: string; elapsedMs?: number; queueMs?: number;

@@ -17,6 +17,7 @@ import static dev.agentworkbench.Json.*;
 final class TaskDispatchQueue {
     static final Set<String> EXECUTION_STATES = Set.of("QUEUED", "RUNNING", "SUCCEEDED", "FAILED", "UNKNOWN", "PAUSED", "CANCELLED", "WAITING_INPUT");
     static final Set<String> ACTION_STATES = Set.of("PENDING", "CLAIMED", "SETTLED", "WITHDRAWN", "UNKNOWN");
+    static final int MAX_ACTIVE_TERMINALS = 4;
     private final ExecutionStore store;
     private final WorkspaceWriteLedger workspaceWrites;
     private final Supplier<Map<String, Object>> writerIdentity;
@@ -37,8 +38,9 @@ final class TaskDispatchQueue {
     Map<String, Object> enqueue(String taskId, String trigger, Consumer<Map<String, Object>> edit, Map<String, List<Map<String, Object>>> related) {
         synchronized (store) {
             Map<String, Object> task = store.get("task", taskId);
+            boolean terminalStart = "USER_TERMINAL".equals(trigger);
             if (!Set.of("DRAFT", "PAUSED", "WAITING_INPUT", "FAILED").contains(str(task, "state"))
-                    && !("USER_CHECKPOINT_RESTORE".equals(trigger) && "AWAITING_ACCEPTANCE".equals(str(task, "state")))) throw new ApiException(409, "当前任务不能建立新的执行尝试");
+                    && !(("USER_CHECKPOINT_RESTORE".equals(trigger) || terminalStart) && "AWAITING_ACCEPTANCE".equals(str(task, "state")))) throw new ApiException(409, "当前任务不能建立新的执行尝试");
             if (store.hasUnknownTaskExecution(taskId) || store.hasUnknownEffects(taskId)) throw new ApiException(409, "根执行或外部效果尚未核对，不能建立新尝试");
             String previousState = str(task, "state"), time = now(), executionId = id(), actionId = id();
             edit.accept(task);
@@ -54,6 +56,8 @@ final class TaskDispatchQueue {
                 "projectId", task.get("projectId"), "sessionId", task.getOrDefault("sessionId", ""), "taskExecutionId", executionId,
                 "attempt", attempt, "state", "PENDING", "version", 1, "dispatchCount", 0, "createdAt", time,
                 "enqueuedCoreSessionId", store.coreSessionId(), "authorization", authorization(task));
+            Map<String, Object> terminal = terminalStart ? terminalStart(task, related, executionId, actionId) : obj();
+            if (!terminal.isEmpty()) { execution.put("terminalId", terminal.get("id")); action.put("terminalId", terminal.get("id")); }
             task.putAll(obj("state", "QUEUED", "taskExecutionId", executionId, "dispatchActionId", actionId, "updatedAt", time));
             task.remove("workspaceWriteLeaseId");
             task.remove("error"); summarize(task, execution, action);
@@ -62,8 +66,10 @@ final class TaskDispatchQueue {
             if ("USER_RESUME".equals(trigger)) events.add(obj("type", "CONTEXT_REFRESHED", "message", "按当前有效记忆重新组装上下文，旧证据保留"));
             events.add(obj("type", "QUEUED", "message", "任务与第 " + attempt + " 次执行已同事务进入持久队列，动作 " + actionId + " 尚未领取"));
             Map<String, List<Map<String, Object>>> records = records(task, execution, action);
-            if (!Set.of("checkpointRestorePreview").containsAll(related.keySet())) throw new ApiException(400, "根队列包含无效关联记录。");
-            records.putAll(related); store.commitRecords(records, taskId, events);
+            if (!terminalStart && !Set.of("checkpointRestorePreview").containsAll(related.keySet())) throw new ApiException(400, "根队列包含无效关联记录。");
+            if (terminalStart) records.put("terminalSession", List.of(terminal));
+            else records.putAll(related);
+            store.commitRecords(records, taskId, events);
             return action;
         }
     }
@@ -78,6 +84,9 @@ final class TaskDispatchQueue {
             Map<String, Object> task = store.get("task", str(action, "taskId")), execution = store.get("taskExecution", str(action, "taskExecutionId"));
             if (!unclaimed(task, execution, action) || !map(action, "authorization").equals(authorization(task))) {
                 waiting(actionId, "原任务状态或冻结授权已变化，请暂停队列并重新确认"); return Map.of();
+            }
+            if (!str(action, "terminalId").isBlank() && !queuedTerminal(task, execution, action)) {
+                waiting(actionId, "原终端启动意图或根归属已变化，当前动作不会领取"); return Map.of();
             }
             if (store.hasUnknownEffects(str(task, "id")) || store.hasUnknownTaskExecution(str(task, "id"))) {
                 waiting(actionId, "存在尚未核对的根执行或外部效果，当前动作不会领取"); return Map.of();
@@ -121,7 +130,15 @@ final class TaskDispatchQueue {
             if ("CANCELLED".equals(state)) task.put("outcome", "CANCELLED");
             end(execution, task, state, reason); action.putAll(obj("state", "WITHDRAWN", "version", num(action, "version", 1) + 1, "endedAt", now(), "reason", reason));
             summarize(task, execution, action);
-            store.commitRecords(records(task, execution, action), taskId, "CONTROL", reason + "；原动作未领取，未开始任何执行");
+            Map<String, List<Map<String, Object>>> records = records(task, execution, action);
+            if (!str(action, "terminalId").isBlank()) {
+                Map<String, Object> terminal = store.get("terminalSession", str(action, "terminalId"));
+                if (!"QUEUED".equals(str(terminal, "state")) || bool(terminal, "nativeLaunchAttempted", true)
+                        || !str(execution, "id").equals(str(terminal, "taskExecutionId"))) throw new ApiException(409, "终端启动边界不再是未领取意图，不能按零执行撤回");
+                terminal.putAll(obj("state", "CANCELLED", "inputFenced", true, "endedAt", now(), "reason", reason, "withdrawnBeforeLaunch", true));
+                task.remove("pendingTerminalId"); records.put("terminalSession", List.of(terminal));
+            }
+            store.commitRecords(records, taskId, "CONTROL", reason + "；原动作未领取，未开始任何执行");
             return true;
         }
     }
@@ -132,6 +149,12 @@ final class TaskDispatchQueue {
             if (!"RUNNING".equals(str(execution, "state"))) return;
             Map<String, Object> task = store.get("task", str(execution, "taskId")), action = store.get("dispatchAction", str(execution, "dispatchActionId"));
             if (!store.coreSessionId().equals(str(action, "ownerCoreSessionId")) || !"CLAIMED".equals(str(action, "state"))) throw new ApiException(409, "根执行终态缺少本次核心原领取");
+            Map<String, Object> terminal = str(action, "terminalId").isBlank() ? obj() : store.get("terminalSession", str(action, "terminalId"));
+            if (!terminal.isEmpty() && !Set.of("EXITED", "CANCELLED", "FAILED", "UNKNOWN").contains(str(terminal, "state"))) {
+                terminal.putAll(obj("state", "UNKNOWN", "inputFenced", true, "outputIntegrity", "UNCONFIRMED", "lostAt", now(), "reason", "原根结束缺少终端完整收尾回执，不重建 shell"));
+                unresolved(task, "原终端尚未取得完整收尾回执");
+            }
+            if (!terminal.isEmpty() && "UNKNOWN".equals(str(terminal, "state"))) unresolved(task, "原终端进程、输入或输出尚待核对");
             Map<String, Object> writeLease = store.find("workspaceWriteLease", str(execution, "workspaceWriteLeaseId"));
             if (writeLease != null) {
                 if (!bool(writeLease, "protectionReleased", false)) {
@@ -150,6 +173,7 @@ final class TaskDispatchQueue {
             action.putAll(obj("state", "UNKNOWN".equals(state) ? "UNKNOWN" : "SETTLED", "version", num(action, "version", 1) + 1, "endedAt", now(), "executionState", state));
             if (executionId.equals(str(task, "taskExecutionId"))) { task.put("updatedAt", now()); summarize(task, execution, action); }
             Map<String, List<Map<String, Object>>> records = records(task, execution, action);
+            if (!terminal.isEmpty()) records.put("terminalSession", List.of(terminal));
             if (writeLease != null && !bool(writeLease, "protectionReleased", false)) records.put("workspaceWriteLease", List.of(writeLease));
             store.commitRecords(records, str(task, "id"), "TASK_EXECUTION_FINISHED", "根执行 " + executionId + "：" + state + "；任务状态与人工验收另行保存");
         }
@@ -169,7 +193,15 @@ final class TaskDispatchQueue {
                 if ("RUNNING".equals(str(execution, "state"))) end(execution, task, "UNKNOWN", reason);
                 action.putAll(obj("state", "UNKNOWN", "version", num(action, "version", 1) + 1, "endedAt", now(), "reason", reason, "executionState", "UNKNOWN"));
                 if (str(execution, "id").equals(str(task, "taskExecutionId"))) summarize(task, execution, action);
-                store.commitRecords(records(task, execution, action), str(task, "id"), "RECOVERY_REQUIRED", reason);
+                Map<String, List<Map<String, Object>>> records = records(task, execution, action);
+                if (!str(action, "terminalId").isBlank()) {
+                    Map<String, Object> terminal = store.get("terminalSession", str(action, "terminalId"));
+                    if (Set.of("QUEUED", "STARTING", "RUNNING", "STOPPING").contains(str(terminal, "state"))) {
+                        terminal.putAll(obj("state", "UNKNOWN", "inputFenced", true, "outputIntegrity", "UNCONFIRMED", "lostAt", now(), "reason", reason));
+                        records.put("terminalSession", List.of(terminal));
+                    }
+                }
+                store.commitRecords(records, str(task, "id"), "RECOVERY_REQUIRED", reason);
             }
         }
     }
@@ -188,13 +220,21 @@ final class TaskDispatchQueue {
             Map<String, Object> confirmation = obj("actor", "USER", "note", str(body, "note"), "processesStopped", true, "sideEffectsChecked", true, "createdAt", now());
             for (Map<String, Object> execution : store.taskDispatchRecords("taskExecution", taskId)) if ("UNKNOWN".equals(str(execution, "state")) && !execution.containsKey("reconciliation")) { execution.put("reconciliation", confirmation); executions.add(execution); }
             for (Map<String, Object> action : store.taskDispatchRecords("dispatchAction", taskId)) if ("UNKNOWN".equals(str(action, "state")) && !action.containsKey("reconciliation")) { action.put("reconciliation", confirmation); actions.add(action); }
+            List<Map<String, Object>> terminals = store.unreconciledTerminalRecords("terminalSession", taskId), terminalActions = store.unreconciledTerminalRecords("terminalAction", taskId);
+            for (Map<String, Object> terminal : terminals) { terminal.put("reconciliation", confirmation); terminal.put("inputFenced", true); }
+            for (Map<String, Object> action : terminalActions) action.put("reconciliation", confirmation);
+            if (!str(task, "pendingTerminalId").isBlank()) {
+                Map<String, Object> terminal = store.get("terminalSession", str(task, "pendingTerminalId"));
+                if (!taskId.equals(str(terminal, "taskId")) || !"UNKNOWN".equals(str(terminal, "state"))) throw new ApiException(409, "原终端仍未完成未知结果核对边界");
+                task.remove("pendingTerminalId");
+            }
             edit.accept(task); task.put("updatedAt", now());
             if (!str(task, "taskExecutionId").isBlank()) {
                 Map<String, Object> execution = executions.stream().filter(item -> str(item, "id").equals(str(task, "taskExecutionId"))).findFirst().orElseGet(() -> store.get("taskExecution", str(task, "taskExecutionId")));
                 Map<String, Object> action = actions.stream().filter(item -> str(item, "id").equals(str(task, "dispatchActionId"))).findFirst().orElseGet(() -> store.get("dispatchAction", str(task, "dispatchActionId")));
                 summarize(task, execution, action);
             }
-            store.commitRecords(Map.of("task", List.of(task), "taskExecution", executions, "dispatchAction", actions), taskId, "RECONCILED", "人工核对后保持暂停；原 UNKNOWN 和预算保留，下一次恢复建立新尝试");
+            store.commitRecords(Map.of("task", List.of(task), "taskExecution", executions, "dispatchAction", actions, "terminalSession", terminals, "terminalAction", terminalActions), taskId, "RECONCILED", "人工核对后保持暂停；原 UNKNOWN 和预算保留，下一次恢复建立新尝试");
         }
     }
 
@@ -208,7 +248,36 @@ final class TaskDispatchQueue {
     private static Map<String, Object> authorization(Map<String, Object> task) {
         Map<String, Object> authorization = new LinkedHashMap<>();
         for (String field : List.of("contract", "execution", "workspaceSelection", "routeId", "routeSnapshot", "locks", "mcpAuthorization", "collaboration", "policyVersion")) if (task.containsKey(field)) authorization.put(field, task.get(field));
+        if (!str(task, "pendingTerminalId").isBlank()) for (String field : List.of("pendingTerminalId", "workspace", "workspaceOwnership")) authorization.put(field, task.get(field));
         return authorization;
+    }
+
+    /**
+     * 原终端、任务指针和新根编号同事务保存，启动数量独立于模型容量。
+     */
+    private Map<String, Object> terminalStart(Map<String, Object> task, Map<String, List<Map<String, Object>>> related, String executionId, String actionId) {
+        if (!related.keySet().equals(Set.of("terminalSession")) || related.get("terminalSession").size() != 1) throw new ApiException(400, "终端启动必须携带唯一原意图");
+        Map<String, Object> terminal = new LinkedHashMap<>(related.get("terminalSession").getFirst());
+        if (!str(terminal, "id").matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+                || !str(terminal, "id").equals(str(task, "pendingTerminalId")) || store.find("terminalSession", str(terminal, "id")) != null
+                || !"QUEUED".equals(str(terminal, "state")) || bool(terminal, "nativeLaunchAttempted", true)
+                || str(task, "workspace").isBlank() || map(task, "workspaceOwnership").isEmpty()
+                || !str(task, "id").equals(str(terminal, "taskId")) || !str(task, "projectId").equals(str(terminal, "projectId"))
+                || !str(task, "workspace").equals(str(terminal, "workspace")) || !map(task, "workspaceOwnership").equals(map(terminal, "workspaceOwnership"))
+                || !map(task, "execution").equals(map(terminal, "execution"))) throw new ApiException(409, "终端意图不属于原任务已拥有现场");
+        if (store.activeTerminalCount() >= MAX_ACTIVE_TERMINALS) throw new ApiException(409, "本机终端数量已达到上限，原启动尚未排队");
+        if (store.taskHasActiveTerminal(str(task, "id"))) throw new ApiException(409, "任务已持有原终端，不能建立第二个 shell");
+        terminal.putAll(obj("taskExecutionId", executionId, "dispatchActionId", actionId, "rootTaskId", task.get("id"), "queuedCoreSessionId", store.coreSessionId()));
+        return terminal;
+    }
+
+    private boolean queuedTerminal(Map<String, Object> task, Map<String, Object> execution, Map<String, Object> action) {
+        Map<String, Object> terminal = store.find("terminalSession", str(action, "terminalId"));
+        return terminal != null && "QUEUED".equals(str(terminal, "state")) && !bool(terminal, "nativeLaunchAttempted", true)
+            && str(action, "terminalId").equals(str(task, "pendingTerminalId")) && str(task, "id").equals(str(terminal, "taskId"))
+            && str(execution, "id").equals(str(terminal, "taskExecutionId")) && str(action, "id").equals(str(terminal, "dispatchActionId"))
+            && str(task, "workspace").equals(str(terminal, "workspace")) && map(task, "workspaceOwnership").equals(map(terminal, "workspaceOwnership"))
+            && map(task, "execution").equals(map(terminal, "execution"));
     }
 
     private static Map<String, List<Map<String, Object>>> records(Map<String, Object> task, Map<String, Object> execution, Map<String, Object> action) {

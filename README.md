@@ -4,7 +4,7 @@
 
 平台使用 Java 21、Spring Boot、SQLite、React、TypeScript 和 Electron。任务在独立工作目录中执行，验证和审查记录绑定代码版本，最终由用户验收。验收操作记录用户决定，不会自动提交、推送或改写原项目。
 
-当前开发版本为 **0.2.0-alpha.19**，本轮检查点与撤销的本机最终验收已完成，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
+当前开发版本为 **0.2.0-alpha.20**，本轮任务终端的生产验收正在进行，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
 
 在“资源与设置 → 外观”选择纯白、纸墨、经典暖色、青瓷、墨夜或墨夜蓝，选择会应用到当前客户端的全部项目和页面。默认跟随系统，浅色使用青瓷、深色使用墨夜；固定选择会跨重新打开保留。浏览器无法保存时，当前窗口仍可切换，并提示未保存。核心离线时也可调整外观，具体来源与验收见[主题研究](./docs/research/themes-2026-11-12.md)。
 
@@ -14,11 +14,13 @@
 
 任务“检查点与撤销”页可查看准备、阶段和成功文件工具保存的实际文件边界；任务停止并完成原根收尾后，也可手动保存。选择较早检查点会先列出反向改动和冲突，确认后由新的根执行尝试交给原 Worker 撤销。未参与改动的用户后续文件保留，HEAD、累计预算和旧回执保持；撤销成功后任务暂停，当前现场需要重新验证和审查。归档包含原文件、二进制、完整 index 和暂存对象，交付 ZIP 核对全部引用；回执丢失时保留 UNKNOWN、已观察效果和原日志。具体范围与限额见[检查点与撤销约定](./docs/checkpoint-contract.md)。
 
+任务原自动执行收尾后，可在“终端”页建立实际独立目录中的系统 shell。新页面默认仅查看，显式取得控制后可输入、粘贴和调整尺寸；离开、返回或重载保留原 shell，重读输出不会重发命令。终端以当前系统账户运行，原始输出可能含命令回显并随交付包保存。手动停止后任务暂停，当前修改需要重新验证与审查，累计模型预算和旧证据保留；撤权、失联或丢失回执继续保留 UNKNOWN，禁止自动重放。具体边界见[任务终端协议](./docs/terminal-contract.md)，来源和原失败见[终端研究](./docs/research/terminals-2026-11-16.md)。
+
 alpha.19 生产提交 `eb666f4` 的 Windows、macOS、Linux CI 已通过，三份实际证据 ZIP 的大小和 SHA-256 均核对。核心分别为452、454、454项，UI每端196项；原 Worker 逐文件撤权后的部分效果与 UNKNOWN、实际检查点撤销16项、原协议及发行主题/侧栏/内置JRE均验收。条件跳过、原三条CI失败、Windows/POSIX用例展开及验证边界见[三平台正式成功回执](./docs/qa/alpha19-per-file-boundary-ci-success-receipt.json)。
 
 计划确认与显式继续同事务保存根执行尝试和待派发动作。未领取动作可跨重启保留原编号，门禁满足后领取一次；已领取后缺少结果保持 UNKNOWN，核对后继续建立新尝试并沿用累计预算。“任务派发”页和 ZIP 保存完整历史，执行结束与人工验收分别记录。边界见[根派发协议](./docs/task-dispatch-contract.md)。
 
-创建任务可从实际本地或远程分支选择提交，以独立 clone 或锁定的 detached Git worktree 执行。计划保存所选 SHA、源文件与 index 快照，排队期间源变化会要求重新确认；完整 READY 现场在核对原目录、关联、归属和内容后可复用，原未知尝试与规则保留在历史和 ZIP 中。SQLite schema 为 9，API 与 Worker 帧协议仍为 1；旧核心不能打开新库。协议见[启动现场约定](./docs/workspace-selection-contract.md)。
+创建任务可从实际本地或远程分支选择提交，以独立 clone 或锁定的 detached Git worktree 执行。计划保存所选 SHA、源文件与 index 快照，排队期间源变化会要求重新确认；完整 READY 现场在核对原目录、关联、归属和内容后可复用，原未知尝试与规则保留在历史和 ZIP 中。SQLite schema 为 10，API 与 Worker 帧协议仍为 1；旧核心不能打开新库。协议见[启动现场约定](./docs/workspace-selection-contract.md)。
 
 原 Worker 从准备到根收尾持有实际文件锁，写入意图与根领取、授予与操作 ACK 分别同事务保存。模型容量释放和客户端退出保留根保护；丢失回执保持原 UNKNOWN，核对原进程及效果后释放保护，下一次恢复建立新的写入编号。Worker 页、请求/MCP 来源和 ZIP 可查看完整记录，边界见[根写入保护协议](./docs/workspace-write-contract.md)。当前目录执行、跨核心共享现场协调与完整 worktree 归档恢复继续实施。
 
@@ -26,7 +28,7 @@ API Agent 覆盖已有文本前须完整读取并提供原 `readVersion`；删�
 
 Windows 原 PID 被受限进程复用、Java 句柄无法读取当前出生时间时，核心通过只读系统快照补充出生信息，核对后保留原身份和新的出生。快照无法核验时继续显示未知；请求停止仍逐项检查原 Java 句柄的出生时间。具体边界见[进程恢复约定](./docs/process-recovery-contract.md)。
 
-API 任务可按创建时固定的定义、模型路由和限制实际委派副 Agent。副任务在独立 Git 副本中执行，父 Agent 等待时释放模型容量，核对依赖成果后采纳文件；全部后代共用根模型和 MCP 预算。设置页可编辑版本化定义，任务页显示真实父子状态、权限、依赖、消息、原模型/工具来源和采纳回执。逐轮请求追踪、会话搜索、独立验证/审查及人工验收继续保留；未知效果不自动重放。协议见[动态团队约定](./docs/team-contract.md)、[模型请求协议](./docs/model-request-contract.md)及[Agent 运行协议](./docs/agent-run-contract.md)。远程队列与配对、完整操作系统历史树与资源隔离、终端、动态 workflow、Token 趋势、原生 CLI 委派、完整备份恢复与正式发布仍在实施。
+API 任务可按创建时固定的定义、模型路由和限制实际委派副 Agent。副任务在独立 Git 副本中执行，父 Agent 等待时释放模型容量，核对依赖成果后采纳文件；全部后代共用根模型和 MCP 预算。设置页可编辑版本化定义，任务页显示真实父子状态、权限、依赖、消息、原模型/工具来源和采纳回执。逐轮请求追踪、会话搜索、独立验证/审查及人工验收继续保留；未知效果不自动重放。协议见[动态团队约定](./docs/team-contract.md)、[模型请求协议](./docs/model-request-contract.md)及[Agent 运行协议](./docs/agent-run-contract.md)。远程队列与配对、完整操作系统历史树与资源隔离、项目会话级与远程终端、动态 workflow、Token 趋势、原生 CLI 委派、完整备份恢复与正式发布仍在实施。
 
 前后端分离的本机启动、独立构建、配置与客户端退出语义见[独立部署说明](./docs/standalone-deployment.md)。新增需求 F01—F21 及后续节点架构见[架构审查](./docs/research/current-architecture-audit-2026-11-06.md)，本轮来源和范围见[迭代记录](./docs/research/iteration-foundation-2026-11-06.md)。独立入口不代表远程多用户或移动端能力已交付。
 
@@ -137,3 +139,5 @@ node tools/smoke-test.mjs
 本项目采用 [MIT License](./LICENSE)。
 
 alpha.14 使用原字节的 JNA 5.17.0 依赖，选择 Apache-2.0 许可路径；固定源码、产物摘要、包内许可和 JDK 打开模式见[第三方依赖记录](./docs/third-party-dependencies.md)。
+
+文档提交 `e06f770` 的 [run 43851324554](https://github.com/lihe-he/multi-agent/actions/runs/43851324554) 已终态失败：macOS、Linux 的核心454项、UI196项及实际发行核验通过；Windows核心452项、UI196项、真实差异14项、检查点16项与恢复11项通过，在队列 held 根的首次模型调用处保留 UNKNOWN。原请求9ms后记录 ExecutionException，预算和派发各一次，未到强杀核心步骤。三份实际证据ZIP大小与GitHub SHA-256均核对；206份接受产品源码与先前三端成功生产提交完全一致，底层传输原因及原现场缺口仍为UNKNOWN。见[本次独立失败回执](./docs/qa/alpha19-documentation-ci-original-queue-failure-receipt.json)。

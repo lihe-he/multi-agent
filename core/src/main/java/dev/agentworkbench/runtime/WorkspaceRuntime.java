@@ -165,7 +165,7 @@ public class WorkspaceRuntime {
             if (dirty && !includeChanges) throw new IllegalArgumentException("项目有未提交改动，请选择带入当前改动或先整理工作区。");
             writeMetadataAtomic(manifest, json.writeValueAsBytes(object("taskId", taskId, "source", root.toString(), "baseline", baseline, "sourceDirty", dirty, "state", "PREPARED")));
             ensureSpace();
-            git(dest.getParent(), "-c", "protocol.file.allow=always", "clone", "--no-hardlinks", "--no-local", "--", root.toString(), dest.toString());
+            cloneRepository(root, dest, baseline, true);
             git(dest, "checkout", "--detach", baseline);
             git(dest, "remote", "remove", "origin");
             git(dest, "config", "user.name", "Agent Workbench");
@@ -521,7 +521,7 @@ public class WorkspaceRuntime {
         Path target = data.resolve("reviews").resolve(taskId + "-" + UUID.randomUUID()).resolve("work");
         try {
             Files.createDirectories(target.getParent());
-            git(target.getParent(), "clone", "--no-hardlinks", "--no-local", "--", source.toString(), target.toString());
+            cloneRepository(source, target, git(source, "rev-parse", "HEAD").strip(), true);
             git(target, "remote", "remove", "origin");
             copyChanges(source, target);
             if (!fingerprint(target.toString()).equals(version)) throw new IllegalStateException("审查快照与交付内容不一致。");
@@ -1313,6 +1313,38 @@ public class WorkspaceRuntime {
         } catch (IOException e) { throw failure(e); }
     }
 
+    /**
+     * Windows 在目标中初始化独立对象库，避免 clone 子进程的绝对 GIT_DIR 长度限制。
+     */
+    void cloneRepository(Path source, Path target, String baseline, boolean checkout) throws IOException {
+        if (!WINDOWS) {
+            List<String> arguments = new ArrayList<>(List.of("-c", "protocol.file.allow=always", "clone"));
+            if (!checkout) arguments.add("--no-checkout");
+            arguments.addAll(List.of("--no-hardlinks", "--no-local", "--", source.toString(), target.toString()));
+            git(target.getParent(), arguments.toArray(String[]::new));
+            return;
+        }
+        String format = git(source, "rev-parse", "--show-object-format").strip();
+        if (!Set.of("sha1", "sha256").contains(format)) throw new IllegalArgumentException("不支持的 Git 对象格式。");
+        Files.createDirectories(target);
+        git(target, "init", "--object-format=" + format);
+        git(target, "remote", "add", "origin", source.toString());
+        if (checkout) {
+            fetchLocalRepository(target, source, baseline);
+            git(target, "checkout", "--detach", baseline);
+        }
+    }
+
+    /**
+     * 固定提交通过原本地 Git 传输读取；上传端也显式启用 Windows 长路径。
+     */
+    void fetchLocalRepository(Path target, Path source, String baseline) {
+        List<String> arguments = new ArrayList<>(List.of("-c", "protocol.file.allow=always", "fetch", "--no-tags", "--no-write-fetch-head"));
+        if (WINDOWS) arguments.add("--upload-pack=git -c core.longpaths=true -c core.hooksPath=/dev/null upload-pack");
+        arguments.addAll(List.of("--", source.toString(), baseline));
+        git(target, arguments.toArray(String[]::new));
+    }
+
     String git(Path cwd, String... args) {
         Map<String, Object> result = List.of(args).contains("diff") && !List.of(args).contains("--no-index") ? gitWithPrivateIndex(cwd, args)
                 : execute(gitCommand(args), cwd, "", () -> false, x -> {}, Duration.ofMinutes(2), false);
@@ -1358,6 +1390,8 @@ public class WorkspaceRuntime {
      */
     private List<String> gitCommand(String... args) {
         List<String> command = new ArrayList<>(List.of("git", "--no-optional-locks", "-c", "diff.autoRefreshIndex=false", "-c", "core.quotePath=false", "-c", "core.hooksPath=/dev/null", "-c", "core.autocrlf=false"));
+        // Windows 审查副本的完整对象路径可能超过 260 字符；仅当前命令启用长路径。
+        if (WINDOWS) command.addAll(List.of("-c", "core.longpaths=true"));
         command.addAll(List.of(args));
         return command;
     }

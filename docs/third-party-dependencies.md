@@ -1,12 +1,31 @@
 # 第三方依赖与固定来源
 
-本项目业务代码采用 [MIT](../LICENSE)。本页记录 alpha.14 新增的 JNA 依赖及所用 JDK 能力，完整构建依赖由 [Maven POM](../core/pom.xml)、[根锁文件](../package-lock.json)和 [Web 锁文件](../web/package-lock.json)固定。
+本项目业务代码采用 [MIT](../LICENSE)。本页记录运行时依赖、固定来源和所用 JDK 能力，完整构建依赖由 [Maven POM](../core/pom.xml)、[根锁文件](../package-lock.json)和 [Web 锁文件](../web/package-lock.json)固定。
 
 alpha.16 的主题实现参考固定版本的 MIT 项目 OpenCode 和 next-themes。原源码、Git blob、SHA-256 和许可证已核验，两个项目没有作为运行时依赖加入发行物；来源与独立实现见[六主题研究](./research/themes-2026-11-12.md)。
 
 alpha.18 的逐文件差异参考固定 OpenCode `59ed43f0b8da891f03a7333d540a7b0c428049ea`（MIT）与 Git v2.53.0 `67ad42147a7acc2af6074753ebd03d904476118f`（GPL-2.0）文档，十份原文件按 Git blob / SHA-256 核验。业务实现独立编写，没有复制或链接上游实现；Git 沿用用户环境中的外部工具，没有新增运行时依赖。Windows 预览目录身份复用原 JNA。固定来源见[差异研究](./research/file-diff-review-2026-11-14.md)和[清单](./research/file-diff-sources-2026-11-14.json)。
 
 alpha.19 的文件检查点与撤销沿用同一固定 OpenCode 和 Git 提交，22份原源码、文档与许可证重新核对字节数、SHA-256 和 Git blob。参考范围包括会话撤销边界、快照、Git 批量对象读取、index 原字节、worktree 双向关联和持久化选项；业务实现独立编写，没有复制上游实现、运行上游测试或新增运行时依赖。原 JNA、Maven 依赖和包内许可摘要继续按最终构建核对。来源及验收进度见[检查点研究](./research/checkpoints-2026-11-15.md)和[清单](./research/checkpoint-sources-2026-11-15.json)。
+
+## alpha.20 终端依赖
+
+实际 Java 终端使用未修改的 `org.jetbrains.pty4j:pty4j:0.13.4`、Kotlin stdlib 1.9.22 和 annotations 24.0.1；JNA 5.17.0 / SLF4J 2.0.17沿用原产品依赖。pty4j原POM声明EPL-1.0，固定研究源码使用同一许可。Web新增MIT的 `@xterm/xterm` 6.0.0和 `@xterm/addon-fit` 0.11.0；本项目使用已验证npm文件构建自己的Web产物。
+
+| 原发布产物 | SHA-256 |
+| --- | --- |
+| pty4j 0.13.4 Jar | `bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc` |
+| pty4j 0.13.4 sources.jar | `0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01` |
+| Kotlin stdlib 1.9.22 Jar | `6abe146c27864138b874ccccfe5f534e3eb923c99a1b7b5d45494ee5694f3e0a` |
+| annotations 24.0.1 Jar | `61666dbce7e42e6c85b43c04fcfb8293a21dcb55b3c80e869270ce42c01a6b35` |
+| xterm 6.0.0 npm tarball | `908e66e04af6c8dc6b00dd3b54de088e2e81e5ed866284fd6c2fb3c2d1c7a3f6` |
+| addon-fit 0.11.0 npm tarball | `26003b4517a132b64e4ff228fd88a5fda3fff5e606c76093f6dcff772e9ecec0` |
+
+36份固定研究/许可/NOTICE、原Git树与blob、官方Maven校验、170份main npm字节和24份native逐项核对，见[来源清单](./research/terminal-sources-2026-11-16.json)与[实现研究](./research/terminals-2026-11-16.md)。xterm源文件绑定发布包声明commit `f447274f430fd22513f6adbf9862d19524471c04`，未执行上游生成bundle的可复现构建。
+
+原pty4j binary/source Jar没有LICENSE或NOTICE，产品另携带固定上游EPL与NOTICE、发布sources.jar、WinPTY/OpenConsole原MIT、xterm原MIT和Kotlin/annotations的Apache-2.0文件。两处资源为 `core/src/main/resources/third-party` 与 `web/public/third-party`；核心Jar、生产Web及asar发行物需要分别核对实际字节。[SOURCE-OFFER](../core/src/main/resources/third-party/SOURCE-OFFER.txt)明确说明发布native的准确build commit尚未证明，固定许可文本不能代替该证明。
+
+产品的ConPTY读句柄适配器绑定原 `WinHandleInputStream` class SHA-256 `1f44486911d333b5738d7adf0a150c9fb4cba595309f28b8917d36fa49f80df7`和 `myReadPipe` 字段；它没有改写原依赖Jar。升级依赖须重新核验私有ABI、原生清理与输出尾部。最终普通/包内JRE和三端结果在[实施记录](./implementation-status.md)追加，不能由当前资源创建回执推断发行验收。
 
 ## JNA 5.17.0
 

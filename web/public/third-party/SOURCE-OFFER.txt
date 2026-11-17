@@ -1,0 +1,15 @@
+Third-party source and license availability
+
+Pty4j 0.13.4 is distributed under the Eclipse Public License 1.0, as declared by its original Maven POM. Its unmodified released Java sources are provided at pty4j/pty4j-0.13.4-sources.jar in this directory. The same file is carried as a resource inside the core JAR and in the production Web distribution.
+
+Official Java source download: https://repo.maven.apache.org/maven2/org/jetbrains/pty4j/pty4j/0.13.4/pty4j-0.13.4-sources.jar
+SHA-256: 0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01
+Official binary SHA-256: bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc
+
+The released binary and source JARs contain no LICENSE or NOTICE entries. The supplied EPL-1.0 text and pty4j NOTICE are separately verified upstream files at commit 7dd1378d167cb451fe6c50f4b73e129ec2925897. The exact build commits of the bundled native binaries have not been proven. The winpty and OpenConsole MIT texts are separately verified upstream license files; they are not claimed as proof of a reproducible native build.
+
+Pty4j and its released JARs have not been modified. The application uses the exact private WinHandleInputStream class hash and myReadPipe field for its owned ConPTY pipe adapter; another release requires renewed ABI and lifecycle validation.
+
+Xterm 6.0.0 and addon-fit 0.11.0 are provided under their original npm MIT license texts. Kotlin stdlib 1.9.22 and JetBrains annotations 24.0.1 use the separately supplied fixed release Apache-2.0 license and Kotlin NOTICE. Existing JNA JARs retain their original AL2.0 and LICENSE entries and use the Apache-2.0 option.
+
+Each component retains its own license. The surrounding application is licensed independently under the repository LICENSE.

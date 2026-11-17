@@ -43,6 +43,7 @@ public class WorkbenchEngine {
     private final TaskDispatchQueue dispatchQueue;
     private final WorkspaceWriteLedger workspaceWrites;
     private final CheckpointLedger checkpoints;
+    private final TerminalLedger terminals;
     private final ExecutorService workers;
     private final ScheduledExecutorService dispatcher = Executors.newSingleThreadScheduledExecutor(runnable -> Thread.ofPlatform().daemon(true).name("workbench-root-dispatch").unstarted(runnable));
     private final ReentrantLock dispatchGate = new ReentrantLock();
@@ -65,6 +66,7 @@ public class WorkbenchEngine {
         this.store = store; this.catalog = catalog; this.runtime = runtime; this.resources = resources; this.mapper = mapper; this.mcp = mcp;
         this.workers = workers; this.workspaceWrites = new WorkspaceWriteLedger(store);
         this.checkpoints = new CheckpointLedger(store, catalog, runtime);
+        this.terminals = new TerminalLedger(store);
         this.executionWorker = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.startWorker(store, catalog.nodes()) : new LocalExecutionWorker(store, catalog.nodes());
         this.dispatchQueue = runtime instanceof ProcessWorkspaceRuntime ? new TaskDispatchQueue(store, workspaceWrites, executionWorker::identity) : new TaskDispatchQueue(store);
         this.processLedger = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.managedProcesses() : new ManagedProcessLedger(store);
@@ -89,6 +91,7 @@ public class WorkbenchEngine {
         workspaceWrites.recover();
         dispatchQueue.recover();
         checkpoints.recover();
+        terminals.recover();
         for (Map<String, Object> run : store.list("agentRun")) {
             if (Set.of("WAITING_RESOURCE", "WAITING_TOOL", "WAITING_CHILDREN", "WAITING_DEPENDENCY", "RUNNING").contains(str(run, "state"))) {
                 store.finishAgentRun(str(run, "id"), "UNKNOWN", "核心重启，旧运行的进程及外部效果需随根任务核对；不自动重放");
@@ -219,6 +222,74 @@ public class WorkbenchEngine {
             dispatchQueue.enqueue(taskId, "USER_CHECKPOINT_RESTORE", value -> value.put("pendingCheckpointRestoreId", preview.get("id")), Map.of("checkpointRestorePreview", List.of(preview)));
             startDispatcher(); return store.get("task", taskId);
         } finally { dispatchGate.unlock(); }
+    }
+
+    /**
+     * 终端只从已拥有且空闲的根现场建立新尝试，shell 方案由服务器固定。
+     */
+    public Map<String, Object> startTerminal(String taskId, Map<String, Object> body) {
+        dispatchGate.lock();
+        try {
+            if (!Set.of("requestId", "columns", "rows").containsAll(body.keySet()) || !(body.get("requestId") instanceof String) || !str(body, "requestId").matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")) throw new ApiException(400, "终端启动需原请求编号及整数尺寸");
+            int columns = terminalDimension(body, "columns", 80), rows = terminalDimension(body, "rows", 24); TerminalLedger.dimensions(columns, rows);
+            String recipe = System.getProperty("os.name", "").startsWith("Windows") ? "SYSTEM_CMD" : "SYSTEM_SH";
+            Map<String, Object> original = store.terminalStartRequest(taskId, str(body, "requestId"));
+            if (!original.isEmpty()) {
+                if (!recipe.equals(str(original, "recipe")) || columns != num(map(original, "initialGeometry"), "columns", -1) || rows != num(map(original, "initialGeometry"), "rows", -1)) throw new ApiException(409, "原终端启动编号与本次方案或尺寸冲突，未启动第二个 shell");
+                return TerminalLedger.visible(original);
+            }
+            if (!(runtime instanceof ProcessWorkspaceRuntime)) throw new ApiException(409, "终端需要当前独立 Worker");
+            requireCheckpointIdle(taskId, true);
+            if (shuttingDown || !store.healthy()) throw new ApiException(503, "核心当前不能建立终端");
+            processLedger.requireDispatch(); Map<String, Object> task = store.get("task", taskId); catalog.nodes().requireCurrent(task);
+            if (!executionWorker.current(taskId)) throw new ApiException(409, "原 Worker 归属不可用");
+            Map<String, Object> terminal = terminals.newSession(task, recipe, columns, rows);
+            terminal.putAll(obj("startRequestId", body.get("requestId"), "initialGeometry", obj("columns", columns, "rows", rows)));
+            dispatchQueue.enqueue(taskId, "USER_TERMINAL", value -> value.put("pendingTerminalId", terminal.get("id")), Map.of("terminalSession", List.of(terminal)));
+            startDispatcher(); return TerminalLedger.visible(store.get("terminalSession", str(terminal, "id")));
+        } finally { dispatchGate.unlock(); }
+    }
+
+    public Map<String, Object> terminalPage(String taskId, long before, int limit) {
+        Map<String, Object> page = store.terminalPage(taskId, before, limit);
+        page.put("terminals", objects(page.get("terminals")).stream().map(TerminalLedger::visible).toList());
+        return page;
+    }
+
+    public Map<String, Object> terminal(String terminalId) { Map<String, Object> value = store.get("terminalSession", terminalId); store.get("task", str(value, "taskId")); return TerminalLedger.visible(value); }
+    public Map<String, Object> terminalOutput(String terminalId, String epoch, long after, int limit) { return terminals.outputPage(terminalId, epoch, after, limit); }
+    public Map<String, Object> terminalActions(String terminalId, long before, int limit) { return store.terminalActionPage(terminalId, before, limit); }
+    public Map<String, Object> terminalActionObservation(String terminalId, String requestId) { return terminals.observation(terminalId, requestId); }
+    public Map<String, Object> acquireTerminal(String terminalId, Map<String, Object> body) { return terminals.acquire(terminalId, body); }
+
+    /**
+     * 每次输入持久保存意图和一次授权，回执丢失后停止输入并查询原观察。
+     */
+    public Map<String, Object> terminalAction(String terminalId, Map<String, Object> body) {
+        if (!(runtime instanceof ProcessWorkspaceRuntime processRuntime)) throw new ApiException(409, "原独立 Worker 不可用");
+        try (var ignored = terminals.actionGate(terminalId)) {
+            TerminalLedger.Prepared prepared = terminals.prepare(terminalId, body);
+            if (!prepared.dispatch()) return prepared.observation();
+            Map<String, Object> action = terminals.dispatched(terminalId, str(body, "requestId"));
+            try {
+                Map<String, Object> result = processRuntime.controlTerminal(terminalId, action, prepared.input());
+                return terminals.finishAction(terminalId, str(body, "requestId"), "ACKNOWLEDGED", result);
+            } catch (RuntimeException exception) {
+                Map<String, Object> current = store.get("terminalAction", str(action, "id"));
+                String state = exception instanceof ApiException api && api.status() < 500 && num(current, "nativeAuthorizationCount", 0) == 0 ? "REJECTED" : "UNKNOWN";
+                Map<String, Object> result;
+                try { result = terminals.finishAction(terminalId, str(body, "requestId"), state); }
+                finally { if ("UNKNOWN".equals(state)) runtime.stop(str(action, "taskId")); }
+                return result;
+            }
+        }
+    }
+
+    private static int terminalDimension(Map<String, Object> body, String field, int fallback) {
+        if (!body.containsKey(field)) return fallback;
+        Object value = body.get(field);
+        if (!(value instanceof Integer || value instanceof Long) || ((Number) value).longValue() < 1 || ((Number) value).longValue() > 500) throw new ApiException(400, "终端尺寸必须为范围内的整数");
+        return ((Number) value).intValue();
     }
 
     private void requireCheckpointIdle(String taskId, boolean ownership) {
@@ -449,7 +520,7 @@ public class WorkbenchEngine {
     }
 
     private String dispatchWaitReason(Map<String, Object> task) {
-        boolean restoring = !str(task, "pendingCheckpointRestoreId").isBlank();
+        boolean restoring = !str(task, "pendingCheckpointRestoreId").isBlank() || !str(task, "pendingTerminalId").isBlank();
         Map<String, Object> route = map(task, "routeSnapshot");
         Map<String, Object> live = store.get("route", str(task, "routeId"));
         if (!restoring && (!bool(live, "enabled", false) || !BudgetPolicy.matchesLocks(route, map(task, "locks")))) {
@@ -511,6 +582,7 @@ public class WorkbenchEngine {
             store.editTask(taskId, value -> value.put("state", "RUNNING"), "RUNNING", "开始执行已确认的计划");
             task = store.get("task", taskId);
             if (!str(task, "pendingCheckpointRestoreId").isBlank()) { executeCheckpointUndo(taskId, control); return; }
+            if (!str(task, "pendingTerminalId").isBlank()) { executeTerminal(taskId, control); return; }
             automaticCheckpoint(taskId, "WORKSPACE_READY", "prepare");
             while (true) {
                 checkStopped(control);
@@ -614,6 +686,22 @@ public class WorkbenchEngine {
         executionWorker.finish(str(operation, "id"), "ACKNOWLEDGED", result);
         try { checkpoints.completed(taskId, result); }
         catch (RuntimeException exception) { throw new UnknownResult("原文件撤销回执已返回，但任务状态或检查点引用未完整发布；保留原回执并核对，不自动重放"); }
+    }
+
+    private void executeTerminal(String taskId, Control control) {
+        if (!(runtime instanceof ProcessWorkspaceRuntime processRuntime)) throw new ApiException(409, "终端缺少独立 Worker");
+        Map<String, Object> task = store.get("task", taskId); String terminalId = str(task, "pendingTerminalId");
+        automaticCheckpoint(taskId, "TERMINAL_START", "terminal"); checkStopped(control);
+        Map<String, Object> operation = store.beginOperation(taskId, "terminal", "TERMINAL", str(task, "workspace"));
+        executionWorker.dispatch(str(operation, "id"), str(task, "workspace"), obj("terminalId", terminalId));
+        terminals.bind(terminalId, store.get("workerLease", str(store.get("operation", str(operation, "id")), "workerLeaseId")));
+        Map<String, Object> result = processRuntime.executeTerminal(store.get("terminalSession", terminalId), terminals, () -> cancelled(control));
+        try (var ignored = terminals.actionGate(terminalId)) {
+            boolean known = Set.of("EXITED", "CANCELLED").contains(str(result, "status"));
+            executionWorker.finish(str(operation, "id"), known ? "ACKNOWLEDGED" : "UNKNOWN", result);
+            Map<String, Object> completed = terminals.completed(terminalId, result, runtime.fingerprint(str(task, "workspace")));
+            if ("UNKNOWN".equals(str(completed, "state"))) throw new UnknownResult("原终端收尾存在未知输入、进程或输出回执，保留原效果供核对");
+        }
     }
 
     private void captureFinalCheckpoint(String taskId) {
@@ -970,6 +1058,7 @@ public class WorkbenchEngine {
 
     private boolean hasUnknownOperation(String taskId) {
         return store.hasUnknownTaskExecution(taskId)
+            || store.hasUnknownTerminalEffects(taskId)
             || store.list("operation").stream().anyMatch(operation -> taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")))
             || store.list("mcpOperation").stream().anyMatch(operation -> taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")))
             || store.list("teamOperation").stream().anyMatch(operation -> taskId.equals(str(operation, "taskId")) && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state")));
@@ -1004,6 +1093,7 @@ public class WorkbenchEngine {
         if (!executionWorker.current(control.taskId)) { control.request = "PAUSE"; control.reason = "执行节点、仓库授权或 Worker 归属变化，旧效果需要核对"; return true; }
         try {
             Map<String, Object> task = store.get("task", control.taskId);
+            if (!str(task, "pendingTerminalId").isBlank()) return false;
             Map<String, Object> live = store.find("route", str(task, "routeId"));
             if (live == null || !bool(live, "enabled", false) || (requiresCredential(map(task, "routeSnapshot")) && catalog.credential(str(task, "routeId"), num(map(task, "routeSnapshot"), "version", 1)).isBlank())) {
                 control.request = "PAUSE"; control.reason = "运行器授权被撤回或凭据失效"; return true;

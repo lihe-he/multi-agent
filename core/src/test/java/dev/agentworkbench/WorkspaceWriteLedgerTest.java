@@ -259,7 +259,7 @@ class WorkspaceWriteLedgerTest {
             }
         }
         try (var migrated = new ExecutionStore(mapper, data.toString()); var db = DriverManager.getConnection("jdbc:sqlite:" + data.resolve("workbench.sqlite")); var statement = db.createStatement(); var version = statement.executeQuery("PRAGMA user_version")) {
-            assertTrue(version.next()); assertEquals(9, version.getInt(1)); assertTrue(migrated.list("workspaceWriteLease").isEmpty());
+            assertTrue(version.next()); assertEquals(10, version.getInt(1)); assertTrue(migrated.list("workspaceWriteLease").isEmpty());
             assertEquals(5, num(map(migrated.get("task", "legacy"), "budget"), "usedCalls", -1)); assertEquals("original workspace", migrated.get("task", "legacy").get("workspace"));
         }
     }

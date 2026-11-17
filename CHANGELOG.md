@@ -1,5 +1,25 @@
 # 版本记录
 
+## 0.2.0-alpha.20 — 任务交互终端
+
+增加任务实际CLONE/WORKTREE目录中的系统PTY与独立活动来源。默认查看、显式控制与代次接管分离，离开/重载保留原shell；原输入按请求编号、序号和摘要核对，丢ACK保持UNKNOWN，不重发。输出先持久保存再发布原字节游标，xterm按排空回调恢复显示；实际尺寸、Unicode、ANSI和字面HTML分别核验。
+
+手动停止后任务暂停并要求重新验证和审查，累计预算和旧回执保持。授权撤销、存储故障、核心/Worker失联与原生启动对象丢失保存原UNKNOWN和输出缺口；原Worker调用与实际写入保护贯穿生命周期。
+
+新增锁定pty4j/xterm依赖、原生资源库存、固定私有ConPTY ABI及随包许可/source offer；新增生产dist完整UI、真实native HTTP/核心强杀、Web控制和实际包内JRE/asar验收入口。生产Web226项、最终核心545项（535通过/10条件跳过）、实际最终Jar的HTTP4项与Web/native5项通过；原失败与UNKNOWN保留。Windows原生快照复用已有PID及出生事实，读取失败保留原回退，原团队时限与预算保持；中文长路径的Git准备和独立审查按命令启用长路径。原生命周期、发行及准确提交三端CI继续验收。协议、固定来源和原失败见[终端协议](./docs/terminal-contract.md)、[终端研究](./docs/research/terminals-2026-11-16.md)及[实施记录](./docs/implementation-status.md)。
+
+## 0.2.0-alpha.19 — 文件检查点与原Worker撤销
+
+增加实际文件/index检查点、稳定历史、独立撤销预览和原Worker逐文件授权恢复。确认核对原归属、当前文件与HEAD/index，保留未参与的用户修改；成功后暂停并要求新现场验证。原文件回执、SQLite确认和日志分别保存，丢失回执保持UNKNOWN，导出核对完整引用与旧版本门禁。
+
+准确生产提交 `eb666f4` 的三端核心、UI196项、实际撤销及发行/内置JRE验收通过；后续文档提交的独立队列CI失败保留。协议、来源与准确结果见[检查点约定](./docs/checkpoint-contract.md)和[实施记录](./docs/implementation-status.md)。
+
+## 0.2.0-alpha.18 — 逐文件差异查看
+
+增加文件树、原/新行坐标、上下文、增删高亮与内容版本绑定，完整还原字节并重新核对现场；二进制、敏感、超限和空文件显示明确状态。过期响应不覆盖新选择，409清除旧行，刷新保留文件选择。修复Windows不完整输出的原子身份与收尾诊断。
+
+准确生产提交 `1ead6b2` 的三端UI162项、实际差异与发行回归通过。使用、来源和原失败见[差异约定](./docs/diff-view-contract.md)、[差异研究](./docs/research/file-diff-review-2026-11-14.md)及[实施记录](./docs/implementation-status.md)。
+
 ## 0.2.0-alpha.17 — 可拖动侧栏与布局恢复
 
 - 侧栏、主内容和提示位置使用同一宽度。展开宽度为 200–420px，并为内容保留至少 720px；缩小窗口保留大窗口选择，原 980px/450px 图标侧栏断点继续生效。
