@@ -142,10 +142,29 @@ class NativePtySessionTest {
             return new String(outputBytes(), StandardCharsets.UTF_8).replaceAll("\\u001B\\[[0-?]*[ -/]*[@-~]", "")
                 .replaceAll("\\u001B\\][^\\u0007]*(?:\\u0007|\\u001B\\\\)", "");
         }
+        /**
+         * 按终端 LF 分行，仅忽略行尾回车；完整编号及全部内容仍须逐行匹配，原字节保持。
+         */
+        boolean containsTailLine(String text, int index) {
+            String expected = "TAIL_" + marker + "_" + index;
+            return java.util.Arrays.stream(text.split("\n", -1)).anyMatch(line -> line.replaceFirst("\\r+$", "").equals(expected));
+        }
         @Override public void close() throws Exception {
-            session.requestStop(); executionAdmission.countDown();
-            try { result.get(20, TimeUnit.SECONDS); }
-            finally { owner.shutdownNow(); }
+            try {
+                Map<String, Object> original = session.started();
+                List<Map<String, Object>> children = ProcessHandle.of(((Number) original.get("pid")).longValue()).stream().flatMap(ProcessHandle::descendants).map(child -> {
+                    ProcessHandle.Info info = child.info();
+                    return obj("pid", child.pid(), "processStartedAt", info.startInstant().map(Object::toString).orElse(""), "alive", child.isAlive(),
+                        "command", info.command().orElse(""), "arguments", info.arguments().map(List::of).orElse(List.of()), "cpuNanos", info.totalCpuDuration().map(java.time.Duration::toNanos).orElse(0L));
+                }).toList();
+                Files.write(work.resolve("original-before-fixture-stop.json"), mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(
+                    obj("recordedAt", now(), "original", original, "resultReturnedBeforeStop", result.isDone(), "observedChildren", observations, "currentDescendants", children,
+                        "publishedSegments", references.size(), "publishedBytes", outputBytes().length)));
+            } finally {
+                session.requestStop(); executionAdmission.countDown();
+                try { result.get(20, TimeUnit.SECONDS); }
+                finally { owner.shutdownNow(); }
+            }
         }
     }
 
@@ -153,8 +172,8 @@ class NativePtySessionTest {
     void actualSystemShellKeepsDimensionsUnicodeAndAllOriginalTailLines() throws Exception {
         try (var fixture = new Fixture(false)) {
             if (WINDOWS) {
-                fixture.powershell("$facts=@{columns=[Console]::WindowWidth;rows=[Console]::WindowHeight;inputRedirected=[Console]::IsInputRedirected;outputRedirected=[Console]::IsOutputRedirected;cwd=(Get-Location).ProviderPath};"
-                    + "[IO.File]::WriteAllText('initial.json',($facts|ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false))");
+                fixture.powershell("[IO.File]::WriteAllText('initial-command-entered.txt','entered');$facts=@{columns=[Console]::WindowWidth;rows=[Console]::WindowHeight;inputRedirected=[Console]::IsInputRedirected;outputRedirected=[Console]::IsOutputRedirected;cwd=(Get-Location).ProviderPath};"
+                    + "[IO.File]::WriteAllText('initial-facts-ready.txt','ready');$json=$facts|ConvertTo-Json -Compress;[IO.File]::WriteAllText('initial.json',$json,[Text.UTF8Encoding]::new($false))");
                 await(() -> Files.isRegularFile(fixture.work.resolve("initial.json")), 15);
                 Map<String, Object> initial = mapper.readValue(Files.readAllBytes(fixture.work.resolve("initial.json")), new TypeReference<>() { });
                 assertEquals(false, initial.get("inputRedirected")); assertEquals(false, initial.get("outputRedirected"));
@@ -170,7 +189,7 @@ class NativePtySessionTest {
                     + "[Console]::WriteLine('UNICODE_" + fixture.marker + ":'+([char]0x4E2D)+([char]0x6587));for($i=1;$i -le 200;$i++){[Console]::WriteLine('TAIL_" + fixture.marker + "_'+$i)}");
             } else fixture.input("stty size > resized.txt; printf 'UNICODE_" + fixture.marker + ":中文\\n'; i=1; while test \"$i\" -le 200; do printf 'TAIL_" + fixture.marker + "_%s\\n' \"$i\"; i=$((i+1)); done\n");
             await(() -> {
-                try { return fixture.plainText().contains("TAIL_" + fixture.marker + "_200\r\n") || fixture.plainText().contains("TAIL_" + fixture.marker + "_200\n"); }
+                try { return fixture.containsTailLine(fixture.plainText(), 200); }
                 catch (Exception exception) { throw new IllegalStateException(exception); }
             }, 15);
             assertEquals("37 101", Files.readString(fixture.work.resolve("resized.txt")).strip());
@@ -181,7 +200,7 @@ class NativePtySessionTest {
             Map<String, Object> inspection = fixture.archive.inspect(fixture.terminal, fixture.epoch); assertEquals(true, inspection.get("complete"));
             byte[] raw = fixture.outputBytes(); assertEquals(((Number) inspection.get("contiguousBytes")).longValue(), raw.length);
             String text = fixture.plainText(); assertTrue(text.contains("UNICODE_" + fixture.marker + ":中文"));
-            for (int index = 1; index <= 200; index++) assertTrue(text.contains("TAIL_" + fixture.marker + "_" + index + "\r\n") || text.contains("TAIL_" + fixture.marker + "_" + index + "\n"), "original tail missing: " + index);
+            for (int index = 1; index <= 200; index++) assertTrue(fixture.containsTailLine(text, index), "original tail missing: " + index);
             Map<String, Object> process = fixture.session.started(); assertTrue(ManagedProcessLedger.observedProcessStopped(((Number) process.get("pid")).longValue(), str(process, "processStartedAt")));
             assertThrows(java.io.IOException.class, () -> fixture.session.input("must not reach an exited shell".getBytes(StandardCharsets.UTF_8)));
         }
@@ -198,7 +217,7 @@ class NativePtySessionTest {
             assertEquals(true, fixture.archive.inspect(fixture.terminal, fixture.epoch).get("complete"));
             String text = fixture.plainText();
             for (int index = 1; index <= 200; index++)
-                assertTrue(text.contains("TAIL_" + fixture.marker + "_" + index + "\r\n") || text.contains("TAIL_" + fixture.marker + "_" + index + "\n"), "original delayed tail missing: " + index);
+                assertTrue(fixture.containsTailLine(text, index), "original delayed tail missing: " + index);
             assertEquals(true, outcome.get("originalProcessStopped")); assertEquals(true, outcome.get("observedChildrenStopped"));
             assertEquals(true, outcome.get("outputReaderCompleted")); assertEquals(true, outcome.get("nativeCleanupThreadCompleted")); assertEquals(true, outcome.get("ownedStreamsClosed"));
         }
@@ -215,7 +234,7 @@ class NativePtySessionTest {
             assertEquals(true, fixture.archive.inspect(fixture.terminal, fixture.epoch).get("complete"));
             String text = fixture.plainText();
             for (int index = 1; index <= 200; index++)
-                assertTrue(text.contains("TAIL_" + fixture.marker + "_" + index + "\r\n") || text.contains("TAIL_" + fixture.marker + "_" + index + "\n"), "original delayed tail missing: " + index);
+                assertTrue(fixture.containsTailLine(text, index), "original delayed tail missing: " + index);
             assertEquals(true, outcome.get("originalProcessStopped")); assertEquals(true, outcome.get("observedChildrenStopped"));
             assertEquals(true, outcome.get("outputReaderCompleted")); assertEquals(true, outcome.get("nativeCleanupThreadCompleted")); assertEquals(true, outcome.get("ownedStreamsClosed"));
         }
@@ -232,7 +251,7 @@ class NativePtySessionTest {
             assertEquals(true, fixture.archive.inspect(fixture.terminal, fixture.epoch).get("complete"));
             String text = fixture.plainText();
             for (int index = 1; index <= 200; index++)
-                assertTrue(text.contains("TAIL_" + fixture.marker + "_" + index + "\r\n") || text.contains("TAIL_" + fixture.marker + "_" + index + "\n"), "original delayed final tail missing: " + index);
+                assertTrue(fixture.containsTailLine(text, index), "original delayed final tail missing: " + index);
             assertEquals(true, outcome.get("originalProcessStopped")); assertEquals(true, outcome.get("observedChildrenStopped"));
             assertEquals(true, outcome.get("outputReaderCompleted")); assertEquals(true, outcome.get("nativeCleanupThreadCompleted")); assertEquals(true, outcome.get("ownedStreamsClosed"));
         }
@@ -273,7 +292,7 @@ class NativePtySessionTest {
             Path parent = fixture.work.getParent().toRealPath(), proof = parent.resolve("cwd-proof-" + fixture.marker + ".txt");
             if (WINDOWS) {
                 fixture.input("cd /d \"" + parent + "\"\r");
-                fixture.powershell("[IO.File]::WriteAllText('" + proof.getFileName() + "',(Get-Location).ProviderPath,[Text.UTF8Encoding]::new($false))");
+                fixture.powershell("[IO.File]::WriteAllText('cwd-command-entered.txt','entered');$cwd=(Get-Location).ProviderPath;[IO.File]::WriteAllText('" + proof.getFileName() + "',$cwd,[Text.UTF8Encoding]::new($false))");
             } else fixture.input("cd '" + parent.toString().replace("'", "'\\''") + "'; pwd > '" + proof.getFileName() + "'\n");
             await(() -> Files.isRegularFile(proof), 10);
             assertEquals(parent.toString(), Files.readString(proof).strip());

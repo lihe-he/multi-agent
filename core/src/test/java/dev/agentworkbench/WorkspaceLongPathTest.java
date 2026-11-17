@@ -79,9 +79,19 @@ class WorkspaceLongPathTest {
      */
     private static String git(Path root, String... arguments) throws Exception {
         List<String> command = new ArrayList<>(List.of("git", "--no-optional-locks", "-c", "core.longpaths=true", "-c", "core.autocrlf=false", "-C", root.toString()));
-        command.addAll(List.of(arguments)); Process process = new ProcessBuilder(command).redirectErrorStream(true).start();
-        byte[] bytes = process.getInputStream().readAllBytes(); assertTrue(process.waitFor(20, java.util.concurrent.TimeUnit.SECONDS));
-        assertEquals(0, process.exitValue(), new String(bytes, StandardCharsets.UTF_8)); return new String(bytes, StandardCharsets.UTF_8);
+        command.addAll(List.of(arguments)); Process process = new ProcessBuilder(command).start();
+        try (var readers = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var output = readers.submit(() -> process.getInputStream().readAllBytes());
+            var errors = readers.submit(() -> process.getErrorStream().readAllBytes());
+            try { assertTrue(process.waitFor(20, java.util.concurrent.TimeUnit.SECONDS)); }
+            finally { if (process.isAlive()) process.destroyForcibly(); }
+            byte[] bytes = output.get(5, java.util.concurrent.TimeUnit.SECONDS), diagnostics = errors.get(5, java.util.concurrent.TimeUnit.SECONDS);
+            Path log = Path.of("target/windows-long-path-git-queries.jsonl");
+            Files.writeString(log, new ObjectMapper().writeValueAsString(Json.obj("recordedAt", Instant.now().toString(), "command", command,
+                "exitCode", process.exitValue(), "stdout", new String(bytes, StandardCharsets.UTF_8), "stderr", new String(diagnostics, StandardCharsets.UTF_8))) + "\n",
+                StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.CREATE, java.nio.file.StandardOpenOption.APPEND);
+            assertEquals(0, process.exitValue(), new String(diagnostics, StandardCharsets.UTF_8)); return new String(bytes, StandardCharsets.UTF_8);
+        }
     }
 
     private static String sha(byte[] bytes) throws Exception {

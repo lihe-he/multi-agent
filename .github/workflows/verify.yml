@@ -148,6 +148,7 @@ jobs:
             core/target/native-pty-evidence-*/
             core/target/terminal-native-evidence-*/
             core/target/windows-long-path-evidence-*/
+            core/target/windows-long-path-git-queries.jsonl
             docs/qa/smoke-*.json
             docs/qa/desktop-*.json
             docs/qa/standalone-*.json

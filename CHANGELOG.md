@@ -6,7 +6,9 @@
 
 手动停止后任务暂停并要求重新验证和审查，累计预算和旧回执保持。授权撤销、存储故障、核心/Worker失联与原生启动对象丢失保存原UNKNOWN和输出缺口；原Worker调用与实际写入保护贯穿生命周期。
 
-新增锁定pty4j/xterm依赖、原生资源库存、固定私有ConPTY ABI及随包许可/source offer；新增生产dist完整UI、真实native HTTP/核心强杀、Web控制和实际包内JRE/asar验收入口。生产Web226项、最终核心545项（535通过/10条件跳过）、实际最终Jar的HTTP4项与Web/native5项通过；原失败与UNKNOWN保留。Windows原生快照复用已有PID及出生事实，读取失败保留原回退，原团队时限与预算保持；中文长路径的Git准备和独立审查按命令启用长路径。原生命周期、发行及准确提交三端CI继续验收。协议、固定来源和原失败见[终端协议](./docs/terminal-contract.md)、[终端研究](./docs/research/terminals-2026-11-16.md)及[实施记录](./docs/implementation-status.md)。
+新增锁定pty4j/xterm依赖、原生资源库存、固定私有ConPTY ABI及随包许可/source offer；新增生产dist完整UI、真实native HTTP/核心强杀、Web控制和实际包内JRE/asar验收入口。生产Web226项、本机最终核心545项（535通过/10条件跳过）、实际最终Jar的HTTP4项、Web/native5项、原生命周期与18步发行验收通过，包含禁用外部Java/Node的实际包内终端5项。Windows原生快照复用已有PID及出生事实，读取失败保留原回退，原团队时限与预算保持；中文长路径的Git准备和独立审查按命令启用长路径。
+
+首轮三端CI的原核心失败保留；按实际证据修正尺寸夹具文件完成时序、终端CR/CR/LF逐行匹配、Git查询两流与Windows ASAR路径，增加原PowerShell等待诊断。产品核心/Web字节保持，本机定向通过不能替代修订提交的完整三端验收，Windows两项原等待原因仍UNKNOWN。协议、固定来源和准确结果见[终端协议](./docs/terminal-contract.md)、[终端研究](./docs/research/terminals-2026-11-16.md)及[实施记录](./docs/implementation-status.md)。
 
 ## 0.2.0-alpha.19 — 文件检查点与原Worker撤销
 

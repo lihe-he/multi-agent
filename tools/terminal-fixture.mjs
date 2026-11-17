@@ -72,7 +72,7 @@ export function freezeTerminalArtifacts(directory, { withWeb = false, packaged =
     for (const key of ['name', 'version', 'main']) assert.equal(packagedMetadata[key], metadata[key]);
     const names = [...files(join(root, 'desktop')).map(file => `desktop/${file}`), ...files(join(root, 'web/dist')).map(file => `web/dist/${file}`)];
     packagedFiles = names.map(file => {
-      const bytes = asar.extractFile(archive, file); assert.equal(terminalHash(bytes), terminalHash(readFileSync(join(root, file))), `Packaged source or Web asset changed: ${file}`);
+      const bytes = asar.extractFile(archive, join(file)); assert.equal(terminalHash(bytes), terminalHash(readFileSync(join(root, file))), `Packaged source or Web asset changed: ${file}`);
       return { file, bytes: bytes.length, sha256: terminalHash(bytes) };
     });
   }
@@ -96,7 +96,7 @@ export function freezeTerminalArtifacts(directory, { withWeb = false, packaged =
     webSources.push(...snapshot(sourceNames, 'sources'));
     const asar = packaged ? createRequire(join(root, 'package.json'))('@electron/asar') : null;
     for (const file of files(join(root, 'web/dist'))) {
-      const bytes = packaged ? asar.extractFile(archive, `web/dist/${file}`) : readFileSync(join(root, 'web/dist', file)), target = join(directory, 'dist', file);
+      const bytes = packaged ? asar.extractFile(archive, join('web', 'dist', file)) : readFileSync(join(root, 'web/dist', file)), target = join(directory, 'dist', file);
       mkdirSync(dirname(target), { recursive: true }); writeFileSync(target, bytes, { flag: 'wx' }); output.push({ file, bytes: bytes.length, sha256: terminalHash(bytes) });
     }
     const acceptedWebPath = process.env.WORKBENCH_WEB_BUILD_RECEIPT;

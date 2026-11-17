@@ -229,8 +229,8 @@ class TerminalEngineTest {
             assertEquals("1", Files.readString(fixture.work().resolve("manual-count.txt")));
             Map<String, Object> resized = fixture.actionBody("RESIZE"); resized.putAll(obj("columns", 101, "rows", 37));
             assertEquals("ACKNOWLEDGED", fixture.engine.terminalAction(fixture.terminalId, resized).get("state"));
-            assertEquals("ACKNOWLEDGED", fixture.input(WINDOWS ? fixture.powershell("[IO.File]::WriteAllText('actual-size.txt',(([Console]::WindowHeight).ToString()+' '+[Console]::WindowWidth),[Text.UTF8Encoding]::new($false))") : "stty size > actual-size.txt\n").get("state"));
-            await(() -> Files.isRegularFile(fixture.work().resolve("actual-size.txt")), 20); assertEquals("37 101", Files.readString(fixture.work().resolve("actual-size.txt")).strip());
+            assertEquals("ACKNOWLEDGED", fixture.input(WINDOWS ? fixture.powershell("[IO.File]::WriteAllText('actual-size.txt',(([Console]::WindowHeight).ToString()+' '+[Console]::WindowWidth),[Text.UTF8Encoding]::new($false));[IO.File]::WriteAllText('actual-size.done','done',[Text.UTF8Encoding]::new($false))") : "stty size > actual-size.txt; printf 'done' > actual-size.done\n").get("state"));
+            await(() -> Files.isRegularFile(fixture.work().resolve("actual-size.done")), 20); assertEquals("37 101", Files.readString(fixture.work().resolve("actual-size.txt")).strip());
             Map<String, Object> firstRead = fixture.engine.terminalOutput(fixture.terminalId, str(fixture.terminal(), "epoch"), 0, 3);
             assertEquals(firstRead, fixture.engine.terminalOutput(fixture.terminalId, str(fixture.terminal(), "epoch"), 0, 3));
             Map<String, Object> observed = fixture.engine.terminal(fixture.terminalId); assertEquals(original, map(observed, "nativeProcess"));
