@@ -146,6 +146,28 @@ class ProcessWorkspaceRuntimeTest {
     }
 
     @Test
+    void actualWorkerPreservesTransportCauseTypesAndUnknownReceiptWithoutReplay() throws Exception {
+        try (var fixture = new Fixture()) {
+            fixture.expectDisconnect.set(true);
+            fixture.response = (round, request) -> { throw new IllegalStateException("close original exchange without a response"); };
+            assertEquals("UNKNOWN", fixture.run().get("status"));
+            var request = fixture.store.list("modelRequest").getFirst();
+            assertEquals("UNKNOWN", request.get("state"));
+            assertEquals("UNKNOWN", request.get("remoteOutcome"));
+            assertEquals("ExecutionException", request.get("errorType"));
+            assertTrue(str(request, "errorChain").startsWith("java.util.concurrent.ExecutionException -> "), request.toString());
+            assertTrue(str(request, "errorChain").contains("java.io.IOException"), request.toString());
+            assertFalse(request.toString().contains(fixture.key));
+            assertEquals(1, fixture.httpCalls.get());
+            assertEquals(1, fixture.store.list("modelRequest").size());
+            assertEquals(1, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", -1));
+            assertEquals(fixture.worker.identity().get("id"), request.get("workerId"));
+            assertEquals("UNKNOWN", map(request, "usage").get("cost"));
+            assertTrue(fixture.errors.isEmpty());
+        }
+    }
+
+    @Test
     void coreCommitsEachOriginalRequestBeforeHttpAndChildWritesOnlyTheTaskWorkspace() throws Exception {
         try (var fixture = new Fixture()) {
             fixture.response = (round, request) -> readThenWrite(round, request, "original-write-tool", "written by actual worker\n", "completed " + fixture.key);

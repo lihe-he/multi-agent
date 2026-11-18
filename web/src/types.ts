@@ -152,7 +152,7 @@ export interface ModelRequest {
   inputBytes?: number; inputDigest?: string; messageCount?: number; toolCount?: number;
   inputPreview?: string; inputTruncated?: boolean;
   usage?: { inputTokens?: number | string; outputTokens?: number | string; cachedInputTokens?: number | string; reasoningTokens?: number | string };
-  outputPreview?: string; outputTruncated?: boolean; errorType?: string; reason?: string; remoteOutcome?: string;
+  outputPreview?: string; outputTruncated?: boolean; errorType?: string; errorChain?: string; reason?: string; remoteOutcome?: string;
   workerId?: string; workerLeaseId?: string; workerEpoch?: number; executionNodeId?: string; repositoryBindingId?: string; bindingVersion?: number;
   deployment?: string; executorPid?: number; corePid?: number; processStartedAt?: string;
   taskExecutionId?: string; dispatchActionId?: string; workspaceWriteLeaseId?: string;

@@ -952,6 +952,7 @@ public class WorkspaceRuntime {
         } catch (Exception exception) {
             observation.put("state", received ? "FAILED" : "UNKNOWN");
             observation.putIfAbsent("errorType", received ? "INVALID_RESPONSE" : exception.getClass().getSimpleName());
+            observation.put("errorChain", failureTypes(exception));
             observation.put("reason", received ? "已收到接口回执，请检查 HTTP 状态与协议格式；未自动重试" : "未取得完整远端回执，结果与计费未知；未自动重试");
             if (received && !(exception instanceof ModelCallFailure)) throw new ModelCallFailure(result(-1, "模型接口回执格式无效：" + exception.getClass().getSimpleName(), "FAILED"));
             throw exception;
@@ -964,6 +965,22 @@ public class WorkspaceRuntime {
 
     private boolean beginCall(BooleanSupplier callback, Map<String, Object> metadata) {
         return callback instanceof ModelCallObserver observer ? observer.begin(metadata) : callback.getAsBoolean();
+    }
+
+    /**
+     * 有界保留异常类型链，不读取可能含凭据、地址或响应正文的异常消息。
+     */
+    static String failureTypes(Throwable failure) {
+        List<String> types = new ArrayList<>();
+        Set<Throwable> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        Throwable current = failure;
+        while (current != null && types.size() < 8 && seen.add(current)) {
+            String name = current.getClass().getName();
+            types.add(name.substring(0, Math.min(200, name.length())));
+            current = current.getCause();
+        }
+        if (current != null) types.add(seen.contains(current) ? "[cycle]" : "[depth limit]");
+        return String.join(" -> ", types);
     }
 
     private void endCall(BooleanSupplier callback, Map<String, Object> observation) {

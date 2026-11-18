@@ -27,6 +27,7 @@
 | `outputPreview`, `outputTruncated` | 首个响应 message 或 CLI 最终输出的脱敏片段，使用与输入相同的长度规则；不是完整响应体 |
 | `usage` | 已观测输入、输出、缓存读取、推理 Token 和费用；具体未知口径见下文 |
 | `errorType`, `reason`, `remoteOutcome` | 脱敏失败类型与原因；API 完整回执为 RESPONSE_RECEIVED，缺少远端确认时为 UNKNOWN |
+| `errorChain` | alpha.22 起可选的 API 异常类型链，从外层到 cause，最多八层、每层类名最多 200 字符；循环与深度上限有显式标记。不读取异常消息、堆栈、响应正文或 URL。核心继续执行已知凭据脱敏与 6000 字符限制；旧记录不补造 |
 
 ## 生命周期与事务
 

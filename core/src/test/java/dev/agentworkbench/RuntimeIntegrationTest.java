@@ -105,6 +105,13 @@ class RuntimeIntegrationTest {
             assertEquals(1, observed.outputs.size()); assertEquals(1, requests.get(), "failed requests are not replayed");
             assertEquals(expectedState, observed.outputs.getFirst().get("state"));
             assertEquals(expectedError, observed.outputs.getFirst().get("errorType"));
+            String types = observed.outputs.getFirst().get("errorChain").toString();
+            assertFalse(types.isBlank());
+            if (mode.equals("disconnect")) {
+                assertTrue(types.startsWith("java.util.concurrent.ExecutionException -> "), types);
+                assertTrue(types.contains("java.io.IOException"), types);
+                assertEquals("UNKNOWN", observed.outputs.getFirst().get("remoteOutcome"));
+            }
             assertFalse(observed.outputs.toString().contains("fixture-secret"), "raw invalid response bodies are excluded");
         } finally { server.stop(0); }
     }

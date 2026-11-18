@@ -58,7 +58,7 @@ final class RequestObservation implements ModelCallObserver {
     public void end(Map<String, Object> observation) {
         if (requestId.isBlank()) return;
         Map<String, Object> safe = new LinkedHashMap<>(observation);
-        for (String field : List.of("providerRequestId", "responseId", "responseModel", "finishReason", "outputPreview", "reason", "errorType")) if (safe.containsKey(field)) {
+        for (String field : List.of("providerRequestId", "responseId", "responseModel", "finishReason", "outputPreview", "reason", "errorType", "errorChain")) if (safe.containsKey(field)) {
             String redacted = catalog.redact(str(safe, field)); safe.put(field, redacted.substring(0, Math.min(6000, redacted.length())));
             if (field.equals("outputPreview")) safe.put("outputTruncated", redacted.length() > 6000);
         }

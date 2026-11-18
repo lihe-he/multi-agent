@@ -805,7 +805,7 @@ public class ExecutionStore implements AutoCloseable {
     }
 
     private void endModelRequest(Map<String, Object> request, Map<String, Object> observation) throws Exception {
-        for (String key : List.of("state", "httpStatus", "providerRequestId", "responseId", "responseModel", "finishReason", "outputPreview", "outputTruncated", "errorType", "reason", "usage", "remoteOutcome")) {
+        for (String key : List.of("state", "httpStatus", "providerRequestId", "responseId", "responseModel", "finishReason", "outputPreview", "outputTruncated", "errorType", "errorChain", "reason", "usage", "remoteOutcome")) {
             if (observation.containsKey(key)) request.put(key, observation.get(key));
         }
         request.put("endedAt", now());

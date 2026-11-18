@@ -93,4 +93,36 @@ class ModelRequestStoreTest {
             assertEquals(400, assertThrows(ApiException.class, () -> store.modelRequestPage("task", "", 0, 30, "", "x".repeat(201))).status());
         } finally { store.close(); }
     }
+
+    @Test
+    void transportTypesAreRedactedBoundedSearchableAndDurableWithoutChangingUnknown() throws Exception {
+        String requestId, secret = "transport-fixture-secret";
+        try (var store = new ExecutionStore(new ObjectMapper(), directory.toString())) {
+            String runId = running(store, "task");
+            var runtime = new dev.agentworkbench.runtime.WorkspaceRuntime(new ObjectMapper(), directory.toString());
+            var catalog = new WorkbenchCatalog(store, runtime, new PlanValidator());
+            catalog.saveRoute(obj("name", "diagnostic fixture", "engine", "API", "baseUrl", "http://127.0.0.1:19000/v1", "apiKey", secret));
+            var observer = new RequestObservation(store, catalog, "task", runId, false, () -> false, new java.util.concurrent.atomic.AtomicBoolean(), () -> {}, null, 0);
+            assertTrue(observer.begin(Map.of()));
+            observer.end(obj("state", "UNKNOWN", "errorType", "ExecutionException", "remoteOutcome", "UNKNOWN", "usage", obj("cost", "UNKNOWN"),
+                "errorChain", "java.util.concurrent.ExecutionException -> java.net.ConnectException " + secret + "x".repeat(6500),
+                "errorMessage", "private response body"));
+            var request = objects(store.modelRequestPage("task", runId, 0, 30, "UNKNOWN", "ConnectException").get("requests")).getFirst();
+            requestId = str(request, "id");
+            assertEquals("", observer.lastRequestId());
+            assertEquals(1, num(map(store.get("task", "task"), "budget"), "usedCalls", -1));
+            assertEquals(409, assertThrows(ApiException.class, () -> store.finishModelRequest(requestId, obj("state", "SUCCEEDED"))).status());
+        }
+        try (var reopened = new ExecutionStore(new ObjectMapper(), directory.toString())) {
+            var request = reopened.get("modelRequest", requestId);
+            assertEquals("UNKNOWN", str(request, "state"));
+            assertEquals("UNKNOWN", str(request, "remoteOutcome"));
+            assertEquals("UNKNOWN", str(map(request, "usage"), "cost"));
+            assertEquals("ExecutionException", str(request, "errorType"));
+            assertEquals(6000, str(request, "errorChain").length());
+            assertTrue(str(request, "errorChain").contains("[REDACTED]"));
+            assertFalse(request.toString().contains(secret));
+            assertFalse(request.toString().contains("private response body"));
+        }
+    }
 }

@@ -215,6 +215,7 @@ for (const width of [1440, 430]) {
     await page.route('**/api/tasks/task-fixture/model-requests*', route => {
       const url = new URL(route.request().url()); queries.push(url.search);
       const failed = url.searchParams.get('state') === 'FAILED'; const older = Number(url.searchParams.get('before')) > 0;
+      if (url.searchParams.get('state') === 'UNKNOWN') return route.fulfill({ json: { requests: [{ ...request, state: 'UNKNOWN', httpStatus: undefined, errorType: 'ExecutionException', errorChain: 'java.util.concurrent.ExecutionException -> <script>java.net.ConnectException</script>', remoteOutcome: 'UNKNOWN' }], cursor: 30, hasMore: false } });
       return route.fulfill({ json: { requests: [{ ...request, id: older ? 'request-older' : request.id, sequence: older ? 1 : 3, ...(failed ? { state: 'FAILED', httpStatus: 429, errorType: 'HTTP_429', reason: '未自动重试' } : {}) }], cursor: older ? 1 : 30, hasMore: !older && !failed } });
     });
     await page.goto('/'); await page.getByRole('button', { name: /验证恢复流程/ }).click();
@@ -227,6 +228,13 @@ for (const width of [1440, 430]) {
     await expect(panel.getByText('implement · 第 1 次 API 请求')).toBeVisible();
     await page.waitForTimeout(3200); expect(queries.at(-1)).toContain('before=30');
     await panel.getByRole('button', { name: '返回最新请求' }).click();
+    await panel.getByLabel('请求状态').selectOption('UNKNOWN');
+    await expect(panel.locator('.badge')).toHaveText('结果待核对');
+    await panel.getByText('查看异常类型链', { exact: true }).click();
+    await expect(panel.getByText('java.util.concurrent.ExecutionException -> <script>java.net.ConnectException</script>', { exact: true })).toBeVisible();
+    await expect(panel.getByText('远端执行和费用仍未知，本地停止等待不能证明远端停止。', { exact: true })).toBeVisible();
+    expect(await panel.locator('script').count()).toBe(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await panel.getByLabel('请求状态').selectOption('FAILED');
     await expect(panel.getByText('HTTP_429', { exact: true })).toBeVisible();
     await expect(panel.locator('.badge')).toHaveText('请求失败');

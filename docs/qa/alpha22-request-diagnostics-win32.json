@@ -1,0 +1,177 @@
+{
+  "recordedAt": "2026-11-18T07:12:41.061Z",
+  "version": "0.2.0-alpha.22",
+  "baseCommit": "8a7c7976428a8c7fd602e0d50b984a587818b595",
+  "status": "passed",
+  "scope": "WINDOWS_TARGETED_CORE_14_AND_PRODUCTION_UI_2; FULL_PLATFORM_ACCEPTANCE_PENDING",
+  "directory": ".runtime/alpha22-request-diagnostics-evidence",
+  "suites": [
+    {
+      "file": "TEST-dev.agentworkbench.ModelRequestStoreTest.xml",
+      "sha256": "44e636cb3fee9aaa6cb87fd6df303e222575a3d4376c108a8ea75dda5c155779",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.runtime.ModelFailureTypesTest.xml",
+      "sha256": "331cd1496674c74cc5309c166a0e82f3bb8260cd6e006b14ce2ae1174ff9cbdf",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.RuntimeIntegrationTest.xml",
+      "sha256": "165a3e103c317395f103c7b1901218f49e4136eb7614a4e7c30635c29b68ef7a",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "file": "TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+      "sha256": "e7085547b0ff6f8e0321475f9606047496053c1661a0896804b833b63a512862",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "tests": 14,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "sourceHashes": [
+    {
+      "file": "core/pom.xml",
+      "sha256": "5d621da913761188900c69282bb7c2e6048caaf12ccbf609c16538e156fe62cb"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+      "sha256": "998476dfe1f2642c5da960eb6209a3af5c91feff0cd4c24f7839a55d448f7f4d"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+      "sha256": "42f6c448fac8d47e7646d98065af2ec64341e9d4897b66c55a63e584d36a5032"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+      "sha256": "8cfcf5f370eab0348a6c04932fc5755fc449b577ce5f570ae6dd07f09a378e6b"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ModelRequestStoreTest.java",
+      "sha256": "7ccc86ad710f37f497a1eb9bc3ff33282ad3983c50997b8c0a8a1fb17dfd2064"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
+      "sha256": "64945acc76166a9011d8fad9ad390d7b547131ace0f1beb9ac7b2907134897d1"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+      "sha256": "efb183c124a6338c90b283a8f6a4344815e6a9e9a96b5bad7aef34aa5f27e25c"
+    },
+    {
+      "file": "web/package-lock.json",
+      "sha256": "ad1008f709c98a01e83fa5bc02c7d8ee79369e8de07247668a349e6b9799fb6b"
+    },
+    {
+      "file": "web/package.json",
+      "sha256": "b01f9078faea8b35117823710a5769238e6ea98ca2e9880a364df4b8f58a23a0"
+    },
+    {
+      "file": "web/src/ModelRequests.tsx",
+      "sha256": "2c4ed2fa3263e27d9d491c1aeab020aaef8be7f44cb1c83ded5a181f0026d22e"
+    },
+    {
+      "file": "web/src/types.ts",
+      "sha256": "87991d8331921c22869c9e81e458dd8ab6e23bf5e60f1a3149204097d0ae8bd7"
+    },
+    {
+      "file": "web/tests/ui.spec.ts",
+      "sha256": "210c6f0eff59f679e21760ac9d00cbe27ba6b608b00910f6b65a73fdab781c1b"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/runtime/ModelFailureTypesTest.java",
+      "sha256": "4878f7672d4b80bb1a9b0ba7c1495237cea04f07c8033824084b17a723667d70"
+    }
+  ],
+  "ui": {
+    "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\ui-production-FNKs4H",
+    "status": "passed",
+    "stats": {
+      "startTime": "2026-11-18T06:56:34.589Z",
+      "duration": 10350.190999999999,
+      "expected": 2,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "sourcesUnchanged": true,
+    "assetsUnchanged": true,
+    "historicalImagesPreserved": 44,
+    "reportSha256": "48b6112da81f1a445af0f38b8d448ae06545793711f680dbea97e29410bebb2b"
+  },
+  "commentAudit": {
+    "recordedAt": "2026-11-18T07:10:57.928Z",
+    "baseCommit": "8a7c7976428a8c7fd602e0d50b984a587818b595",
+    "status": "passed",
+    "method": "Java lexical boundaries exclude quoted strings, characters and text blocks; original text and opening indentation retained in order",
+    "retained": [
+      {
+        "file": "core/src/main/java/dev/agentworkbench/ExecutionStore.java",
+        "originalCommentsRetained": 38,
+        "newStandardMultilineJavadocs": 0,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "4a276be62ef53434bfa66e99ae5a376664fb831a298932be29e6ddeff6541846"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/RequestObservation.java",
+        "originalCommentsRetained": 1,
+        "newStandardMultilineJavadocs": 0,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "42f6c448fac8d47e7646d98065af2ec64341e9d4897b66c55a63e584d36a5032"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+        "originalCommentsRetained": 67,
+        "newStandardMultilineJavadocs": 1,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "64978bf9ef8eeb2ed86caa62ebe7e8ceff3fdc232d109edf6f63c9a54874ea9d"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/ModelRequestStoreTest.java",
+        "originalCommentsRetained": 0,
+        "newStandardMultilineJavadocs": 0,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "7ccc86ad710f37f497a1eb9bc3ff33282ad3983c50997b8c0a8a1fb17dfd2064"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java",
+        "originalCommentsRetained": 2,
+        "newStandardMultilineJavadocs": 0,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "64945acc76166a9011d8fad9ad390d7b547131ace0f1beb9ac7b2907134897d1"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+        "originalCommentsRetained": 5,
+        "newStandardMultilineJavadocs": 0,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "19a669d4fd6f314d251aa3c6e86e511390c57cd4377f76a8500a3186d1339d7a"
+      }
+    ],
+    "added": [],
+    "originalCommentCount": 113,
+    "newMultilineJavadocs": 1
+  },
+  "newJavaFile": "ModelFailureTypesTest.java: no comments",
+  "review": {
+    "unknownSemanticsPreserved": true,
+    "noRetryAdded": true,
+    "exceptionMessagesExcluded": true,
+    "workerRoundTripVerified": true,
+    "versionDeclarationsVerified": true
+  }
+}

@@ -44,6 +44,7 @@ export function ModelRequests({ taskId, runId = '', initialQuery = '' }: { taskI
         {(request.providerRequestId || request.responseId) && <><dt>供应商</dt><dd>请求 {request.providerRequestId || '未提供'}<br />响应 {request.responseId || '未提供'}{request.responseModel && ` · ${request.responseModel}`}{request.finishReason && ` · ${request.finishReason}`}</dd></>}
       </dl>
       {request.errorType && <p className="agent-run-reason"><b>{request.errorType}</b> · {request.reason || '运行未取得成功回执'}</p>}
+      {request.errorChain && <details><summary>查看异常类型链</summary><pre className="request-output">{request.errorChain}</pre></details>}
       {request.remoteOutcome === 'UNKNOWN' && <p className="form-note">远端执行和费用仍未知，本地停止等待不能证明远端停止。</p>}
       {request.inputPreview && <details><summary>查看脱敏输入片段{request.inputTruncated ? '（已截断）' : ''}</summary><pre className="request-output">{request.inputPreview}</pre></details>}
       {request.outputPreview && <details><summary>查看脱敏输出片段{request.outputTruncated ? '（已截断）' : ''}</summary><pre className="request-output">{request.outputPreview}</pre></details>}
