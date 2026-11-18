@@ -223,6 +223,7 @@ function PreviewPanel({ projectId, sessionId, connected }: { projectId: string; 
   const [url, setUrl] = useState<string | null>(null); const [portsText, setPortsText] = useState('');
   const [newTab, setNewTab] = useState(false);
   const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [message, setMessage] = useState('');
+  const [readError, setReadError] = useState('');
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
     const value = await api<PreviewSession>(base, { signal });
@@ -241,7 +242,7 @@ function PreviewPanel({ projectId, sessionId, connected }: { projectId: string; 
   useEffect(() => {
     const controller = new AbortController(); let timer: ReturnType<typeof setTimeout>;
     async function poll() {
-      try { await refresh(controller.signal); setError(''); } catch (cause) { if (!controller.signal.aborted) setError((cause as Error).message); }
+      try { await refresh(controller.signal); if (!controller.signal.aborted) setReadError(''); } catch (cause) { if (!controller.signal.aborted) setReadError((cause as Error).message); }
       if (!controller.signal.aborted) timer = setTimeout(poll, 2500);
     }
     if (connected) void poll();
@@ -383,7 +384,7 @@ function PreviewPanel({ projectId, sessionId, connected }: { projectId: string; 
     <div className="preview-browser-toolbar"><div className="preview-tab-list" role="tablist" aria-label="预览标签">{preview.tabs.map(tab => <div key={tab.id} className={!newTab && activeTab === tab.id ? 'active' : ''}><button role="tab" aria-selected={!newTab && activeTab === tab.id} disabled={busy} onClick={() => { setNewTab(false); setUrl(null); setActiveTab(tab.id); if (host) void command('select', tab.id); else void save({ activeTabId: tab.id }).catch(() => {}); }} title={tabEvents(tab.id)?.title || tab.title || tab.url}>{tabEvents(tab.id)?.title || tab.title || safeHost(tab.url)}</button><button className="icon-button" aria-label={`关闭预览标签 ${tabEvents(tab.id)?.title || tab.title || safeHost(tab.url)}`} onClick={() => void closeTab(tab.id)} disabled={busy}><X size={12} /></button></div>)}</div><div className="preview-actions"><button className="icon-button" aria-label="新建预览标签" title="新建预览标签" disabled={!connected || busy || preview.tabs.length >= 12} onClick={startTab}><Plus size={15} /></button><button className="icon-button" aria-label="返回" title="返回" disabled={!host || !current || busy} onClick={() => void command('back')}><ArrowLeft size={15} /></button><button className="icon-button" aria-label="前进" title="前进" disabled={!host || !current || busy} onClick={() => void command('forward')}><ArrowRight size={15} /></button><button className="icon-button" aria-label="重新加载" title="重新加载" disabled={!host || !current || busy} onClick={() => void command('reload')}><RotateCw size={14} /></button></div></div>
     <form className="preview-address" onSubmit={event => void go(event)}><label className="sr-only" htmlFor={`preview-address-${sessionId}`}>网页地址</label><input ref={addressInput} id={`preview-address-${sessionId}`} value={address} onChange={event => setUrl(event.target.value)} placeholder="输入要打开的网址" autoComplete="off" disabled={!connected || busy} /><button className="button secondary small" type="submit" disabled={!connected || busy || !address.trim()}><ArrowRight size={14} />转到</button><button className="button secondary small" type="button" disabled={!host || !current || busy} onClick={() => void clearSite()}>清理站点</button></form>
     <div className="preview-stage" ref={viewport} aria-label="原生网页预览区域">{!host && <div className="preview-capability"><ShieldCheck size={20} /><span>当前为独立 Web 客户端。会话配置可在此维护，原生隔离预览、登录数据和清理操作仅由桌面客户端提供。</span></div>}{host && (!preview.tabs.length || newTab) && <div className="preview-empty">绑定需要的本机端口，然后输入一个 HTTP 或 HTTPS 地址。</div>}</div>
-    <footer className="preview-status" aria-live="polite"><span>{currentEvent?.loading ? '正在加载' : currentEvent?.url || (preview?.tabs.length ? current?.url : '尚未打开页面')}</span>{error && <span className="preview-error" role="alert">{error}</span>}{message && <span>{message}</span>}</footer>
+    <footer className="preview-status" aria-live="polite"><span>{currentEvent?.loading ? '正在加载' : currentEvent?.url || (preview?.tabs.length ? current?.url : '尚未打开页面')}</span>{(error || readError) && <span className="preview-error" role="alert">{error || readError}</span>}{message && <span>{message}</span>}</footer>
   </section>;
 }
 

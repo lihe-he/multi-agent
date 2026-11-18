@@ -1,0 +1,142 @@
+{
+  "recordedAt": "2026-11-18T08:03:38.432Z",
+  "headSha": "c60051bcbaf7799d58abe0de64a0dfa83ad6f1b6",
+  "runId": 44257141250,
+  "conclusion": "failure",
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/44257141250",
+  "status": {
+    "file": ".runtime/alpha21-ci/status-c60051bcbaf7799d58abe0de64a0dfa83ad6f1b6.json",
+    "bytes": 22245,
+    "sha256": "35defe07263c46b924942c3306a87c7939f6eecd82646a519e76a4070b4b7e3c"
+  },
+  "jobs": [
+    {
+      "id": 134641434126,
+      "name": "verify (ubuntu-latest)",
+      "conclusion": "success",
+      "log": {
+        "file": ".runtime/alpha21-ci/job-134641434126-run-44257141250-attempt-1/job.log",
+        "bytes": 213666,
+        "sha256": "b08f5b028cf157355bca7eb8026d7bba98cf9302da26aa079884bb343c0e82cc"
+      },
+      "coreFromLog": {
+        "tests": 563,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 11
+      },
+      "failedSteps": [],
+      "ui": {
+        "passed": 229,
+        "failed": 0
+      }
+    },
+    {
+      "id": 134641434437,
+      "name": "verify (windows-latest)",
+      "conclusion": "failure",
+      "log": {
+        "file": ".runtime/alpha21-ci/job-134641434437-run-44257141250-attempt-1/job.log",
+        "bytes": 134443,
+        "sha256": "e52edd97f7821c5b0c1570821c1b0fa23b439ed3b29601639f6e3eeeed3b45d1"
+      },
+      "coreFromLog": {
+        "tests": 563,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8
+      },
+      "failedSteps": [
+        "Actual desktop session previews and persistent login"
+      ],
+      "ui": {
+        "passed": 229,
+        "failed": 0
+      }
+    },
+    {
+      "id": 134641434452,
+      "name": "verify (macos-latest)",
+      "conclusion": "failure",
+      "log": {
+        "file": ".runtime/alpha21-ci/job-134641434452-run-44257141250-attempt-1/job.log",
+        "bytes": 98760,
+        "sha256": "a27adc2581846a8abbdadc2fe0334c401f07bac5b053fc571aed49b8b3c16bf8"
+      },
+      "coreFromLog": {
+        "tests": 563,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 11
+      },
+      "failedSteps": [
+        "UI interaction tests"
+      ],
+      "ui": {
+        "passed": 228,
+        "failed": 1
+      }
+    }
+  ],
+  "macosEvidence": {
+    "file": ".runtime/alpha21-ci/artifact-14407791746-run-44257141250-attempt-1/evidence-macos-latest-14407791746.zip",
+    "bytes": 79906333,
+    "sha256": "891ae2b28cf9d65d217fb51710567bac38f158405eb5ee616a18fe37a54ab87a",
+    "wholeArtifactDigestVerified": true,
+    "suites": 46,
+    "totals": {
+      "tests": 563,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 11
+    },
+    "trace": {
+      "file": ".runtime/alpha21-ci/ui-entries-14407791746-1794988316080/diff-view-逐文件树、原新行号、多个差异块与字面文本-1440px-trace.zip",
+      "bytes": 457537,
+      "sha256": "948c752a5ca90b56f4cd2772a36960aa419844a0873f911a26dadaee54aba945"
+    },
+    "observations": "Configuration HTTP 200, no /api/state in trace, disconnected signal timed out. Root cause unproven."
+  },
+  "windowsSelectedPreviewEvidence": {
+    "recordedAt": "2026-11-18T08:00:27.774Z",
+    "headSha": "c60051bcbaf7799d58abe0de64a0dfa83ad6f1b6",
+    "artifactId": 14409151687,
+    "artifactDigest": "sha256:4fadf858f8e96296a7b2c3c6fdb1b8101e753969e44fba605b6f8a6ce33e6902",
+    "wholeArtifactDigestVerified": false,
+    "scope": "SELECTED_ZIP_ENTRIES_RANGE_AND_CRC32_VERIFIED_ONLY",
+    "collected": [
+      {
+        "name": ".runtime/preview-native-Uk83pZ/failure-views.json",
+        "method": 8,
+        "crc32": 2687565633,
+        "compressed": 137,
+        "size": 206,
+        "offset": 65022287,
+        "file": ".runtime\\alpha21-ci\\preview-entries-14409151687-1794988795170\\preview-native-Uk83pZ-failure-views.json",
+        "sha256": "2c7230ba125f96cab71be6c43c0e0f10ff26382270cd8491a2e4a45d34265507"
+      },
+      {
+        "name": ".runtime/preview-native-Uk83pZ/failure.png",
+        "method": 8,
+        "crc32": 1747444500,
+        "compressed": 104366,
+        "size": 112376,
+        "offset": 65022851,
+        "file": ".runtime\\alpha21-ci\\preview-entries-14409151687-1794988795170\\preview-native-Uk83pZ-failure.png",
+        "sha256": "6d909e0103f4307f44e23df4300f9afe1ebe73e701dc2844e2cbab05a3cadbd2"
+      },
+      {
+        "name": ".runtime/preview-native-Uk83pZ/receipt.json",
+        "method": 8,
+        "crc32": 4044857708,
+        "compressed": 2182,
+        "size": 6295,
+        "offset": 65138713,
+        "file": ".runtime\\alpha21-ci\\preview-entries-14409151687-1794988795170\\preview-native-Uk83pZ-receipt.json",
+        "sha256": "32d710ae4692b037be0b8d4ee97928e25c54b3b220e666c684beebeb477516c6"
+      }
+    ]
+  },
+  "windowsObservation": "First three preview checks passed. Second tab address did not reach fixture before original 20000ms deadline. Packaged steps skipped.",
+  "scope": "EXACT_PREVIEW_FIX_BASELINE_CI_OUTCOME; FOLLOWUP_PRODUCT_CHANGES_REQUIRE_NEW_CI"
+}

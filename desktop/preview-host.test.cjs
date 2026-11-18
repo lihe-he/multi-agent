@@ -151,6 +151,75 @@ test('open persists only the sanitized address before loading the complete callb
   await f.host.close();
 });
 
+test('queued page metadata cannot reject a new tab opened from the preceding UI version', async t => {
+  const f = fixture(makeScope(), { persist: true }); t.after(() => f.host.close());
+  await f.host.command({ type: 'attach', projectId: 'project-A', sessionId: 'session-A' });
+  const first = [...f.children][0].webContents;
+  first.title = 'Restored page title';
+  const metadata = f.host.command({ type: 'pageState', tabId: 'tab-A' });
+  const url = 'http://127.0.0.1:5173/other?code=once#callback';
+  const opening = f.host.command({ type: 'open', projectId: 'project-A', sessionId: 'session-A', tabId: 'tab-B', url, expectedVersion: 1 });
+  await metadata;
+  const result = await opening;
+  assert.equal(result.version, 3); assert.equal(result.activeTabId, 'tab-B'); assert.equal(result.tabs.length, 2);
+  assert.equal(result.tabs[0].title, 'Restored page title'); assert.equal(result.tabs[1].url, 'http://127.0.0.1:5173/other');
+  assert.deepEqual([...f.children][1].webContents.navigations, [url]);
+  assert.equal(first.isDestroyed(), false); assert.equal(f.saves.length, 2);
+});
+
+test('unchanged page metadata does not advance the configuration version', async t => {
+  const f = fixture(makeScope(), { persist: true }); t.after(() => f.host.close());
+  await f.host.command({ type: 'attach', projectId: 'project-A', sessionId: 'session-A' });
+  const contents = [...f.children][0].webContents; contents.title = 'Preview';
+  await f.host.command({ type: 'pageState', tabId: 'tab-A' });
+  assert.equal(f.getCurrent().version, 1); assert.equal(f.saves.length, 0);
+});
+
+test('metadata allowance is bounded and cannot cover an intervening external configuration write', async t => {
+  const f = fixture(makeScope(), { persist: true }); t.after(() => f.host.close());
+  await f.host.command({ type: 'attach', projectId: 'project-A', sessionId: 'session-A' });
+  const contents = [...f.children][0].webContents;
+  for (let index = 0; index < 65; index++) {
+    contents.title = `Title ${index}`;
+    await f.host.command({ type: 'pageState', tabId: 'tab-A' });
+  }
+  const input = { type: 'open', projectId: 'project-A', sessionId: 'session-A', tabId: 'tab-B', url: 'https://example.test/new', expectedVersion: 1 };
+  await assert.rejects(f.host.command(input), /配置已变化/);
+  const external = { ...f.getCurrent(), version: 67, tabs: [{ id: 'tab-A', url: 'http://127.0.0.1:5173/external', title: 'External' }] };
+  f.setCurrent(external);
+  await assert.rejects(f.host.command({ ...input, expectedVersion: 66 }), /配置已变化/);
+  await f.host.command({ type: 'pageState', tabId: 'tab-A' });
+  await assert.rejects(f.host.command({ ...input, expectedVersion: 66 }), /配置已变化/);
+  assert.equal(f.children.size, 1); assert.equal(f.getCurrent().tabs[0].url, 'http://127.0.0.1:5173/external');
+  assert.equal(f.events.some(event => event.configuration?.version === 67), true);
+});
+
+test('metadata allowance never survives port revocation or a storage reset', async t => {
+  for (const change of [{ authorizationVersion: 2, allowedLoopbackPorts: [] }, { storageGeneration: 2 }]) {
+    const f = fixture(makeScope(), { persist: true }); t.after(() => f.host.close());
+    await f.host.command({ type: 'attach', projectId: 'project-A', sessionId: 'session-A' });
+    const contents = [...f.children][0].webContents; contents.title = 'Updated';
+    await f.host.command({ type: 'pageState', tabId: 'tab-A' });
+    f.setCurrent({ ...f.getCurrent(), version: 3, ...change });
+    await assert.rejects(f.host.command({ type: 'open', tabId: 'tab-B', url: 'http://127.0.0.1:5173/new', expectedVersion: 1 }), /授权已变化/);
+    assert.equal(contents.isDestroyed(), true); assert.equal(f.children.size, 0); assert.equal(f.saves.length, 1);
+  }
+});
+
+test('explicit selection and opening another tab end the preceding metadata allowance', async t => {
+  for (const action of ['select', 'open']) {
+    const f = fixture(makeScope({ tabs: [
+      { id: 'tab-A', url: 'https://example.test/one', title: '' }, { id: 'tab-B', url: 'https://example.test/two', title: '' },
+    ] }), { persist: true }); t.after(() => f.host.close());
+    await f.host.command({ type: 'attach', projectId: 'project-A', sessionId: 'session-A' });
+    [...f.children][0].webContents.title = 'Updated';
+    await f.host.command({ type: 'pageState', tabId: 'tab-A' });
+    await f.host.command({ type: action, tabId: 'tab-B', url: 'https://example.test/new', expectedVersion: 2 });
+    await assert.rejects(f.host.command({ type: 'open', tabId: 'tab-C', url: 'https://example.test/old', expectedVersion: 1 }), /配置已变化/);
+    assert.equal(f.children.size, 2); assert.equal(f.getCurrent().activeTabId, 'tab-B');
+  }
+});
+
 test('background navigation preserves selected tab and selecting a tab persists it', async () => {
   const f = fixture(makeScope({ tabs: [
     { id: 'tab-A', url: 'https://example.test/one', title: '' }, { id: 'tab-B', url: 'https://example.test/two', title: '' },

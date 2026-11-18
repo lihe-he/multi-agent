@@ -1,0 +1,177 @@
+{
+  "recordedAt": "2026-11-18T08:01:31.698Z",
+  "version": "0.2.0-alpha.22",
+  "baseCommit": "c60051bcbaf7799d58abe0de64a0dfa83ad6f1b6",
+  "status": "passed",
+  "platform": "win32",
+  "scope": "BOUNDED_DESKTOP_PREVIEW_METADATA_RACE_FIX; WINDOWS_PRODUCTION_WEB_AND_ACTUAL_DEVELOPMENT_AND_PACKAGED_ELECTRON; OTHER_PLATFORMS_REMAIN_CI",
+  "hostTests": {
+    "tests": 26,
+    "failures": 0,
+    "skipped": 0,
+    "output": {
+      "file": ".runtime/alpha22-preview-host-tests.log",
+      "bytes": 2458,
+      "sha256": "3b1bd8d95498cd830b46c51b37a5dfab3c6ad97fa689fbbf4782542ebca7ab19"
+    }
+  },
+  "negativeControl": {
+    "baseCommit": "c60051bcbaf7799d58abe0de64a0dfa83ad6f1b6",
+    "tests": 5,
+    "passed": 2,
+    "failures": 3,
+    "intendedRegressionReproduced": true,
+    "output": {
+      "file": ".runtime/alpha22-preview-negative-control.log",
+      "bytes": 2158,
+      "sha256": "24de415558bf1bab17a2026046b95c537d58ec4837ff5d5f0e744fb31f96c2a1"
+    }
+  },
+  "productionUi": {
+    "receipt": {
+      "file": ".runtime/ui-production-fktycR/receipt.json",
+      "bytes": 19777,
+      "sha256": "db81eb8d786bb3131ac7b30738be3e782cb25e12fa48b5fbbf6108295f23b17e"
+    },
+    "stats": {
+      "startTime": "2026-11-18T07:44:54.957Z",
+      "duration": 250923.56699999998,
+      "expected": 230,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "sourcesUnchanged": true,
+    "assetsUnchanged": true,
+    "historicalImagesPreserved": 44
+  },
+  "developmentPreview": {
+    "receipt": {
+      "file": ".runtime/preview-native-qstp31/receipt.json",
+      "bytes": 15273,
+      "sha256": "4a2fc94994e949dc3afad5c75d89212e39e153d4a9171d17d5b5434002ab0dc5"
+    },
+    "checks": 10,
+    "launchCount": 3,
+    "originalIdentityObservations": 12,
+    "allOriginalStopped": true,
+    "note": "Before the later stop-observation-history tooling change; product source bytes match."
+  },
+  "packagedPreview": {
+    "receipt": {
+      "file": ".runtime/preview-native-packaged-osvvZL/receipt.json",
+      "bytes": 67109,
+      "sha256": "7d21721e8e4d557d42b40111e3e794f2213bda4f88016bd99a2e23aa38677dc7"
+    },
+    "checks": 10,
+    "launchCount": 3,
+    "originalIdentityObservations": 12,
+    "allOriginalStopped": true,
+    "sourcesUnchanged": true,
+    "externalNodeAndJavaUnavailableOnPath": true,
+    "originalStopObservationRounds": [
+      1,
+      1,
+      1
+    ],
+    "jar": {
+      "file": "core/target/agent-workbench-core-0.2.0-alpha.22.jar",
+      "sha256": "eca481e3859679226b17022880a0fcaa5f1526e7c7c6d8bfe2366ad7cf9ef9d9"
+    }
+  },
+  "preservedFailure": {
+    "receipt": {
+      "file": ".runtime/preview-native-packaged-4IZl2b/receipt.json",
+      "bytes": 61804,
+      "sha256": "2862a0fdc5bbf3cb6fd47741893e55f030c5dac2764ca33faacb4a25e383b646"
+    },
+    "checksPassed": 10,
+    "originalFailure": "AssertionError [ERR_ASSERTION]: Original desktop, core and Worker must stop\n\nfalse !== true\n\n    at stop (D:\\Projects\\多Agent研发工作台\\tools\\preview-native-smoke.cjs:100:16)\n    at async D:\\Projects\\多Agent研发工作台\\tools\\preview-native-smoke.cjs:259:5",
+    "laterIndependentCoreAndWorkerObservation": "Both original identities were stopped; first observation was not rewritten."
+  },
+  "installer": {
+    "file": "release/Agent Workbench Setup 0.2.0-alpha.22.exe",
+    "bytes": 157725720,
+    "sha256": "41b6d18bf1a80c6f280e9129f9848fc9a376f71eb52400ba9c9f7679d20af0e5",
+    "authenticode": "NotSigned",
+    "installationAndUninstallationRetested": false
+  },
+  "originalCiPreview": {
+    "recordedAt": "2026-11-18T07:19:36.032Z",
+    "headSha": "8a7c7976428a8c7fd602e0d50b984a587818b595",
+    "artifactId": 14406406936,
+    "artifactDigest": "sha256:c6d414f6e27e44a08dd83c348561103873bb7a3af1b1a9f957a2cce35e3bc28b",
+    "wholeArtifactDigestVerified": false,
+    "scope": "SELECTED_ZIP_ENTRIES_RANGE_AND_CRC32_VERIFIED_ONLY",
+    "collected": [
+      {
+        "name": ".runtime/preview-native-packaged-mjk22l/failure-views.json",
+        "method": 8,
+        "crc32": 1702813690,
+        "compressed": 137,
+        "size": 206,
+        "offset": 137979393,
+        "file": ".runtime\\alpha21-ci\\preview-entries-14406406936-1794986337909\\preview-native-packaged-mjk22l-failure-views.json",
+        "sha256": "2c74966432d9b4409c4c373fab45c7450031d1f41ad55b2758aeb38686aad1d2"
+      },
+      {
+        "name": ".runtime/preview-native-packaged-mjk22l/failure.png",
+        "method": 8,
+        "crc32": 464624038,
+        "compressed": 104356,
+        "size": 112391,
+        "offset": 137979634,
+        "file": ".runtime\\alpha21-ci\\preview-entries-14406406936-1794986337909\\preview-native-packaged-mjk22l-failure.png",
+        "sha256": "3b10f44345d2657ec7fd6772e85836d9f8c716498ee156e0cd91528855487811"
+      },
+      {
+        "name": ".runtime/preview-native-packaged-mjk22l/receipt.json",
+        "method": 8,
+        "crc32": 585191377,
+        "compressed": 9523,
+        "size": 52091,
+        "offset": 138095811,
+        "file": ".runtime\\alpha21-ci\\preview-entries-14406406936-1794986337909\\preview-native-packaged-mjk22l-receipt.json",
+        "sha256": "443df9ca4a01d5482d54fdbf67b55f609dbf32b249e172379e16749230a7ad4f"
+      }
+    ]
+  },
+  "coreBuild": {
+    "testsSkipped": true,
+    "type": "INCREMENTAL_PACKAGE",
+    "jar": {
+      "file": "core/target/agent-workbench-core-0.2.0-alpha.22.jar",
+      "bytes": 44346168,
+      "sha256": "eca481e3859679226b17022880a0fcaa5f1526e7c7c6d8bfe2366ad7cf9ef9d9"
+    },
+    "fullRegression": "Corresponding CI only"
+  },
+  "changedJavaFiles": 0,
+  "sources": [
+    {
+      "file": "desktop/preview-host.cjs",
+      "bytes": 18764,
+      "sha256": "5defd0875fea9b0e7ef417c35cd4b01fae0728142370963996822fd23d13837b"
+    },
+    {
+      "file": "desktop/preview-host.test.cjs",
+      "bytes": 22921,
+      "sha256": "e1a812d975795da0b4460d966c9d00a4a7d1d06bb3920e4405e9abc91646724a"
+    },
+    {
+      "file": "web/src/SessionWorkspace.tsx",
+      "bytes": 34330,
+      "sha256": "889b95a8489d57407e40290b32a3df5231154c182522cfb29b0250270ecb5db5"
+    },
+    {
+      "file": "web/tests/session-preview.spec.ts",
+      "bytes": 9451,
+      "sha256": "386a928a1cfc0ec5e52f6a2394139f5a3fbe063b38e7adb5b58ffff202c59c6f"
+    },
+    {
+      "file": "tools/preview-native-smoke.cjs",
+      "bytes": 26662,
+      "sha256": "2885f15e26f47c681a577e385e86eea1ddc10dee75abe2d72d36d4f028a1562a"
+    }
+  ]
+}

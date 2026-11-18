@@ -9,6 +9,7 @@ function createPreviewHost({ owner, connection, authorize, persist, partitionReg
   let operationQueue = Promise.resolve(), pollQueued = false;
   const rate = { timestamps: [] };
   const persistTimers = new Map();
+  const metadataVersions = new Set();
   const retired = new Map();
   if (partitionRegistryPath && fs.existsSync(partitionRegistryPath)) {
     let saved;
@@ -147,6 +148,7 @@ function createPreviewHost({ owner, connection, authorize, persist, partitionReg
 
   async function syncTabs(scope, deferredNavigationTabId = '') {
     const previous = attached, wanted = new Map(scope.tabs.map(tab => [tab.id, tab]));
+    if (scope.version !== previous?.version) metadataVersions.clear();
     for (const [tabId, entry] of views) {
       if (!wanted.has(tabId)) { views.delete(tabId); await destroyEntry(entry); }
     }
@@ -167,6 +169,7 @@ function createPreviewHost({ owner, connection, authorize, persist, partitionReg
   }
 
   async function detach() {
+    metadataVersions.clear();
     for (const record of partitions.values()) record.active = false;
     await closeViews(); attached = null;
     await Promise.all([...partitions.values()].map(record => record.session.closeAllConnections()));
@@ -210,7 +213,13 @@ function createPreviewHost({ owner, connection, authorize, persist, partitionReg
         entry = page(input.tabId);
         const url = destination(entry.contents.getURL(), authorized, connection);
         const tab = { id: entry.id, url: savedAddress(url), title: entry.contents.getTitle().slice(0, 180) };
+        const saved = authorized.tabs.find(value => value.id === entry.id);
+        if (saved.url === tab.url && saved.title === tab.title) {
+          publish({ projectId: authorized.projectId, sessionId: authorized.sessionId, configuration: authorized }); return;
+        }
         const value = await persist(authorized, tab);
+        metadataVersions.add(authorized.version);
+        if (metadataVersions.size > 64) metadataVersions.delete(metadataVersions.values().next().value);
         attached = value;
         publish({ projectId: value.projectId, sessionId: value.sessionId, configuration: value });
       } catch (error) {
@@ -232,7 +241,11 @@ function createPreviewHost({ owner, connection, authorize, persist, partitionReg
       throw new Error('原预览授权已变化，请刷新。');
     }
     if (input.type === 'open') {
-      if (authorized.version !== input.expectedVersion) throw new Error('预览配置已变化，请刷新后重新打开地址。');
+      if (authorized.version !== attached.version) await syncTabs(authorized);
+      if (authorized.version !== input.expectedVersion && !metadataVersions.has(input.expectedVersion)) {
+        publish({ projectId: authorized.projectId, sessionId: authorized.sessionId, configuration: authorized });
+        throw new Error('预览配置已变化，请刷新后重新打开地址。');
+      }
       if (!persist) throw new Error('预览地址保存能力不可用。');
       const url = destination(input.url, authorized, connection);
       const value = await persist(authorized, { id: input.tabId, url: savedAddress(url), title: '' }, { activate: true });
@@ -250,7 +263,10 @@ function createPreviewHost({ owner, connection, authorize, persist, partitionReg
     }
     const entry = page(input.tabId);
     if (input.type === 'select') {
-      if (persist && authorized.activeTabId !== entry.id) attached = await persist(authorized, authorized.tabs.find(tab => tab.id === entry.id), { activate: true });
+      if (persist && authorized.activeTabId !== entry.id) {
+        attached = await persist(authorized, authorized.tabs.find(tab => tab.id === entry.id), { activate: true });
+        metadataVersions.clear();
+      }
       selected = entry.id; for (const entry of views.values()) visible(entry); entry.contents.focus();
       publish({ projectId: attached.projectId, sessionId: attached.sessionId, configuration: attached }); return;
     }

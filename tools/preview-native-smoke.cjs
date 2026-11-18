@@ -95,10 +95,13 @@ const path = require('node:path');
     const current = electron, record = launches.at(-1); electron = null;
     try { await current.close(); }
     finally {
-      for (const identity of record.identities) {
-        const observation = probe(identity.pid, identity.processStartedAt, 'inspect'); record.observationsAfterStop.push(observation);
-        assert.equal(observation.originalStopped, true, 'Original desktop, core and Worker must stop');
-      }
+      record.stopObservationHistory = []; record.stopWaitLimitMs = 20000;
+      await until('original desktop, core and Worker stopped', async () => {
+        const observations = record.identities.map(identity => probe(identity.pid, identity.processStartedAt, 'inspect'));
+        record.observationsAfterStop = observations;
+        record.stopObservationHistory.push({ observedAt: new Date().toISOString(), observations });
+        return observations.every(observation => observation.originalStopped);
+      }, record.stopWaitLimitMs);
     }
   }
   const endpoint = session => `/projects/${project.id}/sessions/${session.id}/preview`;
@@ -118,7 +121,11 @@ const path = require('node:path');
     await panel.getByLabel('网页地址', { exact: true }).fill(url);
     await panel.getByRole('button', { name: '转到', exact: true }).click();
     await expect(panel.getByRole('button', { name: '转到', exact: true })).toBeEnabled();
-    await until('actual preview URL', async () => (await viewFacts()).some(value => value.url === url && !value.loading));
+    await until('actual preview URL', async () => {
+      const error = (await panel.locator('.preview-error[role="alert"]').allTextContents()).join(' ');
+      if (error) throw new Error(`Preview navigation was rejected: ${error}`);
+      return (await viewFacts()).some(value => value.url === url && !value.loading);
+    });
     await panel.locator('.preview-stage').scrollIntoViewIfNeeded();
   }
   async function viewFacts() {
@@ -174,6 +181,21 @@ const path = require('node:path');
     await openAddress(`${base}/other`, true); facts = await viewFacts(); assert.equal(facts.length, 2);
     const second = facts.find(value => value.url === `${base}/other`); assert.deepEqual(await storage(second.id), { authenticated: true, saved: 'persisted' });
     saved = await api(endpoint(firstSession)); assert.equal(saved.tabs.length, 2);
+    await evaluateView(first.id, "document.title='Metadata before a new tab';true");
+    await until('native page metadata saved', async () => {
+      const value = await api(endpoint(firstSession));
+      return value.version > saved.version && value.tabs.find(tab => tab.id === tabId)?.title === 'Metadata before a new tab';
+    });
+    const raceUrl = `${base}/metadata-race?code=once#callback`;
+    const raceResult = await page.evaluate(input => window.workbench.desktopPreview.action(input), {
+      type: 'open', projectId: project.id, sessionId: firstSession.id, tabId: 'metadata-race', url: raceUrl, expectedVersion: saved.version,
+    });
+    assert.equal(raceResult.tabs.length, 3); assert.equal(raceResult.tabs.find(tab => tab.id === tabId).title, 'Metadata before a new tab');
+    await until('actual metadata-race URL', async () => (await viewFacts()).some(value => value.url === raceUrl && !value.loading));
+    assert.equal(requests.filter(value => value.path === '/metadata-race').length, 1);
+    await page.getByRole('region', { name: '会话网页预览', exact: true }).getByRole('button', { name: '关闭预览标签' }).nth(2).click();
+    await until('metadata-race tab closed', async () => (await viewFacts()).length === 2);
+    pass('A real native title save permits the preceding version to open one new callback without losing metadata or replaying navigation');
     await openSession(secondSession); await openAddress(`${base}/state`);
     facts = await viewFacts(); assert.equal(facts.length, 1); assert.deepEqual(await storage(facts[0].id), { authenticated: false, saved: null });
     await openSession(firstSession); await until('first session tabs restored', async () => {
@@ -241,6 +263,10 @@ const path = require('node:path');
   } catch (error) {
     failure = error.stack; process.exitCode = 1;
     if (electron) save('failure-views.json', await viewFacts().catch(cause => ({ error: cause.message })));
+    if (connection && project && firstSession) save('failure-configuration.json', await api(endpoint(firstSession)).catch(cause => ({ error: cause.message })));
+    if (page && !page.isClosed()) save('failure-preview-ui.json', await page.getByRole('region', { name: '会话网页预览', exact: true }).evaluate(element => ({
+      status: element.querySelector('.preview-status')?.textContent || '', tabs: [...element.querySelectorAll('[role="tab"]')].map(tab => ({ title: tab.textContent, selected: tab.getAttribute('aria-selected') })),
+    })).catch(cause => ({ error: cause.message })));
     if (page && !page.isClosed()) await page.screenshot({ path: path.join(directory, 'failure.png'), fullPage: true }).catch(() => {});
   } finally {
     try { await stop(); } catch (error) { failure = [failure, error.stack].filter(Boolean).join('\n'); status = 'failed'; process.exitCode = 1; }
