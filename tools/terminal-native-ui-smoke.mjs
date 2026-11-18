@@ -112,9 +112,44 @@ try {
     assert.equal(readFileSync(join(task.workspace, 'manual-count.txt'), 'utf8'), '1'); assert.equal(await page.evaluate(() => window.__nativeUiMarkupExecuted), undefined);
     assert.deepEqual(JSON.parse(readFileSync(join(task.workspace, 'actual-environment.json'), 'utf8')), { WORKBENCH_TOKEN: false, WORKBENCH_CORE_TOKEN: false, OPENAI_API_KEY: false, ANTHROPIC_API_KEY: false });
     const sizeCommand = shellFixture.sizeCommand;
+    const sizeAcknowledgement = page.waitForResponse(response => {
+      const request = response.request();
+      return request.method() === 'POST' && new URL(request.url()).pathname === `/service/api/terminals/${terminal.id}/actions`
+        && request.postDataJSON()?.kind === 'INPUT' && request.postDataJSON()?.dataBase64 === Buffer.from(sizeCommand).toString('base64');
+    }).then(response => ({ response }), failure => ({ failure }));
     await paste(sizeCommand); await until('actual native shell dimensions', () => existsSync(join(task.workspace, 'actual-native-size.txt')));
+    const acknowledgement = await sizeAcknowledgement; if (acknowledgement.failure) throw acknowledgement.failure;
+    assert.equal(acknowledgement.response.status(), 200); assert.equal(await acknowledgement.response.finished(), null);
     assert.equal(readFileSync(join(task.workspace, 'actual-native-size.txt'), 'utf8').trim(), `${geometry.rows} ${geometry.columns}`);
     await page.screenshot({ path: join(directory, `${strategy.toLowerCase()}-actual-controlled-1440.png`), fullPage: true });
+    phase = `${strategy.toLowerCase()}-browser-transport-offline-recovery`;
+    const originalDrained = await until('original published output fully drained before network loss', async () => {
+      const value = await api(`/terminals/${terminal.id}`), text = await panel.locator('.terminal-output-status').innerText();
+      const cursor = Number(text.match(/已排空 ([\d,]+) 字节/)?.[1].replaceAll(',', ''));
+      return cursor > 0 && cursor === value.outputEnd ? cursor : null;
+    });
+    const postsBeforeNetworkLoss = uiRequests.filter(request => request.method === 'POST' && request.path.includes(terminal.id)).length;
+    await page.context().setOffline(true);
+    await expect(panel.locator('.terminal-mode')).toHaveText('仅查看');
+    const coreWhileBrowserOffline = await api(`/terminals/${terminal.id}`);
+    assert.deepEqual(coreWhileBrowserOffline.nativeProcess, originalNative); assert.equal(coreWhileBrowserOffline.epoch, terminal.epoch);
+    assert.equal(coreWhileBrowserOffline.state, 'RUNNING'); assert.equal(readFileSync(join(task.workspace, 'manual-count.txt'), 'utf8'), '1');
+    const resumedRequestIndex = uiRequests.length, resumedAt = Date.now(); await page.context().setOffline(false);
+    await expect(panel.locator('.terminal-output-status')).toContainText('正在读取原输出', { timeout: 1500 });
+    const resumedReads = uiRequests.slice(resumedRequestIndex).filter(request => request.path.startsWith(`/api/terminals/${terminal.id}`));
+    assert.ok(resumedReads.some(request => request.path === `/api/terminals/${terminal.id}` && request.method === 'GET'));
+    const resumedOutput = resumedReads.filter(request => request.path.endsWith('/output'));
+    assert.ok(resumedOutput.length > 0 && resumedOutput.every(request => request.method === 'GET' && Number(new URLSearchParams(request.query).get('after')) >= originalDrained));
+    await expect(panel.locator('.terminal-mode')).toHaveText('仅查看');
+    await expect(page.getByRole('textbox', { name: '终端输出（仅查看）', exact: true })).not.toBeEditable();
+    assert.equal(uiRequests.filter(request => request.method === 'POST' && request.path.includes(terminal.id)).length, postsBeforeNetworkLoss);
+    save(`${strategy.toLowerCase()}-actual-network-read-recovery.json`, { originalNative, epoch: terminal.epoch, originalDrained,
+      restoredMs: Date.now() - resumedAt, coreReachableWhileBrowserOffline: true, originalManualEffectCount: 1,
+      originalControlNotRestored: true, noAdditionalPosts: true, resumedReads: scrub(resumedReads),
+      scope: 'ACTUAL_BROWSER_TRANSPORT_OFFLINE_WITH_REAL_JAVA_CORE_AND_NATIVE_PTY; NO_OS_SLEEP_OR_NETWORK_ADAPTER_CHANGES' });
+    await page.screenshot({ path: join(directory, `${strategy.toLowerCase()}-network-restored-read-only.png`), fullPage: true });
+    pass(`${strategy}: actual browser transport loss preserves the original native process and drained cursor; recovery reads fresh metadata and output without control takeover or action replay`);
+    phase = `${strategy.toLowerCase()}-continued-original-ui-acceptance`;
     await page.getByRole('button', { name: '代码差异', exact: true }).click(); await page.getByRole('button', { name: '终端', exact: true }).click();
     await expect(panel.locator('.terminal-mode')).toHaveText('仅查看'); await expect(panel.locator('.xterm-accessibility')).toContainText('ORIGINAL_NATIVE_UI_中文_GREEN');
     await page.setViewportSize({ width: 430, height: 1100 }); await page.reload(); await openTask(task.title);

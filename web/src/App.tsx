@@ -69,7 +69,6 @@ export default function App() {
         if (!signal.aborted) { setConnected(false); setConnecting(false); setConnectionError((error as Error).message); return false; }
       }
     }, 3000, {
-      onPause: reason => { if (reason === 'offline') { setConnected(false); setConnecting(false); setConnectionError('网络已断开，恢复后将重新读取本地核心状态。'); } },
       onResume: () => { setConnecting(true); setConnectionError(''); },
     });
     stopConnection.current = stop; return stop;

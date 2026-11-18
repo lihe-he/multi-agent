@@ -19,7 +19,8 @@ const windows = process.platform === 'win32';
 const home = javaHome(root);
 const java = home ? join(home, 'bin', windows ? 'java.exe' : 'java') : 'java';
 const jar = join(root, `core/target/agent-workbench-core-${version}.jar`);
-if (!existsSync(jar) || !existsSync(join(root, 'web/dist/workbench-config.json'))) throw new Error('请先构建核心和 Web。');
+const webDist = resolve(root, process.env.WORKBENCH_STANDALONE_WEB_DIST || 'web/dist');
+if (!existsSync(jar) || !existsSync(join(webDist, 'workbench-config.json'))) throw new Error('请先构建核心和 Web。');
 let logs = '';
 const core = spawn(java, ['-Dfile.encoding=UTF-8', '-Djdk.virtualThreadScheduler.parallelism=2', '-Djdk.virtualThreadScheduler.maxPoolSize=2', '-jar', jar], {
   cwd: dir, windowsHide: true,
@@ -70,7 +71,7 @@ const web = createServer(async (request, response) => {
       return;
     }
     if (!/^\/(?:index\.html|assets\/[a-zA-Z0-9_.-]+)?$/.test(route)) { response.writeHead(404); response.end(); return; }
-    const file = join(root, 'web/dist', route === '/' ? 'index.html' : route);
+    const file = join(webDist, route === '/' ? 'index.html' : route);
     const extension = file.slice(file.lastIndexOf('.'));
     response.writeHead(200, { 'Content-Type': contentTypes[extension] || 'application/octet-stream' });
     response.end(readFileSync(file));
@@ -97,6 +98,12 @@ try {
   const webUrl = `http://127.0.0.1:${web.address().port}`;
   browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || (windows ? 'msedge' : undefined) });
   const page = await browser.newPage();
+  await page.addInitScript(() => Object.defineProperty(navigator, 'onLine', { configurable: true, value: false }));
+  const browserNetworkRequests = [];
+  page.on('request', request => {
+    const path = new URL(request.url()).pathname;
+    if (path.startsWith('/service/api/')) browserNetworkRequests.push({ method: request.method(), path, authorized: request.headers().authorization === `Bearer ${token}` });
+  });
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(webUrl);
@@ -105,6 +112,21 @@ try {
   await page.getByLabel('访问令牌', { exact: true }).fill(token);
   await page.getByRole('button', { name: '连接并验证', exact: true }).click();
   await page.getByRole('dialog').waitFor({ state: 'hidden' });
+  await page.getByRole('button', { name: '本地核心已连接', exact: true }).waitFor();
+  assert.equal(await page.evaluate(() => navigator.onLine), false);
+  const originalCoreHealth = await api('/health'); assert.equal(originalCoreHealth.corePid, core.pid);
+  const networkRequestIndex = browserNetworkRequests.length;
+  await page.context().setOffline(true);
+  await page.getByRole('button', { name: '本地核心未连接', exact: true }).waitFor({ timeout: 5000 });
+  const coreWhileBrowserOffline = await api('/health'); assert.equal(coreWhileBrowserOffline.corePid, core.pid);
+  const restoredAt = Date.now(); await page.context().setOffline(false);
+  await page.getByRole('button', { name: '本地核心已连接', exact: true }).waitFor({ timeout: 1500 });
+  const recoveryReads = browserNetworkRequests.slice(networkRequestIndex);
+  assert.ok(recoveryReads.length >= 2 && recoveryReads.every(request => request.method === 'GET' && request.authorized));
+  const browserOfflineRecovery = { browserTransportActuallyBlocked: true, controlledNavigatorOnlineHint: false,
+    coreReachableWhileBrowserOffline: true, originalCorePidUnchanged: coreWhileBrowserOffline.corePid === originalCoreHealth.corePid,
+    onlineRecoveryMs: Date.now() - restoredAt, recoveryReads, automaticTaskWriteReplay: false,
+    scope: 'REAL_JAVA_CORE_AND_BROWSER_TRANSPORT_OFFLINE_WITH_CONTROLLED_NAVIGATOR_HINT; NO_OS_NETWORK_ADAPTER_CHANGES' };
   await page.getByRole('button', { name: '资源与设置', exact: true }).click();
   await page.getByRole('heading', { name: '让合适的 Agent，做合适的事' }).waitFor();
   assert.equal(await page.evaluate(() => typeof window.workbench), 'undefined');
@@ -270,6 +292,7 @@ try {
   assert.deepEqual(errors, []);
   const report = { date: new Date().toISOString(), version, platform: process.platform, coreIndependentOfWebAndNpm: true, runtimeProxyConfiguration: true, browserWorkflowWithoutBridge: true, sessionWorkflowThroughProxy: true, sessionSearchAndReopenThroughProxy: true, agentRunActivityThroughProxy: true, modelRequestTraceThroughProxy: true, savedNotesSurviveReload: true, sessionClosePreservesRunningTask: true, browserClosePreservesCore: true, desktopUsesExistingCoreWithoutJava: true, desktopExitPreservesCore: true, clientExitPreservesRunningTask: true, modelRequestsBeforeAndAfterReconnect: pendingModelResponses.length, childRequestPreservedOnReconnect: childRequest.id, workerLeasePreservedOnReconnect: childLease.id, workerId: childLease.workerId, workerEpoch: childLease.epoch, workerPid: actualWorker.pid, repositoryBindingId: finished.execution.repositoryBindingId, workerReceiptsVerified: observed.workerLeases.length, parentWaitReleasesModelCapacity: true, teamDependencyAdoptionThroughProxy: true, teamMessagesSurviveReload: true, mcpActualChildSourceThroughProxy: true, teamRootCalls: finished.budget.usedCalls, teamChildRuns: observed.team.agents.map(agent => ({ id: agent.id, agentRunId: agent.agentRunId, state: agent.state, integrationState: agent.integrationState })), externalMcpCalls: teamProtocol.mcpCalls.length, pageErrors: errors, modelErrors };
   Object.assign(report, { corePid: core.pid, workerDeployment: actualWorker.deployment, workerProcessStartedAt: actualWorker.processStartedAt, workerHeartbeatSource: reconnectedWorker.heartbeatSource, workerHeartbeatSequenceOnReconnect: reconnectedWorker.lastHeartbeatSequence });
+  Object.assign(report, { productionWebRoot: webDist, localCoreReachableWithOfflineNavigatorHint: true, browserOfflineRecovery });
   mkdirSync(join(root, 'docs/qa'), { recursive: true });
   writeFileSync(join(root, `docs/qa/standalone-${process.platform}.json`), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report, null, 2));

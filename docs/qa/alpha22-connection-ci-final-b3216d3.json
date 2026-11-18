@@ -1,0 +1,1725 @@
+{
+  "recordedAt": "2026-11-18T10:57:18.859Z",
+  "headSha": "b3216d36683e3870606c5e69c2011d0c064b82fd",
+  "runId": 44270470881,
+  "runAttempt": 1,
+  "conclusion": "cancelled",
+  "status": "verified_terminal_with_original_failure_retained",
+  "jobs": [
+    {
+      "platform": "linux",
+      "jobId": 134685503977,
+      "name": "verify (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-18T08:50:39Z",
+      "completedAt": "2026-11-18T09:08:42Z",
+      "originalLog": {
+        "file": ".runtime\\alpha21-ci\\job-134685503977-run-44270470881-attempt-1\\job.log",
+        "bytes": 217957,
+        "sha256": "aac712a7dd7d7893c5838db9201bd8e0d19cf2c5d18c997bf611c3f90c153e2b",
+        "collectorReceiptHashVerified": true
+      },
+      "coreFromOriginalLog": {
+        "tests": 563,
+        "passed": 552,
+        "skipped": 11,
+        "failures": 0,
+        "errors": 0
+      },
+      "uiFromOriginalLog": {
+        "passed": 236
+      },
+      "nativeFromOriginalLog": [
+        {
+          "directory": "/home/runner/work/multi-agent/multi-agent/.runtime/terminal-native-ui-VXLE4c",
+          "status": "passed",
+          "checks": 5,
+          "sourcesUnchanged": true,
+          "jarUnchanged": true,
+          "assetsUnchanged": true,
+          "originalIdentitiesStopped": true
+        },
+        {
+          "directory": "/home/runner/work/multi-agent/multi-agent/.runtime/terminal-native-ui-packaged-9OR5W4",
+          "status": "passed",
+          "checks": 5,
+          "sourcesUnchanged": true,
+          "jarUnchanged": true,
+          "assetsUnchanged": true,
+          "originalIdentitiesStopped": true
+        }
+      ],
+      "previewFromOriginalLog": [
+        {
+          "directory": "/home/runner/work/multi-agent/multi-agent/.runtime/preview-native-wK0LuM",
+          "status": "passed",
+          "checks": 10
+        },
+        {
+          "directory": "/home/runner/work/multi-agent/multi-agent/.runtime/preview-native-packaged-6Hs9x1",
+          "status": "passed",
+          "checks": 10
+        }
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:40Z",
+          "completedAt": "2026-11-18T08:50:41Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:41Z",
+          "completedAt": "2026-11-18T08:50:43Z"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:43Z",
+          "completedAt": "2026-11-18T08:50:45Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:45Z",
+          "completedAt": "2026-11-18T08:50:48Z"
+        },
+        {
+          "name": "Release version declarations",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:48Z",
+          "completedAt": "2026-11-18T08:50:48Z"
+        },
+        {
+          "name": "Core tests and package",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:48Z",
+          "completedAt": "2026-11-18T08:56:57Z"
+        },
+        {
+          "name": "Web dependency install",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:56:57Z",
+          "completedAt": "2026-11-18T08:57:00Z"
+        },
+        {
+          "name": "Web build",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:57:00Z",
+          "completedAt": "2026-11-18T08:57:05Z"
+        },
+        {
+          "name": "Full local protocol lifecycle",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:57:05Z",
+          "completedAt": "2026-11-18T08:57:21Z"
+        },
+        {
+          "name": "Install UI test browser",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:57:21Z",
+          "completedAt": "2026-11-18T08:57:37Z"
+        },
+        {
+          "name": "UI interaction tests",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:57:37Z",
+          "completedAt": "2026-11-18T09:01:25Z"
+        },
+        {
+          "name": "Production theme initialization and storage fallback",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:01:25Z",
+          "completedAt": "2026-11-18T09:01:29Z"
+        },
+        {
+          "name": "Actual final Jar and production Web file diff review",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:01:29Z",
+          "completedAt": "2026-11-18T09:01:46Z"
+        },
+        {
+          "name": "Actual final Jar checkpoint undo and original receipt recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:01:46Z",
+          "completedAt": "2026-11-18T09:02:20Z"
+        },
+        {
+          "name": "Actual final Jar native terminal and forced core crash recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:02:20Z",
+          "completedAt": "2026-11-18T09:02:36Z"
+        },
+        {
+          "name": "Actual final Jar and production Web native terminal control",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:02:36Z",
+          "completedAt": "2026-11-18T09:03:00Z"
+        },
+        {
+          "name": "Desktop dependencies",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:03:00Z",
+          "completedAt": "2026-11-18T09:03:07Z"
+        },
+        {
+          "name": "Desktop dependency download guards",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:03:07Z",
+          "completedAt": "2026-11-18T09:03:07Z"
+        },
+        {
+          "name": "Desktop connection policy",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:03:07Z",
+          "completedAt": "2026-11-18T09:03:07Z"
+        },
+        {
+          "name": "Session preview policy and host lifecycle",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:03:07Z",
+          "completedAt": "2026-11-18T09:03:09Z"
+        },
+        {
+          "name": "Actual desktop session previews and persistent login",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T09:03:09Z",
+          "completedAt": "2026-11-18T09:03:09Z"
+        },
+        {
+          "name": "Actual desktop session previews with virtual display",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:03:09Z",
+          "completedAt": "2026-11-18T09:03:36Z"
+        },
+        {
+          "name": "Actual core crash and original process recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:03:36Z",
+          "completedAt": "2026-11-18T09:03:57Z"
+        },
+        {
+          "name": "Actual durable root queue and explicit recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:03:57Z",
+          "completedAt": "2026-11-18T09:04:40Z"
+        },
+        {
+          "name": "Actual selected Git workspaces and READY receipt recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:04:40Z",
+          "completedAt": "2026-11-18T09:05:12Z"
+        },
+        {
+          "name": "Actual root workspace writers and original receipt recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:05:12Z",
+          "completedAt": "2026-11-18T09:06:06Z"
+        },
+        {
+          "name": "Actual original Worker file versions and complete history",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:06:06Z",
+          "completedAt": "2026-11-18T09:06:18Z"
+        },
+        {
+          "name": "Standalone browser and attached desktop lifecycle",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T09:06:18Z",
+          "completedAt": "2026-11-18T09:06:18Z"
+        },
+        {
+          "name": "Standalone lifecycle with virtual display",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:06:18Z",
+          "completedAt": "2026-11-18T09:06:37Z"
+        },
+        {
+          "name": "Build desktop distribution with bundled Java",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:06:37Z",
+          "completedAt": "2026-11-18T09:07:00Z"
+        },
+        {
+          "name": "Packaged application lifecycle",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:07:00Z",
+          "completedAt": "2026-11-18T09:07:08Z"
+        },
+        {
+          "name": "Actual packaged session previews without external Java or Node",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T09:07:08Z",
+          "completedAt": "2026-11-18T09:07:08Z"
+        },
+        {
+          "name": "Actual packaged session previews with virtual display",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:07:08Z",
+          "completedAt": "2026-11-18T09:07:35Z"
+        },
+        {
+          "name": "Actual packaged themes, sidebar and preference restart",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:07:35Z",
+          "completedAt": "2026-11-18T09:07:50Z"
+        },
+        {
+          "name": "Actual packaged Java workspace writer",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:07:50Z",
+          "completedAt": "2026-11-18T09:07:51Z"
+        },
+        {
+          "name": "Actual packaged Java and Web native terminals without external Java or Node",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:07:51Z",
+          "completedAt": "2026-11-18T09:08:16Z"
+        },
+        {
+          "name": "Preserve desktop distributions",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:08:16Z",
+          "completedAt": "2026-11-18T09:08:22Z"
+        },
+        {
+          "name": "Preserve test reports",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:08:22Z",
+          "completedAt": "2026-11-18T09:08:39Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:08:39Z",
+          "completedAt": "2026-11-18T09:08:39Z"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:08:39Z",
+          "completedAt": "2026-11-18T09:08:40Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:08:40Z",
+          "completedAt": "2026-11-18T09:08:40Z"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:08:40Z",
+          "completedAt": "2026-11-18T09:08:40Z"
+        }
+      ],
+      "evidenceScope": "ORIGINAL_JOB_METADATA_AND_LOG; WHOLE_ARTIFACT_NOT_DOWNLOADED_OR_AUDITED_IN_THIS_RECEIPT"
+    },
+    {
+      "platform": "win32",
+      "jobId": 134685504097,
+      "name": "verify (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-18T08:50:39Z",
+      "completedAt": "2026-11-18T09:40:23Z",
+      "originalLog": {
+        "file": ".runtime\\alpha21-ci\\job-134685504097-run-44270470881-attempt-1\\job.log",
+        "bytes": 212836,
+        "sha256": "b2e7a2f17d8fd5a317530bec21b04a9ed0968d37f9b68223d0b2eaa4988b6844",
+        "collectorReceiptHashVerified": true
+      },
+      "coreFromOriginalLog": {
+        "tests": 563,
+        "passed": 555,
+        "skipped": 8,
+        "failures": 0,
+        "errors": 0
+      },
+      "uiFromOriginalLog": {
+        "passed": 236
+      },
+      "nativeFromOriginalLog": [
+        {
+          "directory": "D:\\a\\multi-agent\\multi-agent\\.runtime\\terminal-native-ui-fPg4LQ",
+          "status": "passed",
+          "checks": 5,
+          "sourcesUnchanged": true,
+          "jarUnchanged": true,
+          "assetsUnchanged": true,
+          "originalIdentitiesStopped": true
+        },
+        {
+          "directory": "D:\\a\\multi-agent\\multi-agent\\.runtime\\terminal-native-ui-packaged-SlgaVb",
+          "status": "passed",
+          "checks": 5,
+          "sourcesUnchanged": true,
+          "jarUnchanged": true,
+          "assetsUnchanged": true,
+          "originalIdentitiesStopped": true
+        }
+      ],
+      "previewFromOriginalLog": [
+        {
+          "directory": "D:\\a\\multi-agent\\multi-agent\\.runtime\\preview-native-dLqhrg",
+          "status": "passed",
+          "checks": 10
+        },
+        {
+          "directory": "D:\\a\\multi-agent\\multi-agent\\.runtime\\preview-native-packaged-rvUjlR",
+          "status": "passed",
+          "checks": 10
+        }
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:40Z",
+          "completedAt": "2026-11-18T08:50:42Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:42Z",
+          "completedAt": "2026-11-18T08:50:48Z"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:48Z",
+          "completedAt": "2026-11-18T08:50:53Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:53Z",
+          "completedAt": "2026-11-18T08:51:04Z"
+        },
+        {
+          "name": "Release version declarations",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:51:04Z",
+          "completedAt": "2026-11-18T08:51:05Z"
+        },
+        {
+          "name": "Core tests and package",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:51:05Z",
+          "completedAt": "2026-11-18T09:16:30Z"
+        },
+        {
+          "name": "Web dependency install",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:16:30Z",
+          "completedAt": "2026-11-18T09:16:39Z"
+        },
+        {
+          "name": "Web build",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:16:39Z",
+          "completedAt": "2026-11-18T09:16:45Z"
+        },
+        {
+          "name": "Full local protocol lifecycle",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:16:45Z",
+          "completedAt": "2026-11-18T09:17:48Z"
+        },
+        {
+          "name": "Install UI test browser",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:17:48Z",
+          "completedAt": "2026-11-18T09:20:26Z"
+        },
+        {
+          "name": "UI interaction tests",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:20:26Z",
+          "completedAt": "2026-11-18T09:24:11Z"
+        },
+        {
+          "name": "Production theme initialization and storage fallback",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:24:11Z",
+          "completedAt": "2026-11-18T09:24:16Z"
+        },
+        {
+          "name": "Actual final Jar and production Web file diff review",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:24:16Z",
+          "completedAt": "2026-11-18T09:25:30Z"
+        },
+        {
+          "name": "Actual final Jar checkpoint undo and original receipt recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:25:30Z",
+          "completedAt": "2026-11-18T09:27:17Z"
+        },
+        {
+          "name": "Actual final Jar native terminal and forced core crash recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:27:17Z",
+          "completedAt": "2026-11-18T09:28:09Z"
+        },
+        {
+          "name": "Actual final Jar and production Web native terminal control",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:28:09Z",
+          "completedAt": "2026-11-18T09:29:02Z"
+        },
+        {
+          "name": "Desktop dependencies",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:29:02Z",
+          "completedAt": "2026-11-18T09:29:16Z"
+        },
+        {
+          "name": "Desktop dependency download guards",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:29:16Z",
+          "completedAt": "2026-11-18T09:29:16Z"
+        },
+        {
+          "name": "Desktop connection policy",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:29:16Z",
+          "completedAt": "2026-11-18T09:29:17Z"
+        },
+        {
+          "name": "Session preview policy and host lifecycle",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:29:17Z",
+          "completedAt": "2026-11-18T09:29:18Z"
+        },
+        {
+          "name": "Actual desktop session previews and persistent login",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:29:18Z",
+          "completedAt": "2026-11-18T09:29:51Z"
+        },
+        {
+          "name": "Actual desktop session previews with virtual display",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T09:29:51Z",
+          "completedAt": "2026-11-18T09:29:51Z"
+        },
+        {
+          "name": "Actual core crash and original process recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:29:51Z",
+          "completedAt": "2026-11-18T09:30:29Z"
+        },
+        {
+          "name": "Actual durable root queue and explicit recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:30:29Z",
+          "completedAt": "2026-11-18T09:31:41Z"
+        },
+        {
+          "name": "Actual selected Git workspaces and READY receipt recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:31:41Z",
+          "completedAt": "2026-11-18T09:33:08Z"
+        },
+        {
+          "name": "Actual root workspace writers and original receipt recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:33:08Z",
+          "completedAt": "2026-11-18T09:35:42Z"
+        },
+        {
+          "name": "Actual original Worker file versions and complete history",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:35:42Z",
+          "completedAt": "2026-11-18T09:36:26Z"
+        },
+        {
+          "name": "Standalone browser and attached desktop lifecycle",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:36:26Z",
+          "completedAt": "2026-11-18T09:36:59Z"
+        },
+        {
+          "name": "Standalone lifecycle with virtual display",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T09:36:59Z",
+          "completedAt": "2026-11-18T09:36:59Z"
+        },
+        {
+          "name": "Build desktop distribution with bundled Java",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:36:59Z",
+          "completedAt": "2026-11-18T09:37:51Z"
+        },
+        {
+          "name": "Packaged application lifecycle",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:37:51Z",
+          "completedAt": "2026-11-18T09:38:01Z"
+        },
+        {
+          "name": "Actual packaged session previews without external Java or Node",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:38:01Z",
+          "completedAt": "2026-11-18T09:38:35Z"
+        },
+        {
+          "name": "Actual packaged session previews with virtual display",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T09:38:35Z",
+          "completedAt": "2026-11-18T09:38:35Z"
+        },
+        {
+          "name": "Actual packaged themes, sidebar and preference restart",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:38:35Z",
+          "completedAt": "2026-11-18T09:38:53Z"
+        },
+        {
+          "name": "Actual packaged Java workspace writer",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:38:53Z",
+          "completedAt": "2026-11-18T09:38:56Z"
+        },
+        {
+          "name": "Actual packaged Java and Web native terminals without external Java or Node",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:38:56Z",
+          "completedAt": "2026-11-18T09:39:51Z"
+        },
+        {
+          "name": "Preserve desktop distributions",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:39:51Z",
+          "completedAt": "2026-11-18T09:39:57Z"
+        },
+        {
+          "name": "Preserve test reports",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:39:57Z",
+          "completedAt": "2026-11-18T09:40:19Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:40:19Z",
+          "completedAt": "2026-11-18T09:40:20Z"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:40:20Z",
+          "completedAt": "2026-11-18T09:40:20Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:40:20Z",
+          "completedAt": "2026-11-18T09:40:21Z"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:40:21Z",
+          "completedAt": "2026-11-18T09:40:21Z"
+        }
+      ],
+      "evidenceScope": "ORIGINAL_JOB_METADATA_AND_LOG; WHOLE_ARTIFACT_NOT_DOWNLOADED_OR_AUDITED_IN_THIS_RECEIPT"
+    },
+    {
+      "platform": "darwin",
+      "jobId": 134685503637,
+      "name": "verify (macos-latest)",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "startedAt": "2026-11-18T08:50:41Z",
+      "completedAt": "2026-11-18T10:06:19Z",
+      "originalLog": {
+        "file": ".runtime\\alpha21-ci\\job-134685503637-run-44270470881-attempt-1\\job.log",
+        "bytes": 134704,
+        "sha256": "98fbb606452e52e42ca1d92000fcbf29722f993c88b1487d502899ac1b683b32",
+        "collectorReceiptHashVerified": true
+      },
+      "coreFromOriginalLog": {
+        "tests": 563,
+        "passed": 552,
+        "skipped": 11,
+        "failures": 0,
+        "errors": 0
+      },
+      "uiFromOriginalLog": {
+        "passed": 236
+      },
+      "nativeFromOriginalLog": [
+        {
+          "directory": "/Users/runner/work/multi-agent/multi-agent/.runtime/terminal-native-ui-Xe5ree",
+          "status": "passed",
+          "checks": 5,
+          "sourcesUnchanged": true,
+          "jarUnchanged": true,
+          "assetsUnchanged": true,
+          "originalIdentitiesStopped": true
+        }
+      ],
+      "previewFromOriginalLog": [],
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:42Z",
+          "completedAt": "2026-11-18T08:50:44Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:44Z",
+          "completedAt": "2026-11-18T08:50:48Z"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:48Z",
+          "completedAt": "2026-11-18T08:50:49Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:49Z",
+          "completedAt": "2026-11-18T08:50:51Z"
+        },
+        {
+          "name": "Release version declarations",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:51Z",
+          "completedAt": "2026-11-18T08:50:51Z"
+        },
+        {
+          "name": "Core tests and package",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T08:50:51Z",
+          "completedAt": "2026-11-18T09:03:59Z"
+        },
+        {
+          "name": "Web dependency install",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:03:59Z",
+          "completedAt": "2026-11-18T09:04:06Z"
+        },
+        {
+          "name": "Web build",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:04:06Z",
+          "completedAt": "2026-11-18T09:04:15Z"
+        },
+        {
+          "name": "Full local protocol lifecycle",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:04:15Z",
+          "completedAt": "2026-11-18T09:04:55Z"
+        },
+        {
+          "name": "Install UI test browser",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:04:55Z",
+          "completedAt": "2026-11-18T09:05:07Z"
+        },
+        {
+          "name": "UI interaction tests",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:05:07Z",
+          "completedAt": "2026-11-18T09:13:15Z"
+        },
+        {
+          "name": "Production theme initialization and storage fallback",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:13:15Z",
+          "completedAt": "2026-11-18T09:13:25Z"
+        },
+        {
+          "name": "Actual final Jar and production Web file diff review",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:13:25Z",
+          "completedAt": "2026-11-18T09:14:07Z"
+        },
+        {
+          "name": "Actual final Jar checkpoint undo and original receipt recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:14:07Z",
+          "completedAt": "2026-11-18T09:15:16Z"
+        },
+        {
+          "name": "Actual final Jar native terminal and forced core crash recovery",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:15:16Z",
+          "completedAt": "2026-11-18T09:15:43Z"
+        },
+        {
+          "name": "Actual final Jar and production Web native terminal control",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:15:43Z",
+          "completedAt": "2026-11-18T09:16:25Z"
+        },
+        {
+          "name": "Desktop dependencies",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:16:25Z",
+          "completedAt": "2026-11-18T09:16:41Z"
+        },
+        {
+          "name": "Desktop dependency download guards",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:16:41Z",
+          "completedAt": "2026-11-18T09:16:42Z"
+        },
+        {
+          "name": "Desktop connection policy",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:16:42Z",
+          "completedAt": "2026-11-18T09:16:42Z"
+        },
+        {
+          "name": "Session preview policy and host lifecycle",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T09:16:42Z",
+          "completedAt": "2026-11-18T09:16:43Z"
+        },
+        {
+          "name": "Actual desktop session previews and persistent login",
+          "conclusion": "cancelled",
+          "startedAt": "2026-11-18T09:16:43Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Actual desktop session previews with virtual display",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Actual core crash and original process recovery",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Actual durable root queue and explicit recovery",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Actual selected Git workspaces and READY receipt recovery",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Actual root workspace writers and original receipt recovery",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Actual original Worker file versions and complete history",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Standalone browser and attached desktop lifecycle",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Standalone lifecycle with virtual display",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Build desktop distribution with bundled Java",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Packaged application lifecycle",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Actual packaged session previews without external Java or Node",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Actual packaged session previews with virtual display",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Actual packaged themes, sidebar and preference restart",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Actual packaged Java workspace writer",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Actual packaged Java and Web native terminals without external Java or Node",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Preserve desktop distributions",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:05:54Z"
+        },
+        {
+          "name": "Preserve test reports",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T10:05:54Z",
+          "completedAt": "2026-11-18T10:06:12Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "skipped",
+          "startedAt": "2026-11-18T10:06:12Z",
+          "completedAt": "2026-11-18T10:06:12Z"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T10:06:12Z",
+          "completedAt": "2026-11-18T10:06:13Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T10:06:13Z",
+          "completedAt": "2026-11-18T10:06:13Z"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success",
+          "startedAt": "2026-11-18T10:06:13Z",
+          "completedAt": "2026-11-18T10:06:18Z"
+        }
+      ],
+      "evidenceScope": "ORIGINAL_LOG_AND_WHOLE_ARTIFACT_VERIFIED_BELOW",
+      "partialPreview": {
+        "passed": [
+          {
+            "at": "2026-11-18T09:17:01.3483070Z",
+            "name": "Initial fetch attaches a visible isolated native page; callback loads once and core metadata drops query and fragment"
+          },
+          {
+            "at": "2026-11-18T09:17:02.2607580Z",
+            "name": "Application dialogs suspend the native page and closing a dialog restores its isolated login"
+          },
+          {
+            "at": "2026-11-18T09:17:02.3343880Z",
+            "name": "Actual preview has no Node, management bridge or opener; permissions, popups, unbound loopback and core requests are refused"
+          },
+          {
+            "at": "2026-11-18T09:17:04.6410010Z",
+            "name": "A real native title save permits the preceding version to open one new callback without losing metadata or replaying navigation"
+          },
+          {
+            "at": "2026-11-18T09:17:05.8252090Z",
+            "name": "Multiple native tabs share one session; switching sessions destroys old pages and isolates login and local storage"
+          },
+          {
+            "at": "2026-11-18T09:17:08.8051190Z",
+            "name": "Switching projects preserves each isolated native storage partition and destroys the previous project pages"
+          },
+          {
+            "at": "2026-11-18T09:17:25.4679100Z",
+            "name": "HttpOnly login and local storage survive full desktop, core and Worker shutdown and restart"
+          },
+          {
+            "at": "2026-11-18T09:17:26.8472670Z",
+            "name": "Site clear destroys original same-origin pages before clearing cookies and storage and replacing pages"
+          }
+        ],
+        "finalReceiptMissing": true,
+        "lastObservedSuccess": {
+          "at": "2026-11-18T09:17:26.8472670Z",
+          "name": "Site clear destroys original same-origin pages before clearing cookies and storage and replacing pages"
+        },
+        "cancellationAt": "2026-11-18T10:05:54.3364540Z",
+        "remainingPreviewAndSubsequentStepsNotCertified": true,
+        "exactUnreturnedCallNotRecorded": true,
+        "firstCaptureAndRestartAlreadyCompleted": true
+      }
+    }
+  ],
+  "macosArtifact": {
+    "id": 14416503718,
+    "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha21-ci\\artifact-14416503718-run-44270470881-attempt-1\\evidence-macos-latest-14416503718.zip",
+    "bytes": 170710876,
+    "sha256": "258868c5b17c54331a53eae9337ef283d3c05b760e8d9f767590ee3d4c78dc71",
+    "githubDigestVerified": true,
+    "entries": 3666,
+    "core": {
+      "suiteCount": 46,
+      "tests": 563,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 11,
+      "passed": 552,
+      "jarSha256": "ffa1099361a7075d52fb2ce1791bc10d89ae0f7aa56a494c2bbc13f21bef3360",
+      "nativeArtifactUsesSameJar": true,
+      "suites": [
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.AgentRunStoreTest.xml",
+          "name": "dev.agentworkbench.AgentRunStoreTest",
+          "sha256": "beb80e0cfb62cba5eea5037f7b1e6f33f676e0aee3c4cf4862dac44d4256e59c",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointEngineTest.xml",
+          "name": "dev.agentworkbench.CheckpointEngineTest",
+          "sha256": "2e92cd72bfeb56910f5a9888c680d2f752237eefec1fa7312636ad4f6fc620d4",
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.CheckpointExportHistoryTest.xml",
+          "name": "dev.agentworkbench.CheckpointExportHistoryTest",
+          "sha256": "91e2cc23c5d21d9835cdbf49d26f66013e0e4556f000c1d4ea61e7895a472bca",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ExecutionStoreTest.xml",
+          "name": "dev.agentworkbench.ExecutionStoreTest",
+          "sha256": "ca68bc1d01bbc3990ce9658476fb2cba41bfe73dc6c83a7d54bee864a2416203",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.FileToolHistoryTest.xml",
+          "name": "dev.agentworkbench.FileToolHistoryTest",
+          "sha256": "71cb2f2a61e66bf7312b403d66b4e2137e3c409597ee152bada0de2de0f71a32",
+          "tests": 23,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.GitWorkspaceTest.xml",
+          "name": "dev.agentworkbench.GitWorkspaceTest",
+          "sha256": "369315f147a7a5aa90250250975245d978fe765c37030dd588ed133338914335",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": [
+            {
+              "className": "dev.agentworkbench.GitWorkspaceTest",
+              "name": "redirectedWorkspaceRootCannotCreateTaskDirectoriesInsideAForeignJunction",
+              "reason": "<skipped message=\"Disabled on operating system: Mac OS X\"/>"
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.LocalAccessFilterTest.xml",
+          "name": "dev.agentworkbench.LocalAccessFilterTest",
+          "sha256": "d1fbb1d89306551ae6aa4cc5bff0d46e5923ce483408cca35e78ad3949074203",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ManagedProcessLedgerTest.xml",
+          "name": "dev.agentworkbench.ManagedProcessLedgerTest",
+          "sha256": "2f9d770534ee54884b7075b4b5491bb2cb16ce963d483fde1aaa60243d526f55",
+          "tests": 19,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 3,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": [
+            {
+              "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+              "name": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+              "reason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows restricted process identity\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.ManagedProcessLedgerTest.actualRestrictedWindowsPidReuseLeavesTheReplacementRunning(ManagedProcessLedgerTest.java:112)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>"
+            },
+            {
+              "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+              "name": "failedWindowsSnapshotStillRejectsAnUnverifiableLivePid",
+              "reason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity failure\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.ManagedProcessLedgerTest.failedWindowsSnapshotStillRejectsAnUnverifiableLivePid(ManagedProcessLedgerTest.java:151)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>"
+            },
+            {
+              "className": "dev.agentworkbench.ManagedProcessLedgerTest",
+              "name": "missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory",
+              "reason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows native process identity fallback\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.ManagedProcessLedgerTest.missingWindowsHandleBirthUsesTheActualNativeBirthWithoutChangingHistory(ManagedProcessLedgerTest.java:133)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>"
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ModelRequestStoreTest.xml",
+          "name": "dev.agentworkbench.ModelRequestStoreTest",
+          "sha256": "bb066aca30df0c5641e94140d6ec3f268f99f5863b89cdd233f313b4258e17ab",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.NativeProcessAccessTest.xml",
+          "name": "dev.agentworkbench.NativeProcessAccessTest",
+          "sha256": "9974b4cc600882697070a96faf9c8bfa5116faa2c80ffaae57d63510e0a57046",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.PlanAndPolicyTest.xml",
+          "name": "dev.agentworkbench.PlanAndPolicyTest",
+          "sha256": "5c7d35e5241828c6ed706efb2c87a8bf0d5b8ffaa7f3c9b30ae9dbf9d38f1075",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.PreviewCatalogTest.xml",
+          "name": "dev.agentworkbench.PreviewCatalogTest",
+          "sha256": "38e4e6fb516f2640af4f757e98aacc63b2bfa501e96c68c1af40526b64d49040",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+          "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+          "sha256": "142273e032c08f68e017b9a0315c5dbf2546df521837742a6ec277f07e4ac143",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RootDispatchEngineTest.xml",
+          "name": "dev.agentworkbench.RootDispatchEngineTest",
+          "sha256": "d76f79c6b87ef51d57e936adfff2b747fc4c5538fbb63a2746ea2368488ec05e",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeDelegationTest.xml",
+          "name": "dev.agentworkbench.RuntimeDelegationTest",
+          "sha256": "436d08287da8e48611ca53b8539f5f8b6bf9c037c8e191aa3ca470af7649d8c2",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.RuntimeIntegrationTest.xml",
+          "name": "dev.agentworkbench.RuntimeIntegrationTest",
+          "sha256": "0087188e47b73c207a55b8b373b3afb43efedc4685fc4b2878141ac647e97c24",
+          "tests": 35,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 2,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": [
+            {
+              "className": "dev.agentworkbench.RuntimeIntegrationTest",
+              "name": "transientWindowsReceiptLockDoesNotReplayCompletedFileTool",
+              "reason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not true\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:71)\n\tat dev.agentworkbench.RuntimeIntegrationTest.exerciseWindowsReceiptLock(RuntimeIntegrationTest.java:364)\n\tat dev.agentworkbench.RuntimeIntegrationTest.transientWindowsReceiptLockDoesNotReplayCompletedFileTool(RuntimeIntegrationTest.java:352)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>"
+            },
+            {
+              "className": "dev.agentworkbench.RuntimeIntegrationTest",
+              "name": "persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay",
+              "reason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: assumption is not true\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:71)\n\tat dev.agentworkbench.RuntimeIntegrationTest.exerciseWindowsReceiptLock(RuntimeIntegrationTest.java:364)\n\tat dev.agentworkbench.RuntimeIntegrationTest.persistentWindowsReceiptLockKeepsEffectUnknownWithoutReplay(RuntimeIntegrationTest.java:357)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>"
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.SessionStoreTest.xml",
+          "name": "dev.agentworkbench.SessionStoreTest",
+          "sha256": "bd196881d251082b569090122a8355884979612d0459d7cd859e56e6e1e32698",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TaskDispatchQueueTest.xml",
+          "name": "dev.agentworkbench.TaskDispatchQueueTest",
+          "sha256": "c9488096c614e7718098e02038878a5cfd2f801aae019542dacb03eebcb75532",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamExecutionTest.xml",
+          "name": "dev.agentworkbench.TeamExecutionTest",
+          "sha256": "2216d4abb2ecdc4b16c97018f8b2b3cb1629db11aa673f1270ac6247418ea6a1",
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TeamRecordsTest.xml",
+          "name": "dev.agentworkbench.TeamRecordsTest",
+          "sha256": "f45ad4f01fff72ce2f5613e10364aa08ee5eb1541737e07d9dca1ecd87ee0cc1",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalControllerTest.xml",
+          "name": "dev.agentworkbench.TerminalControllerTest",
+          "sha256": "fa1bfdc3e2e192958bc41ce964b59982465962ea12fd434c5e8dba557c2f9c35",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalEngineTest.xml",
+          "name": "dev.agentworkbench.TerminalEngineTest",
+          "sha256": "68a86c27b38df6bf08b572c7bce741eba338ff9fd96e747292064a1c9edb302d",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalExportHistoryTest.xml",
+          "name": "dev.agentworkbench.TerminalExportHistoryTest",
+          "sha256": "44bebf6c3b9a223705c8a71c458f17be839520e846a05ff3ff9ab0dccec3b2fd",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalLedgerTest.xml",
+          "name": "dev.agentworkbench.TerminalLedgerTest",
+          "sha256": "b12ac60afbde145a1f5b24d8f6e599238921b2175d82be8d4ac820f3b1739c76",
+          "tests": 30,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.TerminalQueueTest.xml",
+          "name": "dev.agentworkbench.TerminalQueueTest",
+          "sha256": "b67f1ef9cb80e30bec84c0219883488c74746fe1f8e5edd19637b1cb8d32bff7",
+          "tests": 17,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WindowsProcessSnapshotTest.xml",
+          "name": "dev.agentworkbench.WindowsProcessSnapshotTest",
+          "sha256": "a7c76a7081b57610af9b9d741b0b33bbcb2dbb947909120754df5ebfaa24c874",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": [
+            {
+              "className": "dev.agentworkbench.WindowsProcessSnapshotTest",
+              "name": "actualWindowsSnapshotMatchesReadableProcessBirths",
+              "reason": "<skipped type=\"org.opentest4j.TestAbortedException\"><![CDATA[org.opentest4j.TestAbortedException: Assumption failed: Windows native system process snapshot\n\tat org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:321)\n\tat org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:120)\n\tat dev.agentworkbench.WindowsProcessSnapshotTest.actualWindowsSnapshotMatchesReadableProcessBirths(WindowsProcessSnapshotTest.java:46)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1596)\n]]></skipped>"
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchEngineTest.xml",
+          "name": "dev.agentworkbench.WorkbenchEngineTest",
+          "sha256": "85521a86cdeb434731e1da3b6fe932d0dce3330dcab1a07ccf00d826051d0ef7",
+          "tests": 24,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkbenchVersionTest.xml",
+          "name": "dev.agentworkbench.WorkbenchVersionTest",
+          "sha256": "65d39ebdf7a4bdee9d917708e5276364f26948693199128ab058058a6dd2120a",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerLeaseTest.xml",
+          "name": "dev.agentworkbench.WorkerLeaseTest",
+          "sha256": "6f96ffcfc1a46b24d211da566303430c39defb6ba8462418bb02289b762550c5",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerProcessTest.xml",
+          "name": "dev.agentworkbench.WorkerProcessTest",
+          "sha256": "b96891c1c5622ee428eeab13f0de4a1349d27dddab713083e178e50722a54cd9",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerRpcTest.xml",
+          "name": "dev.agentworkbench.WorkerRpcTest",
+          "sha256": "2ecbad67659e6d71efc10b732ced4a3c4a77bfc5908c253a3d150c1ec9a88a7d",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkerWireTest.xml",
+          "name": "dev.agentworkbench.WorkerWireTest",
+          "sha256": "0f2019d837dfc5334fbfbae50a5528522e46c3981130de88a2e774c47507676f",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceLongPathTest.xml",
+          "name": "dev.agentworkbench.WorkspaceLongPathTest",
+          "sha256": "f986a5c576e90800ecd107f2531f3bac1278ed80cbc6953fb967d5ef495aa67a",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 2,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": [
+            {
+              "className": "dev.agentworkbench.WorkspaceLongPathTest",
+              "name": "windowsLongObjectPathsPreserveOriginalWorkspaceAndReview(String)",
+              "reason": "<skipped message=\"Disabled on operating system: Mac OS X\"/>"
+            },
+            {
+              "className": "dev.agentworkbench.WorkspaceLongPathTest",
+              "name": "windowsWorktreeBeyondExplicitGitDirectoryLimitRetainsReadyOwnership",
+              "reason": "<skipped message=\"Disabled on operating system: Mac OS X\"/>"
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteEngineTest.xml",
+          "name": "dev.agentworkbench.WorkspaceWriteEngineTest",
+          "sha256": "5181b406ed2befa6dfcfd341bd884d771fd51736bb46fa3dd3c52f3b1f7e3840",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceWriteLedgerTest.xml",
+          "name": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+          "sha256": "244ad5f7b7f2827895438e18022fc56ebefdb1c13dffa21b9c2cb22265f6b719",
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": [
+            {
+              "className": "dev.agentworkbench.WorkspaceWriteLedgerTest",
+              "name": "savedWindowsShortWorkspaceKeepsItsPhysicalScopeAfterStoreReopen",
+              "reason": "<skipped message=\"Disabled on operating system: Mac OS X\"/>"
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.mcp.McpIntegrationTest.xml",
+          "name": "dev.agentworkbench.mcp.McpIntegrationTest",
+          "sha256": "36b1562cf1f30e8016b8228e727485d626415677db5d2780929ac8d1ea1811cd",
+          "tests": 25,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.WorkspaceSelectionEngineTest.xml",
+          "name": "dev.agentworkbench.WorkspaceSelectionEngineTest",
+          "sha256": "1537e15acdfb6182cd63dac3db9af59b301e9064a2543afa3ea3fa6a589c6b54",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.FileVersionRuntimeTest.xml",
+          "name": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+          "sha256": "1197b60d30e5f72e8d9c45f20e642e7d29734acd8ad088659c67ad54987be7c9",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitBlobBatchTest.xml",
+          "name": "dev.agentworkbench.runtime.GitBlobBatchTest",
+          "sha256": "c128125bb77e3414afe5c8b7ce233290bbe123971f96d1071f7125aa8e343a08",
+          "tests": 22,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.GitDiffViewTest.xml",
+          "name": "dev.agentworkbench.runtime.GitDiffViewTest",
+          "sha256": "8b3ef1dc051493dc123ea7613e1893668da3f564d4c8a095160ef047c1f092cf",
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 1,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": [
+            {
+              "className": "dev.agentworkbench.runtime.GitDiffViewTest",
+              "name": "windowsJunctionCannotRedirectPreviewCopiesOrCleanup",
+              "reason": "<skipped message=\"Disabled on operating system: Mac OS X\"/>"
+            }
+          ]
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.ModelFailureTypesTest.xml",
+          "name": "dev.agentworkbench.runtime.ModelFailureTypesTest",
+          "sha256": "8522e2db7f307c3e1ed42f637d60076c9f108bdcd5aa39ce4f7f1f2da5c4230b",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtyBundleTest.xml",
+          "name": "dev.agentworkbench.runtime.NativePtyBundleTest",
+          "sha256": "ee674ff15870e681ccfa7982ae31b467107d5c0d7221f37df30e94f0a40dc5c9",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.TerminalOutputArchiveTest.xml",
+          "name": "dev.agentworkbench.runtime.TerminalOutputArchiveTest",
+          "sha256": "2620795b3e7915bdad74ac50e79d7df5eb04d19cd2ec00e7d62a3264f83a22bc",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.xml",
+          "name": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+          "sha256": "2200f87006ff41d5efaaa8f8083aad1b9bfdd3ce06076d63c6636b754e979c53",
+          "tests": 35,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.NativePtySessionTest.xml",
+          "name": "dev.agentworkbench.runtime.NativePtySessionTest",
+          "sha256": "275ffa53d8f6c6193c44973498599c53eccdc0fb75faa5844de4aefde689ce56",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        },
+        {
+          "file": "core/target/surefire-reports/TEST-dev.agentworkbench.runtime.WorkspaceWriteGuardTest.xml",
+          "name": "dev.agentworkbench.runtime.WorkspaceWriteGuardTest",
+          "sha256": "25a45326319dab535b8bf39ccc0ea6d92907f8f51a4f38780e61220c0e791a56",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "javaVersion": "21.0.13",
+          "carrierParallelism": 2,
+          "carrierMaxPoolSize": 2,
+          "skippedCases": []
+        }
+      ]
+    },
+    "ui": {
+      "tests": 236,
+      "retries": 0,
+      "skipped": 0,
+      "failures": 0,
+      "receiptSha256": "2fb1e924e5eb11037b18f3aa3956b74523304c66da506ab9658c7a73f08c8598",
+      "sourceCount": 86,
+      "exactCommitSourcesAndRootAssetsVerified": true,
+      "freshness": {
+        "step": "UI interaction tests",
+        "startedAt": "2026-11-18T09:05:07Z",
+        "completedAt": "2026-11-18T09:13:15Z",
+        "reportAt": "2026-11-18T09:13:15.485Z",
+        "completedAtPrecision": "SECOND"
+      }
+    },
+    "native": {
+      "groups": 5,
+      "modelCalls": 6,
+      "receiptSha256": "a27e0f448f49e01554871ecad137858d521249155b83d4192e8e79b9cbd62778",
+      "exactCommitCoreAndWebSourcesVerified": true,
+      "originalIdentitiesStopped": true,
+      "freshness": {
+        "step": "Actual final Jar and production Web native terminal control",
+        "startedAt": "2026-11-18T09:15:43Z",
+        "completedAt": "2026-11-18T09:16:25Z",
+        "reportAt": "2026-11-18T09:16:25.177Z",
+        "completedAtPrecision": "SECOND"
+      }
+    },
+    "partialPreview": {
+      "finalReceiptMissing": true,
+      "exactCommitRunnerVerified": true,
+      "completedCaptureEvidence": [
+        {
+          "file": ".runtime/preview-native-DjqDXk/actual-native-preview-bounds.json",
+          "bytes": 120,
+          "sha256": "a47fd15f1db8c4628bf9db33ed9df550a329b127ee920b25010daa3af39a665e"
+        },
+        {
+          "file": ".runtime/preview-native-DjqDXk/actual-native-preview.png",
+          "bytes": 7797,
+          "sha256": "4a4f3ab29ba193c6ed8eec9a2106174198509af3e8f05c38953d3f9c88bb1a05"
+        },
+        {
+          "file": ".runtime/preview-native-DjqDXk/actual-workbench-chrome.png",
+          "bytes": 157959,
+          "sha256": "491d0baac4358f478c18c1df0414b4fb8b7fbbfa2def70e2c261e2f99a0a016e"
+        }
+      ],
+      "bounds": [
+        {
+          "id": 11,
+          "bounds": {
+            "x": 241,
+            "y": 144,
+            "width": 742,
+            "height": 355
+          }
+        }
+      ]
+    }
+  },
+  "timeoutEvidence": {
+    "file": ".runtime/alpha21-ci/macos-cancelled-check-134685503637-1794998221963.json",
+    "sha256": "97ff0f57e78570a5c2526ced658376fe1da1cf89054240a06f0dca896a689c6f",
+    "message": "The job has exceeded the maximum execution time of 1h15m0s",
+    "maximumExecutionMinutes": 75
+  },
+  "remaining": [
+    "The exact call that did not return after site clear is not identified",
+    "macOS subsequent recovery, standalone and packaged steps were skipped",
+    "Windows/Ubuntu whole artifacts are not certified by this log-only audit",
+    "Current terminal and loopback recovery require their own exact-commit CI"
+  ]
+}

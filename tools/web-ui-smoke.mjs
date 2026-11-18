@@ -20,6 +20,7 @@ const inventory = (folder, relative = '', result = []) => {
 };
 const version = JSON.parse(readFileSync(join(web, 'package.json'), 'utf8')).version;
 assert.equal(version, JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version);
+const productionDist = resolve(root, process.env.WORKBENCH_WEB_TEST_DIST || 'web/dist');
 const sourceNames = ['package.json', 'package-lock.json', 'playwright.config.ts', 'vite.config.ts', 'tsconfig.json', 'index.html',
   ...['src', 'public', 'tests'].flatMap(folder => inventory(join(web, folder)).map(file => `${folder}/${file.file}`))];
 const sources = sourceNames.sort().map(file => {
@@ -32,7 +33,7 @@ const buildReceipt = buildPath ? JSON.parse(readFileSync(buildPath, 'utf8')) : n
 if (buildReceipt) {
   assert.equal(buildReceipt.status, 'passed'); assert.equal(buildReceipt.version, version); assert.equal(buildReceipt.sourcesUnchanged, true);
   for (const source of buildReceipt.sources) assert.equal(hash(readFileSync(resolve(root, source.file))), source.sha256, `Build source changed: ${source.file}`);
-  for (const output of buildReceipt.output) assert.equal(hash(readFileSync(join(web, 'dist', output.file))), output.sha256, `Build output changed: ${output.file}`);
+  for (const output of buildReceipt.output) assert.equal(hash(readFileSync(join(productionDist, output.file))), output.sha256, `Build output changed: ${output.file}`);
   save('original-build-receipt.json', buildReceipt);
 }
 const dependencies = ['@xterm/xterm', '@xterm/addon-fit', '@playwright/test', 'playwright', 'playwright-core', 'react', 'react-dom'].map(name => {
@@ -44,8 +45,8 @@ const historical = execFileSync('git', ['ls-files', '-z', '--', 'web/qa'], { cwd
   const bytes = readFileSync(join(root, file)), target = join(directory, 'historical-before', file);
   mkdirSync(dirname(target), { recursive: true }); writeFileSync(target, bytes, { flag: 'wx' }); return { file, sha256: hash(bytes) };
 });
-assert.ok(existsSync(join(web, 'dist/index.html')), 'Build the current production Web before UI acceptance.');
-cpSync(join(web, 'dist'), join(directory, 'dist'), { recursive: true, dereference: false });
+assert.ok(existsSync(join(productionDist, 'index.html')), 'Build the current production Web before UI acceptance.');
+cpSync(productionDist, join(directory, 'dist'), { recursive: true, dereference: false });
 const assets = inventory(join(directory, 'dist')), assetMap = new Map(assets.map(file => [`/${file.file}`, file]));
 const scriptSource = readFileSync(fileURLToPath(import.meta.url)); writeFileSync(join(directory, 'runner-source.mjs'), scriptSource, { flag: 'wx' });
 const proof = randomUUID(), staticRequests = [], startedAt = new Date().toISOString();
@@ -85,10 +86,10 @@ for (const original of historical) {
 const results = existsSync(join(directory, 'playwright.json')) ? JSON.parse(readFileSync(join(directory, 'playwright.json'), 'utf8')) : undefined;
 const sourcesUnchanged = sources.every(source => hash(readFileSync(join(root, source.file))) === source.sha256);
 const buildSourcesUnchanged = !buildReceipt || buildReceipt.sources.every(source => hash(readFileSync(resolve(root, source.file))) === source.sha256);
-const assetsUnchanged = assets.every(asset => hash(readFileSync(join(directory, 'dist', asset.file))) === asset.sha256 && hash(readFileSync(join(web, 'dist', asset.file))) === asset.sha256);
+const assetsUnchanged = assets.every(asset => hash(readFileSync(join(directory, 'dist', asset.file))) === asset.sha256 && hash(readFileSync(join(productionDist, asset.file))) === asset.sha256);
 const passed = ending.exitCode === 0 && !childError && sourcesUnchanged && buildSourcesUnchanged && assetsUnchanged && results?.stats.expected > 0 && results.stats.unexpected === 0 && results.stats.flaky === 0 && results.stats.skipped === 0;
 const receipt = { startedAt, recordedAt: new Date().toISOString(), status: passed ? 'passed' : 'failed', ...ending, childError, version, platform: process.platform,
-  baseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, windowsHide: true, encoding: 'utf8' }).trim(), baseUrl,
+  baseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, windowsHide: true, encoding: 'utf8' }).trim(), baseUrl, productionDist,
   serverOwnedByRunner: true, reusedServer: false, serverProofVerified: true, browserChannel: channel, browsersPath: process.env.PLAYWRIGHT_BROWSERS_PATH || null,
   sources, sourcesUnchanged, buildReceiptPath: buildPath || null, buildSourcesUnchanged, dependencies, assets, assetsUnchanged, stats: results?.stats || null,
   selection, originalHistoricalImagesPreserved: historical.length, runnerSha256: hash(scriptSource), directory,

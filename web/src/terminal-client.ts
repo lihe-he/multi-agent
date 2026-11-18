@@ -14,27 +14,36 @@ export class TerminalHttpError extends Error {
   constructor(message: string, readonly status?: number) { super(message); }
 }
 
+export class TerminalTransportError extends Error {}
+
 export async function terminalRequest<T>(path: string, body?: unknown, signal?: AbortSignal): Promise<T> {
   const connection = currentConnection(), encoded = body === undefined ? undefined : JSON.stringify(body);
   if (encoded !== undefined && encoder.encode(encoded).length > REQUEST_BYTES) throw new TerminalHttpError('终端请求超过 32 KiB，本次内容未发送。');
-  const response = await fetch(`${connection.baseUrl}/api${path}`, {
+  async function transport<V>(operation: Promise<V>): Promise<V> {
+    try { return await operation; }
+    catch (failure) {
+      if (signal?.aborted) throw failure;
+      throw new TerminalTransportError((failure as Error).message || '原终端连接未完成。');
+    }
+  }
+  const response = await transport(fetch(`${connection.baseUrl}/api${path}`, {
     method: body === undefined ? 'GET' : 'POST', ...(encoded === undefined ? {} : { body: encoded }),
     headers: { ...(encoded === undefined ? {} : { 'Content-Type': 'application/json' }), ...(connection.token ? { Authorization: `Bearer ${connection.token}` } : {}) },
     signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(8000)]) : AbortSignal.timeout(8000),
-  });
+  }));
   const parts: Uint8Array[] = []; let length = 0;
   if (response.body) {
     const reader = response.body.getReader();
     try {
       for (;;) {
-        const read = await reader.read(); if (read.done) break;
+        const read = await transport(reader.read()); if (read.done) break;
         length += read.value.length;
         if (length > RESPONSE_BYTES) { await reader.cancel(); throw new TerminalHttpError('终端响应超过读取边界，当前观察未确认。', response.status); }
         parts.push(read.value);
       }
     } finally { reader.releaseLock(); }
   } else {
-    const bytes = new Uint8Array(await response.arrayBuffer()); length = bytes.length;
+    const bytes = new Uint8Array(await transport(response.arrayBuffer())); length = bytes.length;
     if (length > RESPONSE_BYTES) throw new TerminalHttpError('终端响应超过读取边界，当前观察未确认。', response.status);
     parts.push(bytes);
   }
@@ -96,6 +105,7 @@ const wait = (ms: number) => new Promise<void>(resolve => window.setTimeout(reso
 /** Owns only this pane's in-memory control secret and unsent input. */
 export class TerminalActionChannel {
   private lease?: TerminalControl;
+  private controlRevision = 0;
   private queue: QueuedAction[] = [];
   private queuedBytes = 0;
   private sending = false;
@@ -116,7 +126,7 @@ export class TerminalActionChannel {
     if (!this.disposed) this.change({ controlled: !!this.lease, claiming: this.claiming, sending: this.sending, queuedBytes: this.queuedBytes,
       queuedActions: this.queue.length, stopping: this.stopping, message: this.message, unresolvedRequestId: this.unresolved?.requestId, lastAction: this.lastAction });
   }
-  private clearControl() { this.lease = undefined; this.queue = []; this.queuedBytes = 0; this.requestedResize = undefined; }
+  private clearControl() { this.controlRevision++; this.lease = undefined; this.queue = []; this.queuedBytes = 0; this.requestedResize = undefined; }
   observe(session: TerminalSession) {
     if (session.id !== this.terminalId) return;
     this.observed = session;
@@ -130,11 +140,12 @@ export class TerminalActionChannel {
 
   async acquire(expectedGeneration: number) {
     if (this.disposed || this.claiming || this.sending || this.unresolved) return;
+    const revision = this.controlRevision;
     this.claiming = true; this.message = ''; this.publish();
     try {
       const controllerId = window.crypto.randomUUID();
       const lease = await terminalRequest<TerminalControl>(`/terminals/${encodeURIComponent(this.terminalId)}/control`, { expectedGeneration, controllerId });
-      if (this.disposed) return;
+      if (this.disposed || revision !== this.controlRevision) return;
       if (!lease || lease.terminal?.id !== this.terminalId || lease.terminal.controllerId !== controllerId || lease.generation !== expectedGeneration + 1
           || lease.terminal.controllerGeneration !== lease.generation || typeof lease.controlSecret !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(lease.controlSecret)
           || !Number.isSafeInteger(lease.nextSequence) || lease.nextSequence !== lease.terminal.lastActionSequence + 1) throw new Error('控制回执不完整，请查看原终端后重新取得控制。');
@@ -142,7 +153,7 @@ export class TerminalActionChannel {
           || this.observed.controllerGeneration > lease.generation) throw new Error('原终端状态已变化，此窗口保持查看模式。');
       this.lease = lease; this.observed = lease.terminal; this.stopping = false;
       this.metadata(lease.terminal); this.message = '此窗口已取得控制。关闭页面会保留原 shell。';
-    } catch (error) { this.clearControl(); this.message = (error as Error).message; }
+    } catch (error) { if (!this.disposed && revision === this.controlRevision) { this.clearControl(); this.message = (error as Error).message; } }
     finally { this.claiming = false; this.publish(); }
   }
 

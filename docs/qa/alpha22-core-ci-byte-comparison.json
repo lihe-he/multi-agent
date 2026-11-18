@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-11-18T11:05:10.131Z",
+  "localJarSha256": "eca481e3859679226b17022880a0fcaa5f1526e7c7c6d8bfe2366ad7cf9ef9d9",
+  "ciJarSha256": "ffa1099361a7075d52fb2ce1791bc10d89ae0f7aa56a494c2bbc13f21bef3360",
+  "ciHeadSha": "b3216d36683e3870606c5e69c2011d0c064b82fd",
+  "ciPlatform": "darwin",
+  "productionClassCount": 162,
+  "productionClassBytesEqual": true,
+  "groups": [
+    {
+      "prefix": "BOOT-INF/classes/",
+      "files": 178,
+      "missing": [],
+      "extra": [],
+      "changed": [],
+      "rawBytesEqual": true
+    },
+    {
+      "prefix": "BOOT-INF/lib/",
+      "files": 36,
+      "missing": [],
+      "extra": [],
+      "changed": [],
+      "rawBytesEqual": true
+    }
+  ],
+  "scope": "LOCAL_INCREMENTAL_JAR_BYTES_COMPARED_TO_DIGEST_VERIFIED_EXACT_COMMIT_MACOS_CI_JAR; NOT_A_NEW_LOCAL_FULL_CORE_VERIFY"
+}

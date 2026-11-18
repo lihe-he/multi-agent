@@ -1,0 +1,1918 @@
+{
+  "recordedAt": "2026-11-18T12:03:17.613Z",
+  "version": "0.2.0-alpha.22",
+  "platform": "win32",
+  "status": "passed",
+  "baseCommit": "cfc259a5d24f8fab38a2059552444a67f0b7c046",
+  "scope": "FINAL_FROZEN_PRODUCTION_WEB_LOCAL_CORE_AND_WINDOWS_PACKAGED_ACCEPTANCE; FULL_PLAN_AND_EXACT_NEW_COMMIT_THREE_PLATFORM_CI_REMAIN_OPEN",
+  "finalBuild": {
+    "file": ".runtime/alpha22-web-build-H0KHft/receipt.json",
+    "sha256": "20acb1c0143ef73912873598110b02687339f117cdf4fa7add4594137f7a7544",
+    "outputs": [
+      {
+        "file": "assets/index-BrO4RoK-.css",
+        "bytes": 105469,
+        "sha256": "9a9c5b4d2e15f5ff5017901b465e268dd462bbd83eef1d53ed19b6344d03e50b"
+      },
+      {
+        "file": "assets/index-hqtawEhq.js",
+        "bytes": 436228,
+        "sha256": "b4be5ab7b1a68c9151c64f3f9d06dca864bc52f859eae43d5ab5a19255dec8d9"
+      },
+      {
+        "file": "assets/TaskTerminals-BbT8zRoT.css",
+        "bytes": 8158,
+        "sha256": "cbbcf611656957e8adacaefc7849df70e70db93aa2a6832b5ed771534dddabe5"
+      },
+      {
+        "file": "assets/TaskTerminals-BGZDlWnu.js",
+        "bytes": 360406,
+        "sha256": "d4c7fbacb981fcfc4b26f54f6cb2df0b6aa06189027f3f5bdbf397b0fe622ff7"
+      },
+      {
+        "file": "index.html",
+        "bytes": 791,
+        "sha256": "e0ce0d544d79231a541e0e96f7aa925ebab195e8fe606fdb44eb56983295e9c0"
+      },
+      {
+        "file": "theme-init.js",
+        "bytes": 3911,
+        "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+      },
+      {
+        "file": "third-party/annotations-24.0.1/LICENSE.txt",
+        "bytes": 11352,
+        "sha256": "8c1e966c7855fb54027bcaf6ebe7a43abe4785791e8cf9148c363761d493d097"
+      },
+      {
+        "file": "third-party/kotlin-stdlib-1.9.22/LICENSE.txt",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+      },
+      {
+        "file": "third-party/kotlin-stdlib-1.9.22/NOTICE.txt",
+        "bytes": 482,
+        "sha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19"
+      },
+      {
+        "file": "third-party/native/OpenConsole-LICENSE.txt",
+        "bytes": 1116,
+        "sha256": "5d177f23ecfeb0ea8e050b6a5a16355e1ae9a0b286436ca8f83ed08b3795be6b"
+      },
+      {
+        "file": "third-party/native/winpty-LICENSE.txt",
+        "bytes": 1085,
+        "sha256": "c39e428064b4f3e4fe81a975bf0fd3b845922b431bc4d9a7ffc8bfb091981836"
+      },
+      {
+        "file": "third-party/origins.json",
+        "bytes": 5075,
+        "sha256": "87e8268ebdc74cbcb31c437c8e08682daa5715e2d9eb9f7d47c5a62c335856e9"
+      },
+      {
+        "file": "third-party/pty4j/LICENSE.txt",
+        "bytes": 11231,
+        "sha256": "3a4a6fe55f67f02b92be0ec9907e347de8ab5c8edf9214c5c8019e5820517884"
+      },
+      {
+        "file": "third-party/pty4j/NOTICE.txt",
+        "bytes": 421,
+        "sha256": "7f1b01b809cecc274e9a0aaeba288ccb36a18cb96a97b8cc1fde58c1e713e845"
+      },
+      {
+        "file": "third-party/pty4j/pty4j-0.13.4-sources.jar",
+        "bytes": 66477,
+        "sha256": "0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01"
+      },
+      {
+        "file": "third-party/SOURCE-OFFER.txt",
+        "bytes": 1766,
+        "sha256": "b13f9c5d6c9e4d9563c63354720973c23f351c89ab404cda0dabb502ce9a1d2d"
+      },
+      {
+        "file": "third-party/THIRD-PARTY-NOTICES.txt",
+        "bytes": 467,
+        "sha256": "179d93e97c4de96898d86cd089402ab6f0e3db9741e740d2f4155ae7d0735d5e"
+      },
+      {
+        "file": "third-party/xterm-addon-fit/LICENSE.txt",
+        "bytes": 1103,
+        "sha256": "e256f01188af527e4d06d21d06fbf785ae9c50d4b328bf03cbe0ba7f0aa4228f"
+      },
+      {
+        "file": "third-party/xterm/LICENSE.txt",
+        "bytes": 1261,
+        "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd"
+      },
+      {
+        "file": "workbench-config.json",
+        "bytes": 26,
+        "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+      }
+    ],
+    "sourceCount": 68,
+    "distributionNoticesVerified": true
+  },
+  "productionUi": {
+    "file": ".runtime/ui-production-SItWwA/receipt.json",
+    "sha256": "fb8fc3862348d383501f9cecc2274056ac94ab3f690c451299279fea004522fb",
+    "stats": {
+      "startTime": "2026-11-18T11:36:39.641Z",
+      "duration": 314759.089,
+      "expected": 252,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "sourcesUnchanged": true,
+    "assetsUnchanged": true,
+    "protocolFixtures": true
+  },
+  "browserCache": {
+    "file": ".runtime/page-recovery-b9sHeL/receipt.json",
+    "sha256": "b1f84519a4772224c74d1a201930c8ce498aee93f9130e82ea8a8ea6af683b60",
+    "checks": [
+      {
+        "cycle": 1,
+        "actualBFCacheRestore": true,
+        "documentIdUnchanged": true,
+        "restoredAt": 1795002350762,
+        "elapsedMs": 248,
+        "originalMessageCursor": 52,
+        "originalEventCursor": 70,
+        "draftAndSelectionPreserved": true
+      },
+      {
+        "cycle": 2,
+        "actualBFCacheRestore": true,
+        "documentIdUnchanged": true,
+        "restoredAt": 1795002354162,
+        "elapsedMs": 228,
+        "originalMessageCursor": 53,
+        "originalEventCursor": 71,
+        "draftAndSelectionPreserved": true
+      }
+    ],
+    "authorizedGetCount": 33,
+    "fixtureCacheControl": "private, no-cache",
+    "actualJavaCacheControlUnchanged": "no-store",
+    "scope": "ACTUAL_BROWSER_BFCACHE_ORIGINAL_DOCUMENT_RESTORE_WITH_FROZEN_PRODUCTION_WEB_AND_HTTP_PROTOCOL_FIXTURE; NO_REAL_CORE_OR_TERMINAL_OR_OS_SLEEP_ACCEPTANCE"
+  },
+  "native": {
+    "standalone": {
+      "file": ".runtime/alpha22-native-standalone-KE3Vah/receipt.json",
+      "sha256": "8dfe3a3a5c539f4e3466e94a48d82dce41b0da3dfdeb14d3653535292c811b09",
+      "generatedReport": {
+        "file": ".runtime/alpha22-native-standalone-KE3Vah/generated/docs/qa/standalone-win32.json",
+        "sha256": "0e1cb1883d3b58a225581077237baeb43ab954309ead18bc3362f738946abca0"
+      },
+      "status": "passed",
+      "toolDirectory": null,
+      "frozenSourceCount": 298,
+      "sourcesUnchanged": true,
+      "jarUnchanged": true,
+      "restoredReports": 5,
+      "restoredImages": 44,
+      "isolatedDesktop": {
+        "file": ".runtime/alpha22-native-isolated-standalone-f9df52ac79b5475cbb5061aa4bb6f7a1/receipt.json",
+        "sha256": "d1326276349b694cddd4aa5fb9ca05054c85f73c4ddd218af858ff3ef98851ee",
+        "exitCode": 0,
+        "inputDesktopBefore": "Default",
+        "inputDesktopAfter": "Default",
+        "desktopHandleClosed": true
+      },
+      "browserOfflineRecovery": {
+        "browserTransportActuallyBlocked": true,
+        "controlledNavigatorOnlineHint": false,
+        "coreReachableWhileBrowserOffline": true,
+        "originalCorePidUnchanged": true,
+        "onlineRecoveryMs": 44,
+        "recoveryReads": [
+          {
+            "method": "GET",
+            "path": "/service/api/state",
+            "authorized": true
+          },
+          {
+            "method": "GET",
+            "path": "/service/api/state",
+            "authorized": true
+          }
+        ],
+        "automaticTaskWriteReplay": false,
+        "scope": "REAL_JAVA_CORE_AND_BROWSER_TRANSPORT_OFFLINE_WITH_CONTROLLED_NAVIGATOR_HINT; NO_OS_NETWORK_ADAPTER_CHANGES"
+      },
+      "sameInFlightTaskPreserved": true,
+      "childRequestPreservedOnReconnect": "d01dbe32-d732-4851-b7d7-881c2a84734a",
+      "workerLeasePreservedOnReconnect": "bee4df39-9f68-40e4-b997-55eda20f5adc"
+    },
+    "terminal": {
+      "file": ".runtime/alpha22-native-terminal-KcdZNn/receipt.json",
+      "sha256": "c2eb4afe42776cf305058bfd65ebddd56d5f965e7415b526fd573cb13f15ea3a",
+      "generatedReport": {
+        "file": ".runtime/alpha22-native-terminal-KcdZNn/generated/docs/qa/terminals-native-ui-win32.json",
+        "sha256": "6f05bdacbe9e1ce781b9dd73a359486a692fc387afa99f5b08f83d1d321e3c4e"
+      },
+      "status": "passed",
+      "toolDirectory": ".runtime/terminal-native-ui-jTsoY0",
+      "frozenSourceCount": 298,
+      "sourcesUnchanged": true,
+      "jarUnchanged": true,
+      "restoredReports": 5,
+      "restoredImages": 44,
+      "isolatedDesktop": {
+        "file": ".runtime/alpha22-native-isolated-terminal-5e0b3d3769d74714981b58715708d866/receipt.json",
+        "sha256": "f19c984d26bb047cc7d28b3360b2c64ae8e7e19f4edb419d9c06811d89ce2fd0",
+        "exitCode": 0,
+        "inputDesktopBefore": "Default",
+        "inputDesktopAfter": "Default",
+        "desktopHandleClosed": true
+      },
+      "scope": "ACTUAL_PRODUCTION_MAIN_JAR_WEB_REAL_INDEPENDENT_WORKER_AND_NATIVE_SHELL; PACKAGED_JRE_AND_COMPLETE_HISTORICAL_PROCESS_TREE_ACCEPTANCE_SEPARATE",
+      "checks": 7,
+      "localHttpModelFixtureCalls": 6,
+      "originalIdentitiesStopped": true,
+      "artifactInputs": {
+        "file": ".runtime/terminal-native-ui-jTsoY0/artifact-inputs.json",
+        "sha256": "9528a45c73676e4d9e250ea9b49a2df0c2da68c6f3e6702f0b177610f84c6b7c"
+      },
+      "packagedSourceFiles": 0,
+      "packagedRuntimeFiles": 0,
+      "browserOfflineRecoveries": [
+        {
+          "strategy": "clone",
+          "file": ".runtime/terminal-native-ui-jTsoY0/clone-actual-network-read-recovery.json",
+          "sha256": "fe80fdbecbc54cc86bc35a59b4ac50a1ac727c3171df60974c41eef814bd3c32",
+          "originalNative": {
+            "pid": 11480,
+            "processStartedAt": "2026-11-18T11:49:43.252Z",
+            "backend": "com.pty4j.windows.conpty.WinConPtyProcess",
+            "recipe": "SYSTEM_CMD",
+            "workingDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\workspaces\\32f33ea3-88f8-4e11-aa17-ef8e002e0abb\\work",
+            "workingDirectoryFileKey": "WINDOWS:86ca0064ca0052bb:c9d71300000006000000000000000000",
+            "columns": 80,
+            "rows": 24,
+            "nativeBundle": {
+              "version": "0.13.4",
+              "releasedJarSha256": "bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc",
+              "inventorySha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9",
+              "ownerSha256": "e94c780c44c5b6daf871fec5589d3d80a7366c354735b2f9adf0cc1c46b318b4",
+              "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\terminal-native\\worker-29656-9845484302321268175",
+              "files": [
+                {
+                  "path": "win/x86-64/win-helper.dll",
+                  "bytes": 42904,
+                  "sha256": "d1777570d51da29d94444cbfc17632e0a6b934578fb57cc39b0de7ebc0bbecc8"
+                },
+                {
+                  "path": "win/x86-64/conpty.dll",
+                  "bytes": 102912,
+                  "sha256": "15f4f7eb67135120c73d516fa83b0f550344b019fb25f0b9ddee96e5ac342d3d"
+                },
+                {
+                  "path": "win/x86-64/winpty.dll",
+                  "bytes": 654728,
+                  "sha256": "21c6480093859d4811525dd68ece1905324014bbd8c1a11fea6a78b2933009f4"
+                },
+                {
+                  "path": "win/x86-64/winpty-agent.exe",
+                  "bytes": 747416,
+                  "sha256": "2afff3901ae320437161c204a3ecdbb48e3713f074f533387f105acc44dc2fc6"
+                },
+                {
+                  "path": "win/x86-64/cyglaunch.exe",
+                  "bytes": 28416,
+                  "sha256": "5d2d8da1066eb931bf86aa0895bb5cec3d7320faf258b7b20d722f16136cb3ca"
+                },
+                {
+                  "path": "win/x86-64/OpenConsole.exe",
+                  "bytes": 1398272,
+                  "sha256": "837e5ac001cd451f86ae463568603901a421cf1c37eef7db8db152bd77760140"
+                }
+              ]
+            },
+            "createdAt": "2026-11-18T11:49:42.325041900Z",
+            "outputReadOwnership": "DUPLICATED_NONINHERITABLE_ORIGINAL_PIPE_HANDLE",
+            "cleanupKind": "ORIGINAL_NATIVE_THREAD",
+            "nativeCleanupThreadId": 256
+          },
+          "epoch": "e54d67ad-ce35-41b4-8403-215a7c4c4d0e",
+          "originalDrained": 1455,
+          "restoredMs": 55,
+          "coreReachableWhileBrowserOffline": true,
+          "originalManualEffectCount": 1,
+          "originalControlNotRestored": true,
+          "noAdditionalPosts": true,
+          "resumedReads": [
+            {
+              "path": "/api/terminals/541b2073-0aad-4fd5-86fe-72059000efb9",
+              "query": "",
+              "method": "GET",
+              "bearerHeaderPresent": true,
+              "status": 200,
+              "response": {
+                "id": "541b2073-0aad-4fd5-86fe-72059000efb9",
+                "protocolVersion": 1,
+                "taskId": "32f33ea3-88f8-4e11-aa17-ef8e002e0abb",
+                "projectId": "070b61aa-4d1f-4905-9cbb-2dc2b0e2dff5",
+                "sessionId": "f27d9e28-d66a-43cb-8a01-f94ad216b239",
+                "workspace": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\workspaces\\32f33ea3-88f8-4e11-aa17-ef8e002e0abb\\work",
+                "workspaceOwnership": {
+                  "schemaVersion": 1,
+                  "owner": "b94fe794-482b-4a12-9c74-6c68b1ac1d76",
+                  "taskId": "32f33ea3-88f8-4e11-aa17-ef8e002e0abb",
+                  "strategy": "CLONE",
+                  "sourcePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\中文 original source",
+                  "gitDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\workspaces\\32f33ea3-88f8-4e11-aa17-ef8e002e0abb\\work\\.git",
+                  "commonDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\workspaces\\32f33ea3-88f8-4e11-aa17-ef8e002e0abb\\work\\.git",
+                  "lockReason": ""
+                },
+                "execution": {
+                  "version": 1,
+                  "protocolVersion": 1,
+                  "executionNodeId": "3983f330-7f00-4597-bd6b-b1ab6ce251d3",
+                  "nodeVersion": 1,
+                  "nodeName": "本机执行节点",
+                  "repositoryBindingId": "b2cd8554-115f-4638-b994-1288d52f0315",
+                  "bindingVersion": 1,
+                  "bindingName": "Original native UI project",
+                  "sourcePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\中文 original source",
+                  "deployment": "LOCAL_PROCESS",
+                  "createdAt": "2026-11-18T11:48:52.471980500Z"
+                },
+                "recipe": "SYSTEM_CMD",
+                "columns": 144,
+                "rows": 22,
+                "epoch": "e54d67ad-ce35-41b4-8403-215a7c4c4d0e",
+                "state": "RUNNING",
+                "versionBeforeManualActivity": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                "verificationBeforeManualActivity": {
+                  "status": "PASSED",
+                  "version": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                  "createdAt": "2026-11-18T11:49:25.392261500Z"
+                },
+                "reviewBeforeManualActivity": {
+                  "status": "APPROVED",
+                  "output": "{\"approved\":true,\"issues\":[]}",
+                  "version": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                  "workspace": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\reviews\\32f33ea3-88f8-4e11-aa17-ef8e002e0abb-bb14e30b-82d4-41c1-bc76-b004ada9869f\\work",
+                  "createdAt": "2026-11-18T11:49:32.343393100Z"
+                },
+                "createdAt": "2026-11-18T11:49:39.370918600Z",
+                "nativeLaunchAttempted": true,
+                "controllerGeneration": 1,
+                "lastActionSequence": 3,
+                "outputEnd": 1455,
+                "outputSegments": 6,
+                "outputLimit": 67108864,
+                "outputIntegrity": "LIVE",
+                "inputFenced": false,
+                "startRequestId": "b7732bd1-06a4-440e-8087-dfe0ce510af3",
+                "initialGeometry": {
+                  "columns": 80,
+                  "rows": 24
+                },
+                "taskExecutionId": "58666257-baff-44ac-8394-b7efbba2d8bb",
+                "dispatchActionId": "30b4ef5b-fc4e-4611-a485-c188cce93965",
+                "rootTaskId": "32f33ea3-88f8-4e11-aa17-ef8e002e0abb",
+                "queuedCoreSessionId": "bbd63c0a-edab-4081-a2f0-abc04f5b0808",
+                "source": {
+                  "workerLeaseId": "42998f1e-43ed-4d0a-9688-b0aa6b2886b5",
+                  "operationId": "8a646f29-6cff-466d-88ba-b42c1078647a",
+                  "taskExecutionId": "58666257-baff-44ac-8394-b7efbba2d8bb",
+                  "dispatchActionId": "30b4ef5b-fc4e-4611-a485-c188cce93965",
+                  "workspaceWriteLeaseId": "5ec869da-8a4c-42c4-b441-f5a1406d9fe4",
+                  "workerId": "7b3af6e7-d157-4bcf-a28e-0529efd3dc54",
+                  "workerEpoch": 1,
+                  "executorPid": 29656,
+                  "processStartedAt": "2026-11-18T11:48:46.347Z",
+                  "executionNodeId": "3983f330-7f00-4597-bd6b-b1ab6ce251d3",
+                  "repositoryBindingId": "b2cd8554-115f-4638-b994-1288d52f0315",
+                  "bindingVersion": 1,
+                  "authorizationVersion": 1
+                },
+                "coreSessionId": "bbd63c0a-edab-4081-a2f0-abc04f5b0808",
+                "startedAt": "2026-11-18T11:49:41.361361300Z",
+                "nativeProcess": {
+                  "pid": 11480,
+                  "processStartedAt": "2026-11-18T11:49:43.252Z",
+                  "backend": "com.pty4j.windows.conpty.WinConPtyProcess",
+                  "recipe": "SYSTEM_CMD",
+                  "workingDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\workspaces\\32f33ea3-88f8-4e11-aa17-ef8e002e0abb\\work",
+                  "workingDirectoryFileKey": "WINDOWS:86ca0064ca0052bb:c9d71300000006000000000000000000",
+                  "columns": 80,
+                  "rows": 24,
+                  "nativeBundle": {
+                    "version": "0.13.4",
+                    "releasedJarSha256": "bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc",
+                    "inventorySha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9",
+                    "ownerSha256": "e94c780c44c5b6daf871fec5589d3d80a7366c354735b2f9adf0cc1c46b318b4",
+                    "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\terminal-native\\worker-29656-9845484302321268175",
+                    "files": [
+                      {
+                        "path": "win/x86-64/win-helper.dll",
+                        "bytes": 42904,
+                        "sha256": "d1777570d51da29d94444cbfc17632e0a6b934578fb57cc39b0de7ebc0bbecc8"
+                      },
+                      {
+                        "path": "win/x86-64/conpty.dll",
+                        "bytes": 102912,
+                        "sha256": "15f4f7eb67135120c73d516fa83b0f550344b019fb25f0b9ddee96e5ac342d3d"
+                      },
+                      {
+                        "path": "win/x86-64/winpty.dll",
+                        "bytes": 654728,
+                        "sha256": "21c6480093859d4811525dd68ece1905324014bbd8c1a11fea6a78b2933009f4"
+                      },
+                      {
+                        "path": "win/x86-64/winpty-agent.exe",
+                        "bytes": 747416,
+                        "sha256": "2afff3901ae320437161c204a3ecdbb48e3713f074f533387f105acc44dc2fc6"
+                      },
+                      {
+                        "path": "win/x86-64/cyglaunch.exe",
+                        "bytes": 28416,
+                        "sha256": "5d2d8da1066eb931bf86aa0895bb5cec3d7320faf258b7b20d722f16136cb3ca"
+                      },
+                      {
+                        "path": "win/x86-64/OpenConsole.exe",
+                        "bytes": 1398272,
+                        "sha256": "837e5ac001cd451f86ae463568603901a421cf1c37eef7db8db152bd77760140"
+                      }
+                    ]
+                  },
+                  "createdAt": "2026-11-18T11:49:42.325041900Z",
+                  "outputReadOwnership": "DUPLICATED_NONINHERITABLE_ORIGINAL_PIPE_HANDLE",
+                  "cleanupKind": "ORIGINAL_NATIVE_THREAD",
+                  "nativeCleanupThreadId": 256
+                },
+                "runningAt": "2026-11-18T11:49:43.357540100Z",
+                "controllerId": "241c28ba-3c7c-44cc-a508-ae57a0859584",
+                "controllerAcquiredAt": "2026-11-18T11:49:44.324273800Z"
+              }
+            },
+            {
+              "path": "/api/terminals/541b2073-0aad-4fd5-86fe-72059000efb9/output",
+              "query": "?epoch=e54d67ad-ce35-41b4-8403-215a7c4c4d0e&after=1455&limit=65536",
+              "method": "GET",
+              "bearerHeaderPresent": true,
+              "status": 200,
+              "response": {
+                "terminalId": "541b2073-0aad-4fd5-86fe-72059000efb9",
+                "epoch": "e54d67ad-ce35-41b4-8403-215a7c4c4d0e",
+                "offset": 1455,
+                "length": 0,
+                "next": 1455,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "publishedEnd": 1455,
+                "hasMore": false,
+                "terminalState": "RUNNING",
+                "outputIntegrity": "LIVE",
+                "originalSegment": {}
+              }
+            }
+          ],
+          "scope": "ACTUAL_BROWSER_TRANSPORT_OFFLINE_WITH_REAL_JAVA_CORE_AND_NATIVE_PTY; NO_OS_SLEEP_OR_NETWORK_ADAPTER_CHANGES"
+        },
+        {
+          "strategy": "worktree",
+          "file": ".runtime/terminal-native-ui-jTsoY0/worktree-actual-network-read-recovery.json",
+          "sha256": "1aefc35e8306f8e3f89facd8338fdc7da8dc80397d4c79d0ec15fefa212bf564",
+          "originalNative": {
+            "pid": 16020,
+            "processStartedAt": "2026-11-18T11:50:55.265Z",
+            "backend": "com.pty4j.windows.conpty.WinConPtyProcess",
+            "recipe": "SYSTEM_CMD",
+            "workingDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\workspaces\\e4041c41-ea57-4bfc-9909-51d2e317e9b6\\work",
+            "workingDirectoryFileKey": "WINDOWS:86ca0064ca0052bb:9ad81300000006000000000000000000",
+            "columns": 80,
+            "rows": 24,
+            "nativeBundle": {
+              "version": "0.13.4",
+              "releasedJarSha256": "bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc",
+              "inventorySha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9",
+              "ownerSha256": "e94c780c44c5b6daf871fec5589d3d80a7366c354735b2f9adf0cc1c46b318b4",
+              "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\terminal-native\\worker-29656-9845484302321268175",
+              "files": [
+                {
+                  "path": "win/x86-64/win-helper.dll",
+                  "bytes": 42904,
+                  "sha256": "d1777570d51da29d94444cbfc17632e0a6b934578fb57cc39b0de7ebc0bbecc8"
+                },
+                {
+                  "path": "win/x86-64/conpty.dll",
+                  "bytes": 102912,
+                  "sha256": "15f4f7eb67135120c73d516fa83b0f550344b019fb25f0b9ddee96e5ac342d3d"
+                },
+                {
+                  "path": "win/x86-64/winpty.dll",
+                  "bytes": 654728,
+                  "sha256": "21c6480093859d4811525dd68ece1905324014bbd8c1a11fea6a78b2933009f4"
+                },
+                {
+                  "path": "win/x86-64/winpty-agent.exe",
+                  "bytes": 747416,
+                  "sha256": "2afff3901ae320437161c204a3ecdbb48e3713f074f533387f105acc44dc2fc6"
+                },
+                {
+                  "path": "win/x86-64/cyglaunch.exe",
+                  "bytes": 28416,
+                  "sha256": "5d2d8da1066eb931bf86aa0895bb5cec3d7320faf258b7b20d722f16136cb3ca"
+                },
+                {
+                  "path": "win/x86-64/OpenConsole.exe",
+                  "bytes": 1398272,
+                  "sha256": "837e5ac001cd451f86ae463568603901a421cf1c37eef7db8db152bd77760140"
+                }
+              ]
+            },
+            "createdAt": "2026-11-18T11:50:55.214735200Z",
+            "outputReadOwnership": "DUPLICATED_NONINHERITABLE_ORIGINAL_PIPE_HANDLE",
+            "cleanupKind": "ORIGINAL_NATIVE_THREAD",
+            "nativeCleanupThreadId": 546
+          },
+          "epoch": "b161847b-ad15-494e-8160-e1ca482fdfba",
+          "originalDrained": 1455,
+          "restoredMs": 52,
+          "coreReachableWhileBrowserOffline": true,
+          "originalManualEffectCount": 1,
+          "originalControlNotRestored": true,
+          "noAdditionalPosts": true,
+          "resumedReads": [
+            {
+              "path": "/api/terminals/8e85e89a-f68a-449c-92d0-9f7fda9b2546",
+              "query": "",
+              "method": "GET",
+              "bearerHeaderPresent": true,
+              "status": 200,
+              "response": {
+                "id": "8e85e89a-f68a-449c-92d0-9f7fda9b2546",
+                "protocolVersion": 1,
+                "taskId": "e4041c41-ea57-4bfc-9909-51d2e317e9b6",
+                "projectId": "070b61aa-4d1f-4905-9cbb-2dc2b0e2dff5",
+                "sessionId": "2a020e59-52aa-441b-8a38-c45500ad2b1e",
+                "workspace": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\workspaces\\e4041c41-ea57-4bfc-9909-51d2e317e9b6\\work",
+                "workspaceOwnership": {
+                  "schemaVersion": 1,
+                  "owner": "99bfd37d-88ab-4260-9bfc-6c3e4d679481",
+                  "taskId": "e4041c41-ea57-4bfc-9909-51d2e317e9b6",
+                  "strategy": "WORKTREE",
+                  "sourcePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\中文 original source",
+                  "gitDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\中文 original source\\.git\\worktrees\\work",
+                  "commonDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\中文 original source\\.git",
+                  "lockReason": "Agent Workbench workspace 99bfd37d-88ab-4260-9bfc-6c3e4d679481"
+                },
+                "execution": {
+                  "version": 1,
+                  "protocolVersion": 1,
+                  "executionNodeId": "3983f330-7f00-4597-bd6b-b1ab6ce251d3",
+                  "nodeVersion": 1,
+                  "nodeName": "本机执行节点",
+                  "repositoryBindingId": "b2cd8554-115f-4638-b994-1288d52f0315",
+                  "bindingVersion": 1,
+                  "bindingName": "Original native UI project",
+                  "sourcePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\中文 original source",
+                  "deployment": "LOCAL_PROCESS",
+                  "createdAt": "2026-11-18T11:50:03.979978600Z"
+                },
+                "recipe": "SYSTEM_CMD",
+                "columns": 144,
+                "rows": 22,
+                "epoch": "b161847b-ad15-494e-8160-e1ca482fdfba",
+                "state": "RUNNING",
+                "versionBeforeManualActivity": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                "verificationBeforeManualActivity": {
+                  "status": "PASSED",
+                  "version": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                  "createdAt": "2026-11-18T11:50:35.863575200Z"
+                },
+                "reviewBeforeManualActivity": {
+                  "status": "APPROVED",
+                  "output": "{\"approved\":true,\"issues\":[]}",
+                  "version": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                  "workspace": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\reviews\\e4041c41-ea57-4bfc-9909-51d2e317e9b6-ebc8a513-f8c8-4f6f-9d09-b03eca29fefc\\work",
+                  "createdAt": "2026-11-18T11:50:43.755093Z"
+                },
+                "createdAt": "2026-11-18T11:50:51.776184100Z",
+                "nativeLaunchAttempted": true,
+                "controllerGeneration": 1,
+                "lastActionSequence": 3,
+                "outputEnd": 1455,
+                "outputSegments": 7,
+                "outputLimit": 67108864,
+                "outputIntegrity": "LIVE",
+                "inputFenced": false,
+                "startRequestId": "dac57c11-3c1e-4acb-a388-cf0f1f03963a",
+                "initialGeometry": {
+                  "columns": 80,
+                  "rows": 24
+                },
+                "taskExecutionId": "f2629b08-2d1a-47b6-ab19-9b57b5b1197b",
+                "dispatchActionId": "022cde24-d2d5-4c51-9c04-35873e30619f",
+                "rootTaskId": "e4041c41-ea57-4bfc-9909-51d2e317e9b6",
+                "queuedCoreSessionId": "bbd63c0a-edab-4081-a2f0-abc04f5b0808",
+                "source": {
+                  "workerLeaseId": "f55f16be-6c88-4529-b395-44658d9a326e",
+                  "operationId": "675690f6-2888-48b7-a9a3-a70d6419e5b8",
+                  "taskExecutionId": "f2629b08-2d1a-47b6-ab19-9b57b5b1197b",
+                  "dispatchActionId": "022cde24-d2d5-4c51-9c04-35873e30619f",
+                  "workspaceWriteLeaseId": "da19e175-6be2-4670-ada1-e1a62b4eb98e",
+                  "workerId": "7b3af6e7-d157-4bcf-a28e-0529efd3dc54",
+                  "workerEpoch": 1,
+                  "executorPid": 29656,
+                  "processStartedAt": "2026-11-18T11:48:46.347Z",
+                  "executionNodeId": "3983f330-7f00-4597-bd6b-b1ab6ce251d3",
+                  "repositoryBindingId": "b2cd8554-115f-4638-b994-1288d52f0315",
+                  "bindingVersion": 1,
+                  "authorizationVersion": 1
+                },
+                "coreSessionId": "bbd63c0a-edab-4081-a2f0-abc04f5b0808",
+                "startedAt": "2026-11-18T11:50:54.297050900Z",
+                "nativeProcess": {
+                  "pid": 16020,
+                  "processStartedAt": "2026-11-18T11:50:55.265Z",
+                  "backend": "com.pty4j.windows.conpty.WinConPtyProcess",
+                  "recipe": "SYSTEM_CMD",
+                  "workingDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\workspaces\\e4041c41-ea57-4bfc-9909-51d2e317e9b6\\work",
+                  "workingDirectoryFileKey": "WINDOWS:86ca0064ca0052bb:9ad81300000006000000000000000000",
+                  "columns": 80,
+                  "rows": 24,
+                  "nativeBundle": {
+                    "version": "0.13.4",
+                    "releasedJarSha256": "bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc",
+                    "inventorySha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9",
+                    "ownerSha256": "e94c780c44c5b6daf871fec5589d3d80a7366c354735b2f9adf0cc1c46b318b4",
+                    "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-jTsoY0\\data\\terminal-native\\worker-29656-9845484302321268175",
+                    "files": [
+                      {
+                        "path": "win/x86-64/win-helper.dll",
+                        "bytes": 42904,
+                        "sha256": "d1777570d51da29d94444cbfc17632e0a6b934578fb57cc39b0de7ebc0bbecc8"
+                      },
+                      {
+                        "path": "win/x86-64/conpty.dll",
+                        "bytes": 102912,
+                        "sha256": "15f4f7eb67135120c73d516fa83b0f550344b019fb25f0b9ddee96e5ac342d3d"
+                      },
+                      {
+                        "path": "win/x86-64/winpty.dll",
+                        "bytes": 654728,
+                        "sha256": "21c6480093859d4811525dd68ece1905324014bbd8c1a11fea6a78b2933009f4"
+                      },
+                      {
+                        "path": "win/x86-64/winpty-agent.exe",
+                        "bytes": 747416,
+                        "sha256": "2afff3901ae320437161c204a3ecdbb48e3713f074f533387f105acc44dc2fc6"
+                      },
+                      {
+                        "path": "win/x86-64/cyglaunch.exe",
+                        "bytes": 28416,
+                        "sha256": "5d2d8da1066eb931bf86aa0895bb5cec3d7320faf258b7b20d722f16136cb3ca"
+                      },
+                      {
+                        "path": "win/x86-64/OpenConsole.exe",
+                        "bytes": 1398272,
+                        "sha256": "837e5ac001cd451f86ae463568603901a421cf1c37eef7db8db152bd77760140"
+                      }
+                    ]
+                  },
+                  "createdAt": "2026-11-18T11:50:55.214735200Z",
+                  "outputReadOwnership": "DUPLICATED_NONINHERITABLE_ORIGINAL_PIPE_HANDLE",
+                  "cleanupKind": "ORIGINAL_NATIVE_THREAD",
+                  "nativeCleanupThreadId": 546
+                },
+                "runningAt": "2026-11-18T11:50:55.326882400Z",
+                "controllerId": "1528f8bb-3be7-4672-ab6b-b5425b5ff984",
+                "controllerAcquiredAt": "2026-11-18T11:50:56.824981700Z"
+              }
+            },
+            {
+              "path": "/api/terminals/8e85e89a-f68a-449c-92d0-9f7fda9b2546/output",
+              "query": "?epoch=b161847b-ad15-494e-8160-e1ca482fdfba&after=1455&limit=65536",
+              "method": "GET",
+              "bearerHeaderPresent": true,
+              "status": 200,
+              "response": {
+                "terminalId": "8e85e89a-f68a-449c-92d0-9f7fda9b2546",
+                "epoch": "b161847b-ad15-494e-8160-e1ca482fdfba",
+                "offset": 1455,
+                "length": 0,
+                "next": 1455,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "publishedEnd": 1455,
+                "hasMore": false,
+                "terminalState": "RUNNING",
+                "outputIntegrity": "LIVE",
+                "originalSegment": {}
+              }
+            }
+          ],
+          "scope": "ACTUAL_BROWSER_TRANSPORT_OFFLINE_WITH_REAL_JAVA_CORE_AND_NATIVE_PTY; NO_OS_SLEEP_OR_NETWORK_ADAPTER_CHANGES"
+        }
+      ],
+      "externalNodeAndJavaUnavailableOnPath": false
+    },
+    "preview": {
+      "file": ".runtime/alpha22-native-preview-i9Zt7c/receipt.json",
+      "sha256": "993449b37f6220ba2ce1efd57d5bf8bb4e4a32bf4fcf3abdddc0f035cf46db3b",
+      "generatedReport": {
+        "file": ".runtime/alpha22-native-preview-i9Zt7c/generated/docs/qa/preview-native-win32.json",
+        "sha256": "2fd99be3e6a2b3ef52eb6a77a51928e72f4c0c99922700c6a9ea45accee2adfa"
+      },
+      "status": "passed",
+      "toolDirectory": ".runtime/preview-native-DaXqwi",
+      "frozenSourceCount": 298,
+      "sourcesUnchanged": true,
+      "jarUnchanged": true,
+      "restoredReports": 5,
+      "restoredImages": 44,
+      "isolatedDesktop": {
+        "file": ".runtime/alpha22-native-isolated-preview-66b9cdeba3834448889d5d408c8698c1/receipt.json",
+        "sha256": "ec110763b3fdf67d15b5a084933089a91790bf838077b476c084d65bd3bd2cfa",
+        "exitCode": 0,
+        "inputDesktopBefore": "Default",
+        "inputDesktopAfter": "Default",
+        "desktopHandleClosed": true
+      },
+      "scope": "ACTUAL_DEVELOPMENT_ELECTRON_MAIN_PRELOAD_CORE_AND_WEB; LOCAL_HTTP_LOGIN_FIXTURE; PACKAGED_AND_REMOTE_FORWARDING_SEPARATE",
+      "checks": 10,
+      "launches": 3,
+      "originalProcessObservationsStopped": 12,
+      "operationLifecycle": {
+        "file": ".runtime/preview-native-DaXqwi/operation-lifecycle.json",
+        "sha256": "4df4e112b6f824ace35d2dd1c33db9c5ec2ff86fce1fe8770d7e0b539ddf1ece"
+      },
+      "operations": [
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T11:54:22.796Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:22.969Z",
+          "elapsedMs": 173.3076000000001
+        },
+        {
+          "name": "native view bounds after initial fetch",
+          "startedAt": "2026-11-18T11:54:23.003Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:23.009Z",
+          "elapsedMs": 6.394100000001345
+        },
+        {
+          "name": "preview suspended while application dialog is open",
+          "startedAt": "2026-11-18T11:54:25.917Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:25.922Z",
+          "elapsedMs": 5.007900000000518
+        },
+        {
+          "name": "preview restored after dialog closes",
+          "startedAt": "2026-11-18T11:54:25.979Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:26.093Z",
+          "elapsedMs": 113.94460000000072
+        },
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T11:54:26.215Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:26.362Z",
+          "elapsedMs": 147.09490000000005
+        },
+        {
+          "name": "native page metadata saved",
+          "startedAt": "2026-11-18T11:54:26.407Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:26.795Z",
+          "elapsedMs": 388.4490000000005
+        },
+        {
+          "name": "actual metadata-race URL",
+          "startedAt": "2026-11-18T11:54:26.821Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:26.933Z",
+          "elapsedMs": 112.26029999999992
+        },
+        {
+          "name": "metadata-race tab closed",
+          "startedAt": "2026-11-18T11:54:27.279Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:27.294Z",
+          "elapsedMs": 14.275500000001557
+        },
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T11:54:27.450Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:27.593Z",
+          "elapsedMs": 143.35350000000108
+        },
+        {
+          "name": "first session tabs restored",
+          "startedAt": "2026-11-18T11:54:27.736Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:27.961Z",
+          "elapsedMs": 224.88949999999932
+        },
+        {
+          "name": "other project appears",
+          "startedAt": "2026-11-18T11:54:28.607Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:31.592Z",
+          "elapsedMs": 2985.137200000001
+        },
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T11:54:31.731Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:31.862Z",
+          "elapsedMs": 131.34599999999773
+        },
+        {
+          "name": "original project pages restored",
+          "startedAt": "2026-11-18T11:54:32.016Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:32.134Z",
+          "elapsedMs": 117.64730000000054
+        },
+        {
+          "name": "restored native view is visible",
+          "startedAt": "2026-11-18T11:54:32.171Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:32.178Z",
+          "elapsedMs": 7.149199999999837
+        },
+        {
+          "name": "actual native preview capture",
+          "startedAt": "2026-11-18T11:54:32.181Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:32.213Z",
+          "elapsedMs": 31.84939999999915
+        },
+        {
+          "name": "original desktop controlled close",
+          "startedAt": "2026-11-18T11:54:32.457Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:34.104Z",
+          "elapsedMs": 1646.6823000000004
+        },
+        {
+          "name": "original desktop, core and Worker stopped",
+          "startedAt": "2026-11-18T11:54:34.106Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:36.919Z",
+          "elapsedMs": 2812.276099999999
+        },
+        {
+          "name": "tabs after full desktop restart",
+          "startedAt": "2026-11-18T11:54:43.318Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:43.438Z",
+          "elapsedMs": 120.06080000000293
+        },
+        {
+          "name": "same-origin state pages",
+          "startedAt": "2026-11-18T11:54:43.629Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:43.751Z",
+          "elapsedMs": 122.24339999999938
+        },
+        {
+          "name": "state replacements loaded",
+          "startedAt": "2026-11-18T11:54:43.819Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:43.936Z",
+          "elapsedMs": 117.68830000000162
+        },
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T11:54:44.012Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:44.072Z",
+          "elapsedMs": 60.2686999999969
+        },
+        {
+          "name": "original desktop controlled close",
+          "startedAt": "2026-11-18T11:54:44.132Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:45.734Z",
+          "elapsedMs": 1602.3376000000026
+        },
+        {
+          "name": "original desktop, core and Worker stopped",
+          "startedAt": "2026-11-18T11:54:45.736Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:49.412Z",
+          "elapsedMs": 3675.952000000001
+        },
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T11:54:56.024Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:56.192Z",
+          "elapsedMs": 168.90230000000156
+        },
+        {
+          "name": "revoked port destroys original native views",
+          "startedAt": "2026-11-18T11:54:56.275Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:56.396Z",
+          "elapsedMs": 121.68909999999596
+        },
+        {
+          "name": "original desktop controlled close",
+          "startedAt": "2026-11-18T11:54:56.399Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:54:57.961Z",
+          "elapsedMs": 1561.6281999999992
+        },
+        {
+          "name": "original desktop, core and Worker stopped",
+          "startedAt": "2026-11-18T11:54:57.963Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T11:55:02.587Z",
+          "elapsedMs": 4624.466500000002
+        }
+      ],
+      "externalNodeAndJavaUnavailableOnPath": false
+    },
+    "terminal-packaged": {
+      "file": ".runtime/alpha22-native-terminal-packaged-LFWslw/receipt.json",
+      "sha256": "f36fd0ec5ae820eb637245ea931cf46022cdcbdec3b8934a1860742e65bbff37",
+      "generatedReport": {
+        "file": ".runtime/alpha22-native-terminal-packaged-LFWslw/generated/docs/qa/terminals-native-ui-packaged-win32.json",
+        "sha256": "94a743256154cbdde9dff1bf48636ada48ebc22a8eb9b32fa746eda37b933626"
+      },
+      "status": "passed",
+      "toolDirectory": ".runtime/terminal-native-ui-packaged-swmRZY",
+      "frozenSourceCount": 298,
+      "sourcesUnchanged": true,
+      "jarUnchanged": true,
+      "restoredReports": 5,
+      "restoredImages": 44,
+      "isolatedDesktop": {
+        "file": ".runtime/alpha22-native-isolated-terminal-packaged-36af463566fd4c1c95340bb2901a6023/receipt.json",
+        "sha256": "422fea0d0d46b4d2a15e267fa4f4b9e1601b1cd93952a45046b3f25ef6515221",
+        "exitCode": 0,
+        "inputDesktopBefore": "Default",
+        "inputDesktopAfter": "Default",
+        "desktopHandleClosed": true
+      },
+      "scope": "ACTUAL_PACKAGED_JRE_JAR_ASAR_WEB_REAL_NATIVE_SHELL_WITH_SYSTEM_TOOLS_ONLY; ELECTRON_LIFECYCLE_AND_COMPLETE_HISTORICAL_PROCESS_TREE_ACCEPTANCE_SEPARATE",
+      "checks": 7,
+      "localHttpModelFixtureCalls": 6,
+      "originalIdentitiesStopped": true,
+      "artifactInputs": {
+        "file": ".runtime/terminal-native-ui-packaged-swmRZY/artifact-inputs.json",
+        "sha256": "1370bf2ebb1c961ab0a4bf82efd16b1538e950cd1612345c00d2aec259f439f5"
+      },
+      "packagedSourceFiles": 31,
+      "packagedRuntimeFiles": 207,
+      "browserOfflineRecoveries": [
+        {
+          "strategy": "clone",
+          "file": ".runtime/terminal-native-ui-packaged-swmRZY/clone-actual-network-read-recovery.json",
+          "sha256": "0319f8a00763558aaadd00aa5d1c0a8e7ef1882ed6a5756b1999f5004596af4c",
+          "originalNative": {
+            "pid": 15356,
+            "processStartedAt": "2026-11-18T11:57:46.725Z",
+            "backend": "com.pty4j.windows.conpty.WinConPtyProcess",
+            "recipe": "SYSTEM_CMD",
+            "workingDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\workspaces\\1cb3958b-17bf-49ef-8539-51f70a6d0b15\\work",
+            "workingDirectoryFileKey": "WINDOWS:86ca0064ca0052bb:dae11300000004000000000000000000",
+            "columns": 80,
+            "rows": 24,
+            "nativeBundle": {
+              "version": "0.13.4",
+              "releasedJarSha256": "bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc",
+              "inventorySha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9",
+              "ownerSha256": "a236d00336b0dab89c1ba5bad806ac1c3eaa89186602e2828b0e83589f9725db",
+              "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\terminal-native\\worker-3716-15082120491086346623",
+              "files": [
+                {
+                  "path": "win/x86-64/win-helper.dll",
+                  "bytes": 42904,
+                  "sha256": "d1777570d51da29d94444cbfc17632e0a6b934578fb57cc39b0de7ebc0bbecc8"
+                },
+                {
+                  "path": "win/x86-64/conpty.dll",
+                  "bytes": 102912,
+                  "sha256": "15f4f7eb67135120c73d516fa83b0f550344b019fb25f0b9ddee96e5ac342d3d"
+                },
+                {
+                  "path": "win/x86-64/winpty.dll",
+                  "bytes": 654728,
+                  "sha256": "21c6480093859d4811525dd68ece1905324014bbd8c1a11fea6a78b2933009f4"
+                },
+                {
+                  "path": "win/x86-64/winpty-agent.exe",
+                  "bytes": 747416,
+                  "sha256": "2afff3901ae320437161c204a3ecdbb48e3713f074f533387f105acc44dc2fc6"
+                },
+                {
+                  "path": "win/x86-64/cyglaunch.exe",
+                  "bytes": 28416,
+                  "sha256": "5d2d8da1066eb931bf86aa0895bb5cec3d7320faf258b7b20d722f16136cb3ca"
+                },
+                {
+                  "path": "win/x86-64/OpenConsole.exe",
+                  "bytes": 1398272,
+                  "sha256": "837e5ac001cd451f86ae463568603901a421cf1c37eef7db8db152bd77760140"
+                }
+              ]
+            },
+            "createdAt": "2026-11-18T11:57:45.942664300Z",
+            "outputReadOwnership": "DUPLICATED_NONINHERITABLE_ORIGINAL_PIPE_HANDLE",
+            "cleanupKind": "ORIGINAL_NATIVE_THREAD",
+            "nativeCleanupThreadId": 264
+          },
+          "epoch": "f1389c9e-98f2-4dd0-b200-a34ce2c504d5",
+          "originalDrained": 1491,
+          "restoredMs": 53,
+          "coreReachableWhileBrowserOffline": true,
+          "originalManualEffectCount": 1,
+          "originalControlNotRestored": true,
+          "noAdditionalPosts": true,
+          "resumedReads": [
+            {
+              "path": "/api/terminals/829e92da-3f67-43b5-bd50-c3149cae4c38",
+              "query": "",
+              "method": "GET",
+              "bearerHeaderPresent": true,
+              "status": 200,
+              "response": {
+                "id": "829e92da-3f67-43b5-bd50-c3149cae4c38",
+                "protocolVersion": 1,
+                "taskId": "1cb3958b-17bf-49ef-8539-51f70a6d0b15",
+                "projectId": "a0a382ba-b0ae-4327-84d8-8ae21f99ab45",
+                "sessionId": "8c5c5dbb-0fc5-48f4-a824-6b42b6187aec",
+                "workspace": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\workspaces\\1cb3958b-17bf-49ef-8539-51f70a6d0b15\\work",
+                "workspaceOwnership": {
+                  "schemaVersion": 1,
+                  "owner": "d4fc5a72-5bec-4952-ad61-f19e3298fbcf",
+                  "taskId": "1cb3958b-17bf-49ef-8539-51f70a6d0b15",
+                  "strategy": "CLONE",
+                  "sourcePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\中文 original source",
+                  "gitDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\workspaces\\1cb3958b-17bf-49ef-8539-51f70a6d0b15\\work\\.git",
+                  "commonDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\workspaces\\1cb3958b-17bf-49ef-8539-51f70a6d0b15\\work\\.git",
+                  "lockReason": ""
+                },
+                "execution": {
+                  "version": 1,
+                  "protocolVersion": 1,
+                  "executionNodeId": "04aa69a4-4008-4d9e-9428-0679adeb4561",
+                  "nodeVersion": 1,
+                  "nodeName": "本机执行节点",
+                  "repositoryBindingId": "99780963-08b3-4edf-94ca-59fa9ae6e2b8",
+                  "bindingVersion": 1,
+                  "bindingName": "Original native UI project",
+                  "sourcePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\中文 original source",
+                  "deployment": "LOCAL_PROCESS",
+                  "createdAt": "2026-11-18T11:56:54.543936800Z"
+                },
+                "recipe": "SYSTEM_CMD",
+                "columns": 144,
+                "rows": 22,
+                "epoch": "f1389c9e-98f2-4dd0-b200-a34ce2c504d5",
+                "state": "RUNNING",
+                "versionBeforeManualActivity": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                "verificationBeforeManualActivity": {
+                  "status": "PASSED",
+                  "version": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                  "createdAt": "2026-11-18T11:57:29.159519600Z"
+                },
+                "reviewBeforeManualActivity": {
+                  "status": "APPROVED",
+                  "output": "{\"approved\":true,\"issues\":[]}",
+                  "version": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                  "workspace": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\reviews\\1cb3958b-17bf-49ef-8539-51f70a6d0b15-ff981042-4855-4903-a91c-0ff1c0bbecef\\work",
+                  "createdAt": "2026-11-18T11:57:36.237069Z"
+                },
+                "createdAt": "2026-11-18T11:57:43.069222700Z",
+                "nativeLaunchAttempted": true,
+                "controllerGeneration": 1,
+                "lastActionSequence": 3,
+                "outputEnd": 1491,
+                "outputSegments": 6,
+                "outputLimit": 67108864,
+                "outputIntegrity": "LIVE",
+                "inputFenced": false,
+                "startRequestId": "f20d7cca-efdc-41a1-a3a9-509b646d6365",
+                "initialGeometry": {
+                  "columns": 80,
+                  "rows": 24
+                },
+                "taskExecutionId": "bd8ba6e6-3e23-4f2c-bcac-8a489f01e487",
+                "dispatchActionId": "005b0542-a8c7-4cac-b92f-10d80d55e027",
+                "rootTaskId": "1cb3958b-17bf-49ef-8539-51f70a6d0b15",
+                "queuedCoreSessionId": "cc14f19c-acb6-4d5b-9e2d-71a5508144d0",
+                "source": {
+                  "workerLeaseId": "6d1ffb5b-f723-4899-b7c4-b07500185471",
+                  "operationId": "54b4a8c0-93cb-47ba-ad04-be9096ce3cee",
+                  "taskExecutionId": "bd8ba6e6-3e23-4f2c-bcac-8a489f01e487",
+                  "dispatchActionId": "005b0542-a8c7-4cac-b92f-10d80d55e027",
+                  "workspaceWriteLeaseId": "b0deec70-4b2c-4f41-8158-c55278c835f6",
+                  "workerId": "ad08e912-b094-43ab-a3e9-3e57e8fbce36",
+                  "workerEpoch": 1,
+                  "executorPid": 3716,
+                  "processStartedAt": "2026-11-18T11:56:48.435Z",
+                  "executionNodeId": "04aa69a4-4008-4d9e-9428-0679adeb4561",
+                  "repositoryBindingId": "99780963-08b3-4edf-94ca-59fa9ae6e2b8",
+                  "bindingVersion": 1,
+                  "authorizationVersion": 1
+                },
+                "coreSessionId": "cc14f19c-acb6-4d5b-9e2d-71a5508144d0",
+                "startedAt": "2026-11-18T11:57:44.958852600Z",
+                "nativeProcess": {
+                  "pid": 15356,
+                  "processStartedAt": "2026-11-18T11:57:46.725Z",
+                  "backend": "com.pty4j.windows.conpty.WinConPtyProcess",
+                  "recipe": "SYSTEM_CMD",
+                  "workingDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\workspaces\\1cb3958b-17bf-49ef-8539-51f70a6d0b15\\work",
+                  "workingDirectoryFileKey": "WINDOWS:86ca0064ca0052bb:dae11300000004000000000000000000",
+                  "columns": 80,
+                  "rows": 24,
+                  "nativeBundle": {
+                    "version": "0.13.4",
+                    "releasedJarSha256": "bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc",
+                    "inventorySha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9",
+                    "ownerSha256": "a236d00336b0dab89c1ba5bad806ac1c3eaa89186602e2828b0e83589f9725db",
+                    "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\terminal-native\\worker-3716-15082120491086346623",
+                    "files": [
+                      {
+                        "path": "win/x86-64/win-helper.dll",
+                        "bytes": 42904,
+                        "sha256": "d1777570d51da29d94444cbfc17632e0a6b934578fb57cc39b0de7ebc0bbecc8"
+                      },
+                      {
+                        "path": "win/x86-64/conpty.dll",
+                        "bytes": 102912,
+                        "sha256": "15f4f7eb67135120c73d516fa83b0f550344b019fb25f0b9ddee96e5ac342d3d"
+                      },
+                      {
+                        "path": "win/x86-64/winpty.dll",
+                        "bytes": 654728,
+                        "sha256": "21c6480093859d4811525dd68ece1905324014bbd8c1a11fea6a78b2933009f4"
+                      },
+                      {
+                        "path": "win/x86-64/winpty-agent.exe",
+                        "bytes": 747416,
+                        "sha256": "2afff3901ae320437161c204a3ecdbb48e3713f074f533387f105acc44dc2fc6"
+                      },
+                      {
+                        "path": "win/x86-64/cyglaunch.exe",
+                        "bytes": 28416,
+                        "sha256": "5d2d8da1066eb931bf86aa0895bb5cec3d7320faf258b7b20d722f16136cb3ca"
+                      },
+                      {
+                        "path": "win/x86-64/OpenConsole.exe",
+                        "bytes": 1398272,
+                        "sha256": "837e5ac001cd451f86ae463568603901a421cf1c37eef7db8db152bd77760140"
+                      }
+                    ]
+                  },
+                  "createdAt": "2026-11-18T11:57:45.942664300Z",
+                  "outputReadOwnership": "DUPLICATED_NONINHERITABLE_ORIGINAL_PIPE_HANDLE",
+                  "cleanupKind": "ORIGINAL_NATIVE_THREAD",
+                  "nativeCleanupThreadId": 264
+                },
+                "runningAt": "2026-11-18T11:57:46.814182300Z",
+                "controllerId": "57a05ecb-e026-4b1c-b7c1-7bf154d4809e",
+                "controllerAcquiredAt": "2026-11-18T11:57:47.806887300Z"
+              }
+            },
+            {
+              "path": "/api/terminals/829e92da-3f67-43b5-bd50-c3149cae4c38/output",
+              "query": "?epoch=f1389c9e-98f2-4dd0-b200-a34ce2c504d5&after=1491&limit=65536",
+              "method": "GET",
+              "bearerHeaderPresent": true,
+              "status": 200,
+              "response": {
+                "terminalId": "829e92da-3f67-43b5-bd50-c3149cae4c38",
+                "epoch": "f1389c9e-98f2-4dd0-b200-a34ce2c504d5",
+                "offset": 1491,
+                "length": 0,
+                "next": 1491,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "publishedEnd": 1491,
+                "hasMore": false,
+                "terminalState": "RUNNING",
+                "outputIntegrity": "LIVE",
+                "originalSegment": {}
+              }
+            }
+          ],
+          "scope": "ACTUAL_BROWSER_TRANSPORT_OFFLINE_WITH_REAL_JAVA_CORE_AND_NATIVE_PTY; NO_OS_SLEEP_OR_NETWORK_ADAPTER_CHANGES"
+        },
+        {
+          "strategy": "worktree",
+          "file": ".runtime/terminal-native-ui-packaged-swmRZY/worktree-actual-network-read-recovery.json",
+          "sha256": "5dc3a0bc34afbb447ada0f2b6c919570e834d34d1cc1f87a779462a1b1d4f24a",
+          "originalNative": {
+            "pid": 51704,
+            "processStartedAt": "2026-11-18T11:58:57.681Z",
+            "backend": "com.pty4j.windows.conpty.WinConPtyProcess",
+            "recipe": "SYSTEM_CMD",
+            "workingDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\workspaces\\9d651269-7893-4afa-8e0e-1463d8554b5d\\work",
+            "workingDirectoryFileKey": "WINDOWS:86ca0064ca0052bb:a7e21300000004000000000000000000",
+            "columns": 80,
+            "rows": 24,
+            "nativeBundle": {
+              "version": "0.13.4",
+              "releasedJarSha256": "bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc",
+              "inventorySha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9",
+              "ownerSha256": "a236d00336b0dab89c1ba5bad806ac1c3eaa89186602e2828b0e83589f9725db",
+              "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\terminal-native\\worker-3716-15082120491086346623",
+              "files": [
+                {
+                  "path": "win/x86-64/win-helper.dll",
+                  "bytes": 42904,
+                  "sha256": "d1777570d51da29d94444cbfc17632e0a6b934578fb57cc39b0de7ebc0bbecc8"
+                },
+                {
+                  "path": "win/x86-64/conpty.dll",
+                  "bytes": 102912,
+                  "sha256": "15f4f7eb67135120c73d516fa83b0f550344b019fb25f0b9ddee96e5ac342d3d"
+                },
+                {
+                  "path": "win/x86-64/winpty.dll",
+                  "bytes": 654728,
+                  "sha256": "21c6480093859d4811525dd68ece1905324014bbd8c1a11fea6a78b2933009f4"
+                },
+                {
+                  "path": "win/x86-64/winpty-agent.exe",
+                  "bytes": 747416,
+                  "sha256": "2afff3901ae320437161c204a3ecdbb48e3713f074f533387f105acc44dc2fc6"
+                },
+                {
+                  "path": "win/x86-64/cyglaunch.exe",
+                  "bytes": 28416,
+                  "sha256": "5d2d8da1066eb931bf86aa0895bb5cec3d7320faf258b7b20d722f16136cb3ca"
+                },
+                {
+                  "path": "win/x86-64/OpenConsole.exe",
+                  "bytes": 1398272,
+                  "sha256": "837e5ac001cd451f86ae463568603901a421cf1c37eef7db8db152bd77760140"
+                }
+              ]
+            },
+            "createdAt": "2026-11-18T11:58:57.630056100Z",
+            "outputReadOwnership": "DUPLICATED_NONINHERITABLE_ORIGINAL_PIPE_HANDLE",
+            "cleanupKind": "ORIGINAL_NATIVE_THREAD",
+            "nativeCleanupThreadId": 553
+          },
+          "epoch": "a3e7884a-8016-4f7c-abb8-26555a1fdec7",
+          "originalDrained": 1491,
+          "restoredMs": 51,
+          "coreReachableWhileBrowserOffline": true,
+          "originalManualEffectCount": 1,
+          "originalControlNotRestored": true,
+          "noAdditionalPosts": true,
+          "resumedReads": [
+            {
+              "path": "/api/terminals/99c13b73-6b1d-4590-9003-45c6cb4acf46",
+              "query": "",
+              "method": "GET",
+              "bearerHeaderPresent": true,
+              "status": 200,
+              "response": {
+                "id": "99c13b73-6b1d-4590-9003-45c6cb4acf46",
+                "protocolVersion": 1,
+                "taskId": "9d651269-7893-4afa-8e0e-1463d8554b5d",
+                "projectId": "a0a382ba-b0ae-4327-84d8-8ae21f99ab45",
+                "sessionId": "a06f0dda-dd43-42e0-aedd-bf31bdfdc1d7",
+                "workspace": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\workspaces\\9d651269-7893-4afa-8e0e-1463d8554b5d\\work",
+                "workspaceOwnership": {
+                  "schemaVersion": 1,
+                  "owner": "44d715a9-2b10-48b9-af30-d567acbf0b09",
+                  "taskId": "9d651269-7893-4afa-8e0e-1463d8554b5d",
+                  "strategy": "WORKTREE",
+                  "sourcePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\中文 original source",
+                  "gitDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\中文 original source\\.git\\worktrees\\work",
+                  "commonDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\中文 original source\\.git",
+                  "lockReason": "Agent Workbench workspace 44d715a9-2b10-48b9-af30-d567acbf0b09"
+                },
+                "execution": {
+                  "version": 1,
+                  "protocolVersion": 1,
+                  "executionNodeId": "04aa69a4-4008-4d9e-9428-0679adeb4561",
+                  "nodeVersion": 1,
+                  "nodeName": "本机执行节点",
+                  "repositoryBindingId": "99780963-08b3-4edf-94ca-59fa9ae6e2b8",
+                  "bindingVersion": 1,
+                  "bindingName": "Original native UI project",
+                  "sourcePath": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\中文 original source",
+                  "deployment": "LOCAL_PROCESS",
+                  "createdAt": "2026-11-18T11:58:06.670291900Z"
+                },
+                "recipe": "SYSTEM_CMD",
+                "columns": 144,
+                "rows": 22,
+                "epoch": "a3e7884a-8016-4f7c-abb8-26555a1fdec7",
+                "state": "RUNNING",
+                "versionBeforeManualActivity": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                "verificationBeforeManualActivity": {
+                  "status": "PASSED",
+                  "version": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                  "createdAt": "2026-11-18T11:58:38.586486600Z"
+                },
+                "reviewBeforeManualActivity": {
+                  "status": "APPROVED",
+                  "output": "{\"approved\":true,\"issues\":[]}",
+                  "version": "da1e49fd48437a9debe0109cb5f8055ad006938c837505dc3ab3c01508dd7c72",
+                  "workspace": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\reviews\\9d651269-7893-4afa-8e0e-1463d8554b5d-d94f44ad-7004-40d1-8eb8-870f295295a4\\work",
+                  "createdAt": "2026-11-18T11:58:46.343479Z"
+                },
+                "createdAt": "2026-11-18T11:58:54.266374700Z",
+                "nativeLaunchAttempted": true,
+                "controllerGeneration": 1,
+                "lastActionSequence": 3,
+                "outputEnd": 1491,
+                "outputSegments": 7,
+                "outputLimit": 67108864,
+                "outputIntegrity": "LIVE",
+                "inputFenced": false,
+                "startRequestId": "ee1c978d-26c1-44dc-95ac-de5719c5fc69",
+                "initialGeometry": {
+                  "columns": 80,
+                  "rows": 24
+                },
+                "taskExecutionId": "4731264a-fc23-44b5-a12a-a5b64b342725",
+                "dispatchActionId": "84ddc115-f813-4994-b1a0-6bdc45f1de4c",
+                "rootTaskId": "9d651269-7893-4afa-8e0e-1463d8554b5d",
+                "queuedCoreSessionId": "cc14f19c-acb6-4d5b-9e2d-71a5508144d0",
+                "source": {
+                  "workerLeaseId": "941a392e-8a27-4bc1-9032-4b3afe205f99",
+                  "operationId": "e1d72ab3-4ea0-4084-b898-bda45fd16d86",
+                  "taskExecutionId": "4731264a-fc23-44b5-a12a-a5b64b342725",
+                  "dispatchActionId": "84ddc115-f813-4994-b1a0-6bdc45f1de4c",
+                  "workspaceWriteLeaseId": "8490d712-1a3a-4dec-95bb-89c7f6bfff60",
+                  "workerId": "ad08e912-b094-43ab-a3e9-3e57e8fbce36",
+                  "workerEpoch": 1,
+                  "executorPid": 3716,
+                  "processStartedAt": "2026-11-18T11:56:48.435Z",
+                  "executionNodeId": "04aa69a4-4008-4d9e-9428-0679adeb4561",
+                  "repositoryBindingId": "99780963-08b3-4edf-94ca-59fa9ae6e2b8",
+                  "bindingVersion": 1,
+                  "authorizationVersion": 1
+                },
+                "coreSessionId": "cc14f19c-acb6-4d5b-9e2d-71a5508144d0",
+                "startedAt": "2026-11-18T11:58:56.757869100Z",
+                "nativeProcess": {
+                  "pid": 51704,
+                  "processStartedAt": "2026-11-18T11:58:57.681Z",
+                  "backend": "com.pty4j.windows.conpty.WinConPtyProcess",
+                  "recipe": "SYSTEM_CMD",
+                  "workingDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\workspaces\\9d651269-7893-4afa-8e0e-1463d8554b5d\\work",
+                  "workingDirectoryFileKey": "WINDOWS:86ca0064ca0052bb:a7e21300000004000000000000000000",
+                  "columns": 80,
+                  "rows": 24,
+                  "nativeBundle": {
+                    "version": "0.13.4",
+                    "releasedJarSha256": "bc1bb1855a20a5f99583890ed0ed23165f2a7c5b64be037db2c46fc5533edccc",
+                    "inventorySha256": "c68e89bbfbfc7f11397242a111dfd2a2ce322fdd20ae2669b6199e329773ecd9",
+                    "ownerSha256": "a236d00336b0dab89c1ba5bad806ac1c3eaa89186602e2828b0e83589f9725db",
+                    "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\terminal-native-ui-packaged-swmRZY\\data\\terminal-native\\worker-3716-15082120491086346623",
+                    "files": [
+                      {
+                        "path": "win/x86-64/win-helper.dll",
+                        "bytes": 42904,
+                        "sha256": "d1777570d51da29d94444cbfc17632e0a6b934578fb57cc39b0de7ebc0bbecc8"
+                      },
+                      {
+                        "path": "win/x86-64/conpty.dll",
+                        "bytes": 102912,
+                        "sha256": "15f4f7eb67135120c73d516fa83b0f550344b019fb25f0b9ddee96e5ac342d3d"
+                      },
+                      {
+                        "path": "win/x86-64/winpty.dll",
+                        "bytes": 654728,
+                        "sha256": "21c6480093859d4811525dd68ece1905324014bbd8c1a11fea6a78b2933009f4"
+                      },
+                      {
+                        "path": "win/x86-64/winpty-agent.exe",
+                        "bytes": 747416,
+                        "sha256": "2afff3901ae320437161c204a3ecdbb48e3713f074f533387f105acc44dc2fc6"
+                      },
+                      {
+                        "path": "win/x86-64/cyglaunch.exe",
+                        "bytes": 28416,
+                        "sha256": "5d2d8da1066eb931bf86aa0895bb5cec3d7320faf258b7b20d722f16136cb3ca"
+                      },
+                      {
+                        "path": "win/x86-64/OpenConsole.exe",
+                        "bytes": 1398272,
+                        "sha256": "837e5ac001cd451f86ae463568603901a421cf1c37eef7db8db152bd77760140"
+                      }
+                    ]
+                  },
+                  "createdAt": "2026-11-18T11:58:57.630056100Z",
+                  "outputReadOwnership": "DUPLICATED_NONINHERITABLE_ORIGINAL_PIPE_HANDLE",
+                  "cleanupKind": "ORIGINAL_NATIVE_THREAD",
+                  "nativeCleanupThreadId": 553
+                },
+                "runningAt": "2026-11-18T11:58:57.747617600Z",
+                "controllerId": "db14b06c-2851-4b10-ba4e-e359beebf8ec",
+                "controllerAcquiredAt": "2026-11-18T11:58:59.253925300Z"
+              }
+            },
+            {
+              "path": "/api/terminals/99c13b73-6b1d-4590-9003-45c6cb4acf46/output",
+              "query": "?epoch=a3e7884a-8016-4f7c-abb8-26555a1fdec7&after=1491&limit=65536",
+              "method": "GET",
+              "bearerHeaderPresent": true,
+              "status": 200,
+              "response": {
+                "terminalId": "99c13b73-6b1d-4590-9003-45c6cb4acf46",
+                "epoch": "a3e7884a-8016-4f7c-abb8-26555a1fdec7",
+                "offset": 1491,
+                "length": 0,
+                "next": 1491,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "publishedEnd": 1491,
+                "hasMore": false,
+                "terminalState": "RUNNING",
+                "outputIntegrity": "LIVE",
+                "originalSegment": {}
+              }
+            }
+          ],
+          "scope": "ACTUAL_BROWSER_TRANSPORT_OFFLINE_WITH_REAL_JAVA_CORE_AND_NATIVE_PTY; NO_OS_SLEEP_OR_NETWORK_ADAPTER_CHANGES"
+        }
+      ],
+      "externalNodeAndJavaUnavailableOnPath": true
+    },
+    "preview-packaged": {
+      "file": ".runtime/alpha22-native-preview-packaged-tsKP0o/receipt.json",
+      "sha256": "8a6ef3875b629ccfc9b210aa0ca96f686a2e12b9874386ce32450f92d92a58c5",
+      "generatedReport": {
+        "file": ".runtime/alpha22-native-preview-packaged-tsKP0o/generated/docs/qa/preview-native-packaged-win32.json",
+        "sha256": "17a7701f8c3216b8e8d56c3559052da674ccece6e7365a4eae55cbe0acf434b7"
+      },
+      "status": "passed",
+      "toolDirectory": ".runtime/preview-native-packaged-JMwotM",
+      "frozenSourceCount": 298,
+      "sourcesUnchanged": true,
+      "jarUnchanged": true,
+      "restoredReports": 5,
+      "restoredImages": 44,
+      "isolatedDesktop": {
+        "file": ".runtime/alpha22-native-isolated-preview-packaged-e4bc82000d6e4c09a24d74068fbc0c52/receipt.json",
+        "sha256": "d33377831a1f134935d1929c21e9ebb01b404c0ec79d984c03c40a780004bded",
+        "exitCode": 0,
+        "inputDesktopBefore": "Default",
+        "inputDesktopAfter": "Default",
+        "desktopHandleClosed": true
+      },
+      "scope": "ACTUAL_PACKAGED_ELECTRON_MAIN_PRELOAD_JRE_JAR_AND_ASAR_WEB; LOCAL_HTTP_LOGIN_FIXTURE; EXTERNAL_OAUTH_REMOTE_FORWARDING_AND_INSTALLER_SEPARATE",
+      "checks": 10,
+      "launches": 3,
+      "originalProcessObservationsStopped": 12,
+      "operationLifecycle": {
+        "file": ".runtime/preview-native-packaged-JMwotM/operation-lifecycle.json",
+        "sha256": "dbe686b233a81dca4a94255d2894629e407104db6deaa4e108a513ed1e6fc115"
+      },
+      "operations": [
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T12:00:01.744Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:01.916Z",
+          "elapsedMs": 171.63600000000042
+        },
+        {
+          "name": "native view bounds after initial fetch",
+          "startedAt": "2026-11-18T12:00:01.977Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:01.983Z",
+          "elapsedMs": 6.52219999999943
+        },
+        {
+          "name": "preview suspended while application dialog is open",
+          "startedAt": "2026-11-18T12:00:04.896Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:04.902Z",
+          "elapsedMs": 6.172900000001391
+        },
+        {
+          "name": "preview restored after dialog closes",
+          "startedAt": "2026-11-18T12:00:04.956Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:05.077Z",
+          "elapsedMs": 121.04000000000087
+        },
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T12:00:05.185Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:05.318Z",
+          "elapsedMs": 132.55419999999867
+        },
+        {
+          "name": "native page metadata saved",
+          "startedAt": "2026-11-18T12:00:05.359Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:05.745Z",
+          "elapsedMs": 386.3904999999995
+        },
+        {
+          "name": "actual metadata-race URL",
+          "startedAt": "2026-11-18T12:00:05.771Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:05.885Z",
+          "elapsedMs": 114.73559999999998
+        },
+        {
+          "name": "metadata-race tab closed",
+          "startedAt": "2026-11-18T12:00:06.234Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:06.240Z",
+          "elapsedMs": 5.412099999999555
+        },
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T12:00:06.409Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:06.546Z",
+          "elapsedMs": 137.39010000000053
+        },
+        {
+          "name": "first session tabs restored",
+          "startedAt": "2026-11-18T12:00:06.684Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:06.795Z",
+          "elapsedMs": 110.95360000000073
+        },
+        {
+          "name": "other project appears",
+          "startedAt": "2026-11-18T12:00:07.485Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:07.610Z",
+          "elapsedMs": 124.8721000000005
+        },
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T12:00:07.773Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:07.893Z",
+          "elapsedMs": 120.02040000000125
+        },
+        {
+          "name": "original project pages restored",
+          "startedAt": "2026-11-18T12:00:08.062Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:08.180Z",
+          "elapsedMs": 118.07520000000295
+        },
+        {
+          "name": "restored native view is visible",
+          "startedAt": "2026-11-18T12:00:08.204Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:08.320Z",
+          "elapsedMs": 115.99629999999888
+        },
+        {
+          "name": "actual native preview capture",
+          "startedAt": "2026-11-18T12:00:08.322Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:08.371Z",
+          "elapsedMs": 48.71950000000288
+        },
+        {
+          "name": "original desktop controlled close",
+          "startedAt": "2026-11-18T12:00:08.638Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:10.240Z",
+          "elapsedMs": 1602.4279999999999
+        },
+        {
+          "name": "original desktop, core and Worker stopped",
+          "startedAt": "2026-11-18T12:00:10.243Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:13.056Z",
+          "elapsedMs": 2812.5478999999978
+        },
+        {
+          "name": "tabs after full desktop restart",
+          "startedAt": "2026-11-18T12:00:20.983Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:21.107Z",
+          "elapsedMs": 124.19250000000102
+        },
+        {
+          "name": "same-origin state pages",
+          "startedAt": "2026-11-18T12:00:21.299Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:21.417Z",
+          "elapsedMs": 118.0702999999994
+        },
+        {
+          "name": "state replacements loaded",
+          "startedAt": "2026-11-18T12:00:21.502Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:21.617Z",
+          "elapsedMs": 115.14919999999984
+        },
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T12:00:21.723Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:21.764Z",
+          "elapsedMs": 41.58740000000034
+        },
+        {
+          "name": "original desktop controlled close",
+          "startedAt": "2026-11-18T12:00:21.808Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:23.394Z",
+          "elapsedMs": 1586.7142999999996
+        },
+        {
+          "name": "original desktop, core and Worker stopped",
+          "startedAt": "2026-11-18T12:00:23.396Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:27.026Z",
+          "elapsedMs": 3629.4588000000003
+        },
+        {
+          "name": "actual preview URL",
+          "startedAt": "2026-11-18T12:00:34.961Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:35.125Z",
+          "elapsedMs": 163.82790000000386
+        },
+        {
+          "name": "revoked port destroys original native views",
+          "startedAt": "2026-11-18T12:00:35.192Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:35.304Z",
+          "elapsedMs": 111.5702999999994
+        },
+        {
+          "name": "original desktop controlled close",
+          "startedAt": "2026-11-18T12:00:35.307Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:36.902Z",
+          "elapsedMs": 1594.5155000000013
+        },
+        {
+          "name": "original desktop, core and Worker stopped",
+          "startedAt": "2026-11-18T12:00:36.904Z",
+          "timeoutMs": 20000,
+          "status": "passed",
+          "completedAt": "2026-11-18T12:00:41.374Z",
+          "elapsedMs": 4470.3096000000005
+        }
+      ],
+      "externalNodeAndJavaUnavailableOnPath": true,
+      "artifactInputs": {
+        "file": ".runtime/preview-native-packaged-JMwotM/artifact-inputs.json",
+        "sha256": "dd6dabc8f5abfcaef83ee4edadbcbe25bd8f4b2869a7b14de227afabd4485853"
+      },
+      "packagedSourceFiles": 31,
+      "packagedRuntimeFiles": 207
+    }
+  },
+  "installer": {
+    "file": "D:\\Projects\\多Agent研发工作台\\release\\Agent Workbench Setup 0.2.0-alpha.22.exe",
+    "sha256": "925146e1bd6c073e826491115f938c20353be645cd1f9294f8f7e8812019de6c",
+    "recordedAt": "2026-11-18T11:54:12.3415937Z",
+    "version": "0.2.0-alpha.22",
+    "bytes": 157726527,
+    "signatureStatus": "NotSigned",
+    "installationAndUninstallationRetested": false,
+    "productionWebBuildReceipt": ".runtime/alpha22-web-build-H0KHft/receipt.json",
+    "scope": "PREPARED_WINDOWS_INSTALLER_CONTAINS_THE_CURRENT_PRODUCTION_WEB_AND_UNCHANGED_CORE; INSTALLER_LIFECYCLE_NOT_RETESTED",
+    "asarSha256": "f85b1ba60aa5a33bc19d65dbc743df4d96b1fb3f0705e000acb7575c2069332e"
+  },
+  "core": {
+    "jarFile": "core/target/agent-workbench-core-0.2.0-alpha.22.jar",
+    "jarSha256": "eca481e3859679226b17022880a0fcaa5f1526e7c7c6d8bfe2366ad7cf9ef9d9",
+    "javaAndPomUnchangedFromBase": true,
+    "newLocalFullCoreVerify": false,
+    "ciByteComparison": {
+      "file": "docs/qa/alpha22-core-ci-byte-comparison.json",
+      "sha256": "fbccd7654c58053fb5f6b09f978e7d35ee23c7a98b45684df253f66a682f3c10",
+      "recordedAt": "2026-11-18T11:05:10.131Z",
+      "localJarSha256": "eca481e3859679226b17022880a0fcaa5f1526e7c7c6d8bfe2366ad7cf9ef9d9",
+      "ciJarSha256": "ffa1099361a7075d52fb2ce1791bc10d89ae0f7aa56a494c2bbc13f21bef3360",
+      "ciHeadSha": "b3216d36683e3870606c5e69c2011d0c064b82fd",
+      "ciPlatform": "darwin",
+      "productionClassCount": 162,
+      "productionClassBytesEqual": true,
+      "groups": [
+        {
+          "prefix": "BOOT-INF/classes/",
+          "files": 178,
+          "missing": [],
+          "extra": [],
+          "changed": [],
+          "rawBytesEqual": true
+        },
+        {
+          "prefix": "BOOT-INF/lib/",
+          "files": 36,
+          "missing": [],
+          "extra": [],
+          "changed": [],
+          "rawBytesEqual": true
+        }
+      ],
+      "scope": "LOCAL_INCREMENTAL_JAR_BYTES_COMPARED_TO_DIGEST_VERIFIED_EXACT_COMMIT_MACOS_CI_JAR; NOT_A_NEW_LOCAL_FULL_CORE_VERIFY"
+    }
+  },
+  "originalFailures": [
+    {
+      "file": ".runtime/ui-production-4K8Rjp/receipt.json",
+      "sha256": "ff13bb618bd26905d7ece0b32e16d918375d896d353f8918b550527de5b30431",
+      "status": "failed",
+      "stats": {
+        "startTime": "2026-11-18T09:57:18.027Z",
+        "duration": 98473.303,
+        "expected": 46,
+        "skipped": 0,
+        "unexpected": 2,
+        "flaky": 0
+      },
+      "reason": "ORIGINAL_ACCESSIBILITY_TREE_AND_LIVE_ANNOUNCEMENT_COUNTED_TOGETHER",
+      "originalFailureRetained": true
+    },
+    {
+      "file": ".runtime/ui-production-lsM6eU/receipt.json",
+      "sha256": "695e17a296e6db828668a98373298247f0f18e3b934ca23a2d54aff471ae29ce",
+      "status": "failed",
+      "stats": {
+        "startTime": "2026-11-18T10:21:56.795Z",
+        "duration": 9400.726,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "reason": "ORIGINAL_ASSETS_DID_NOT_RESUME_TRANSPORT_READS_WITHIN_ORIGINAL_5000MS",
+      "originalFailureRetained": true
+    },
+    {
+      "file": ".runtime/ui-production-UGduNW/receipt.json",
+      "sha256": "630c1e30335bac527a93f82cb4e84edfcc638ec9be6b7f573b081296b175c012",
+      "status": "failed",
+      "stats": {
+        "startTime": "2026-11-18T10:39:36.342Z",
+        "duration": 30843.481,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 3,
+        "flaky": 0
+      },
+      "reason": "ORIGINAL_LATE_CONTROL_RECEIPT_AFTER_PAGE_NETWORK_OR_FOREGROUND_RECOVERY",
+      "originalFailureRetained": true
+    },
+    {
+      "file": ".runtime/ui-production-PYsCfO/receipt.json",
+      "sha256": "d5075f5b7e36fc18c19f6ab1c3737f3334e77ee99e8b29a868be8ec00dea4294",
+      "status": "failed",
+      "stats": {
+        "startTime": "2026-11-18T11:18:17.351Z",
+        "duration": 21048.622,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "reason": "ORIGINAL_REAL_15000MS_DRAIN_TIMEOUT_SWALLOWED_AFTER_CANCELLATION",
+      "originalFailureRetained": true
+    },
+    {
+      "file": ".runtime/ui-production-4nGfgb/receipt.json",
+      "sha256": "38bc4660abdb605e2de53f1a513d61288f918121a097b6f07343af293ca5f04f",
+      "status": "failed",
+      "stats": {
+        "startTime": "2026-11-18T11:21:50.829Z",
+        "duration": 317569.929,
+        "expected": 251,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "reason": "FINAL_PRODUCT_PASSED_DRAIN_GATE_BUT_NEW_ASSERTION_PRECEDED_ASYNC_ACCESSIBILITY_TREE_UPDATE",
+      "originalFailureRetained": true
+    }
+  ],
+  "drainNegativeEvidence": {
+    "file": ".runtime/alpha22-drain-timeout-negative-diagnosis.json",
+    "sha256": "004d93ee5550df0d87e43fee04032b10f412251697967691c08baeab0614f74a",
+    "recordedAt": "2026-11-18T11:20:54.702Z",
+    "originalDirectory": ".runtime/ui-production-PYsCfO",
+    "status": "original_failure_verified",
+    "observations": {
+      "outputReads": [
+        {
+          "method": "GET",
+          "path": "/api/terminals/b6c2b901-a9a4-47ff-9749-ad248a39de55/output",
+          "query": "?epoch=d660cff1-f127-4a8c-9ce1-78d5a38a0291&after=0&limit=65536"
+        },
+        {
+          "method": "GET",
+          "path": "/api/terminals/b6c2b901-a9a4-47ff-9749-ad248a39de55/output",
+          "query": "?epoch=d660cff1-f127-4a8c-9ce1-78d5a38a0291&after=0&limit=65536"
+        }
+      ],
+      "deliveredFrames": 2
+    },
+    "attachmentSha256": "3ba63ec3d5496944443294e8d0c6f31401dd8e8fa1080e0d5804191df8dc2f1b",
+    "sameZeroCursorReads": 2,
+    "scope": "ORIGINAL_ACCEPTED_FRAME_DRAIN_TIMEOUT_WITH_REAL_15000MS_LIMIT_AND_CANCELLED_READ; BROWSER_PROTOCOL_FIXTURE_ONLY"
+  },
+  "nativeAcknowledgementPredicateDiagnosis": {
+    "file": ".runtime/alpha22-native-ack-diagnosis.json",
+    "sha256": "4ed8f433c1edb273590fcaba4a3096ad92a04971e1f11b8c3b7e20e0191afd4f"
+  },
+  "correctedAccessibilityTiming": {
+    "file": ".runtime/ui-production-yTPKOc/receipt.json",
+    "sha256": "5b22338291c79be9ced7043a83c4a811604dd62e09a9bcd19b52d55604ec6a83",
+    "stats": {
+      "startTime": "2026-11-18T11:34:11.041Z",
+      "duration": 20224.657,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "change": "AWAIT_ACTUAL_ACCESSIBILITY_TREE_TEXT_BEFORE_EXISTING_UNIQUENESS_ASSERTION; PRODUCT_ASSETS_AND_CURSOR_REQUEST_DRAIN_GATES_UNCHANGED"
+  },
+  "preceding251Checkpoint": {
+    "file": ".runtime/alpha22-recovery-before-drain-checkpoint.json",
+    "sha256": "cb4a8a83b68556011e0b3c5a65053e8308d28a5f8358908ca5504f5907987eb3"
+  },
+  "historicalUiReport": {
+    "file": "docs/qa/ui-production-win32.json",
+    "sha256": "ca151e814e1651d4b147924adcfdbe66b446ff5753465ca4e3546df557f9bbb9",
+    "canonicalBytesRestored": true,
+    "canonicalSha256": "ca151e814e1651d4b147924adcfdbe66b446ff5753465ca4e3546df557f9bbb9"
+  },
+  "oldExactCommitCi": {
+    "file": "docs/qa/alpha22-connection-ci-final-b3216d3.json",
+    "sha256": "15c2dba97a42f6e2fe274d2554d461c8e7f4fb36f26927b17c11054b4495ccec"
+  },
+  "unaccepted": [
+    "Exact new commit CI on Windows, macOS and Ubuntu",
+    "Old macOS preview hang root cause",
+    "OS network adapter changes and actual OS sleep",
+    "External OAuth and remote forwarding",
+    "Installer installation/uninstallation and signing",
+    "Long-running storage/network/performance load",
+    "Full M0–M3 and remaining F01–F21/M4 requirements"
+  ]
+}

@@ -23,7 +23,7 @@ async function fixture(page: Page, options: { supported?: boolean; empty?: boole
   const sessions: any[] = options.empty ? [] : [original], actions = new Map<string, any>(), requests: any[] = [];
   base.task.terminalProtocolVersion = options.supported === false ? undefined : 1; base.task.workspace = original.workspace; base.task.version = 'a'.repeat(64);
   base.task.state = options.empty ? 'PAUSED' : 'RUNNING'; base.task.pendingTerminalId = options.empty ? undefined : original.id; base.task.terminal = options.empty ? undefined : original;
-  let secret = '', actionGate: Promise<void> | undefined, outputGate: Promise<void> | undefined, startGate: Promise<void> | undefined;
+  let secret = '', actionGate: Promise<void> | undefined, outputGate: Promise<void> | undefined, startGate: Promise<void> | undefined, controlGate: Promise<void> | undefined;
   const record = (request: any, body?: unknown) => requests.push({ method: request.method(), path: new URL(request.url()).pathname, query: new URL(request.url()).search,
     authorization: request.headers().authorization, body });
   await page.route('**/api/tasks/*/terminals**', async route => {
@@ -39,6 +39,7 @@ async function fixture(page: Page, options: { supported?: boolean; empty?: boole
   await page.route('**/api/terminals/**', async route => {
     const request = route.request(), url = new URL(request.url()), body = request.method() === 'POST' ? request.postDataJSON() : undefined; record(request, body);
     if (url.pathname.endsWith('/output')) {
+      if (settings.failOutput) return route.abort('internetdisconnected');
       if (outputGate) await outputGate;
       const after = Number(url.searchParams.get('after')), limit = Math.min(Number(url.searchParams.get('limit')), settings.frameBytes), bytes = settings.bytes.subarray(after, after + limit);
       settings.outputDeliveries = (settings.outputDeliveries || 0) + 1;
@@ -49,6 +50,7 @@ async function fixture(page: Page, options: { supported?: boolean; empty?: boole
     if (url.pathname.endsWith('/control')) {
       if (body.expectedGeneration !== original.controllerGeneration) return route.fulfill({ status: 409, json: { message: '控制代数已变化' } });
       original.controllerGeneration++; original.controllerId = body.controllerId; secret = 'c'.repeat(43);
+      if (controlGate) await controlGate;
       return route.fulfill({ json: { terminal: original, generation: original.controllerGeneration, controlSecret: secret, nextSequence: original.lastActionSequence + 1 } });
     }
     if (url.pathname.endsWith('/actions') && request.method() === 'POST') {
@@ -76,7 +78,8 @@ async function fixture(page: Page, options: { supported?: boolean; empty?: boole
     return route.fulfill({ json: settings.metadataOverride || original });
   });
   return { ...base, original, settings, sessions, actions, requests, setActionGate: (gate?: Promise<void>) => { actionGate = gate; },
-    setOutputGate: (gate?: Promise<void>) => { outputGate = gate; }, setStartGate: (gate?: Promise<void>) => { startGate = gate; } };
+    setOutputGate: (gate?: Promise<void>) => { outputGate = gate; }, setStartGate: (gate?: Promise<void>) => { startGate = gate; },
+    setControlGate: (gate?: Promise<void>) => { controlGate = gate; } };
 }
 async function open(page: Page) { await openWorkspaceTask(page); await page.getByRole('button', { name: '终端', exact: true }).click(); return page.locator('.task-terminals'); }
 async function control(page: Page, panel: any) {
@@ -88,6 +91,196 @@ async function paste(page: Page, text: string) {
     const data = new DataTransfer(); data.setData('text/plain', text); element.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
   }, text);
 }
+
+async function holdTerminalRenderTimers(page: Page) {
+  await page.addInitScript(() => {
+    const original = window.setTimeout.bind(window), held: (() => void)[] = [];
+    const state = window as any; state.__heldTerminalRenderTimers = held;
+    window.setTimeout = ((handler: TimerHandler, delay?: number, ...args: any[]) => {
+      if (state.__holdTerminalRenderTimers && (delay === undefined || delay === 0) && typeof handler === 'function') {
+        return original(() => held.push(() => handler(...args)), 0);
+      }
+      return original(handler, delay, ...args);
+    }) as typeof window.setTimeout;
+    state.__releaseTerminalRenderTimers = () => { state.__holdTerminalRenderTimers = false; for (const run of held.splice(0)) original(run, 0); };
+  });
+}
+
+test('受控缓存返回沿已排空游标续读，保留原显示并撤去控制而不重放动作', async ({ page }) => {
+  const source = await fixture(page), panel = await open(page); await control(page, panel);
+  const originalCursor = source.settings.bytes.length;
+  await expect(panel.locator('.terminal-output-status')).toContainText(`已排空 ${originalCursor} 字节`);
+  await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true })));
+  await expect(panel.locator('.terminal-mode')).toHaveText('仅查看');
+  await expect(panel.locator('.terminal-output-status')).toContainText('原输出保留');
+  const pausedOutputReads = source.requests.filter(request => request.path.endsWith('/output')).length, requestIndex = source.requests.length;
+  await page.waitForTimeout(350);
+  expect(source.requests.filter(request => request.path.endsWith('/output'))).toHaveLength(pausedOutputReads);
+  source.settings.bytes = Buffer.concat([source.settings.bytes, Buffer.from('PAGE_RESTORED_FRESH_BYTES\r\n')]);
+  await page.evaluate(() => { window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })); window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })); });
+  await expect(panel.locator('.xterm-accessibility-tree')).toContainText('PAGE_RESTORED_FRESH_BYTES');
+  await expect(panel.locator('.terminal-output-status')).toContainText(`已排空 ${source.settings.bytes.length} 字节`);
+  await expect(panel.locator('.terminal-mode')).toHaveText('仅查看');
+  await expect(page.getByRole('textbox', { name: '终端输出（仅查看）', exact: true })).not.toBeEditable();
+  const restored = source.requests.slice(requestIndex), output = restored.filter(request => request.path.endsWith('/output'));
+  expect(output.length).toBeGreaterThan(0); expect(output.every(request => Number(new URLSearchParams(request.query).get('after')) >= originalCursor)).toBe(true);
+  expect(restored.filter(request => request.method === 'POST')).toEqual([]);
+  const display = await panel.locator('.xterm-accessibility-tree').innerText();
+  expect(display.split('ORIGINAL_PTY_中文_GREEN').length - 1).toBe(1); expect(display.split('PAGE_RESTORED_FRESH_BYTES').length - 1).toBe(1);
+  expect(source.errors).toEqual([]);
+});
+
+test('终端读取传输失败后只按原游标重读并保持查看，连接恢复不接管或发送输入', async ({ page }) => {
+  const source = await fixture(page), panel = await open(page); await control(page, panel);
+  const originalCursor = source.settings.bytes.length;
+  await expect(panel.locator('.terminal-output-status')).toContainText(`已排空 ${originalCursor} 字节`);
+  source.settings.failOutput = true;
+  await expect(panel.locator('.terminal-output-status')).toContainText('读取中断');
+  await expect(panel.locator('.terminal-mode')).toHaveText('仅查看');
+  const requestIndex = source.requests.length;
+  source.settings.bytes = Buffer.concat([source.settings.bytes, Buffer.from('READ_TRANSPORT_RECOVERED\r\n')]); source.settings.failOutput = false;
+  await expect(panel.locator('.xterm-accessibility-tree')).toContainText('READ_TRANSPORT_RECOVERED');
+  await expect(panel.locator('.terminal-output-status')).toContainText('正在读取原输出');
+  await expect(panel.locator('.terminal-mode')).toHaveText('仅查看');
+  const restored = source.requests.slice(requestIndex);
+  expect(restored.some(request => request.path === `/api/terminals/${source.original.id}`)).toBe(true);
+  expect(restored.filter(request => request.path.endsWith('/output')).every(request => Number(new URLSearchParams(request.query).get('after')) >= originalCursor)).toBe(true);
+  expect(restored.filter(request => request.method === 'POST')).toEqual([]); expect(source.errors).toEqual([]);
+});
+
+test('缓存返回等待已接收的真实xterm排空，再从确认游标续读而不重复原帧', async ({ page }) => {
+  await holdTerminalRenderTimers(page);
+  const source = await fixture(page); let release: () => void = () => {};
+  source.setOutputGate(new Promise<void>(resolve => { release = resolve; }));
+  const panel = await open(page);
+  await expect.poll(() => source.requests.filter(request => request.path.endsWith('/output')).length).toBe(1);
+  await page.evaluate(() => { (window as any).__holdTerminalRenderTimers = true; }); release(); source.setOutputGate(undefined);
+  await expect.poll(() => page.evaluate(() => (window as any).__heldTerminalRenderTimers.length)).toBeGreaterThan(0);
+  await expect(panel.locator('.terminal-output-status')).toContainText('已排空 0 字节');
+  const originalCursor = source.settings.bytes.length;
+  source.settings.bytes = Buffer.concat([source.settings.bytes, Buffer.from('DRAIN_THEN_RESTORED_BYTES\r\n')]);
+  await page.evaluate(() => { window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true })); window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })); });
+  expect(source.requests.filter(request => request.path.endsWith('/output'))).toHaveLength(1);
+  await page.evaluate(() => (window as any).__releaseTerminalRenderTimers());
+  await expect(panel.locator('.terminal-output-status')).toContainText(`已排空 ${source.settings.bytes.length} 字节`);
+  const queries = source.requests.filter(request => request.path.endsWith('/output')).map(request => Number(new URLSearchParams(request.query).get('after')));
+  expect(queries.filter(cursor => cursor === 0)).toHaveLength(1); expect(queries).toContain(originalCursor);
+  await expect(panel.locator('.xterm-accessibility-tree')).toContainText('DRAIN_THEN_RESTORED_BYTES');
+  const display = await panel.locator('.xterm-accessibility-tree').innerText();
+  expect(display.split('ORIGINAL_PTY_中文_GREEN').length - 1).toBe(1); expect(display.split('DRAIN_THEN_RESTORED_BYTES').length - 1).toBe(1);
+  expect(source.errors).toEqual([]);
+});
+
+test('已接收原帧在恢复等待期间超过排空期限时保持门禁，显式新查看者才重读原帧', async ({ page }) => {
+  await holdTerminalRenderTimers(page);
+  const source = await fixture(page); let release: () => void = () => {};
+  source.setOutputGate(new Promise<void>(resolve => { release = resolve; }));
+  const panel = await open(page);
+  try {
+    await expect.poll(() => source.requests.filter(request => request.path.endsWith('/output')).length).toBe(1);
+    await page.evaluate(() => { (window as any).__holdTerminalRenderTimers = true; }); release(); source.setOutputGate(undefined);
+    await expect.poll(() => page.evaluate(() => (window as any).__heldTerminalRenderTimers.length)).toBeGreaterThan(0);
+    await page.evaluate(() => { window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true })); window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })); });
+    await expect(panel.locator('.terminal-output-status')).toContainText('读取中断', { timeout: 17000 });
+    await expect(panel.getByRole('alert')).toContainText('尚未排空原输出');
+    await expect(panel.locator('.terminal-output-status')).toContainText('已排空 0 字节');
+    await page.evaluate(() => {
+      window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true })); window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+      window.dispatchEvent(new Event('offline')); window.dispatchEvent(new Event('online'));
+      (window as any).__releaseTerminalRenderTimers();
+    });
+    await expect(panel.locator('.xterm-accessibility-tree')).toContainText('ORIGINAL_PTY_中文_GREEN');
+    await page.waitForTimeout(350);
+    expect(source.requests.filter(request => request.path.endsWith('/output'))).toHaveLength(1);
+    await expect(panel.locator('.terminal-output-status')).toContainText('已排空 0 字节');
+    await panel.getByRole('button', { name: '从原保存起点重读输出', exact: true }).click();
+    await expect(panel.locator('.terminal-output-status')).toContainText(`已排空 ${source.settings.bytes.length} 字节`);
+    await expect(panel.locator('.xterm-accessibility-tree')).toContainText('ORIGINAL_PTY_中文_GREEN');
+    const display = await panel.locator('.xterm-accessibility-tree').innerText(); expect(display.split('ORIGINAL_PTY_中文_GREEN').length - 1).toBe(1);
+    const originalReads = source.requests.filter(request => request.path.endsWith('/output') && Number(new URLSearchParams(request.query).get('after')) === 0);
+    expect(originalReads).toHaveLength(2); expect(source.requests.filter(request => request.method === 'POST')).toEqual([]); expect(source.errors).toEqual([]);
+  } finally {
+    await test.info().attach('accepted-frame-timeout-observations.json', { body: JSON.stringify({ outputReads: source.requests.filter(request => request.path.endsWith('/output')).map(request => ({ method: request.method, path: request.path, query: request.query })), deliveredFrames: source.settings.outputDeliveries || 0 }), contentType: 'application/json' });
+    release(); source.setOutputGate(undefined); await page.evaluate(() => (window as any).__releaseTerminalRenderTimers());
+  }
+});
+
+test('离页撤去未发送输入，原在途动作回执返回后不恢复控制或重发队列', async ({ page }) => {
+  const source = await fixture(page), panel = await open(page); await control(page, panel);
+  await expect.poll(() => source.actions.size).toBe(1);
+  let release: () => void = () => {}; source.setActionGate(new Promise<void>(resolve => { release = resolve; }));
+  try {
+    await paste(page, 'ORIGINAL_IN_FLIGHT'); await expect.poll(() => source.requests.filter(request => request.body?.kind === 'INPUT').length).toBe(1);
+    await paste(page, 'UNSENT_MUST_NOT_REPLAY'); await expect(panel.locator('.terminal-output-status')).toContainText('待发送');
+    await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true })));
+    await expect(panel.locator('.terminal-mode')).toHaveText('仅查看');
+    release(); source.setActionGate(undefined);
+    await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })));
+    await expect(panel.locator('.terminal-output-status')).toContainText('正在读取原输出');
+    await expect(panel.locator('.terminal-output-status')).not.toContainText('待发送');
+    await expect(panel.locator('.terminal-mode')).toHaveText('仅查看');
+    const input = source.requests.filter(request => request.body?.kind === 'INPUT');
+    expect(input).toHaveLength(1); expect(Buffer.from(input[0].body.dataBase64, 'base64').toString('utf8')).toBe('ORIGINAL_IN_FLIGHT');
+    expect(source.errors).toEqual([]);
+  } finally { release(); }
+});
+
+for (const recovery of ['page', 'network', 'foreground'] as const) test(`恢复后的迟到控制回执保持查看，重新操作才能接管 ${recovery}`, async ({ page }) => {
+  const source = await fixture(page), panel = await open(page);
+  await expect(panel.locator('.terminal-output-status')).toContainText('正在读取原输出');
+  let release: () => void = () => {}; source.setControlGate(new Promise<void>(resolve => { release = resolve; }));
+  try {
+    await panel.getByRole('button', { name: '取得控制', exact: true }).click();
+    await expect.poll(() => source.requests.filter(request => request.path.endsWith('/control')).length).toBe(1);
+    await expect(panel.getByRole('button', { name: '正在取得控制…', exact: true })).toBeDisabled();
+    const marker = `CONTROL_DELAYED_AFTER_RECOVERY_${recovery}`;
+    source.settings.bytes = Buffer.concat([source.settings.bytes, Buffer.from(`${marker}\r\n`)]);
+    await page.evaluate(kind => {
+      if (kind === 'page') {
+        window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true }));
+        window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+      } else if (kind === 'network') {
+        window.dispatchEvent(new Event('offline')); window.dispatchEvent(new Event('online'));
+      } else {
+        const originalNow = Date.now; Date.now = () => originalNow() + 21000;
+        try { Object.defineProperty(document, 'visibilityState', { configurable: true, value: 'visible' }); document.dispatchEvent(new Event('visibilitychange')); }
+        finally { Date.now = originalNow; }
+      }
+    }, recovery);
+    await expect(panel.locator('.xterm-accessibility-tree')).toContainText(marker);
+    await expect(panel.locator('.terminal-output-status')).toContainText('正在读取原输出');
+    const originalResponse = page.waitForResponse(response => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/control'));
+    release(); source.setControlGate(undefined);
+    const response = await originalResponse; expect(response.status()).toBe(200); expect(await response.finished()).toBeNull();
+    await expect(panel.getByRole('button', { name: '接管控制', exact: true })).toBeEnabled();
+    await expect(panel.locator('.terminal-mode')).toHaveText('仅查看');
+    await expect(page.getByRole('textbox', { name: '终端输出（仅查看）', exact: true })).not.toBeEditable();
+    expect(source.requests.filter(request => request.path.endsWith('/control'))).toHaveLength(1);
+    expect(source.requests.filter(request => request.path.endsWith('/actions') && request.method === 'POST')).toEqual([]);
+    await panel.getByRole('button', { name: '接管控制', exact: true }).click();
+    await expect(panel.locator('.terminal-mode')).toHaveText('当前窗口控制');
+    const claims = source.requests.filter(request => request.path.endsWith('/control'));
+    expect(claims).toHaveLength(2); expect(claims[1].body.expectedGeneration).toBe(1);
+    expect(source.original.controllerGeneration).toBe(2); expect(source.errors).toEqual([]);
+  } finally { release(); source.setControlGate(undefined); }
+});
+
+test('恢复时原epoch变化保留已排空显示并停止读取，生命周期事件不解除身份门禁', async ({ page }) => {
+  const source = await fixture(page), panel = await open(page); await control(page, panel);
+  const originalCursor = source.settings.bytes.length;
+  await expect(panel.locator('.terminal-output-status')).toContainText(`已排空 ${originalCursor} 字节`);
+  await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true })));
+  source.original.epoch = randomUUID();
+  await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })));
+  await expect(panel.getByRole('alert')).toContainText('身份或 epoch 已变化');
+  await expect(panel.locator('.terminal-output-status')).toContainText(`已排空 ${originalCursor} 字节`);
+  await expect(panel.locator('.terminal-mode')).toHaveText('仅查看');
+  const failedReads = source.requests.filter(request => request.path === `/api/terminals/${source.original.id}`).length;
+  await page.evaluate(() => { window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true })); window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })); });
+  await page.waitForTimeout(1700);
+  expect(source.requests.filter(request => request.path === `/api/terminals/${source.original.id}`)).toHaveLength(failedReads);
+  await expect(panel.locator('.xterm-accessibility')).toContainText('ORIGINAL_PTY_中文_GREEN'); expect(source.errors).toEqual([]);
+});
 
 test('旧核心显示终端不可用，查看不派发任何终端请求', async ({ page }) => {
   const source = await fixture(page, { supported: false }), panel = await open(page);

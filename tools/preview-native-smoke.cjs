@@ -3,6 +3,7 @@ const { _electron, expect } = require('../web/node_modules/@playwright/test');
 const { execFileSync } = require('node:child_process');
 const { createHash, randomBytes } = require('node:crypto');
 const { createServer } = require('node:http');
+const { performance } = require('node:perf_hooks');
 const { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } = require('node:fs');
 const path = require('node:path');
 
@@ -46,7 +47,7 @@ const path = require('node:path');
   writeFileSync(path.join(source, 'app.txt'), 'original preview source\n');
   const git = (...args) => execFileSync('git', ['-C', source, ...args], { windowsHide: true, encoding: 'utf8', timeout: 20000 }).trim();
   git('init', '--initial-branch=main'); git('config', 'user.name', 'Preview Fixture'); git('config', 'user.email', 'preview@example.invalid'); git('add', '.'); git('commit', '-m', 'Original preview fixture');
-  const login = randomBytes(16).toString('hex'), requests = [], checks = [], launches = [], errors = [];
+  const login = randomBytes(16).toString('hex'), requests = [], checks = [], launches = [], errors = [], operations = [];
   const server = createServer((request, response) => {
     const url = new URL(request.url, 'http://127.0.0.1');
     requests.push({ path: url.pathname, callbackPresent: url.searchParams.has('code'), cookiePresent: Boolean(request.headers.cookie), authorizationPresent: Boolean(request.headers.authorization) });
@@ -59,10 +60,26 @@ const path = require('node:path');
   const base = `http://127.0.0.1:${server.address().port}`, port = server.address().port;
   const pass = name => { checks.push({ name, at: new Date().toISOString() }); console.log(JSON.stringify({ passed: name })); };
   const pause = ms => new Promise(done => setTimeout(done, ms));
+  async function bounded(name, operation, timeout) {
+    const started = performance.now();
+    const record = { name, startedAt: new Date().toISOString(), timeoutMs: timeout, status: 'in_progress' }; operations.push(record);
+    save('operation-lifecycle.json', operations); console.log(JSON.stringify({ operation: name, status: record.status, timeoutMs: timeout }));
+    let timer;
+    try {
+      const value = await Promise.race([Promise.resolve().then(operation), new Promise((_, reject) => {
+        timer = setTimeout(() => { record.timedOut = true; reject(new Error(`${name} exceeded ${timeout}ms`)); }, timeout);
+      })]);
+      if (performance.now() - started >= timeout) { record.timedOut = true; throw new Error(`${name} exceeded ${timeout}ms`); }
+      record.status = 'passed'; return value;
+    } catch (error) { record.timedOut ||= performance.now() - started >= timeout; record.status = record.timedOut ? 'timed_out' : 'failed'; record.error = error.message; throw error; }
+    finally { clearTimeout(timer); record.completedAt = new Date().toISOString(); record.elapsedMs = performance.now() - started; save('operation-lifecycle.json', operations); }
+  }
   async function until(name, operation, timeout = 20000) {
-    const end = Date.now() + timeout;
-    while (Date.now() < end) { const value = await operation(); if (value) return value; await pause(100); }
-    throw new Error(`${name} exceeded ${timeout}ms`);
+    return bounded(name, async () => {
+      const end = performance.now() + timeout;
+      while (performance.now() < end) { const value = await operation(); if (value) return value; await pause(100); }
+      throw new Error(`${name} exceeded ${timeout}ms`);
+    }, timeout);
   }
   let electron, page, connection, status = 'failed', failure, project, firstSession, secondSession;
   const env = { ...process.env, WORKBENCH_JAVA_HOME: home, ...launchEnvironment, WORKBENCH_USER_DATA: path.join(directory, 'user-data'),
@@ -93,7 +110,8 @@ const path = require('node:path');
   async function stop() {
     if (!electron) return;
     const current = electron, record = launches.at(-1); electron = null;
-    try { await current.close(); }
+    try { await bounded('original desktop controlled close', () => current.close(), 20000); }
+    catch (error) { record.closeFailure = { message: error.message, recordedAt: new Date().toISOString() }; throw error; }
     finally {
       record.stopObservationHistory = []; record.stopWaitLimitMs = 20000;
       await until('original desktop, core and Worker stopped', async () => {
@@ -218,10 +236,10 @@ const path = require('node:path');
     pass('Switching projects preserves each isolated native storage partition and destroys the previous project pages');
     await page.getByRole('region', { name: '会话网页预览', exact: true }).locator('.preview-stage').scrollIntoViewIfNeeded();
     await until('restored native view is visible', async () => (await viewFacts()).some(value => value.visible && value.bounds.width >= 100 && value.bounds.height >= 100));
-    const captures = await electron.evaluate(async ({ BrowserWindow }) => {
+    const captures = await bounded('actual native preview capture', () => electron.evaluate(async ({ BrowserWindow }) => {
       const window = BrowserWindow.getAllWindows()[0], views = window.contentView.children.filter(view => view.webContents && view.getVisible());
       return Promise.all(views.map(async view => ({ id: view.webContents.id, bounds: view.getBounds(), image: (await view.webContents.capturePage()).toPNG().toString('base64') })));
-    });
+    }), 20000);
     assert.equal(captures.length, 1);
     writeFileSync(path.join(directory, 'actual-native-preview.png'), Buffer.from(captures[0].image, 'base64'));
     save('actual-native-preview-bounds.json', captures.map(({ image, ...facts }) => facts));
@@ -262,18 +280,28 @@ const path = require('node:path');
     await stop(); status = 'passed';
   } catch (error) {
     failure = error.stack; process.exitCode = 1;
-    if (electron) save('failure-views.json', await viewFacts().catch(cause => ({ error: cause.message })));
+    if (electron) save('failure-views.json', await bounded('failure view observations', viewFacts, 20000).catch(cause => ({ error: cause.message })));
     if (connection && project && firstSession) save('failure-configuration.json', await api(endpoint(firstSession)).catch(cause => ({ error: cause.message })));
-    if (page && !page.isClosed()) save('failure-preview-ui.json', await page.getByRole('region', { name: '会话网页预览', exact: true }).evaluate(element => ({
+    if (page && !page.isClosed()) save('failure-preview-ui.json', await bounded('failure preview UI observations', () => page.getByRole('region', { name: '会话网页预览', exact: true }).evaluate(element => ({
       status: element.querySelector('.preview-status')?.textContent || '', tabs: [...element.querySelectorAll('[role="tab"]')].map(tab => ({ title: tab.textContent, selected: tab.getAttribute('aria-selected') })),
-    })).catch(cause => ({ error: cause.message })));
+    })), 20000).catch(cause => ({ error: cause.message })));
     if (page && !page.isClosed()) await page.screenshot({ path: path.join(directory, 'failure.png'), fullPage: true }).catch(() => {});
   } finally {
     try { await stop(); } catch (error) { failure = [failure, error.stack].filter(Boolean).join('\n'); status = 'failed'; process.exitCode = 1; }
+    const originalIdentities = [...new Map(launches.flatMap(launch => launch.identities).map(identity => [`${identity.pid}:${identity.processStartedAt}`, identity])).values()];
+    if (originalIdentities.length && launches.some(launch => !launch.observationsAfterStop?.every(observation => observation.originalStopped))) {
+      status = 'failed'; process.exitCode = 1;
+      const file = path.join(directory, 'failure-original-identities.tsv');
+      writeFileSync(file, originalIdentities.map(identity => `${identity.pid}\t${identity.processStartedAt || '-'}`).join('\n') + '\n');
+      try {
+        const observations = JSON.parse(execFileSync(java, ['-Dfile.encoding=UTF-8', '-cp', classes, 'ProcessRecoveryProbe', 'stop-all', file], { windowsHide: true, encoding: 'utf8', timeout: 60000 }));
+        save('failure-process-cleanup.json', { scope: 'INDEPENDENT_ORIGINAL_IDENTITY_STOP_AFTER_FAILED_CONTROLLED_CLOSE; ORIGINAL_FAILURE_RETAINED', observations });
+      } catch (error) { save('failure-process-cleanup.json', { error: error.message, originalFailureRetained: true }); failure = [failure, error.stack].filter(Boolean).join('\n'); }
+    }
     server.closeAllConnections(); await new Promise(done => server.close(done));
     const sourcesUnchanged = inputs.every(input => hash(readFileSync(path.resolve(root, input.file))) === input.sha256);
     if (!sourcesUnchanged) { status = 'failed'; process.exitCode = 1; }
-    const receipt = { recordedAt: new Date().toISOString(), version, platform: process.platform, status, failure, directory, checks, launches, requests, pageErrors: errors,
+    const receipt = { recordedAt: new Date().toISOString(), version, platform: process.platform, status, failure, directory, checks, launches, operations, requests, pageErrors: errors,
       inputs, sourcesUnchanged, packaged, runtimeJava: java, externalNodeAndJavaUnavailableOnPath: packaged,
       artifactInputsFile: artifactInputs ? path.join(directory, 'artifact-inputs.json') : null,
       scope: packaged ? 'ACTUAL_PACKAGED_ELECTRON_MAIN_PRELOAD_JRE_JAR_AND_ASAR_WEB; LOCAL_HTTP_LOGIN_FIXTURE; EXTERNAL_OAUTH_REMOTE_FORWARDING_AND_INSTALLER_SEPARATE'

@@ -7,25 +7,46 @@ const pauseClock = async (page: import('@playwright/test').Page) => {
   await page.clock.pauseAt(new Date('2026-11-18T12:00:01Z'));
 };
 
-test('实际断网停止读取，联网后立即恢复同一令牌与后续轮询', async ({ page, context }) => {
-  let configurationReads = 0, reads = 0, recovered = false; const requests: { method: string; authorization?: string }[] = [];
+test('网络提示触发实际读取核验，读取失败后联网立即恢复原令牌与轮询', async ({ page, context }) => {
+  let configurationReads = 0, reads = 0, offline = false, recovered = false; const requests: { method: string; authorization?: string }[] = [];
   await page.addInitScript(() => sessionStorage.setItem('workbench-token', 'page-recovery-fixture'));
   await page.route('**/workbench-config.json', route => { configurationReads++; return route.fulfill({ json: { apiBaseUrl: '' } }); });
   await page.route('**/api/**', route => {
     reads++; requests.push({ method: route.request().method(), authorization: route.request().headers().authorization });
+    if (offline) return route.abort('internetdisconnected');
     return route.fulfill({ json: { ...emptyState, projects: [project(recovered ? '联网后的项目' : '原项目')] } });
   });
   await pauseClock(page); await page.goto('/'); await expect(page.getByRole('button', { name: '本地核心已连接', exact: true })).toBeVisible();
-  await context.setOffline(true);
-  await expect(page.locator('.connection-banner')).toContainText('网络已断开');
-  const pausedReads = reads; await page.clock.runFor(6500); expect(reads).toBe(pausedReads);
-  recovered = true; await context.setOffline(false);
+  offline = true; await context.setOffline(true);
+  await expect(page.getByRole('button', { name: '本地核心未连接', exact: true })).toBeVisible();
+  const failedReads = reads; await page.clock.runFor(6500); await expect.poll(() => reads).toBeGreaterThan(failedReads);
+  offline = false; recovered = true; await context.setOffline(false);
   await expect(page.getByLabel('选择项目').locator('option')).toHaveText(['联网后的项目']);
   const resumedReads = reads;
   await page.evaluate(() => { window.dispatchEvent(new Event('online')); window.dispatchEvent(new Event('online')); });
   expect(reads).toBe(resumedReads);
   await page.clock.runFor(3100); await expect.poll(() => reads).toBeGreaterThan(resumedReads);
   expect(configurationReads).toBe(1); expect(requests.every(request => request.method === 'GET' && request.authorization === 'Bearer page-recovery-fixture')).toBe(true);
+});
+
+test('初始网络提示离线仍读取可达核心，重复网络事件不替代真实连接结果', async ({ page }) => {
+  let reads = 0, configurationReads = 0, changed = false;
+  await page.addInitScript(() => Object.defineProperty(navigator, 'onLine', { configurable: true, value: false }));
+  await page.route('**/workbench-config.json', route => { configurationReads++; return route.fulfill({ json: { apiBaseUrl: '' } }); });
+  await page.route('**/api/state', route => { reads++; return route.fulfill({ json: { ...emptyState, projects: [project(changed ? '仍可达的本地项目' : '离线提示下的本地项目')] } }); });
+  await pauseClock(page); await page.goto('/');
+  await expect(page.getByRole('button', { name: '本地核心已连接', exact: true })).toBeVisible();
+  await expect(page.getByLabel('选择项目').locator('option')).toHaveText(['离线提示下的本地项目']);
+  const connectedReads = reads; changed = true; await page.clock.runFor(3100);
+  await expect(page.getByLabel('选择项目').locator('option')).toHaveText(['仍可达的本地项目']);
+  expect(reads).toBeGreaterThan(connectedReads);
+  await page.evaluate(() => { window.dispatchEvent(new Event('online')); window.dispatchEvent(new Event('online')); });
+  await expect.poll(() => reads).toBeGreaterThan(connectedReads + 1);
+  const verifiedReads = reads;
+  await page.evaluate(() => { window.dispatchEvent(new Event('offline')); window.dispatchEvent(new Event('offline')); });
+  await expect.poll(() => reads).toBe(verifiedReads + 1);
+  await expect(page.getByRole('button', { name: '本地核心已连接', exact: true })).toBeVisible();
+  expect(configurationReads).toBe(1); expect(await page.evaluate(() => navigator.onLine)).toBe(false);
 });
 
 test('受控页恢复取消旧读取，迟到旧状态不能覆盖恢复后的项目', async ({ page }) => {
@@ -48,6 +69,24 @@ test('受控页恢复取消旧读取，迟到旧状态不能覆盖恢复后的�
   expect(reads).toBe(2);
 });
 
+test('前台返回时重新核对超过二十秒的旧读取，重复可见事件不重叠请求', async ({ page }) => {
+  let release: () => void = () => {}, reads = 0, oldReturned = false;
+  const gate = new Promise<void>(resolve => { release = resolve; });
+  await page.route('**/workbench-config.json', route => route.fulfill({ json: { apiBaseUrl: '' } }));
+  await page.route('**/api/state', async route => {
+    const old = ++reads === 1;
+    if (old) await gate;
+    await route.fulfill({ json: { ...emptyState, projects: [project(old ? '旧前台项目' : '前台核对后的项目')] } }).catch(() => {});
+    if (old) oldReturned = true;
+  });
+  await pauseClock(page); await page.goto('/'); await expect.poll(() => reads).toBe(1);
+  await page.clock.setSystemTime(new Date('2026-11-18T12:00:25Z'));
+  await page.evaluate(() => { document.dispatchEvent(new Event('visibilitychange')); document.dispatchEvent(new Event('visibilitychange')); });
+  await expect(page.getByLabel('选择项目').locator('option')).toHaveText(['前台核对后的项目']);
+  expect(reads).toBe(2); release(); await expect.poll(() => oldReturned).toBe(true);
+  await expect(page.getByLabel('选择项目').locator('option')).toHaveText(['前台核对后的项目']);
+});
+
 test('初始化明确失败后，联网和受控页恢复不自动重读配置或派发任务', async ({ page, context }) => {
   let reads = 0, apiRequests = 0;
   await page.route('**/workbench-config.json', route => { reads++; return route.fulfill({ status: 503, json: {} }); });
@@ -55,6 +94,8 @@ test('初始化明确失败后，联网和受控页恢复不自动重读配置�
   await pauseClock(page); await page.goto('/'); await expect(page.locator('.connection-banner')).toContainText('无法读取工作台运行时配置');
   await context.setOffline(true); await context.setOffline(false);
   await page.evaluate(() => { window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true })); window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })); });
+  await page.clock.setSystemTime(new Date('2026-11-18T12:00:25Z'));
+  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
   await page.clock.runFor(10000); expect(reads).toBe(1); expect(apiRequests).toBe(0);
   await expect(page.locator('.connection-banner')).toContainText('无法读取工作台运行时配置');
   await expect(page.getByRole('button', { name: '重试连接', exact: true })).toBeEnabled();

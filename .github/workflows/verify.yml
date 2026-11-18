@@ -197,6 +197,7 @@ jobs:
             .runtime/preview-native-*/ProcessRecoveryProbe.java
             .runtime/preview-native-*/sources/
             .runtime/preview-native-*/actual-native-preview-bounds.json
+            .runtime/preview-native-*/operation-lifecycle.json
             .runtime/preview-native-*/probe-classes/
             .runtime/preview-native-*/failure*.json
             .runtime/preview-native-*/*.png

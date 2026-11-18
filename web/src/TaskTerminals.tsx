@@ -5,13 +5,15 @@ import { ArrowLeft, ArrowRight, Eye, Hand, Play, RefreshCw, Square, Terminal, Tr
 import { useTheme } from './theme';
 import { Badge, Empty, formatTime, SectionHeading, shortHash } from './ui';
 import type { Task, TerminalAction, TerminalOutputPage, TerminalSession } from './types';
-import { binaryInput, checkedOutput, TerminalActionChannel, TerminalHttpError, terminalRequest, utf8Input } from './terminal-client';
+import { binaryInput, checkedOutput, TerminalActionChannel, TerminalHttpError, TerminalTransportError, terminalRequest, utf8Input } from './terminal-client';
 import type { TerminalChannelState } from './terminal-client';
+import { startPagePolling } from './page-polling';
 import '@xterm/xterm/css/xterm.css';
 import './terminals.css';
 
 type TerminalPage = { terminals: TerminalSession[]; cursor: number; hasMore: boolean };
 type ActionPage = { actions: TerminalAction[]; cursor: number; hasMore: boolean };
+class TerminalDrainError extends Error {}
 const emptyChannel: TerminalChannelState = { controlled: false, claiming: false, sending: false, queuedBytes: 0, queuedActions: 0, stopping: false, message: '' };
 const stateLabel: Record<string, string> = { QUEUED: '排队中', STARTING: '正在启动', RUNNING: '运行中', STOPPING: '正在收尾', EXITED: '已退出', CANCELLED: '已停止', UNKNOWN: '结果未知' };
 const actionLabel = (kind: string) => ({ INPUT: '输入', RESIZE: '尺寸调整', STOP: '停止' }[kind] || kind);
@@ -21,6 +23,7 @@ export function TaskTerminals({ task, onChanged }: { task: Task; onChanged: () =
   const [before, setBefore] = useState(0), [previous, setPrevious] = useState<number[]>([]);
   const [selected, setSelected] = useState(task.pendingTerminalId || task.terminal?.id || task.lastTerminalId || '');
   const [loading, setLoading] = useState(false), [starting, setStarting] = useState(false), [error, setError] = useState('');
+  const [readError, setReadError] = useState('');
   const [revision, setRevision] = useState(0), [viewer, setViewer] = useState(0);
   const unresolvedStart = useRef<string | undefined>(undefined);
   const active = useRef(true);
@@ -28,17 +31,17 @@ export function TaskTerminals({ task, onChanged }: { task: Task; onChanged: () =
   const supported = task.terminalProtocolVersion === 1;
   useEffect(() => {
     if (!supported) return;
-    let active = true; const abort = new AbortController(); setLoading(true);
-    terminalRequest<TerminalPage>(`/tasks/${encodeURIComponent(task.id)}/terminals?before=${before}&limit=30`, undefined, abort.signal).then(value => {
-      if (!active) return;
+    setLoading(true);
+    return startPagePolling(async signal => {
+      const value = await terminalRequest<TerminalPage>(`/tasks/${encodeURIComponent(task.id)}/terminals?before=${before}&limit=30`, undefined, signal);
+      if (signal.aborted) return;
       if (!Array.isArray(value.terminals) || !Number.isSafeInteger(value.cursor) || typeof value.hasMore !== 'boolean') throw new Error('终端历史响应不完整，请重新读取原记录。');
-      setPage(value); setSelected(current => current || task.pendingTerminalId || value.terminals[0]?.id || '');
+      setPage(value); setReadError(''); setLoading(false); setSelected(current => current || task.pendingTerminalId || value.terminals[0]?.id || '');
       if (unresolvedStart.current) {
         const original = value.terminals.find(terminal => terminal.startRequestId === unresolvedStart.current);
         if (original) { setSelected(original.id); unresolvedStart.current = undefined; setError('已找到原启动记录，未建立第二个 shell。'); }
       }
-    }).catch(failure => { if (active) setError(failure.message); }).finally(() => { if (active) setLoading(false); });
-    return () => { active = false; abort.abort(); };
+    }, 3000, { onError: failure => { setReadError((failure as Error).message); setLoading(false); } });
   }, [supported, task.id, task.pendingTerminalId, task.lastTerminalId, before, revision]);
 
   async function start() {
@@ -74,7 +77,7 @@ export function TaskTerminals({ task, onChanged }: { task: Task; onChanged: () =
         <button className="icon-button" aria-label="返回较新的终端记录" disabled={!previous.length || loading} onClick={() => { setBefore(previous.at(-1)!); setPrevious(current => current.slice(0, -1)); }}><ArrowLeft size={16} /></button>
         <button className="icon-button" aria-label="读取更早的终端记录" disabled={!page.hasMore || loading} onClick={() => { setPrevious(current => [...current, before]); setBefore(page.cursor); }}><ArrowRight size={16} /></button>
       </div>
-      {error && <div className="form-error" role="alert">{error}</div>}
+    {(error || readError) && <div className="form-error" role="alert">{error && <p>{error}</p>}{readError && <p>{readError}</p>}</div>}
       {unresolvedStart.current && <div className="terminal-observation incomplete" role="alert">原启动请求 <code>{unresolvedStart.current}</code> 尚未核对。读取原记录不会重新启动 shell。</div>}
       {!task.workspace && <p className="muted-text">确认任务计划并准备独立工作目录后，可建立手动终端。</p>}
       {selected ? <TerminalPane key={`${task.id}-${selected}-${viewer}`} terminalId={selected} onChanged={onChanged} onReplay={() => setViewer(value => value + 1)} /> : <section className="card"><Empty icon={<Terminal size={28} />} title={loading ? '正在读取原终端…' : '尚未建立手动终端'} description="新建终端会占用本次任务的工作目录；原自动执行与终端操作按同一现场门禁调度。" /></section>}
@@ -105,8 +108,8 @@ function TerminalPane({ terminalId, onChanged, onReplay }: { terminalId: string;
     const element: HTMLDivElement = candidate;
     let active = true, epoch = '', after = 0, lastMetadata = 0, lastState = '', current: TerminalSession | undefined, animation = 0;
     let outputFence: { state: string; integrity: string } | undefined;
-    let timer: ReturnType<typeof setTimeout> | undefined, wake: (() => void) | undefined;
-    const abort = new AbortController(), drains = new Set<() => void>();
+    let nextDelay = 250, readHalted = false, reading: { signal: AbortSignal; operation: Promise<void> } | undefined;
+    const drains = new Set<() => void>();
     const xterm = new XtermTerminal({ cols: 80, rows: 24, scrollback: 5000, disableStdin: true, cursorBlink: false, screenReaderMode: true,
       fontFamily: 'ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace', fontSize: 13, lineHeight: 1.2, theme: terminalTheme() });
     const fit = new FitAddon(); xterm.loadAddon(fit); xterm.open(element); terminal.current = xterm;
@@ -127,51 +130,66 @@ function TerminalPane({ terminalId, onChanged, onReplay }: { terminalId: string;
     const input = xterm.onData(value => client.input(utf8Input(value))), binary = xterm.onBinary(value => {
       try { client.input(binaryInput(value)); } catch (failure) { if (active) setError((failure as Error).message); }
     });
-    const pause = (ms: number) => new Promise<void>(resolve => { wake = resolve; timer = setTimeout(() => { wake = undefined; resolve(); }, ms); });
     const write = (bytes: Uint8Array) => new Promise<boolean>((resolve, reject) => {
       let finished = false;
       const complete = (value: boolean) => { if (finished) return; finished = true; clearTimeout(limit); drains.delete(detach); resolve(value); };
       const detach = () => complete(false);
-      const limit = setTimeout(() => { if (finished) return; finished = true; drains.delete(detach); reject(new Error('当前窗口尚未排空原输出，字节游标保持。')); }, 15000);
+      const limit = setTimeout(() => { if (finished) return; finished = true; drains.delete(detach); reject(new TerminalDrainError('当前窗口尚未排空原输出，字节游标保持。')); }, 15000);
       drains.add(detach); xterm.write(bytes, () => complete(active));
     });
-    async function read() {
+    async function readOutput(signal: AbortSignal) {
+      if (!active || signal.aborted) return;
+      if (!current || Date.now() - lastMetadata > 1000) {
+        const value = await terminalRequest<TerminalSession>(`/terminals/${encodeURIComponent(terminalId)}`, undefined, signal);
+        if (!active || signal.aborted) return;
+        if (!value || value.id !== terminalId || typeof value.epoch !== 'string' || !value.epoch || value.protocolVersion !== 1 || (epoch && value.epoch !== epoch)) throw new Error('原终端身份或 epoch 已变化，停止读取并保留当前字节游标。');
+        if (['STOPPING', 'EXITED', 'CANCELLED', 'UNKNOWN'].includes(value.state)) outputFence = { state: value.state, integrity: value.outputIntegrity };
+        current = outputFence && ['QUEUED', 'STARTING', 'RUNNING'].includes(value.state)
+          ? { ...value, state: outputFence.state, inputFenced: true, outputIntegrity: outputFence.integrity } : value;
+        epoch = value.epoch; lastMetadata = Date.now(); setSession(current); client.observe(current);
+        if (lastState === 'RUNNING' && value.state !== 'RUNNING') void changed.current().catch(() => {});
+        lastState = value.state;
+      }
+      const page = await terminalRequest<TerminalOutputPage>(`/terminals/${encodeURIComponent(terminalId)}/output?epoch=${encodeURIComponent(epoch)}&after=${after}&limit=65536`, undefined, signal);
+      const bytes = await checkedOutput(page, terminalId, epoch, after); if (!active || signal.aborted) return;
+      if (['STOPPING', 'EXITED', 'CANCELLED', 'UNKNOWN'].includes(page.terminalState) || !['PENDING', 'LIVE', 'COMPLETE'].includes(page.outputIntegrity)) {
+        outputFence = { state: page.terminalState, integrity: page.outputIntegrity };
+        current = { ...current, state: page.terminalState, inputFenced: true, outputIntegrity: page.outputIntegrity };
+        setSession(current); client.observe(current); client.setReadable(false);
+      }
+      if (bytes.length && !await write(bytes)) return;
+      if (!active) return;
+      // A retained xterm may drain an accepted frame while its read is cancelled.
+      after = page.next; setCursor(after);
+      if (signal.aborted) return;
+      const live = !page.hasMore && page.terminalState === 'RUNNING' && current.state === 'RUNNING' && !current.inputFenced && !outputFence;
+      const pending = ['QUEUED', 'STARTING'].includes(current.state);
+      setError(''); setPhase(page.hasMore ? 'replaying' : live ? 'live' : current.state === 'QUEUED' ? 'queued' : current.state === 'STARTING' ? 'starting' : 'saved'); client.setReadable(live);
+      if (live) measure();
+      nextDelay = page.hasMore ? 0 : live || pending ? 250 : 1500;
+    }
+    async function read(signal: AbortSignal): Promise<void | boolean> {
+      if (readHalted) return false;
       try {
-        while (active) {
-          if (!current || Date.now() - lastMetadata > 1000) {
-            const value = await terminalRequest<TerminalSession>(`/terminals/${encodeURIComponent(terminalId)}`, undefined, abort.signal);
-            if (!active) return;
-            if (value.id !== terminalId || !value.epoch || value.protocolVersion !== 1 || (epoch && value.epoch !== epoch)) throw new Error('原终端身份或 epoch 已变化，停止读取并保留当前字节游标。');
-            if (['STOPPING', 'EXITED', 'CANCELLED', 'UNKNOWN'].includes(value.state)) outputFence = { state: value.state, integrity: value.outputIntegrity };
-            current = outputFence && ['QUEUED', 'STARTING', 'RUNNING'].includes(value.state)
-              ? { ...value, state: outputFence.state, inputFenced: true, outputIntegrity: outputFence.integrity } : value;
-            epoch = value.epoch; lastMetadata = Date.now(); setSession(current); client.observe(current);
-            if (lastState === 'RUNNING' && value.state !== 'RUNNING') void changed.current().catch(() => {});
-            lastState = value.state;
-          }
-          const page = await terminalRequest<TerminalOutputPage>(`/terminals/${encodeURIComponent(terminalId)}/output?epoch=${encodeURIComponent(epoch)}&after=${after}&limit=65536`, undefined, abort.signal);
-          const bytes = await checkedOutput(page, terminalId, epoch, after); if (!active) return;
-          if (['STOPPING', 'EXITED', 'CANCELLED', 'UNKNOWN'].includes(page.terminalState) || !['PENDING', 'LIVE', 'COMPLETE'].includes(page.outputIntegrity)) {
-            outputFence = { state: page.terminalState, integrity: page.outputIntegrity };
-            current = { ...current, state: page.terminalState, inputFenced: true, outputIntegrity: page.outputIntegrity };
-            setSession(current); client.observe(current); client.setReadable(false);
-          }
-          if (bytes.length && !await write(bytes)) return;
-          if (!active) return;
-          after = page.next; setCursor(after);
-          const live = !page.hasMore && page.terminalState === 'RUNNING' && current.state === 'RUNNING' && !current.inputFenced && !outputFence;
-          const pending = ['QUEUED', 'STARTING'].includes(current.state);
-          setPhase(page.hasMore ? 'replaying' : live ? 'live' : current.state === 'QUEUED' ? 'queued' : current.state === 'STARTING' ? 'starting' : 'saved'); client.setReadable(live);
-          if (live) measure();
-          if (!page.hasMore) await pause(live || pending ? 250 : 1500);
+        const previous = reading;
+        if (previous) {
+          try { await previous.operation; } catch (failure) { if (!previous.signal.aborted || failure instanceof TerminalDrainError) throw failure; }
         }
+        if (!active || signal.aborted) return;
+        if (readHalted) return false;
+        const operation = readOutput(signal), attempt = { signal, operation }; reading = attempt;
+        try { await operation; } finally { if (reading === attempt) reading = undefined; }
       } catch (failure) {
-        if (active) { client.setReadable(false); client.leaveControl(); setPhase('interrupted'); setError((failure as Error).message); }
+        if (!active || (signal.aborted && !(failure instanceof TerminalDrainError))) return;
+        client.setReadable(false); client.leaveControl(); setPhase('interrupted'); setError((failure as Error).message);
+        nextDelay = 1500; lastMetadata = 0;
+        if (!(failure instanceof TerminalTransportError) && !(failure instanceof TerminalHttpError && failure.status && failure.status >= 500)) { readHalted = true; return false; }
       }
     }
-    void read();
+    function suspend() { client.setReadable(false); client.leaveControl(); if (!readHalted) setPhase('paused'); }
+    const stopPolling = startPagePolling(read, () => nextDelay, { onPause: suspend, onResume: () => { suspend(); lastMetadata = 0; } });
     return () => {
-      active = false; abort.abort(); if (timer) clearTimeout(timer); wake?.(); cancelAnimationFrame(animation); resize.disconnect();
+      active = false; stopPolling(); cancelAnimationFrame(animation); resize.disconnect();
       for (const drain of [...drains]) drain(); client.dispose(); input.dispose(); binary.dispose(); xterm.dispose();
       terminal.current = undefined; channel.current = undefined; fitPane.current = () => {};
     };
@@ -203,7 +221,7 @@ function TerminalPane({ terminalId, onChanged, onReplay }: { terminalId: string;
       {control.unresolvedRequestId && <p>原动作 <code>{control.unresolvedRequestId}</code><button className="text-button" disabled={control.sending} onClick={() => void channel.current?.resolveOriginal()}>只核对原动作</button></p>}
     </div>}
     <div className="terminal-resizable"><div ref={host} className="native-terminal" role="region" aria-label="原终端输出" /></div>
-    <div className="terminal-output-status" role="status"><span>{({ loading: '正在读取原记录', queued: '等待原终端领取', starting: '正在启动原终端', replaying: '正在重放已保存输出', live: '正在读取原输出', saved: '查看已保存输出', interrupted: '读取中断，原状态需核对' } as Record<string, string>)[phase]}</span><span>已排空 {cursor.toLocaleString()} 字节</span><span>本窗口 {dimensions.columns}×{dimensions.rows} · 原终端 {session?.columns || '—'}×{session?.rows || '—'}</span>{control.queuedBytes > 0 && <span>待发送 {control.queuedBytes.toLocaleString()} 字节</span>}</div>
+    <div className="terminal-output-status" role="status"><span>{({ loading: '正在读取原记录', queued: '等待原终端领取', starting: '正在启动原终端', replaying: '正在重放已保存输出', live: '正在读取原输出', saved: '查看已保存输出', paused: '原输出保留，恢复后重新核对', interrupted: '读取中断，原状态需核对' } as Record<string, string>)[phase]}</span><span>已排空 {cursor.toLocaleString()} 字节</span><span>本窗口 {dimensions.columns}×{dimensions.rows} · 原终端 {session?.columns || '—'}×{session?.rows || '—'}</span>{control.queuedBytes > 0 && <span>待发送 {control.queuedBytes.toLocaleString()} 字节</span>}</div>
     <p className="terminal-retention">当前窗口保留最近 5000 行显示；完整已保存输出由核心保留，最多 64 MiB。结束并完成收尾后，可从任务页导出原输出及完整性记录。仅查看时，窗口布局不会调整原终端尺寸。</p>
     {session && <dl className="terminal-metadata"><dt>工作目录</dt><dd>{session.workspace}</dd><dt>原终端进程</dt><dd>{session.nativeProcess ? <><code>{session.nativeProcess.pid}</code> · {session.nativeProcess.processStartedAt} · {session.nativeProcess.backend}</> : '尚未取得原生进程身份'}</dd><dt>原 Worker</dt><dd><code>{session.source?.workerId || '等待原 Worker 领取'}</code>{session.source?.executorPid && <> · PID {session.source.executorPid}</>}</dd><dt>输出记录</dt><dd>{session.outputIntegrity} · {session.outputEnd.toLocaleString()} 字节 · {session.outputSegments} 个片段</dd><dt>原终端编号</dt><dd><code>{session.id}</code></dd></dl>}
     <details className="terminal-actions" onToggle={event => setShowActions(event.currentTarget.open)}><summary>原输入与控制动作记录</summary>{showActions && <TerminalActions terminalId={terminalId} revision={`${control.lastAction?.requestId || ''}-${control.lastAction?.state || ''}`} />}</details>
@@ -214,12 +232,13 @@ function TerminalActions({ terminalId, revision }: { terminalId: string; revisio
   const [before, setBefore] = useState(0), [previous, setPrevious] = useState<number[]>([]), [page, setPage] = useState<ActionPage>();
   const [error, setError] = useState(''), [loading, setLoading] = useState(true);
   useEffect(() => {
-    let active = true; const abort = new AbortController(); setLoading(true); setError('');
-    terminalRequest<ActionPage>(`/terminals/${encodeURIComponent(terminalId)}/actions?before=${before}&limit=30`, undefined, abort.signal).then(value => {
+    setLoading(true); setError('');
+    return startPagePolling(async signal => {
+      const value = await terminalRequest<ActionPage>(`/terminals/${encodeURIComponent(terminalId)}/actions?before=${before}&limit=30`, undefined, signal);
+      if (signal.aborted) return;
       if (!Array.isArray(value.actions) || !Number.isSafeInteger(value.cursor) || typeof value.hasMore !== 'boolean') throw new Error('原动作历史响应不完整。');
-      if (active) setPage(value);
-    }).catch(failure => { if (active) setError(failure.message); }).finally(() => { if (active) setLoading(false); });
-    return () => { active = false; abort.abort(); };
+      setPage(value); setError(''); setLoading(false);
+    }, 3000, { onError: failure => { setError((failure as Error).message); setLoading(false); } });
   }, [terminalId, before, before === 0 ? revision : 'older']);
   return <div className="terminal-action-history"><p className="muted-text">这里只显示原编号、内容摘要与派发结果；输入账本和控制摘要不包含在交付包中。原始终端输出可能包含命令回显。</p>
     {error && <div className="form-error" role="alert">{error}</div>}{loading && <p className="muted-text">正在读取原动作…</p>}
