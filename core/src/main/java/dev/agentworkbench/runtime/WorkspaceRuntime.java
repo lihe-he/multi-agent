@@ -1314,6 +1314,17 @@ public class WorkspaceRuntime {
     }
 
     /**
+     * Windows 分开注册与检出，避免 worktree 内部子进程的绝对 GIT_DIR 长度限制。
+     */
+    void addWorktree(Path source, Path target, String baseline, String reason) {
+        List<String> arguments = new ArrayList<>(List.of("worktree", "add", "--detach", "--lock", "--reason", reason));
+        if (WINDOWS) arguments.add("--no-checkout");
+        arguments.addAll(List.of("--", target.toString(), baseline));
+        git(source, arguments.toArray(String[]::new));
+        if (WINDOWS) git(target, "reset", "--hard", "--no-recurse-submodules", baseline);
+    }
+
+    /**
      * Windows 在目标中初始化独立对象库，避免 clone 子进程的绝对 GIT_DIR 长度限制。
      */
     void cloneRepository(Path source, Path target, String baseline, boolean checkout) throws IOException {

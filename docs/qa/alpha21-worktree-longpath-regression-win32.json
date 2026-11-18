@@ -1,0 +1,34 @@
+{
+  "recordedAt": "2026-11-17T15:29:26.087Z",
+  "status": "passed",
+  "baseCommit": "854bb6b8c5dbd5a7187b89ad3eb0c76ef1cd3d60",
+  "command": "mvn -B -ntp -f core/pom.xml -Dtest=WorkspaceLongPathTest test",
+  "suite": {
+    "name": "WorkspaceLongPathTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "sha256": "181ecda26e8b7fd9322db36696086bfd29e9a6bfb2bc2a79b21755ef714dec49"
+  },
+  "newCase": "windowsWorktreeBeyondExplicitGitDirectoryLimitRetainsReadyOwnership",
+  "newCaseAssertions": {
+    "gitMarkerUtf8Bytes": 229,
+    "gitSetupLimitUtf8Bytes": 220,
+    "fullWorkspacePathUtf16Characters": 208,
+    "readyReceiptReusedByteIdentically": true,
+    "detachedHead": true,
+    "lockReason": "Agent Workbench workspace 9599b42f-0826-4f6e-a808-ebac0c9531bc",
+    "reviewPath": "C:\\Users\\Zeng qi he\\AppData\\Local\\Temp\\junit-5773921425114184967\\中文 long worktree data\\中文 long-path-directory\\中文 long-path-directory\\中文 long-path-directory\\reviews\\f8660a2d-aae1-4b60-baf1-7fa1a37fe3b0-4aca1a8e-c978-4051-8a7a-51f3cca1e738\\work",
+    "sourceHead": "be24236a07b41695aea7342ae8b1b80995523b75",
+    "sourceRefs": "be24236a07b41695aea7342ae8b1b80995523b75 refs/heads/main\n",
+    "sourceIndexSha256": "f7fd0cff59b92b04d2e82f2ebafc900d8db3d9cacb3f9836cd24129e032613f0",
+    "sourceConfigSha256": "e8076ac2c4d903be4b8bde7c8f777882419a20652e3613b4ae952c0786e4d9e0",
+    "sourceAndWorkIndexUnchanged": true,
+    "detailedEvidence": "core/target/windows-long-path-evidence-ebc4e996-bf9d-4650-a8aa-1c9fc63cd98d/report.json",
+    "detailedEvidenceSha256": "e90ffac11fc0295b99f9e5debf158909faf38d8945563e9f715237db3c324e44"
+  },
+  "existingThreeLongObjectPathStrategiesRetained": true,
+  "detailedCommandLog": ".runtime/alpha21-worktree-regression-verified-attempt1/alpha21-worktree-longpath-verified.log",
+  "scope": "LOCAL_WINDOWS_TARGETED_LONG_PATH_SUITE_ONLY"
+}

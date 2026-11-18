@@ -107,7 +107,7 @@ final class GitWorkspaces {
             Map<String, Object> record = obj("schemaVersion", 1, "taskId", taskId, "owner", owner, "state", "PREPARED", "selection", selection, "target", target.toString(), "createdAt", now());
             save(manifest, record);
             if ("WORKTREE".equals(str(selection, "strategy"))) {
-                runtime.git(source, "worktree", "add", "--detach", "--lock", "--reason", reason, "--", target.toString(), str(selection, "baseline"));
+                runtime.addWorktree(source, target, str(selection, "baseline"), reason);
             } else {
                 runtime.cloneRepository(source, target, str(selection, "baseline"), false);
                 // 远程跟踪引用的提交可能未被普通 clone 下载，仍按原 SHA 获取，不重新解析分支。

@@ -1,0 +1,124 @@
+{
+  "recordedAt": "2026-11-17T15:14:00Z",
+  "status": "passed",
+  "baseCommit": "854bb6b8c5dbd5a7187b89ad3eb0c76ef1cd3d60",
+  "scope": "WINDOWS_GIT_WORKTREE_ABSOLUTE_GIT_DIR_LIMIT_FIX_AND_REGRESSION",
+  "cause": {
+    "gitVersionInOriginalCi": "git version 2.56.0.windows.4",
+    "sourceCommit": "581291682ad5a238c08c93d1f5bd4518382a3230",
+    "sourceUrl": "https://github.com/git-for-windows/git/blob/581291682ad5a238c08c93d1f5bd4518382a3230/setup.c",
+    "check": "PATH_MAX - 40 < strlen(gitdirenv)",
+    "pathMaxBytes": 260,
+    "thresholdBytes": 220,
+    "originalFixtureGitMarkerUtf8Bytes": 221,
+    "failure": "fatal: '$GIT_DIR' too big",
+    "originalWindowsArtifact": {
+      "id": 14337995762,
+      "sha256": "edeed23e3c986d7a2aedb52d534acff6ce2b6c319835f8d18029d21d0ec2480f",
+      "digestVerified": true,
+      "preservedFixtureFiles": 30,
+      "allPreservedFileDigestsVerified": true
+    }
+  },
+  "fix": {
+    "sourceFiles": [
+      "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+      "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java"
+    ],
+    "behavior": "WINDOWS_WORKTREE_ADD_NO_CHECKOUT_THEN_RESET_HARD_FROM_WORKTREE_AT_FIXED_SHA",
+    "otherPlatformsKeepSingleStepCheckout": true
+  },
+  "regression": {
+    "file": "core/src/test/java/dev/agentworkbench/WorkspaceLongPathTest.java",
+    "gitMarkerUtf8Bytes": 229,
+    "gitSetupLimitBytes": 220,
+    "fullWorkDirectoryUnder240Utf16Characters": true,
+    "testCount": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "report": ".runtime/alpha21-worktree-regression-verified-attempt1/TEST-dev.agentworkbench.WorkspaceLongPathTest.xml",
+    "commandLog": ".runtime/alpha21-worktree-regression-verified-attempt1/alpha21-worktree-longpath-verified.log",
+    "stableReceipt": "docs/qa/alpha21-worktree-longpath-regression-win32.json",
+    "newCase": {
+      "name": "windowsWorktreeBeyondExplicitGitDirectoryLimitRetainsReadyOwnership",
+      "readyReceiptReusedByteIdentically": true,
+      "detachedHeadAndLockReasonVerified": true,
+      "reviewCopyVerified": true,
+      "sourceHeadRefsConfigAndIndexUnchanged": true,
+      "report": "core/target/windows-long-path-evidence-ebc4e996-bf9d-4650-a8aa-1c9fc63cd98d/report.json"
+    },
+    "existingObjectPathCasesRetained": 3,
+    "fullCoreVerify": {
+      "status": "interrupted",
+      "command": "node .runtime/alpha21-verify-core.mjs",
+      "startedAt": "2026-11-17T15:00:25.804Z",
+      "originalDirectory": ".runtime/alpha21-core-verify-qx1rC0",
+      "exitCode": 1073807364,
+      "scope": "Incomplete run; not accepted as a full regression pass"
+    }
+  },
+  "commentAudit": {
+    "status": "passed",
+    "javaFiles": 109,
+    "originalCommentsRetained": 375,
+    "newStandardMultilineJavadocs": 2,
+    "directory": ".runtime/alpha20-java-comment-audit-worktree-explicit-git-dir-final-attempt1"
+  },
+  "repro": {
+    "directory": ".runtime/alpha21-worktree-longpath-reproduction-attempt2",
+    "gitVersion": "git version 2.53.0.windows.2",
+    "directAddFailurePathBytes": 241,
+    "noCheckoutSplitSucceeded": true,
+    "sourceConfigUnchanged": true
+  },
+  "previousCi": {
+    "runId": 44100293698,
+    "runAttempt": 1,
+    "conclusion": "failure",
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/44100293698"
+  },
+  "followupVerification": {
+    "observedAt": "2026-11-18T02:04:38.099Z",
+    "historicalTargetedXmlAndDetailedEvidenceHashesVerified": true,
+    "changedSourcesSinceInterruptedRunStart": [
+      "core\\src\\test\\java\\dev\\agentworkbench\\WorkspaceLongPathTest.java"
+    ],
+    "fullCoreVerify": {
+      "status": "in_progress",
+      "directory": ".runtime/alpha21-core-verify-EZJSjY"
+    },
+    "commentAudit": {
+      "recordedAt": "2026-11-18T02:01:39.641Z",
+      "baseCommit": "854bb6b8c5dbd5a7187b89ad3eb0c76ef1cd3d60",
+      "status": "passed",
+      "method": "Java lexical boundaries exclude quoted strings, characters and text blocks; original text and opening indentation retained in order",
+      "retained": [
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+          "originalCommentsRetained": 6,
+          "newStandardMultilineJavadocs": 0,
+          "newOtherComments": 0,
+          "normalizedLfSha256": "e528cd0cd7cf80a319e03df29fccbf9385d19def19eadd3a1ea7b3fd17c936fb"
+        },
+        {
+          "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+          "originalCommentsRetained": 66,
+          "newStandardMultilineJavadocs": 1,
+          "newOtherComments": 0,
+          "normalizedLfSha256": "eaf0608a4a10cbffdeaef4d699b2858a61e0e05ef12481611802316dd4d98069"
+        },
+        {
+          "file": "core/src/test/java/dev/agentworkbench/WorkspaceLongPathTest.java",
+          "originalCommentsRetained": 2,
+          "newStandardMultilineJavadocs": 1,
+          "newOtherComments": 0,
+          "normalizedLfSha256": "ad4e0ed8ad810c5a3e32411ed4884f1f0ed5ed24b7125a1a31573e633f4088af"
+        }
+      ],
+      "added": [],
+      "originalCommentCount": 74,
+      "newMultilineJavadocs": 2
+    }
+  }
+}

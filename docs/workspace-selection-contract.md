@@ -34,7 +34,7 @@ alpha.13 对显式 `workspaceSelection` 保存实际提交和源快照，支持�
 
 ## 准备与归属
 
-准备命令使用已固定 commit SHA，不重新解析 ref。clone 独立获取该对象，包括只在远程跟踪引用中出现的提交；副本移除 origin，仅在自己的 Git 配置中写入任务用户和 hooks 设置。worktree 使用 `add --detach --lock --reason`，HEAD/index 独立，普通 Git 历史和配置共享；准备器不写原共享 user/config，也不创建或改变源分支。
+准备命令使用已固定 commit SHA，不重新解析 ref。clone 独立获取该对象，包括只在远程跟踪引用中出现的提交；副本移除 origin，仅在自己的 Git 配置中写入任务用户和 hooks 设置。worktree 使用 `add --detach --lock --reason`，HEAD/index 独立，普通 Git 历史和配置共享；准备器不写原共享 user/config，也不创建或改变源分支。Windows 先用 `--no-checkout` 注册锁定的 detached worktree，再从工作目录对固定 SHA 执行 `reset --hard --no-recurse-submodules`，避开 Git Windows 子进程对绝对 `GIT_DIR` 的 `PATH_MAX - 40`（260 - 40）字节限制，同时沿用原对象库与 index。
 
 任务数据范围内先写 `selection.json` 的 PREPARED 意图，实际目录与 Git 准备完成后再保存 READY。完整回执保存 `workspaceSelection`、`workspaceOwnership`、内容版本与实际路径。归属包括随机 owner、taskId、策略、源路径、实际 gitDirectory/commonDirectory，以及 worktree 的原 lockReason。
 

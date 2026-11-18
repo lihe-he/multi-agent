@@ -1,0 +1,70 @@
+{
+  "verifiedAt": "2026-11-18T02:01:39.321Z",
+  "purpose": "Diagnostic references; no upstream implementation copied",
+  "sources": [
+    {
+      "tag": "v2.53.0.windows.2",
+      "commit": "e9edee0b34751bf4d7d1feda0e2535bff64d4e77",
+      "path": "setup.c",
+      "gitBlob": "e98c4c92ccf1d688b1dae006a893e3a4d9352ff0",
+      "sha256": "32acc9ca45890acbae085867ff3a05f0141965673668d42c90eb50d941c31322",
+      "url": "https://github.com/git-for-windows/git/blob/e9edee0b34751bf4d7d1feda0e2535bff64d4e77/setup.c"
+    },
+    {
+      "tag": "v2.53.0.windows.2",
+      "commit": "e9edee0b34751bf4d7d1feda0e2535bff64d4e77",
+      "path": "builtin/worktree.c",
+      "gitBlob": "fbdaf2eb2eb85ce33e2001dfa5030fca9ddaeaf4",
+      "sha256": "4e6cc7c07696fe24696f5776995b4eff3be40c3a056c68a74173f587e76c7b3e",
+      "url": "https://github.com/git-for-windows/git/blob/e9edee0b34751bf4d7d1feda0e2535bff64d4e77/builtin/worktree.c"
+    },
+    {
+      "tag": "v2.53.0.windows.2",
+      "commit": "e9edee0b34751bf4d7d1feda0e2535bff64d4e77",
+      "path": "compat/mingw.h",
+      "gitBlob": "807ee7b7e2e573ee324c31159cf7ad33ea3ff75d",
+      "sha256": "a080585cbbb7d7f15c51a9ac9d1876121552f41ee06bc7bdbd981bcb5e3762fb",
+      "url": "https://github.com/git-for-windows/git/blob/e9edee0b34751bf4d7d1feda0e2535bff64d4e77/compat/mingw.h"
+    },
+    {
+      "tag": "v2.53.0.windows.2",
+      "commit": "e9edee0b34751bf4d7d1feda0e2535bff64d4e77",
+      "path": "COPYING",
+      "gitBlob": "536e55524db72bd2acf175208aef4f3dfc148d42",
+      "sha256": "5b2198d1645f767585e8a88ac0499b04472164c0d2da22e75ecf97ef443ab32e",
+      "url": "https://github.com/git-for-windows/git/blob/e9edee0b34751bf4d7d1feda0e2535bff64d4e77/COPYING"
+    },
+    {
+      "tag": "v2.56.0.windows.4",
+      "commit": "581291682ad5a238c08c93d1f5bd4518382a3230",
+      "path": "setup.c",
+      "gitBlob": "a8ac9495b32cfff39e1d8cbfde5de56de4daefce",
+      "sha256": "d5bebfcd7c194ebb91081be625dc139c22785f6bbe4f0f943d5134735be052f3",
+      "url": "https://github.com/git-for-windows/git/blob/581291682ad5a238c08c93d1f5bd4518382a3230/setup.c"
+    },
+    {
+      "tag": "v2.56.0.windows.4",
+      "commit": "581291682ad5a238c08c93d1f5bd4518382a3230",
+      "path": "builtin/worktree.c",
+      "gitBlob": "77ecd0f71f4247928e35204c6e52ef28a486b780",
+      "sha256": "af2bd523e1c89e33d5e370941321fa3c3567c50cf44104e2b502f009e298babc",
+      "url": "https://github.com/git-for-windows/git/blob/581291682ad5a238c08c93d1f5bd4518382a3230/builtin/worktree.c"
+    },
+    {
+      "tag": "v2.56.0.windows.4",
+      "commit": "581291682ad5a238c08c93d1f5bd4518382a3230",
+      "path": "compat/mingw.h",
+      "gitBlob": "379d7f5d07916553d2e1d11f9584a34bee611734",
+      "sha256": "0079eeadb200852184ccffbb6c6afb0127565b232d5694e03e459ab13b4b6047",
+      "url": "https://github.com/git-for-windows/git/blob/581291682ad5a238c08c93d1f5bd4518382a3230/compat/mingw.h"
+    },
+    {
+      "tag": "v2.56.0.windows.4",
+      "commit": "581291682ad5a238c08c93d1f5bd4518382a3230",
+      "path": "COPYING",
+      "gitBlob": "536e55524db72bd2acf175208aef4f3dfc148d42",
+      "sha256": "5b2198d1645f767585e8a88ac0499b04472164c0d2da22e75ecf97ef443ab32e",
+      "url": "https://github.com/git-for-windows/git/blob/581291682ad5a238c08c93d1f5bd4518382a3230/COPYING"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # 实施与验收记录
 
-产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-17。
+产品基线：[多 Agent 智能研发工作台计划书 1.1](./多Agent智能研发工作台计划书.md)。本文记录实现和证据，不改变计划中的验收标准。更新日期：2026-11-18。
 
 ## 0.2.0-alpha.21 会话网页预览
 
@@ -23,6 +23,14 @@ F05 已增加本机开发桌面预览：窄IPC与原生WebContentsView、核心/
 更新后的同一预览工具另行复验开发入口九组通过，12个原身份停止，独立非输入Windows测试桌面保持；原开发与协议历史报告恢复原字节，本次结果单独保存。见[开发入口跟进](./qa/alpha21-preview-tools-followup-win32.json)。依赖/打包/版本/连接守卫21/21、工具语法与声明版本校验通过。
 
 当前保留：远程执行节点端口转发、外部OAuth矩阵、三端发行预览、安装器生命周期、跨平台最终CI与长期存储/网络负载。端口授权不证明服务PID，URL路径/标题仍会保存；撤权按主动核验与一秒轮询检测，不能撤销已发到服务端的效果。
+
+### Windows worktree 路径修复跟进（2026-11-18）
+
+工具提交 `854bb6b8c5dbd5a7187b89ad3eb0c76ef1cd3d60` 的 [run44100293698](https://github.com/lihe-he/multi-agent/actions/runs/44100293698) 第二次运行已结束：Ubuntu/macOS job 成功，Windows 在核心测试步骤失败。原 Windows 现场中的 worktree `.git` 路径为 221 个 UTF-8 字节，触发 Git for Windows 的 `PATH_MAX - 40` 显式 `GIT_DIR` 检查。固定版本的开源源码与本机复现见[路径研究](./research/worktree-longpaths-2026-11-17.md)。
+
+Windows 创建改为先登记同一锁定 detached worktree，再在目标目录执行固定 SHA 的检出；其他平台沿用原命令。PREPARED 意图仍先保存，只有检出、源状态与实际归属检查完成才写 READY，中断现场不自动重放。新增用例跨过 220 字节门槛，同时核对 READY 原字节复用、独立审查副本及源 HEAD/refs/index/config 保全；原三种长对象路径用例保留。
+
+历史专项 XML 的四项全部通过，XML 与详细现场的摘要已重新核验，见[专项回执](./qa/alpha21-worktree-longpath-regression-win32.json)。随后完整核心回归被中断，且启动后的长路径测试源码有变化，因此不能将旧专项或这次未完成运行作为当前完整回归通过。11 月 18 日已按当前源码重新启动完整 `mvn verify`，结果待收齐；旧发行包仍对应修复前核心。三份受改 Java 文件保留 74 条原注释，两条新增 Javadoc 为标准多行。准确范围见[修复回执](./qa/alpha21-worktree-longpath-fix-win32.json)。
 
 本轮汇总见[预览验证回执](./qa/alpha21-preview-validation-win32.json)。[原生页面截图](./qa/alpha21-native-preview.png)与[工作台外壳截图](./qa/alpha21-workbench-chrome.png)分别捕获，后者不包含独立原生视图的合成画面。
 
