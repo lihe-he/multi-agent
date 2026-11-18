@@ -47,6 +47,7 @@ public final class NativePtySession {
     private final InputStream outputInput;
     private final Consumer<Map<String, Object>> observations;
     private final Map<String, Map<String, Object>> children = new ConcurrentHashMap<>();
+    private final Map<Long, String> childBirths = new ConcurrentHashMap<>();
     private final ReentrantLock inputGate = new ReentrantLock();
     private final AtomicBoolean stopRequested = new AtomicBoolean();
     private final AtomicBoolean executing = new AtomicBoolean();
@@ -369,14 +370,20 @@ public final class NativePtySession {
             for (ProcessHandle child : ManagedProcessLedger.originalDescendants(original, birth)) {
                 String start = child.info().startInstant().map(Object::toString).orElse("");
                 Map<String, Object> facts = obj("pid", child.pid(), "processStartedAt", start, "observedFromPid", original.pid(), "observedFromStartedAt", birth);
-                String known = children.keySet().stream().filter(key -> key.startsWith(child.pid() + ":"))
-                    .map(key -> key.substring(Long.toString(child.pid()).length() + 1)).filter(value -> !value.isBlank()).findFirst().orElse("");
-                if (start.isBlank() && !known.isBlank()) continue;
-                if (!start.isBlank()) children.remove(child.pid() + ":");
+                if (ignoreUnverifiableDuplicate(child.pid(), start, childBirths)) continue;
                 if (children.putIfAbsent(child.pid() + ":" + start, facts) == null) observations.accept(new LinkedHashMap<>(facts));
                 if (start.isBlank()) enumerationFailed = true;
             }
         } catch (RuntimeException exception) { enumerationFailed = true; }
+    }
+
+    /**
+     * 已记录可靠出生身份的 PID 忽略后续空值观察；首次未知身份仍保留失败边界。
+     */
+    static boolean ignoreUnverifiableDuplicate(long pid, String birth, Map<Long, String> observedBirths) {
+        if (birth.isBlank()) return observedBirths.containsKey(pid);
+        observedBirths.put(pid, birth);
+        return false;
     }
 
     private void stopObserved() {

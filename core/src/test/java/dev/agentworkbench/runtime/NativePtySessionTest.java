@@ -35,6 +35,18 @@ class NativePtySessionTest {
 
     @BeforeAll static void initialize() throws Exception { data = Files.createDirectory(directory.resolve("native-shared-data")).toRealPath(); }
 
+    @Test
+    void transientBlankBirthOnlyReusesAnAlreadyVerifiedPidIdentity() {
+        Map<Long, String> births = new java.util.concurrent.ConcurrentHashMap<>();
+        assertFalse(NativePtySession.ignoreUnverifiableDuplicate(41, "", births));
+        assertFalse(NativePtySession.ignoreUnverifiableDuplicate(41, "2026-11-18T02:43:31.482Z", births));
+        assertTrue(NativePtySession.ignoreUnverifiableDuplicate(41, "", births));
+        assertFalse(NativePtySession.ignoreUnverifiableDuplicate(42, "", births));
+        assertFalse(NativePtySession.ignoreUnverifiableDuplicate(41, "2026-11-18T02:44:31.482Z", births));
+        assertTrue(NativePtySession.ignoreUnverifiableDuplicate(41, "", births));
+        assertEquals("2026-11-18T02:44:31.482Z", births.get(41L));
+    }
+
     /**
      * 原生库属于整个测试 JVM，退出前复制全部原字节，保留拥有目录供独立核对。
      */

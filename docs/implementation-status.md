@@ -30,9 +30,13 @@ F05 已增加本机开发桌面预览：窄IPC与原生WebContentsView、核心/
 
 Windows 创建改为先登记同一锁定 detached worktree，再在目标目录执行固定 SHA 的检出；其他平台沿用原命令。PREPARED 意图仍先保存，只有检出、源状态与实际归属检查完成才写 READY，中断现场不自动重放。新增用例跨过 220 字节门槛，同时核对 READY 原字节复用、独立审查副本及源 HEAD/refs/index/config 保全；原三种长对象路径用例保留。
 
-历史专项 XML 的四项全部通过，XML 与详细现场的摘要已重新核验，见[专项回执](./qa/alpha21-worktree-longpath-regression-win32.json)。随后完整核心回归被中断，且启动后的长路径测试源码有变化，因此不能将旧专项或这次未完成运行作为当前完整回归通过。11 月 18 日按当前源码重新完成完整 `mvn verify`：556 项、0 失败、0 错误、10 条条件跳过，源码摘要保持，Jar SHA-256 为 `bb869dd2c009b912e1a7f4494afeb1a552c26f47872874ce996ecb4f0456634e`，见[当前核心回执](./qa/alpha21-worktree-core-build-win32.json)。旧发行包仍对应修复前核心。三份受改 Java 文件保留 74 条原注释，两条新增 Javadoc 为标准多行。准确范围见[修复回执](./qa/alpha21-worktree-longpath-fix-win32.json)。
+历史专项 XML 的四项全部通过，XML 与详细现场的摘要已重新核验，见[专项回执](./qa/alpha21-worktree-longpath-regression-win32.json)。随后完整核心回归被中断，且启动后的长路径测试源码有变化，因此不能将旧专项或这次未完成运行作为完整回归通过。11 月 18 日按当时源码重新完成完整 `mvn verify`：556 项、0 失败、0 错误、10 条条件跳过，源码摘要保持，Jar SHA-256 为 `bb869dd2c009b912e1a7f4494afeb1a552c26f47872874ce996ecb4f0456634e`，见[历史核心回执](./qa/alpha21-worktree-core-build-win32.json)。该回执从原始运行目录恢复，45 套 XML 摘要重新核验；其源码清单早于后续 PID 索引改动，不能代表最新源码。旧发行包仍对应修复前核心。三份受改 Java 文件保留 74 条原注释，两条新增 Javadoc 为标准多行。准确范围见[修复回执](./qa/alpha21-worktree-longpath-fix-win32.json)。
 
-随后准确提交 `6205a295557ab353bc4b7136c772f2091143dd8c` 的三端 CI 中，Ubuntu 与 Windows job 全部成功；Windows 核心、协议、UI、工作区、发行预览及内置 Java 入口均通过。macOS 在 `NativePtySessionTest.stoppingARealForegroundChildWaitsForItsOriginalBirthAndTheOutputReader` 失败：同一后代 PID 的出生时间先可读、后一次枚举暂时为空，原实现把重复空值当作枚举失败并返回 UNKNOWN；原始日志和 10,055,504 字节证据包摘要已核对，见[macOS 失败回执](./qa/alpha22-macos-pty-ci-failure.json)。当前修复忽略已有可靠出生身份的同 PID 空值重复，未知新 PID 仍保持 UNKNOWN。Windows 定向 `ManagedProcessLedgerTest` 19 项（1 条条件跳过）与 `NativePtySessionTest` 10 项全部通过；新的三端 CI 待推送后复验。四份受改 Java 文件保留 86 条原注释，两条新增 Javadoc 为标准多行。
+随后准确提交 `6205a295557ab353bc4b7136c772f2091143dd8c` 的三端 CI 中，Ubuntu 与 Windows job 全部成功；Windows 核心、协议、UI、工作区、发行预览及内置 Java 入口均通过。macOS 在 `NativePtySessionTest.stoppingARealForegroundChildWaitsForItsOriginalBirthAndTheOutputReader` 失败：同一后代 PID 的出生时间先可读、后一次枚举暂时为空，原实现把重复空值当作枚举失败并返回 UNKNOWN；原始日志和 10,055,504 字节证据包摘要已核对，见[macOS 失败回执](./qa/alpha22-macos-pty-ci-failure.json)。`3504476` 已修复该重复观察处理，未知新 PID 仍保持 UNKNOWN。
+
+包含上述修复的准确提交 `53e6070cb5e6e70b51aa6293418cd0850e0295d6` 在 [run44233907633](https://github.com/lihe-he/multi-agent/actions/runs/44233907633) 中 Ubuntu、Windows 整条成功，macOS 核心成功，但 UI 229 项中 1 项失败、228 项通过：`checkpoints.spec.ts:57` 在 `workspaces.ts:85` 点击“固定启动现场的任务”超过原 30 秒期限。源码、构建源码与资产摘要保持；尚无证据将该 UI 超时归因于 Java/PT​​Y 改动，见[跟进 CI 回执](./qa/alpha22-post-fix-ci.json)。
+
+本次将已验证出生时间改为显式 PID 索引，并增加确定性测试覆盖首次空值、已验证 PID 的空值重复、不同未知 PID 与同 PID 新出生时间。Windows 定向回归 30 项、0 失败、0 错误、1 条条件跳过，源码摘要保持，见[PID 索引定向回执](./qa/alpha22-pid-index-targeted-win32.json)。从 `854bb6b` 基线审计五份受改 Java 文件，94 条原注释保持，3 条新增 Javadoc 均为标准多行。最新提交的完整核心及三端验收以对应 CI 为准。
 
 本轮汇总见[预览验证回执](./qa/alpha21-preview-validation-win32.json)。[原生页面截图](./qa/alpha21-native-preview.png)与[工作台外壳截图](./qa/alpha21-workbench-chrome.png)分别捕获，后者不包含独立原生视图的合成画面。
 

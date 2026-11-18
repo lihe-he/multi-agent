@@ -1,0 +1,56 @@
+{
+  "recordedAt": "2026-11-18T05:09:48.460Z",
+  "headSha": "53e6070cb5e6e70b51aa6293418cd0850e0295d6",
+  "runId": 44233907633,
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/44233907633",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs": [
+    {
+      "id": 134565434052,
+      "name": "verify (windows-latest)",
+      "conclusion": "success",
+      "core": "success",
+      "ui": "success"
+    },
+    {
+      "id": 134565434335,
+      "name": "verify (ubuntu-latest)",
+      "conclusion": "success",
+      "core": "success",
+      "ui": "success"
+    },
+    {
+      "id": 134565434459,
+      "name": "verify (macos-latest)",
+      "conclusion": "failure",
+      "core": "success",
+      "ui": "failure"
+    }
+  ],
+  "macosLog": {
+    "observedAt": "2026-11-18T04:19:24.506Z",
+    "headSha": "53e6070cb5e6e70b51aa6293418cd0850e0295d6",
+    "runId": 44233907633,
+    "runAttempt": 1,
+    "jobId": 134565434459,
+    "name": "verify (macos-latest)",
+    "status": "completed",
+    "conclusion": "failure",
+    "logSha256": "84229d40ad4b0f379c0166ca2285aa55c4368fc102912d0b85a930e99e3d6960",
+    "logBytes": 100649,
+    "path": ".runtime/alpha21-ci/job-134565434459-run-44233907633-attempt-1/job.log"
+  },
+  "ui": {
+    "passed": 228,
+    "failed": 1,
+    "test": "web/tests/checkpoints.spec.ts:57",
+    "location": "web/tests/fixtures/workspaces.ts:85",
+    "timeoutMs": 30000,
+    "waitingFor": "固定启动现场的任务",
+    "sourcesUnchanged": true,
+    "buildSourcesUnchanged": true,
+    "assetsUnchanged": true
+  },
+  "scope": "GITHUB_JOB_METADATA_AND_VERIFIED_MACOS_JOB_LOG; ARTIFACT_BUNDLE_NOT_COLLECTED_FOR_THIS_RUN"
+}
