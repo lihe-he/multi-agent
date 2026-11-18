@@ -40,6 +40,8 @@ Windows 创建改为先登记同一锁定 detached worktree，再在目标目录
 
 跟进审查补回原有空身份占位清理：首次空值后读到可靠出生时间时，从收尾集合移除同 PID 的空身份记录，防止旧占位影响停止核验；此前枚举失败标记仍保留。修改后再次完成同样 30 项定向回归与注释审计，见[最终定向回执](./qa/alpha22-pid-index-followup-win32.json)。
 
+`34fff04` 的 [run44242815474](https://github.com/lihe-he/multi-agent/actions/runs/44242815474) 中，macOS 原生 PTY 11 项通过，核心共 557 项中另有 1 项失败：实时终端重复读取将增长的 `publishedEnd`（234→242）也作为不可变响应比较。两次原字节、摘要和段身份相同。测试改为仅对发布末尾断言单调不减，其余响应继续全量相等校验；本机 CLONE/WORKTREE 两项真实集成路径通过。六份 Java 文件保留 97 条原注释。见[原失败与定向复验](./qa/alpha22-terminal-read-regression-win32.json)和[固定版本进程研究](./research/process-identities-2026-11-18.md)。该失败运行不能作为三端成功验收。
+
 本轮汇总见[预览验证回执](./qa/alpha21-preview-validation-win32.json)。[原生页面截图](./qa/alpha21-native-preview.png)与[工作台外壳截图](./qa/alpha21-workbench-chrome.png)分别捕获，后者不包含独立原生视图的合成画面。
 
 ## 0.2.0-alpha.20 开发迭代

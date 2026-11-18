@@ -232,7 +232,12 @@ class TerminalEngineTest {
             assertEquals("ACKNOWLEDGED", fixture.input(WINDOWS ? fixture.powershell("[IO.File]::WriteAllText('actual-size.txt',(([Console]::WindowHeight).ToString()+' '+[Console]::WindowWidth),[Text.UTF8Encoding]::new($false));[IO.File]::WriteAllText('actual-size.done','done',[Text.UTF8Encoding]::new($false))") : "stty size > actual-size.txt; printf 'done' > actual-size.done\n").get("state"));
             await(() -> Files.isRegularFile(fixture.work().resolve("actual-size.done")), 20); assertEquals("37 101", Files.readString(fixture.work().resolve("actual-size.txt")).strip());
             Map<String, Object> firstRead = fixture.engine.terminalOutput(fixture.terminalId, str(fixture.terminal(), "epoch"), 0, 3);
-            assertEquals(firstRead, fixture.engine.terminalOutput(fixture.terminalId, str(fixture.terminal(), "epoch"), 0, 3));
+            Map<String, Object> repeatedRead = fixture.engine.terminalOutput(fixture.terminalId, str(fixture.terminal(), "epoch"), 0, 3);
+            // 原字节与段身份不变，仍在运行的终端可以继续发布后续输出。
+            Map<String, Object> originalFrame = new LinkedHashMap<>(firstRead), repeatedFrame = new LinkedHashMap<>(repeatedRead);
+            long firstEnd = ((Number) originalFrame.remove("publishedEnd")).longValue();
+            long repeatedEnd = ((Number) repeatedFrame.remove("publishedEnd")).longValue();
+            assertEquals(originalFrame, repeatedFrame); assertTrue(repeatedEnd >= firstEnd, repeatedRead.toString());
             Map<String, Object> observed = fixture.engine.terminal(fixture.terminalId); assertEquals(original, map(observed, "nativeProcess"));
             assertFalse(lockAvailable(fixture.lock())); assertEquals(409, assertThrows(ApiException.class, () -> fixture.engine.action(fixture.taskId, "resume", obj())).status());
             fixture.stopTerminal(); Map<String, Object> terminal = fixture.terminal(); assertEquals("CANCELLED", terminal.get("state")); assertEquals("PAUSED", fixture.task().get("state"));

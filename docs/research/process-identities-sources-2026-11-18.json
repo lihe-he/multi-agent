@@ -1,0 +1,50 @@
+{
+  "recordedAt": "2026-11-18T05:16:22.599Z",
+  "sources": [
+    {
+      "repo": "openjdk/jdk21u",
+      "ref": "jdk-21.0.13+9",
+      "commit": "ba94eace682733f66e623c089bcafcf4a1b8e39c",
+      "path": "src/java.base/windows/native/libjava/ProcessHandleImpl_win.c",
+      "url": "https://raw.githubusercontent.com/openjdk/jdk21u/ba94eace682733f66e623c089bcafcf4a1b8e39c/src/java.base/windows/native/libjava/ProcessHandleImpl_win.c",
+      "local": ".runtime/alpha22-process-enumeration-research/ProcessHandleImpl_win.c",
+      "sha256": "0c1fda970427c5adedfff9771d161cba302578a556b0fba469aabc538e0da03e"
+    },
+    {
+      "repo": "winsiderss/systeminformer",
+      "ref": "master",
+      "commit": "952a0e7a4efb45b5e1acc4c733916684a7803406",
+      "path": "phnt/include/ntexapi.h",
+      "url": "https://raw.githubusercontent.com/winsiderss/systeminformer/952a0e7a4efb45b5e1acc4c733916684a7803406/phnt/include/ntexapi.h",
+      "local": ".runtime/alpha22-process-enumeration-research/ntexapi.h",
+      "sha256": "e635dd2f390b43eba3a4664a2d36f429edcbd4ec18991b83de1280ba8a0020a0"
+    },
+    {
+      "status": "fulfilled",
+      "repo": "openjdk/jdk21u",
+      "commit": "ba94eace682733f66e623c089bcafcf4a1b8e39c",
+      "path": "src/java.base/share/classes/java/lang/ProcessHandle.java",
+      "url": "https://raw.githubusercontent.com/openjdk/jdk21u/ba94eace682733f66e623c089bcafcf4a1b8e39c/src/java.base/share/classes/java/lang/ProcessHandle.java",
+      "local": ".runtime/alpha22-process-enumeration-followup/ProcessHandle.java",
+      "sha256": "0a54016f3f6ab2735a5c06eec975a6f791e2ab51909ee2f2c2b90e1c0e4e9e95"
+    },
+    {
+      "status": "fulfilled",
+      "repo": "openjdk/jdk21u",
+      "commit": "ba94eace682733f66e623c089bcafcf4a1b8e39c",
+      "path": "src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c",
+      "url": "https://raw.githubusercontent.com/openjdk/jdk21u/ba94eace682733f66e623c089bcafcf4a1b8e39c/src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c",
+      "local": ".runtime/alpha22-process-enumeration-followup/ProcessHandleImpl_unix.c",
+      "sha256": "5ec1d1aaed811462ef02e8c14eab1b8b91d06cfb96c9def66104c935395d9962"
+    },
+    {
+      "status": "fulfilled",
+      "repo": "openjdk/jdk21u",
+      "commit": "ba94eace682733f66e623c089bcafcf4a1b8e39c",
+      "path": "src/java.base/macosx/native/libjava/ProcessHandleImpl_macosx.c",
+      "url": "https://raw.githubusercontent.com/openjdk/jdk21u/ba94eace682733f66e623c089bcafcf4a1b8e39c/src/java.base/macosx/native/libjava/ProcessHandleImpl_macosx.c",
+      "local": ".runtime/alpha22-process-enumeration-followup/ProcessHandleImpl_macosx.c",
+      "sha256": "ed3cf4b8ffe80e52d8bd4225b6a4cf58b64e11ef82aefdce3c8447a48126b488"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "recordedAt": "2026-11-18T05:28:17.240Z",
+  "baseCommit": "34fff04537fa5a8bd2f745f1a491b2f0ee7a9644",
+  "originalFailure": {
+    "observedAt": "2026-11-18T05:24:30.562Z",
+    "headSha": "34fff04537fa5a8bd2f745f1a491b2f0ee7a9644",
+    "runId": 44242815474,
+    "runAttempt": 1,
+    "jobId": 134594698947,
+    "name": "verify (macos-latest)",
+    "status": "completed",
+    "conclusion": "failure",
+    "logSha256": "8b38201a9713bc06d57618b5a751f1fd84ef4fdc6f6a0bd03825c18773ed72bf",
+    "logBytes": 52752,
+    "log": ".runtime/alpha21-ci/job-134594698947-run-44242815474-attempt-1/job.log",
+    "tests": 557,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 11,
+    "nativePtyTestsPassed": 11,
+    "firstPublishedEnd": 234,
+    "secondPublishedEnd": 242,
+    "originalBytesDigestAndSegmentUnchanged": true
+  },
+  "localVerification": {
+    "command": "mvn -B -ntp -f core/pom.xml -Dtest=TerminalEngineTest#originalWorkerKeepsOneRealShellAndDurableInputAcrossOutputReaderDetach test",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xml": ".runtime/alpha22-terminal-read-regression/TerminalEngineTest.xml",
+    "xmlSha256": "87f7131a6d807e64ae3dfde7a037783af86e87ee47a414c6afcda50fd7adfa01",
+    "sourceSha256": "42ea93ec0d446cc844fe5c398897a1274cbbf5ebeaf31a9fce020db9bdfa2cb8",
+    "scope": "WINDOWS_TARGETED_REAL_CLONE_AND_WORKTREE; CROSS_PLATFORM_PENDING"
+  },
+  "commentAudit": {
+    "recordedAt": "2026-11-18T05:26:21.647Z",
+    "baseCommit": "854bb6b8c5dbd5a7187b89ad3eb0c76ef1cd3d60",
+    "status": "passed",
+    "method": "Java lexical boundaries exclude quoted strings, characters and text blocks; original text and opening indentation retained in order",
+    "retained": [
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/GitWorkspaces.java",
+        "originalCommentsRetained": 6,
+        "newStandardMultilineJavadocs": 0,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "e528cd0cd7cf80a319e03df29fccbf9385d19def19eadd3a1ea7b3fd17c936fb"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/NativePtySession.java",
+        "originalCommentsRetained": 12,
+        "newStandardMultilineJavadocs": 1,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "41a3e4e6b2c78e9740047a9a2181c9ffeae0b1194cf0f907b50bbd7ada8a7090"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+        "originalCommentsRetained": 66,
+        "newStandardMultilineJavadocs": 1,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "eaf0608a4a10cbffdeaef4d699b2858a61e0e05ef12481611802316dd4d98069"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/TerminalEngineTest.java",
+        "originalCommentsRetained": 3,
+        "newStandardMultilineJavadocs": 0,
+        "newOtherComments": 1,
+        "normalizedLfSha256": "42ea93ec0d446cc844fe5c398897a1274cbbf5ebeaf31a9fce020db9bdfa2cb8"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkspaceLongPathTest.java",
+        "originalCommentsRetained": 2,
+        "newStandardMultilineJavadocs": 1,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "ad4e0ed8ad810c5a3e32411ed4884f1f0ed5ed24b7125a1a31573e633f4088af"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/runtime/NativePtySessionTest.java",
+        "originalCommentsRetained": 8,
+        "newStandardMultilineJavadocs": 0,
+        "newOtherComments": 0,
+        "normalizedLfSha256": "a163c0b6c101d2b2f754d7cda4d26cd7d02d111121945f4b65fa35b567515cba"
+      }
+    ],
+    "added": [],
+    "originalCommentCount": 97,
+    "newMultilineJavadocs": 3
+  }
+}
