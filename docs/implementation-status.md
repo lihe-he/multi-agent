@@ -30,7 +30,7 @@ F05 已增加本机开发桌面预览：窄IPC与原生WebContentsView、核心/
 
 Windows 创建改为先登记同一锁定 detached worktree，再在目标目录执行固定 SHA 的检出；其他平台沿用原命令。PREPARED 意图仍先保存，只有检出、源状态与实际归属检查完成才写 READY，中断现场不自动重放。新增用例跨过 220 字节门槛，同时核对 READY 原字节复用、独立审查副本及源 HEAD/refs/index/config 保全；原三种长对象路径用例保留。
 
-历史专项 XML 的四项全部通过，XML 与详细现场的摘要已重新核验，见[专项回执](./qa/alpha21-worktree-longpath-regression-win32.json)。随后完整核心回归被中断，且启动后的长路径测试源码有变化，因此不能将旧专项或这次未完成运行作为当前完整回归通过。11 月 18 日已按当前源码重新启动完整 `mvn verify`，结果待收齐；旧发行包仍对应修复前核心。三份受改 Java 文件保留 74 条原注释，两条新增 Javadoc 为标准多行。准确范围见[修复回执](./qa/alpha21-worktree-longpath-fix-win32.json)。
+历史专项 XML 的四项全部通过，XML 与详细现场的摘要已重新核验，见[专项回执](./qa/alpha21-worktree-longpath-regression-win32.json)。随后完整核心回归被中断，且启动后的长路径测试源码有变化，因此不能将旧专项或这次未完成运行作为当前完整回归通过。11 月 18 日按当前源码重新完成完整 `mvn verify`：556 项、0 失败、0 错误、10 条条件跳过，源码摘要保持，Jar SHA-256 为 `bb869dd2c009b912e1a7f4494afeb1a552c26f47872874ce996ecb4f0456634e`，见[当前核心回执](./qa/alpha21-core-build-win32.json)。旧发行包仍对应修复前核心。三份受改 Java 文件保留 74 条原注释，两条新增 Javadoc 为标准多行。准确范围见[修复回执](./qa/alpha21-worktree-longpath-fix-win32.json)。
 
 本轮汇总见[预览验证回执](./qa/alpha21-preview-validation-win32.json)。[原生页面截图](./qa/alpha21-native-preview.png)与[工作台外壳截图](./qa/alpha21-workbench-chrome.png)分别捕获，后者不包含独立原生视图的合成画面。
 

@@ -1,6 +1,6 @@
 {
-  "startedAt": "2026-11-17T11:22:15.642Z",
-  "recordedAt": "2026-11-17T12:03:40.465Z",
+  "startedAt": "2026-11-18T01:58:45.240Z",
+  "recordedAt": "2026-11-18T02:39:01.166Z",
   "status": "passed",
   "exitCode": 0,
   "version": "0.2.0-alpha.21",
@@ -135,7 +135,7 @@
     },
     {
       "file": "core\\src\\main\\java\\dev\\agentworkbench\\runtime\\GitWorkspaces.java",
-      "sha256": "fffac7fa72306f52dfe51525aaf87eb4781ce8d791ce1badc1c040f21000f03f"
+      "sha256": "e528cd0cd7cf80a319e03df29fccbf9385d19def19eadd3a1ea7b3fd17c936fb"
     },
     {
       "file": "core\\src\\main\\java\\dev\\agentworkbench\\runtime\\ModelCallObserver.java",
@@ -175,7 +175,7 @@
     },
     {
       "file": "core\\src\\main\\java\\dev\\agentworkbench\\runtime\\WorkspaceRuntime.java",
-      "sha256": "40bddaf4197bd708b9fedf66d50a11cfb2ab4ce87d5f8d88c871aee754fd5565"
+      "sha256": "2710880b87519fb48f3418972c8a8b9ff8b55611ece35f9882b3839d8ad62e3a"
     },
     {
       "file": "core\\src\\main\\java\\dev\\agentworkbench\\runtime\\WorkspaceSelectionConflict.java",
@@ -495,7 +495,7 @@
     },
     {
       "file": "core\\src\\test\\java\\dev\\agentworkbench\\WorkspaceLongPathTest.java",
-      "sha256": "3a52f7edc11476a9e27ebd73ed1d7b02b45976268661480a0c99b6b803b22aba"
+      "sha256": "ad4e0ed8ad810c5a3e32411ed4884f1f0ed5ed24b7125a1a31573e633f4088af"
     },
     {
       "file": "core\\src\\test\\java\\dev\\agentworkbench\\WorkspaceSelectionEngineTest.java",
@@ -514,7 +514,7 @@
   "suites": [
     {
       "file": "TEST-dev.agentworkbench.AgentRunStoreTest.xml",
-      "sha256": "674ab61a9f00b06cbd9708339b419c128fa1ee9438e91ebbe843263a2b2d18ea",
+      "sha256": "16767d13dc828188cf4e1a20fcdcbfb65a9d958c723892e40e595e9c0b1cc6e4",
       "tests": 3,
       "failures": 0,
       "errors": 0,
@@ -522,7 +522,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.CheckpointEngineTest.xml",
-      "sha256": "70097f91bd6376c38ea8c9b76245776194300171ab37d7f9f520bd7c82d50d07",
+      "sha256": "569852c5acb59c08dc9cfd1856577e381016520d9dcbf43e291ecc8ba6480a0e",
       "tests": 21,
       "failures": 0,
       "errors": 0,
@@ -530,7 +530,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.CheckpointExportHistoryTest.xml",
-      "sha256": "a51e4701cd43d86d9b6fa25b90b766bd77f8f28192feddc7ee6ec3c223f38722",
+      "sha256": "b4e4ec13b07db047e61673e157ac8a9437c4e5353d3ce46b3cd76a6d731cb22a",
       "tests": 13,
       "failures": 0,
       "errors": 0,
@@ -538,7 +538,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.ExecutionStoreTest.xml",
-      "sha256": "36c19481fd523ab74b889271ce3b7fa9eb1317621812f158107266eafa3fafd9",
+      "sha256": "ee31a62424db1ec89ad54267dab5a0b919471f663410a2bbec057457b6d6b1eb",
       "tests": 6,
       "failures": 0,
       "errors": 0,
@@ -546,7 +546,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.FileToolHistoryTest.xml",
-      "sha256": "8854835f66667cdece446b8092d4bae29531223a9e7e84491d8ab9a26bac2162",
+      "sha256": "b047d1698673ebc1c67dfb9370047bd9cb41cb51f9a1ffa7ea2907246535c26b",
       "tests": 23,
       "failures": 0,
       "errors": 0,
@@ -554,7 +554,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.GitWorkspaceTest.xml",
-      "sha256": "bed310b883ab9fa4e85719b163137d0d7f85fd9a95dc1625ab9278a85cd146b5",
+      "sha256": "1906351e2b6f0fe99ce5ef6f1fd0e6b65d9bf9815eebc7c4f7838a78289f4d3c",
       "tests": 20,
       "failures": 0,
       "errors": 0,
@@ -562,7 +562,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.LocalAccessFilterTest.xml",
-      "sha256": "f31d4149f9d3b9e992c4b6ad85e9c149c5b81f44d35495a2732b2a2214edac0a",
+      "sha256": "300aa93c4328f1a3de30944aaab54c3543ac571a8211e4778dad9352367ec270",
       "tests": 10,
       "failures": 0,
       "errors": 0,
@@ -570,7 +570,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.ManagedProcessLedgerTest.xml",
-      "sha256": "a0bbd22b4a2986ee42f80cf2fe049750fae52e12274522bc5696313ea708feb3",
+      "sha256": "ca5514f0c20c7fb25875c5d8eb5902e92d12fef76ca3a7981c62895574888eef",
       "tests": 19,
       "failures": 0,
       "errors": 0,
@@ -578,7 +578,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.mcp.McpIntegrationTest.xml",
-      "sha256": "76151afb2c19b43299af886ea24095fb627ca9323b5d08cc4cb4588aa609bd9c",
+      "sha256": "6896983ed909d578e227f9221af431e1026c1d58d3caacefdb84ca077cd05bbc",
       "tests": 25,
       "failures": 0,
       "errors": 0,
@@ -586,7 +586,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.ModelRequestStoreTest.xml",
-      "sha256": "ce57271ff2ce9cd3813631cd5be1c5040f56e9791e839289ecfb85283ed2e7d1",
+      "sha256": "a48c29b15c3f43c3c6350f1834be96282a39c7fbb0a05a2917ee777e0d8dc1a3",
       "tests": 3,
       "failures": 0,
       "errors": 0,
@@ -594,7 +594,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.NativeProcessAccessTest.xml",
-      "sha256": "e5aa1bc01f6614c33136dc0c1853517cdd4b1d5548f04dd5e74745657d59265b",
+      "sha256": "786d16f8bf7a9a2960e96f3759d1ef13d3e41fc3841d90c4bb40325d1d776837",
       "tests": 3,
       "failures": 0,
       "errors": 0,
@@ -602,7 +602,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.PlanAndPolicyTest.xml",
-      "sha256": "b7fa2c8a4fe4acc49da12630c20a1611ee4532b555fed60d543fad7a8bc7c229",
+      "sha256": "2e948ad1011496f4ae7641ed0d5a8155f8a4974e2788189f13b17b265dcfcef7",
       "tests": 8,
       "failures": 0,
       "errors": 0,
@@ -610,7 +610,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.PreviewCatalogTest.xml",
-      "sha256": "8b2571a6e76cd3d5308a4b1fb8f8878ab4d8966e5a00516026cb7457cf258887",
+      "sha256": "1f05699707a3ce07dad7baf83d29d2a6992b810c7caad940cadfdbde78b2f4e0",
       "tests": 8,
       "failures": 0,
       "errors": 0,
@@ -618,7 +618,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
-      "sha256": "4d48860a4c6871df12fd3c80ff7ac13651b162536dc9e11c11e5d222b5aa454a",
+      "sha256": "63b4f0a4cedcb38b470ef77ab68813c4d6e227b3e785bdfecaef8d79f627583e",
       "tests": 7,
       "failures": 0,
       "errors": 0,
@@ -626,7 +626,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.RootDispatchEngineTest.xml",
-      "sha256": "c20e52e7dd60c39a83523a26ac2d5a977bcb41ae9f8123d990aa57dcbccce393",
+      "sha256": "97acd551ce4529c944556ddf119c1e975823d0d805749ef64f47f064e34c5ef8",
       "tests": 11,
       "failures": 0,
       "errors": 0,
@@ -634,7 +634,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.runtime.FileVersionRuntimeTest.xml",
-      "sha256": "254c93df25dcad4f33ae147d3b2b55a703b300064d6c0723abe2986c0af6255e",
+      "sha256": "b67900806a6460220659df505eaefd983506f7088ff970a90f923728bea93924",
       "tests": 13,
       "failures": 0,
       "errors": 0,
@@ -642,7 +642,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.runtime.GitBlobBatchTest.xml",
-      "sha256": "dbdfe1a85a7682814778414d1baab70f756853c9b2806574c5cc19aa7842a68d",
+      "sha256": "f2d26bb883d62b514dd932bb22018114583f0fb27ad758393ead100c1acc2a3d",
       "tests": 22,
       "failures": 0,
       "errors": 0,
@@ -650,7 +650,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.runtime.GitDiffViewTest.xml",
-      "sha256": "50f7b409ab96ec02b97ed330cc1f3d73ff6aaefc18bb6746dc0b6a458b959474",
+      "sha256": "51422e59e106b31e3f180ee245a8d010be250c6af1bda60f150f808d50c1785a",
       "tests": 33,
       "failures": 0,
       "errors": 0,
@@ -658,7 +658,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.runtime.NativePtyBundleTest.xml",
-      "sha256": "1a2ce38f571a4069ef0948c8c8becdfb050fd72c48293a2e14921dd8523dd799",
+      "sha256": "1c1f2cc0a3b108dbdeff7f09018f5a98a4c11365f754ea13b89187dfec15a48a",
       "tests": 3,
       "failures": 0,
       "errors": 0,
@@ -666,7 +666,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.runtime.NativePtySessionTest.xml",
-      "sha256": "b8b5eab10ed681e12acb2e529e0146c99bd4b21ab41b27782e864b4b4fd581e4",
+      "sha256": "23e6f3d0a429fa82f1476edd01bb35bc6da71d78864e44957c69a6b9467a8bbc",
       "tests": 10,
       "failures": 0,
       "errors": 0,
@@ -674,7 +674,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.runtime.TerminalOutputArchiveTest.xml",
-      "sha256": "7d038c331a4f3708c1420d45cbc289457a5ee4a65d68730be6447b4e846defe7",
+      "sha256": "016f507ff14e65138b961f52e596d7c169bb7a94b8dc6849d78c91d0b6885ccd",
       "tests": 5,
       "failures": 0,
       "errors": 0,
@@ -682,7 +682,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest.xml",
-      "sha256": "ec9c56db9c2607b78bb28547bd6d75bd7ee8d0d5312816277a40599480a7ed0c",
+      "sha256": "3cc16de5d9461c0bd94f8201a4e89c6765053043b71f13de386679aa886d0fb4",
       "tests": 33,
       "failures": 0,
       "errors": 0,
@@ -690,7 +690,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.runtime.WorkspaceWriteGuardTest.xml",
-      "sha256": "8d89e6fef0486347b62850c49674e740bc5f9756cebb37207bf9dc2728e7f8b7",
+      "sha256": "4e3864c1f40f8064c629c86ea6437a19226d83bb8a56c67061ea69e08a0623cd",
       "tests": 8,
       "failures": 0,
       "errors": 0,
@@ -698,7 +698,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.RuntimeDelegationTest.xml",
-      "sha256": "5ca6a59d8e91b65b2607c847ad1e79238d97f00b7d3acd40fd2f84bbe481a36b",
+      "sha256": "d02357da8a38b14a40e016687ebc1e4ccf77890634cd7212dd3c278d4a8c5f44",
       "tests": 4,
       "failures": 0,
       "errors": 0,
@@ -706,7 +706,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.RuntimeIntegrationTest.xml",
-      "sha256": "a979554feedb9cbf839f8abb32db608a3d1915cd7003df2457e090dd486f12fb",
+      "sha256": "48980e1a1acdae8263abfd3b50679fdc45dda6eedb3cde813682bef9a43e0929",
       "tests": 35,
       "failures": 0,
       "errors": 0,
@@ -714,7 +714,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.SessionStoreTest.xml",
-      "sha256": "a4c92ecd50ba7c65229a9a3af7b6f3b180f278f02ba1e71a082d42c6fc1d14bd",
+      "sha256": "a43acfa4ad407f5bef095f5335d52d44efc4b43409ce4c917fb4c244e931cb00",
       "tests": 13,
       "failures": 0,
       "errors": 0,
@@ -722,7 +722,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.TaskDispatchQueueTest.xml",
-      "sha256": "f865391062a7aa1d13af1dd4a53550177bc4385dbe5686ad9c823f5777357705",
+      "sha256": "adafe37c57fe2cf24e2184ff1811c90d5925772e204c4081e9eec29c10777d1a",
       "tests": 20,
       "failures": 0,
       "errors": 0,
@@ -730,7 +730,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.TeamExecutionTest.xml",
-      "sha256": "d9cc23eb0e2beac09400d5d641b4dae7322558443efa9822c5c8bead7c296f9f",
+      "sha256": "e73db687d0b5fad3b01288daedc824c05e9710106782b36f0ec144bf879fb62d",
       "tests": 12,
       "failures": 0,
       "errors": 0,
@@ -738,7 +738,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.TeamRecordsTest.xml",
-      "sha256": "2b0a997b95786a2ab56acff9795bc12dad60cd5ee7ef55f672cb52b58df06ff5",
+      "sha256": "7ca84a1180add7ceacb629492d906ce02ca90ac0a96d3c093eb1063b41d0b128",
       "tests": 9,
       "failures": 0,
       "errors": 0,
@@ -746,7 +746,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.TerminalControllerTest.xml",
-      "sha256": "164d82539b0ea2dbf09ceadf47996fee0ab133668b3606c5b28c5c0495b69afb",
+      "sha256": "a7401675c8e9ad13dc4e5049cee5325cd9f11f777a46c3dbe3d7ac656dcd8022",
       "tests": 8,
       "failures": 0,
       "errors": 0,
@@ -754,7 +754,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.TerminalEngineTest.xml",
-      "sha256": "945f3c59e46ed3d57d15acc496d57b70f4b53e9388a5e94b08a3565066c11c0a",
+      "sha256": "4bc75c17eadd7b1d63003f1a53c061aa92673a1d3f087fb5df8221d429cae2f7",
       "tests": 10,
       "failures": 0,
       "errors": 0,
@@ -762,7 +762,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.TerminalExportHistoryTest.xml",
-      "sha256": "0d2cec6d684eb1d44e820452d75907ece4b45742e921374f9c42562aa6596e49",
+      "sha256": "072dc6e5d85c60eaf564978e4e1757416b6f09b5a23168f0a2ccf9a3b85ff94e",
       "tests": 4,
       "failures": 0,
       "errors": 0,
@@ -770,7 +770,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.TerminalLedgerTest.xml",
-      "sha256": "b47377dc2f910134f3ce800a894007465f2046b37245f691826c622eac96562d",
+      "sha256": "e7bed78f3ec2b61c14b61011438c6375861554596a42de0cf4c4d8c40e1df4fb",
       "tests": 30,
       "failures": 0,
       "errors": 0,
@@ -778,7 +778,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.TerminalQueueTest.xml",
-      "sha256": "be0c3a5f2e42c9153273da6fb3a63989fbabfe00cc26de2f4327696ca7d546b6",
+      "sha256": "a9bc2f12b1cad965e299a7dad1b3c55e94b3b21a40fef67515d05c467efd5885",
       "tests": 17,
       "failures": 0,
       "errors": 0,
@@ -786,7 +786,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.WindowsProcessSnapshotTest.xml",
-      "sha256": "97de5b4260ac6109e2ea3576847d8cbcc589619b66d5667d98ce591625a73e7f",
+      "sha256": "c4c11a34317c5e88ebec2897dd53597e76711deebe25102fd0603d893d25bfeb",
       "tests": 4,
       "failures": 0,
       "errors": 0,
@@ -794,7 +794,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.WorkbenchEngineTest.xml",
-      "sha256": "d37b5cd47e9bdb235d7349ecfe83d68004b31a920fcf99429474ba0a956a0bda",
+      "sha256": "ba2fafcff9840ba24b0d7a52b1fe86c694dfbaf235a67645baebf4f61f876d65",
       "tests": 24,
       "failures": 0,
       "errors": 0,
@@ -802,7 +802,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.WorkbenchVersionTest.xml",
-      "sha256": "62eac66d3bee0d345337c48c0972aa0b003c9674f5f01587f6056702bb89dbd9",
+      "sha256": "07b6d000c9a28435d891ea37b1a1b44ccf2c1971bb64607e0151dc59f3719e5d",
       "tests": 1,
       "failures": 0,
       "errors": 0,
@@ -810,7 +810,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.WorkerLeaseTest.xml",
-      "sha256": "a1aab84eb892d0dc0cdca63975db9c4328bee3fac328d9d91f809f637e38e345",
+      "sha256": "2663251323293cc44c9fb6f23f7e38e924cd49d168e5051df934dc79fe39a97f",
       "tests": 9,
       "failures": 0,
       "errors": 0,
@@ -818,7 +818,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.WorkerProcessTest.xml",
-      "sha256": "089d00e0b8dffc8b89ca752136445a45ceeac20b707ce34becfd68625a25a6f7",
+      "sha256": "7d8b4b393981b5e076b831791a84ebbfead2d6ea48295671d2d4dd650f10ecab",
       "tests": 8,
       "failures": 0,
       "errors": 0,
@@ -826,7 +826,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.WorkerRpcTest.xml",
-      "sha256": "fa5734f7075e1679eb7c511aa4c9e5a6395c773634cc036bce7ea9496a5044b8",
+      "sha256": "d34a941f99db9ffea90fabd0433ec3f654f6df543aa1754a04d3a5ba585672e3",
       "tests": 4,
       "failures": 0,
       "errors": 0,
@@ -834,7 +834,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.WorkerWireTest.xml",
-      "sha256": "875286a474d3d4c756be6d1ccffe0559f9a5df1b1055d57dd6b2cb118a58b4e8",
+      "sha256": "2fda29b7de6965160c534a9336481c8e326646bd215b06e731c8d1b6154d864d",
       "tests": 2,
       "failures": 0,
       "errors": 0,
@@ -842,15 +842,15 @@
     },
     {
       "file": "TEST-dev.agentworkbench.WorkspaceLongPathTest.xml",
-      "sha256": "08e862f37e59997cd7800d2ad1adac5c04e820768f3052c5b3228e91780a159e",
-      "tests": 3,
+      "sha256": "d706031e09d6ce258d8aad502992d70d89d191673434852c8f0c58865b412d29",
+      "tests": 4,
       "failures": 0,
       "errors": 0,
       "skipped": 0
     },
     {
       "file": "TEST-dev.agentworkbench.WorkspaceSelectionEngineTest.xml",
-      "sha256": "998e2b424e40437052d39921354c1232acc8dd4728365227e15f45df24350c11",
+      "sha256": "f8b51c76e314b55bbe21f02eb5ce95ff82fa2af105dfd83abf787ec80f6e5594",
       "tests": 8,
       "failures": 0,
       "errors": 0,
@@ -858,7 +858,7 @@
     },
     {
       "file": "TEST-dev.agentworkbench.WorkspaceWriteEngineTest.xml",
-      "sha256": "0cff562e93eb178773b3ee43e0fd555aa08646f8aa1208ee0852f24a358c1240",
+      "sha256": "12acac6250028750ef3c00198bfdd4935afda9109a1f6c38e0e72652bfa2ac60",
       "tests": 8,
       "failures": 0,
       "errors": 0,
@@ -866,18 +866,21 @@
     },
     {
       "file": "TEST-dev.agentworkbench.WorkspaceWriteLedgerTest.xml",
-      "sha256": "593d80000d757dc447eb57d8a0a8aa50ce16b0cea0d0a59e9ec010d653b43ba0",
+      "sha256": "d12fdc9ec6dfeb597082721abce48948e26256c4a87c261a1457066115bdd646",
       "tests": 15,
       "failures": 0,
       "errors": 0,
       "skipped": 0
     }
   ],
-  "tests": 555,
+  "tests": 556,
   "failures": 0,
   "errors": 0,
   "skipped": 10,
-  "jarSha256": "0d7fb612133569d6165551306cd9be8a9376a5782347e122ae647b8814fe903f",
-  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha21-core-verify-GvKit0",
-  "scope": "CURRENT_CORE_FULL_VERIFY; INCREMENTAL_BUILD; PACKAGED_AND_CROSS_PLATFORM_ACCEPTANCE_SEPARATE"
+  "jarSha256": "bb869dd2c009b912e1a7f4494afeb1a552c26f47872874ce996ecb4f0456634e",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha21-core-verify-EZJSjY",
+  "scope": "CURRENT_CORE_FULL_VERIFY_AFTER_WINDOWS_WORKTREE_FIX; INCREMENTAL_BUILD; PACKAGED_AND_CROSS_PLATFORM_ACCEPTANCE_SEPARATE",
+  "baseCommit": "b2b6aeccf48b9f2af6be951b2c586e0cc291dea6",
+  "command": "mvn -B -ntp -f core/pom.xml verify",
+  "evidenceDirectory": ".runtime/alpha21-core-verify-EZJSjY"
 }
