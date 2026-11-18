@@ -369,6 +369,10 @@ public final class NativePtySession {
             for (ProcessHandle child : ManagedProcessLedger.originalDescendants(original, birth)) {
                 String start = child.info().startInstant().map(Object::toString).orElse("");
                 Map<String, Object> facts = obj("pid", child.pid(), "processStartedAt", start, "observedFromPid", original.pid(), "observedFromStartedAt", birth);
+                String known = children.keySet().stream().filter(key -> key.startsWith(child.pid() + ":"))
+                    .map(key -> key.substring(Long.toString(child.pid()).length() + 1)).filter(value -> !value.isBlank()).findFirst().orElse("");
+                if (start.isBlank() && !known.isBlank()) continue;
+                if (!start.isBlank()) children.remove(child.pid() + ":");
                 if (children.putIfAbsent(child.pid() + ":" + start, facts) == null) observations.accept(new LinkedHashMap<>(facts));
                 if (start.isBlank()) enumerationFailed = true;
             }

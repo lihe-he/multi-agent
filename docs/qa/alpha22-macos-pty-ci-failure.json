@@ -1,0 +1,38 @@
+{
+  "recordedAt": "2026-11-18T03:53:38.344Z",
+  "status": "failed",
+  "baseCommit": "6205a295557ab353bc4b7136c772f2091143dd8c",
+  "runId": 44225016803,
+  "jobId": 134536049881,
+  "job": "verify (macos-latest)",
+  "log": ".runtime/alpha21-ci/run-44225016803-attempt-1-retry1/job-134536049881.log",
+  "logSha256": "ec51ecf5fd26e49873b3a3c631d5ad6bbf2691b2130e81e78c2db7e983d035e6",
+  "artifactId": 14393057124,
+  "artifact": ".runtime/alpha21-ci/artifact-14393057124-run-44225016803-attempt-1/evidence-macos-latest-14393057124.zip",
+  "artifactSha256": "a451be41efe7e3ba8ce3bca1101adf99d0e2c596e4598915a90cc8014b7661bf",
+  "artifactBytes": 10055504,
+  "suite": {
+    "tests": 556,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "nativeTest": "stoppingARealForegroundChildWaitsForItsOriginalBirthAndTheOutputReader",
+    "expected": "CANCELLED",
+    "actual": "UNKNOWN"
+  },
+  "cause": {
+    "observedSequence": "same descendant PID returned with reliable birth time, then transient blank birth time",
+    "originalProcessStopped": true,
+    "observedChildrenStopped": true,
+    "outputReaderCompleted": true,
+    "nativeCleanupThreadCompleted": true,
+    "outputStorageFailure": false,
+    "publicationFailure": false
+  },
+  "fix": {
+    "file": "core/src/main/java/dev/agentworkbench/runtime/NativePtySession.java",
+    "behavior": "ignore blank duplicate observation when same PID already has a reliable birth identity",
+    "unknownNewPidStillUnknown": true
+  },
+  "scope": "MACOS_CI_FAILURE_EVIDENCE_AND_LOCAL_FIX"
+}
