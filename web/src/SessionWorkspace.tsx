@@ -6,6 +6,7 @@ import { Badge, Empty, Field, formatTime, PageTitle } from './ui';
 import './sessions.css';
 import { AgentRuns } from './AgentRuns';
 import { readBrowserValue, writeBrowserValue } from './browser-storage';
+import { startPagePolling } from './page-polling';
 
 type SessionPage = { sessions: Session[]; cursor: number; hasMore: boolean };
 type MessagePage = { messages: SessionMessage[]; cursor: number; latestCursor: number; hasMore: boolean };
@@ -41,13 +42,8 @@ export function SessionWorkspace({ projectId, tasks, connected, previewVisible =
     setSessions(open); setActiveId(current => open.some(item => item.id === current) ? current : open[0]?.id || '');
   }, [base]);
   useEffect(() => {
-    const controller = new AbortController(); let timer: ReturnType<typeof setTimeout>;
-    async function poll() {
-      try { await refresh(controller.signal); setError(''); } catch (e) { if (!controller.signal.aborted) setError((e as Error).message); }
-      if (!controller.signal.aborted) timer = setTimeout(poll, 3000);
-    }
-    if (connected) void poll();
-    return () => { controller.abort(); clearTimeout(timer); };
+    if (!connected) return;
+    return startPagePolling(async signal => { await refresh(signal); if (!signal.aborted) setError(''); }, 3000, { onError: error => setError((error as Error).message) });
   }, [refresh, connected]);
   useEffect(() => { if (activeId) writeBrowserValue('localStorage', selectionKey, activeId); }, [activeId, selectionKey]);
   async function create(event: React.FormEvent) {
@@ -159,14 +155,7 @@ function SessionPanel({ session, base, target, onLatest, tasks, connected, previ
     const inFlight = { operation, signal }; reading.current = inFlight;
     try { await operation; } finally { if (reading.current === inFlight) reading.current = null; }
   }, [endpoint, target?.messageId, target?.sequence]);
-  useEffect(() => {
-    const controller = new AbortController(); let timer: ReturnType<typeof setTimeout>;
-    async function poll() {
-      try { await refresh(controller.signal); } catch (e) { if (!controller.signal.aborted) setReadError((e as Error).message); }
-      if (!controller.signal.aborted) timer = setTimeout(poll, 2500);
-    }
-    void poll(); return () => { controller.abort(); clearTimeout(timer); };
-  }, [refresh]);
+  useEffect(() => startPagePolling(refresh, 2500, { onError: error => setReadError((error as Error).message) }), [refresh]);
   useEffect(() => setName(session.title), [session.title]);
   useEffect(() => {
     if (!target || !loaded) return;
@@ -240,13 +229,8 @@ function PreviewPanel({ projectId, sessionId, connected }: { projectId: string; 
   useEffect(() => { setPortsText(portSignature); }, [portSignature]);
 
   useEffect(() => {
-    const controller = new AbortController(); let timer: ReturnType<typeof setTimeout>;
-    async function poll() {
-      try { await refresh(controller.signal); if (!controller.signal.aborted) setReadError(''); } catch (cause) { if (!controller.signal.aborted) setReadError((cause as Error).message); }
-      if (!controller.signal.aborted) timer = setTimeout(poll, 2500);
-    }
-    if (connected) void poll();
-    return () => { controller.abort(); clearTimeout(timer); };
+    if (!connected) return;
+    return startPagePolling(async signal => { await refresh(signal); if (!signal.aborted) setReadError(''); }, 2500, { onError: error => setReadError((error as Error).message) });
   }, [connected, refresh]);
 
   useEffect(() => {

@@ -14,6 +14,7 @@ import { ExecutionResources } from './ExecutionResources';
 import Appearance from './Appearance';
 import { SidebarLayout, SidebarToggle } from './SidebarLayout';
 import { readBrowserValue, writeBrowserValue } from './browser-storage';
+import { startPagePolling } from './page-polling';
 import { version as clientVersion } from '../package.json';
 
 type Page = 'home' | 'sessions' | 'tasks' | 'inbox' | 'knowledge' | 'settings';
@@ -29,7 +30,7 @@ export default function App() {
   const [taskId, setTaskId] = useState(''); const [dialog, setDialog] = useState<Dialog>(null);
   const [connected, setConnected] = useState(false); const [connecting, setConnecting] = useState(true); const [connectionError, setConnectionError] = useState('');
   const [connectionAttempt, setConnectionAttempt] = useState(0);
-  const connectionReady = useRef(false), initialization = useRef<AbortController | null>(null);
+  const connectionReady = useRef(false), stopConnection = useRef<(() => void) | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const [taskSearch, setTaskSearch] = useState(''); const [taskFilter, setTaskFilter] = useState('all');
   const [searchFocus, setSearchFocus] = useState(0);
@@ -50,7 +51,7 @@ export default function App() {
   const refresh = useCallback(async (signal?: AbortSignal) => {
     const requestedConnection = currentConnection();
     try {
-      const data = await api<WorkbenchState>('/state', { signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(30000)]) : undefined });
+      const data = await api<WorkbenchState>('/state', { signal });
       if (signal?.aborted || currentConnection() !== requestedConnection) return;
       setState({ ...initialState, ...data }); setConnected(true); setConnectionError('');
       setProjectId(old => data.projects?.some(p => p.id === old) ? old : data.projects?.[0]?.id || '');
@@ -58,19 +59,20 @@ export default function App() {
     finally { if (!signal?.aborted && currentConnection() === requestedConnection) setConnecting(false); }
   }, []);
   useEffect(() => {
-    const controller = new AbortController(); initialization.current = controller;
-    let timer: ReturnType<typeof setTimeout>;
     setConnecting(true); setConnectionError('');
-    async function poll() { if (controller.signal.aborted) return; await refresh(controller.signal); if (!controller.signal.aborted) timer = setTimeout(poll, 3000); }
-    async function connect() {
+    const stop = startPagePolling(async signal => {
       try {
-        if (!connectionReady.current) await initializeConnection(controller.signal);
-        if (controller.signal.aborted) return;
-        connectionReady.current = true; await poll();
-      } catch (error) { if (!controller.signal.aborted) { setConnected(false); setConnecting(false); setConnectionError((error as Error).message); } }
-    }
-    void connect();
-    return () => { controller.abort(); clearTimeout(timer); };
+        if (!connectionReady.current) await initializeConnection(signal);
+        if (signal.aborted) return;
+        connectionReady.current = true; await refresh(signal);
+      } catch (error) {
+        if (!signal.aborted) { setConnected(false); setConnecting(false); setConnectionError((error as Error).message); return false; }
+      }
+    }, 3000, {
+      onPause: reason => { if (reason === 'offline') { setConnected(false); setConnecting(false); setConnectionError('网络已断开，恢复后将重新读取本地核心状态。'); } },
+      onResume: () => { setConnecting(true); setConnectionError(''); },
+    });
+    stopConnection.current = stop; return stop;
   }, [refresh, connectionAttempt]);
   useEffect(() => { writeBrowserValue('localStorage', 'workbench-project', projectId); }, [projectId]);
   const notify = useCallback((message: string, error = false) => {
@@ -90,7 +92,7 @@ export default function App() {
   const onClose = useCallback(() => setDialog(null), []);
   const saved = useCallback(() => { void refresh(); notify('已保存'); }, [refresh, notify]);
   const connectionSaved = useCallback(() => {
-    connectionReady.current = true; initialization.current?.abort();
+    connectionReady.current = true; stopConnection.current?.();
     setConnecting(true); setConnectionAttempt(value => value + 1); notify('连接已更新');
   }, [notify]);
   const navigation: { id: Page; title: string; icon: LucideIcon; count?: number }[] = [

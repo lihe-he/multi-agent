@@ -48,7 +48,7 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
       ...(connection.token ? { Authorization: `Bearer ${connection.token}` } : {}),
       ...options.headers,
     },
-    signal: options.signal || AbortSignal.timeout(30000),
+    signal: options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(30000)]) : AbortSignal.timeout(30000),
   });
   if (!response.ok) {
     let message = response.status === 401 ? '连接令牌无效，请在连接设置中更新。' : `请求未完成（${response.status}）`;

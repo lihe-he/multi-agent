@@ -37,6 +37,7 @@
     "test:terminals:ui": "node tools/terminal-native-ui-smoke.mjs",
     "test:terminals:packaged": "node tools/terminal-native-ui-smoke.mjs --packaged",
     "test:themes:web": "node tools/theme-web-smoke.mjs",
+    "test:pages:web": "node tools/page-recovery-smoke.mjs",
     "test:themes:desktop": "node tools/theme-desktop-smoke.cjs",
     "test:themes:packaged": "node tools/ci-theme-desktop.mjs",
     "test:layout:desktop": "node tools/layout-desktop-smoke.cjs",
