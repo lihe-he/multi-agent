@@ -371,6 +371,7 @@ public final class NativePtySession {
                 String start = child.info().startInstant().map(Object::toString).orElse("");
                 Map<String, Object> facts = obj("pid", child.pid(), "processStartedAt", start, "observedFromPid", original.pid(), "observedFromStartedAt", birth);
                 if (ignoreUnverifiableDuplicate(child.pid(), start, childBirths)) continue;
+                if (!start.isBlank()) children.remove(child.pid() + ":");
                 if (children.putIfAbsent(child.pid() + ":" + start, facts) == null) observations.accept(new LinkedHashMap<>(facts));
                 if (start.isBlank()) enumerationFailed = true;
             }

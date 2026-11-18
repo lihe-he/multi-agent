@@ -38,6 +38,8 @@ Windows 创建改为先登记同一锁定 detached worktree，再在目标目录
 
 本次将已验证出生时间改为显式 PID 索引，并增加确定性测试覆盖首次空值、已验证 PID 的空值重复、不同未知 PID 与同 PID 新出生时间。Windows 定向回归 30 项、0 失败、0 错误、1 条条件跳过，源码摘要保持，见[PID 索引定向回执](./qa/alpha22-pid-index-targeted-win32.json)。从 `854bb6b` 基线审计五份受改 Java 文件，94 条原注释保持，3 条新增 Javadoc 均为标准多行。最新提交的完整核心及三端验收以对应 CI 为准。
 
+跟进审查补回原有空身份占位清理：首次空值后读到可靠出生时间时，从收尾集合移除同 PID 的空身份记录，防止旧占位影响停止核验；此前枚举失败标记仍保留。修改后再次完成同样 30 项定向回归与注释审计，见[最终定向回执](./qa/alpha22-pid-index-followup-win32.json)。
+
 本轮汇总见[预览验证回执](./qa/alpha21-preview-validation-win32.json)。[原生页面截图](./qa/alpha21-native-preview.png)与[工作台外壳截图](./qa/alpha21-workbench-chrome.png)分别捕获，后者不包含独立原生视图的合成画面。
 
 ## 0.2.0-alpha.20 开发迭代
