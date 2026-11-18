@@ -18,6 +18,14 @@ API 失败回执增加可选 `errorChain`，保存外层与底层异常类型，
 
 修复前准确 `c60051b` 的 [run44257141250](https://github.com/lihe-he/multi-agent/actions/runs/44257141250) 已结束：Ubuntu 整条成功；Windows 核心 563 项/8 条跳过、协议和 UI 229 项成功，在开发桌面第二预览标签超时；macOS 核心 563 项/11 条跳过成功，UI 228/229、初始化 `signal timed out`，尚未归因。macOS 整包摘要与 46 套 XML 已核对，Windows 选取预览条目只核对大小/CRC32，完整范围见[CI 终态回执](./qa/alpha22-ci-final-c60051b.json)。后续步骤跳过不能作为成功。本机修复结果不改写这些失败，修复后的三端 CI 另验。
 
+预览修复准确提交 `445de5245263a5885bf936a4cdfa3dee8fe2f1cc` 的 [run44263865457](https://github.com/lihe-he/multi-agent/actions/runs/44263865457) 已终态：Windows、Ubuntu 整条成功，核心均 563 项、零失败/错误，分别 8/11 条条件跳过，生产 UI 230/230，原日志记录开发和发行预览各十组通过。macOS 核心 563 项/11 条跳过成功，UI 229/230，仍在 diff-view 的共用任务入口初始化超时；后续步骤跳过。macOS 整包 79,709,128 字节的 GitHub digest 与 46 套 XML 已核对，原 trace 仍为配置 HTTP 200、无 `/api/state`、页面 `signal timed out`。Windows/Ubuntu 成功依据原日志，不能视作两端完整 artifact 已核验。详见[修复 CI 终态](./qa/alpha22-preview-followup-ci-final.json)。
+
+### alpha.22 明确连接恢复
+
+初始配置失败后增加“重试连接”，已验证的手工连接会恢复持续轮询。每次尝试清理原请求和计时器；旧配置及旧状态只在原连接对象仍为当前对象时回写，防止迟到响应覆盖新地址、令牌与项目。配置五秒、状态三十秒期限和原三秒轮询间隔保持，初始化没有自动重试，恢复不重放任务。固定 OpenCode 来源与问题边界见[连接恢复研究](./research/connection-recovery-2026-11-18.md)，使用见[独立连接](./standalone-deployment.md)。
+
+本机完整生产 UI 236/236，零失败/跳过/重试，六项新增恢复用例涵盖 1440px/430px、原五秒真实超时、令牌保全、持续轮询及旧状态返回后下一次新轮询仍保持当前项目；原生产资产负对照因缺少按钮失败，原回执保留。实际独立核心/代理/浏览器/附加 Electron 流程与重新打包的十组预览通过，三次启动 12 条原身份观察全部停止，包内 JRE/asar 与无外部 Java/Node PATH 分别核对。两次实机检查在非输入 Windows 测试桌面，44 张历史截图和三份原报告恢复原字节。Java 本轮无修改，核心仍为先前显式跳过测试的增量打包；安装器未签名、安装/卸载未重测。准确范围见[本机回执](./qa/alpha22-connection-recovery-win32.json)，该修改的三端 CI 仍需新提交核验，不以局部恢复通过解释原 macOS 超时根因。
+
 ## 0.2.0-alpha.21 会话网页预览
 
 F05 已增加本机开发桌面预览：窄IPC与原生WebContentsView、核心/项目/会话/代次分区、每会话端口授权、多标签与活动选择、脱敏URL持久化、真实登录恢复、站点清理、代次账本及撤权销毁。工作台弹窗和任务详情暂停原生页面，独立Web明确能力边界。协议见[会话预览约定](./preview-contract.md)，固定来源与原失败见[预览研究](./research/previews-2026-11-17.md)。

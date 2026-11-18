@@ -1,0 +1,414 @@
+{
+  "recordedAt": "2026-11-18T08:49:48.958Z",
+  "version": "0.2.0-alpha.22",
+  "platform": "win32",
+  "baseCommit": "445de5245263a5885bf936a4cdfa3dee8fe2f1cc",
+  "status": "passed",
+  "scope": "EXPLICIT_INITIAL_CONNECTION_RECOVERY_AND_OBSOLETE_INITIALIZATION_STATE_RESPONSE_SUPPRESSION; WINDOWS_PRODUCTION_WEB_AND_ACTUAL_STANDALONE_PACKAGED_REGRESSION; NOT_A_PROVEN_MACOS_TIMEOUT_ROOT_CAUSE_FIX",
+  "behavior": {
+    "explicitRetry": true,
+    "configurationTimeoutMs": 5000,
+    "stateTimeoutMs": 30000,
+    "pollDelayMs": 3000,
+    "automaticInitializationRetries": false,
+    "taskReplayAdded": false,
+    "sessionTokenPreserved": true,
+    "originalConnectionObjectRequiredForLateAssignment": true
+  },
+  "productionUi": {
+    "receipt": {
+      "file": ".runtime/ui-production-tBFYe8/receipt.json",
+      "bytes": 19941,
+      "sha256": "acecf70c4f97f54814f8e979cbd1f722a633d313cfd729ea5a4548130f78992c"
+    },
+    "stats": {
+      "startTime": "2026-11-18T08:14:52.184Z",
+      "duration": 223555.323,
+      "expected": 236,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "selection": [],
+    "sourcesUnchanged": true,
+    "assetsUnchanged": true,
+    "assets": [
+      {
+        "file": "assets/index-BrO4RoK-.css",
+        "bytes": 105469,
+        "sha256": "9a9c5b4d2e15f5ff5017901b465e268dd462bbd83eef1d53ed19b6344d03e50b"
+      },
+      {
+        "file": "assets/index-DNt_64cJ.js",
+        "bytes": 435634,
+        "sha256": "f77e76732da645e9d75ae98b674850407180525ed4bd357109bbee6ccc03693b"
+      },
+      {
+        "file": "assets/TaskTerminals-BbT8zRoT.css",
+        "bytes": 8158,
+        "sha256": "cbbcf611656957e8adacaefc7849df70e70db93aa2a6832b5ed771534dddabe5"
+      },
+      {
+        "file": "assets/TaskTerminals-DbjkhM4l.js",
+        "bytes": 359579,
+        "sha256": "99517651f1b21629d59e08f194f1fa97d3cd305cc2394bd4a78b292700295ca0"
+      },
+      {
+        "file": "index.html",
+        "bytes": 791,
+        "sha256": "6a66bc9b9d1d0887cfbab40a92280d29e9c65586b2907de4024a0fc2691e35d6"
+      },
+      {
+        "file": "theme-init.js",
+        "bytes": 3911,
+        "sha256": "f81a9a83cf3ad85caf99f09634679211060bbd98a6ac4cec58cf8dd9eaebcf70"
+      },
+      {
+        "file": "third-party/annotations-24.0.1/LICENSE.txt",
+        "bytes": 11352,
+        "sha256": "8c1e966c7855fb54027bcaf6ebe7a43abe4785791e8cf9148c363761d493d097"
+      },
+      {
+        "file": "third-party/kotlin-stdlib-1.9.22/LICENSE.txt",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+      },
+      {
+        "file": "third-party/kotlin-stdlib-1.9.22/NOTICE.txt",
+        "bytes": 482,
+        "sha256": "ea7099352103ade6a6918bc7efb00f8bcd43db0e76b2da2e83237c0bc0ff1b19"
+      },
+      {
+        "file": "third-party/native/OpenConsole-LICENSE.txt",
+        "bytes": 1116,
+        "sha256": "5d177f23ecfeb0ea8e050b6a5a16355e1ae9a0b286436ca8f83ed08b3795be6b"
+      },
+      {
+        "file": "third-party/native/winpty-LICENSE.txt",
+        "bytes": 1085,
+        "sha256": "c39e428064b4f3e4fe81a975bf0fd3b845922b431bc4d9a7ffc8bfb091981836"
+      },
+      {
+        "file": "third-party/origins.json",
+        "bytes": 5075,
+        "sha256": "87e8268ebdc74cbcb31c437c8e08682daa5715e2d9eb9f7d47c5a62c335856e9"
+      },
+      {
+        "file": "third-party/pty4j/LICENSE.txt",
+        "bytes": 11231,
+        "sha256": "3a4a6fe55f67f02b92be0ec9907e347de8ab5c8edf9214c5c8019e5820517884"
+      },
+      {
+        "file": "third-party/pty4j/NOTICE.txt",
+        "bytes": 421,
+        "sha256": "7f1b01b809cecc274e9a0aaeba288ccb36a18cb96a97b8cc1fde58c1e713e845"
+      },
+      {
+        "file": "third-party/pty4j/pty4j-0.13.4-sources.jar",
+        "bytes": 66477,
+        "sha256": "0669c0c5b41abb1c71a42730f4002895929c162371651b6f29bffb04da38ce01"
+      },
+      {
+        "file": "third-party/SOURCE-OFFER.txt",
+        "bytes": 1766,
+        "sha256": "b13f9c5d6c9e4d9563c63354720973c23f351c89ab404cda0dabb502ce9a1d2d"
+      },
+      {
+        "file": "third-party/THIRD-PARTY-NOTICES.txt",
+        "bytes": 467,
+        "sha256": "179d93e97c4de96898d86cd089402ab6f0e3db9741e740d2f4155ae7d0735d5e"
+      },
+      {
+        "file": "third-party/xterm-addon-fit/LICENSE.txt",
+        "bytes": 1103,
+        "sha256": "e256f01188af527e4d06d21d06fbf785ae9c50d4b328bf03cbe0ba7f0aa4228f"
+      },
+      {
+        "file": "third-party/xterm/LICENSE.txt",
+        "bytes": 1261,
+        "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd"
+      },
+      {
+        "file": "workbench-config.json",
+        "bytes": 26,
+        "sha256": "433a3723b05792349f41b5bbec0c12b136b0904a481bd81e1717173ab4e45874"
+      }
+    ],
+    "newRecoveryCases": 6,
+    "cases": [
+      "HTTP503 then explicit retry at 1440px",
+      "HTTP503 then explicit retry at 430px without document overflow",
+      "Manual address and token survive late initial configuration",
+      "Manual recovery restarts continued polling with GET only",
+      "Original five-second configuration timeout then explicit retry and late old configuration",
+      "Late previous state cannot replace newly selected project; subsequent new poll observed"
+    ]
+  },
+  "negativeControl": {
+    "receipt": {
+      "file": ".runtime/ui-production-wmoQLT/receipt.json",
+      "bytes": 19942,
+      "sha256": "64e1775f240319bd7979fcbadd4d0e813b75958341ff2bbc2111dc07e939334d"
+    },
+    "status": "failed",
+    "stats": {
+      "startTime": "2026-11-18T08:09:41.564Z",
+      "duration": 31204.719,
+      "expected": 0,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "frozenAssetsMatchPrevious230TestProductionRun": true,
+    "expectedFailure": "Original production UI has no explicit retry button; locator click timed out at the new assertion. Original failure retained."
+  },
+  "standalone": {
+    "receipt": {
+      "file": ".runtime/alpha22-connection-standalone-15QWDm/receipt.json",
+      "bytes": 11857,
+      "sha256": "764286145aff1f852ffab57260b306076395a00f7ef531fb8da22449169dd5e3"
+    },
+    "report": {
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha22-connection-standalone-15QWDm\\generated\\docs\\qa\\standalone-win32.json",
+      "bytes": 1874,
+      "sha256": "6e892cf20a2762eb088b9fc346e293f38b82b1f839e286fb03b010e9cb77d88a"
+    },
+    "scope": "ACTUAL_CORE_PROXY_BROWSER_AND_ATTACHED_ELECTRON_WITH_LOCAL_PROTOCOL_FIXTURE",
+    "sourcesUnchanged": true,
+    "facts": {
+      "date": "2026-11-18T08:18:36.980Z",
+      "version": "0.2.0-alpha.22",
+      "platform": "win32",
+      "coreIndependentOfWebAndNpm": true,
+      "runtimeProxyConfiguration": true,
+      "browserWorkflowWithoutBridge": true,
+      "sessionWorkflowThroughProxy": true,
+      "sessionSearchAndReopenThroughProxy": true,
+      "agentRunActivityThroughProxy": true,
+      "modelRequestTraceThroughProxy": true,
+      "savedNotesSurviveReload": true,
+      "sessionClosePreservesRunningTask": true,
+      "browserClosePreservesCore": true,
+      "desktopUsesExistingCoreWithoutJava": true,
+      "desktopExitPreservesCore": true,
+      "clientExitPreservesRunningTask": true,
+      "modelRequestsBeforeAndAfterReconnect": 1,
+      "childRequestPreservedOnReconnect": "3a771393-4174-4c30-b572-c528db19fb76",
+      "workerLeasePreservedOnReconnect": "1397468c-4ca5-4288-b80c-9f9ddd73202b",
+      "workerId": "eed71a6b-e3c7-48a3-84b4-3d0bd8347d1a",
+      "workerEpoch": 1,
+      "workerPid": 2932,
+      "repositoryBindingId": "f88d072a-e291-4a9a-b9d0-d27d05acdf98",
+      "workerReceiptsVerified": 13,
+      "parentWaitReleasesModelCapacity": true,
+      "teamDependencyAdoptionThroughProxy": true,
+      "teamMessagesSurviveReload": true,
+      "mcpActualChildSourceThroughProxy": true,
+      "teamRootCalls": 19,
+      "teamChildRuns": [
+        {
+          "id": "1f2d1e0e-f52d-4b09-8af3-857af247d3c0",
+          "agentRunId": "4102e3c9-9363-45c7-9f38-b7ada803f510",
+          "state": "SUCCEEDED",
+          "integrationState": "NOT_ADOPTED"
+        },
+        {
+          "id": "463b5df6-d0ab-4b84-828d-4a981ed12ed3",
+          "agentRunId": "7136fff6-3308-4e98-a7b5-c60a606f4143",
+          "state": "SUCCEEDED",
+          "integrationState": "ADOPTED"
+        }
+      ],
+      "externalMcpCalls": 1,
+      "pageErrors": [],
+      "modelErrors": [],
+      "corePid": 54004,
+      "workerDeployment": "LOCAL_PROCESS",
+      "workerProcessStartedAt": "2026-11-18T08:17:17.013Z",
+      "workerHeartbeatSource": "CHILD_PIPE",
+      "workerHeartbeatSequenceOnReconnect": 13
+    }
+  },
+  "packagedPreview": {
+    "receipt": {
+      "file": ".runtime/alpha22-connection-packaged-TrwDZI/receipt.json",
+      "bytes": 11845,
+      "sha256": "38a8a4f73624385791c43f5ee91a75de18663a478192d9ac096fb5daee3b1f64"
+    },
+    "nativeReceipt": {
+      "file": ".runtime/preview-native-packaged-yx6JIo/receipt.json",
+      "bytes": 67109,
+      "sha256": "c51a6b97055eedc9169a695a86ec6f58d3d835c9aa487a0d338825e40daae825"
+    },
+    "checks": [
+      {
+        "name": "Initial fetch attaches a visible isolated native page; callback loads once and core metadata drops query and fragment",
+        "at": "2026-11-18T08:20:04.583Z"
+      },
+      {
+        "name": "Application dialogs suspend the native page and closing a dialog restores its isolated login",
+        "at": "2026-11-18T08:20:04.988Z"
+      },
+      {
+        "name": "Actual preview has no Node, management bridge or opener; permissions, popups, unbound loopback and core requests are refused",
+        "at": "2026-11-18T08:20:05.035Z"
+      },
+      {
+        "name": "A real native title save permits the preceding version to open one new callback without losing metadata or replaying navigation",
+        "at": "2026-11-18T08:20:06.563Z"
+      },
+      {
+        "name": "Multiple native tabs share one session; switching sessions destroys old pages and isolates login and local storage",
+        "at": "2026-11-18T08:20:07.259Z"
+      },
+      {
+        "name": "Switching projects preserves each isolated native storage partition and destroys the previous project pages",
+        "at": "2026-11-18T08:20:10.886Z"
+      },
+      {
+        "name": "HttpOnly login and local storage survive full desktop, core and Worker shutdown and restart",
+        "at": "2026-11-18T08:20:35.959Z"
+      },
+      {
+        "name": "Site clear destroys original same-origin pages before clearing cookies and storage and replacing pages",
+        "at": "2026-11-18T08:20:36.693Z"
+      },
+      {
+        "name": "A generation reset after full restart retires the previous process partition ledger and starts empty storage",
+        "at": "2026-11-18T08:21:04.694Z"
+      },
+      {
+        "name": "Port revocation destroys the actual native page without waiting for another user action",
+        "at": "2026-11-18T08:21:04.855Z"
+      }
+    ],
+    "launches": 3,
+    "originalIdentityObservations": 12,
+    "allOriginalStopped": true,
+    "observationRounds": [
+      1,
+      1,
+      1
+    ],
+    "externalNodeAndJavaUnavailableOnPath": true,
+    "packagedFiles": 31,
+    "packagedRuntimeFiles": 207,
+    "artifactInputs": {
+      "file": "D:\\Projects\\多Agent研发工作台\\.runtime\\preview-native-packaged-yx6JIo\\artifact-inputs.json",
+      "bytes": 111624,
+      "sha256": "5ba77d57481a2206d8982691f19a8f33d41bcd8ae908090708aa7775caf8e16c"
+    },
+    "sourcesUnchanged": true
+  },
+  "isolatedDesktops": [
+    {
+      "receipt": {
+        "file": ".runtime/alpha22-connection-isolated-standalone-8ebbbcb39e854c36a5197ba626bde4ae/receipt.json",
+        "bytes": 381,
+        "sha256": "fb434bc61bcb45bb0f6a82ea7b4d755834edb5e53cf5bf902ab1fa7462e7a1b9"
+      },
+      "Desktop": "Alpha22Connection9e843da4a4f1495da25549dfebfb0efe",
+      "InputDesktopBefore": "Default",
+      "InputDesktopAfter": "Default",
+      "RunnerThreadDesktop": "Default",
+      "ProcessId": 18460,
+      "ExitCode": 0,
+      "StartedAt": "2026-11-18T08:17:11.8060912Z",
+      "CompletedAt": "2026-11-18T08:18:39.0635669Z",
+      "DesktopHandleClosed": true
+    },
+    {
+      "receipt": {
+        "file": ".runtime/alpha22-connection-isolated-packaged-9e62fc26debb45818eedc022986c33f4/receipt.json",
+        "bytes": 381,
+        "sha256": "7f5983b34ba376d204e53a400e5a68b9a2e6abdfeeb50a29fbfd8a840b82ba2b"
+      },
+      "Desktop": "Alpha22Connectiond154a1f34dfc4af9a467db7b43f822d2",
+      "InputDesktopBefore": "Default",
+      "InputDesktopAfter": "Default",
+      "RunnerThreadDesktop": "Default",
+      "ProcessId": 32540,
+      "ExitCode": 0,
+      "StartedAt": "2026-11-18T08:19:41.1229154Z",
+      "CompletedAt": "2026-11-18T08:21:20.0785218Z",
+      "DesktopHandleClosed": true
+    }
+  ],
+  "historicalFilesRestoredToOriginalBytes": {
+    "images": 44,
+    "reports": 3
+  },
+  "installer": {
+    "file": "release/Agent Workbench Setup 0.2.0-alpha.22.exe",
+    "bytes": 157726261,
+    "sha256": "c097bb48ddf76a839503f7c8ea119b14d003f1192e8b774d1af5a02342450975",
+    "authenticode": "NotSigned",
+    "installationAndUninstallationRetested": false
+  },
+  "core": {
+    "jar": {
+      "file": "core/target/agent-workbench-core-0.2.0-alpha.22.jar",
+      "bytes": 44346168,
+      "sha256": "eca481e3859679226b17022880a0fcaa5f1526e7c7c6d8bfe2366ad7cf9ef9d9"
+    },
+    "changedJavaFiles": 0,
+    "localBuild": "PREVIOUS_INCREMENTAL_PACKAGE_WITH_TESTS_SKIPPED; FULL_CORE_RESULTS_REQUIRE_EXACT_CI"
+  },
+  "guards": {
+    "command": "node --test tools/install-desktop-deps.test.mjs tools/package-desktop.test.mjs tools/verify-version.test.mjs tools/connection.test.cjs",
+    "tests": 21,
+    "failures": 0,
+    "skipped": 0,
+    "versionCheck": "passed"
+  },
+  "references": [
+    {
+      "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+      "path": "packages/app/src/runtime/server/client.tsx",
+      "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/app/src/runtime/server/client.tsx",
+      "file": ".runtime\\alpha22-connection-references\\client.tsx",
+      "bytes": 9726,
+      "sha256": "e7fd479a1462e0725ffc5aad28ff38921714a9c05c915b118812b18ef06bfe83",
+      "gitBlob": "5f79979a1c9b1819238cb82754bb49a10bbdd7b9",
+      "gitBlobVerified": true
+    },
+    {
+      "commit": "59ed43f0b8da891f03a7333d540a7b0c428049ea",
+      "path": "packages/app/src/runtime/server/api.ts",
+      "url": "https://raw.githubusercontent.com/anomalyco/opencode/59ed43f0b8da891f03a7333d540a7b0c428049ea/packages/app/src/runtime/server/api.ts",
+      "file": ".runtime\\alpha22-connection-references\\api.ts",
+      "bytes": 1923,
+      "sha256": "539739e3339e57f64df66128ceb65813d8d3a93fefa96fdb34bfb264217cad16",
+      "gitBlob": "249607d33c095ef4c335641783ac37506f0cfb86",
+      "gitBlobVerified": true
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "web/src/App.tsx",
+      "bytes": 43492,
+      "sha256": "4108cc9e51b7a4e283dd30ff88a5a66f2e0a5c872dd3e4082640c6b1348ffb59"
+    },
+    {
+      "file": "web/src/api.ts",
+      "bytes": 4138,
+      "sha256": "756fe80b117bf78deb22fbfa244f4097368b3224d0c8bd1982966c6e57fdc213"
+    },
+    {
+      "file": "web/src/layout.css",
+      "bytes": 3401,
+      "sha256": "652b463e9d010114b1971aa3d0be045e3bfe416458262ece3db7a7c067d75c08"
+    },
+    {
+      "file": "web/tests/connection-recovery.spec.ts",
+      "bytes": 8131,
+      "sha256": "e6a702c79b60565fcaf89e2063aaa569928fbf5f27b792a31b1c57bc52715f97"
+    }
+  ],
+  "remaining": [
+    "Exact connection change cross-platform CI",
+    "Root cause of repeated macOS initialization timeout",
+    "External providers and native CLI acceptance",
+    "Long-running load and remaining plan milestones"
+  ]
+}

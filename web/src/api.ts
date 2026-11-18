@@ -6,17 +6,22 @@ let connection: Connection = {
   token: readBrowserValue('sessionStorage', 'workbench-token') || '',
 };
 
-export async function initializeConnection() {
-  if (window.workbench) connection = await window.workbench.getConnection();
+export async function initializeConnection(signal?: AbortSignal) {
+  const original = connection;
+  let next: Connection;
+  if (window.workbench) next = await window.workbench.getConnection();
   else {
-    const response = await fetch('./workbench-config.json', { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+    const timeout = AbortSignal.timeout(5000);
+    const response = await fetch('./workbench-config.json', { cache: 'no-store', signal: signal ? AbortSignal.any([signal, timeout]) : timeout });
     if (!response.ok) throw new Error('无法读取工作台运行时配置，请检查 workbench-config.json。');
     const config: unknown = await response.json();
     if (!config || typeof config !== 'object' || Array.isArray(config) || Object.keys(config).some(key => key !== 'apiBaseUrl')) throw new Error('运行时配置仅允许 apiBaseUrl，不能包含令牌或凭据。');
     const baseUrl = (config as { apiBaseUrl?: unknown }).apiBaseUrl;
     if (baseUrl !== undefined && typeof baseUrl !== 'string') throw new Error('apiBaseUrl 必须为字符串。');
-    connection = { ...connection, baseUrl: validateApiBase(baseUrl as string | undefined ?? connection.baseUrl) };
+    next = { ...original, baseUrl: validateApiBase(baseUrl as string | undefined ?? original.baseUrl) };
   }
+  signal?.throwIfAborted();
+  if (connection === original) connection = next;
   return connection;
 }
 

@@ -28,6 +28,8 @@ export default function App() {
   const [page, setPage] = useState<Page>('home'); const [projectId, setProjectId] = useState(() => readBrowserValue('localStorage', 'workbench-project') || '');
   const [taskId, setTaskId] = useState(''); const [dialog, setDialog] = useState<Dialog>(null);
   const [connected, setConnected] = useState(false); const [connecting, setConnecting] = useState(true); const [connectionError, setConnectionError] = useState('');
+  const [connectionAttempt, setConnectionAttempt] = useState(0);
+  const connectionReady = useRef(false), initialization = useRef<AbortController | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const [taskSearch, setTaskSearch] = useState(''); const [taskFilter, setTaskFilter] = useState('all');
   const [searchFocus, setSearchFocus] = useState(0);
@@ -45,20 +47,31 @@ export default function App() {
     return () => window.removeEventListener('keydown', shortcut);
   }, [openSearch, projectId, connected, dialog]);
   const noticeTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (signal?: AbortSignal) => {
+    const requestedConnection = currentConnection();
     try {
-      const data = await api<WorkbenchState>('/state');
+      const data = await api<WorkbenchState>('/state', { signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(30000)]) : undefined });
+      if (signal?.aborted || currentConnection() !== requestedConnection) return;
       setState({ ...initialState, ...data }); setConnected(true); setConnectionError('');
       setProjectId(old => data.projects?.some(p => p.id === old) ? old : data.projects?.[0]?.id || '');
-    } catch (error) { setConnected(false); setConnectionError((error as Error).message || '无法连接本地核心'); }
-    finally { setConnecting(false); }
+    } catch (error) { if (!signal?.aborted && currentConnection() === requestedConnection) { setConnected(false); setConnectionError((error as Error).message || '无法连接本地核心'); } }
+    finally { if (!signal?.aborted && currentConnection() === requestedConnection) setConnecting(false); }
   }, []);
   useEffect(() => {
-    let active = true; let timer: ReturnType<typeof setTimeout>;
-    async function poll() { if (!active) return; await refresh(); if (active) timer = setTimeout(poll, 3000); }
-    initializeConnection().then(() => { if (active) void poll(); }).catch(error => { setConnecting(false); setConnectionError(error.message); });
-    return () => { active = false; clearTimeout(timer); };
-  }, [refresh]);
+    const controller = new AbortController(); initialization.current = controller;
+    let timer: ReturnType<typeof setTimeout>;
+    setConnecting(true); setConnectionError('');
+    async function poll() { if (controller.signal.aborted) return; await refresh(controller.signal); if (!controller.signal.aborted) timer = setTimeout(poll, 3000); }
+    async function connect() {
+      try {
+        if (!connectionReady.current) await initializeConnection(controller.signal);
+        if (controller.signal.aborted) return;
+        connectionReady.current = true; await poll();
+      } catch (error) { if (!controller.signal.aborted) { setConnected(false); setConnecting(false); setConnectionError((error as Error).message); } }
+    }
+    void connect();
+    return () => { controller.abort(); clearTimeout(timer); };
+  }, [refresh, connectionAttempt]);
   useEffect(() => { writeBrowserValue('localStorage', 'workbench-project', projectId); }, [projectId]);
   const notify = useCallback((message: string, error = false) => {
     clearTimeout(noticeTimeout.current); setNotice({ message, error, id: Date.now() });
@@ -76,6 +89,10 @@ export default function App() {
   function openTask(task: Task) { setPage('tasks'); setTaskId(task.id); }
   const onClose = useCallback(() => setDialog(null), []);
   const saved = useCallback(() => { void refresh(); notify('已保存'); }, [refresh, notify]);
+  const connectionSaved = useCallback(() => {
+    connectionReady.current = true; initialization.current?.abort();
+    setConnecting(true); setConnectionAttempt(value => value + 1); notify('连接已更新');
+  }, [notify]);
   const navigation: { id: Page; title: string; icon: LucideIcon; count?: number }[] = [
     { id: 'home', title: '项目总览', icon: LayoutDashboard }, { id: 'sessions', title: '协作会话', icon: Network }, { id: 'tasks', title: '研发任务', icon: Layers3 },
     { id: 'inbox', title: '需要我处理', icon: ListTodo, count: inbox.length }, { id: 'knowledge', title: '上下文与记忆', icon: BookOpen },
@@ -90,7 +107,7 @@ export default function App() {
     </aside>
     <div className="main-shell"><header className="topbar"><div className="breadcrumb"><SidebarToggle /><span>工作空间</span><ChevronRight size={13} /><strong>{selectedProject?.name || '项目工作台'}</strong></div><div className="topbar-right"><button className="icon-button" aria-label="全局搜索会话" title="搜索当前项目会话 (Ctrl/⌘ K)" disabled={!connected || !selectedProject || !!dialog} onClick={openSearch}><Search size={18} /></button><span className="local-pill"><span />本地运行</span><button className="icon-button" title="需要我处理" aria-label="需要我处理" onClick={() => navigate('inbox')}><Bell size={18} />{!!inbox.length && <i className="notification-dot" />}</button><span className="user-avatar">你</span></div></header>
     <main className="main-content">
-      {!connected && <div className="connection-banner"><div><span className="connection-dot" /><b>{connecting ? '正在连接本地执行核心' : '连接本地核心后，开始你的研发任务'}</b><p>{connecting ? '正在读取项目、任务与运行器状态…' : connectionError || '请启动 Java 核心，或在连接设置中输入访问令牌。'}</p></div><button className="button secondary small" onClick={() => setDialog({ type: 'connection' })}><Link2 size={14} />连接设置</button></div>}
+      {!connected && <div className="connection-banner"><div><span className="connection-dot" /><b>{connecting ? '正在连接本地执行核心' : '连接本地核心后，开始你的研发任务'}</b><p>{connecting ? '正在读取项目、任务与运行器状态…' : connectionError || '请启动 Java 核心，或在连接设置中输入访问令牌。'}</p></div><div className="connection-actions"><button className="button secondary small" disabled={connecting} onClick={() => { setConnecting(true); setConnectionAttempt(value => value + 1); }}><RefreshCw size={14} />重试连接</button><button className="button secondary small" onClick={() => setDialog({ type: 'connection' })}><Link2 size={14} />连接设置</button></div></div>}
       {page === 'home' && <Home state={state} project={selectedProject} tasks={projectTasks} connected={connected} onImport={() => setDialog({ type: 'project' })} onCreate={() => setDialog({ type: 'task' })} onTask={openTask} onTasks={() => navigate('tasks')} onSettings={() => navigate('settings')} onScan={async () => { if (!selectedProject) return; try { await post(`/projects/${selectedProject.id}/scan`); await refresh(); notify('项目索引已更新'); } catch (e) { notify((e as Error).message, true); } }} />}
       {page === 'sessions' && (selectedProject ? <><div hidden={!!selectedTask}><SessionWorkspace key={`${currentConnection().baseUrl}:${selectedProject.id}`} projectId={selectedProject.id} tasks={projectTasks} connected={connected} previewVisible={!selectedTask && !dialog} focusRequest={searchFocus} onTask={task => setTaskId(task.id)} onCreate={sessionId => setDialog({ type: 'task', sessionId })} /></div>{selectedTask && <TaskDetail key={selectedTask.id} task={selectedTask} project={selectedProject} routes={state.routes} backLabel="返回会话" onBack={() => setTaskId('')} onAction={act} onNotice={notify} />}</> : <section className="card"><Empty icon={<Network size={28} />} title="请先选择一个项目" description="会话、任务与活动按项目分别保存。" /></section>)}
       {page === 'tasks' && (selectedTask ? <TaskDetail key={selectedTask.id} task={selectedTask} project={state.projects.find(p => p.id === selectedTask.projectId)} routes={state.routes} onBack={() => setTaskId('')} onAction={act} onNotice={notify} /> : <><PageTitle eyebrow="DEVELOPMENT TASKS" title="研发任务" description="从目标到交付，让每一次协作都有清晰的进展。"><button className="button primary" disabled={!connected || !selectedProject} onClick={() => setDialog({ type: 'task' })}><Plus size={17} />新建任务</button></PageTitle><div className="tasks-toolbar"><div className="segmented">{[{ id: 'all', label: '全部任务' }, { id: 'active', label: '执行中' }, { id: 'attention', label: '待处理' }, { id: 'completed', label: '已完成' }].map(f => <button key={f.id} className={taskFilter === f.id ? 'active' : ''} onClick={() => setTaskFilter(f.id)}>{f.label}</button>)}</div><div className="search-input"><Search size={16} /><input aria-label="搜索任务" value={taskSearch} onChange={e => setTaskSearch(e.target.value)} placeholder="搜索任务…" /></div></div><TaskTable tasks={projectTasks.filter(t => (taskFilter === 'all' || taskFilter === 'active' && activeStates.includes(t.state) || taskFilter === 'attention' && attentionStates.includes(t.state) || taskFilter === 'completed' && t.state === 'COMPLETED') && `${t.title} ${t.goal}`.toLowerCase().includes(taskSearch.toLowerCase()))} projects={state.projects} onTask={openTask} /></>)}
@@ -105,7 +122,7 @@ export default function App() {
     {dialog?.type === 'route' && <RouteDialog route={dialog.route} onClose={onClose} onSaved={saved} />}
     {dialog?.type === 'memory' && <MemoryDialog memory={dialog.memory} projectId={projectId} onClose={onClose} onSaved={saved} />}
     {dialog?.type === 'profile' && <ProfileDialog profile={dialog.profile} onClose={onClose} onSaved={saved} />}
-    {dialog?.type === 'connection' && <ConnectionDialog onClose={onClose} onSaved={saved} />}
+    {dialog?.type === 'connection' && <ConnectionDialog onClose={onClose} onSaved={connectionSaved} />}
   </SidebarLayout>;
 }
 

@@ -1,0 +1,212 @@
+{
+  "recordedAt": "2026-11-18T08:48:53.634Z",
+  "headSha": "445de5245263a5885bf936a4cdfa3dee8fe2f1cc",
+  "runId": 44263865457,
+  "conclusion": "failure",
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/44263865457",
+  "status": {
+    "file": ".runtime/alpha21-ci/status-445de5245263a5885bf936a4cdfa3dee8fe2f1cc.json",
+    "bytes": 22245,
+    "sha256": "0ad4b713c3c4dd83be6079903efa3ffbf552a7a4f4a5ea57b0c59dd87a4e94bb"
+  },
+  "jobs": [
+    {
+      "id": 134663488764,
+      "name": "verify (ubuntu-latest)",
+      "conclusion": "success",
+      "log": {
+        "file": ".runtime/alpha21-ci/job-134663488764-run-44263865457-attempt-1/job.log",
+        "bytes": 216738,
+        "sha256": "ba977681cc5b475fa0e361cd86b6dcbea5b4f53868c88b334d724be206088fb6"
+      },
+      "coreFromLog": {
+        "tests": 563,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 11
+      },
+      "ui": {
+        "status": "passed",
+        "stats": {
+          "startTime": "2026-11-18T08:12:20.549Z",
+          "duration": 259018.01400000002,
+          "expected": 230,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "sourcesUnchanged": true,
+        "assetsUnchanged": true
+      },
+      "previewFromLog": [
+        {
+          "directory": "/home/runner/work/multi-agent/multi-agent/.runtime/preview-native-XLTGS6",
+          "status": "passed",
+          "checks": 10
+        },
+        {
+          "directory": "/home/runner/work/multi-agent/multi-agent/.runtime/preview-native-packaged-hEVNxu",
+          "status": "passed",
+          "checks": 10
+        }
+      ],
+      "failedSteps": [],
+      "skippedSteps": [
+        "Actual desktop session previews and persistent login",
+        "Standalone browser and attached desktop lifecycle",
+        "Actual packaged session previews without external Java or Node"
+      ]
+    },
+    {
+      "id": 134663489188,
+      "name": "verify (windows-latest)",
+      "conclusion": "success",
+      "log": {
+        "file": ".runtime/alpha21-ci/job-134663489188-run-44263865457-attempt-1/job.log",
+        "bytes": 209400,
+        "sha256": "f0569f40c66a54106d8e2a4cbbe17c21d55140fb206aa30ab15d0b17bbe438cd"
+      },
+      "coreFromLog": {
+        "tests": 563,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8
+      },
+      "ui": {
+        "status": "passed",
+        "stats": {
+          "startTime": "2026-11-18T08:27:34.378Z",
+          "duration": 188376.413,
+          "expected": 230,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "sourcesUnchanged": true,
+        "assetsUnchanged": true
+      },
+      "previewFromLog": [
+        {
+          "directory": "D:\\a\\multi-agent\\multi-agent\\.runtime\\preview-native-K9GGCw",
+          "status": "passed",
+          "checks": 10
+        },
+        {
+          "directory": "D:\\a\\multi-agent\\multi-agent\\.runtime\\preview-native-packaged-ButgPk",
+          "status": "passed",
+          "checks": 10
+        }
+      ],
+      "failedSteps": [],
+      "skippedSteps": [
+        "Actual desktop session previews with virtual display",
+        "Standalone lifecycle with virtual display",
+        "Actual packaged session previews with virtual display"
+      ]
+    },
+    {
+      "id": 134663489346,
+      "name": "verify (macos-latest)",
+      "conclusion": "failure",
+      "log": {
+        "file": ".runtime/alpha21-ci/job-134663489346-run-44263865457-attempt-1/job.log",
+        "bytes": 98946,
+        "sha256": "c3599ea8b2ecc1d0c15bd1953f184b858c7cce68b6334a38866330e51f9cb64b"
+      },
+      "coreFromLog": {
+        "tests": 563,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 11
+      },
+      "ui": {
+        "status": "failed",
+        "stats": {
+          "startTime": "2026-11-18T08:14:56.510Z",
+          "duration": 382167.347,
+          "expected": 229,
+          "skipped": 0,
+          "unexpected": 1,
+          "flaky": 0
+        },
+        "sourcesUnchanged": true,
+        "assetsUnchanged": true
+      },
+      "previewFromLog": [],
+      "failedSteps": [
+        "UI interaction tests"
+      ],
+      "skippedSteps": [
+        "Production theme initialization and storage fallback",
+        "Actual final Jar and production Web file diff review",
+        "Actual final Jar checkpoint undo and original receipt recovery",
+        "Actual final Jar native terminal and forced core crash recovery",
+        "Actual final Jar and production Web native terminal control",
+        "Desktop dependencies",
+        "Desktop dependency download guards",
+        "Desktop connection policy",
+        "Session preview policy and host lifecycle",
+        "Actual desktop session previews and persistent login",
+        "Actual desktop session previews with virtual display",
+        "Actual core crash and original process recovery",
+        "Actual durable root queue and explicit recovery",
+        "Actual selected Git workspaces and READY receipt recovery",
+        "Actual root workspace writers and original receipt recovery",
+        "Actual original Worker file versions and complete history",
+        "Standalone browser and attached desktop lifecycle",
+        "Standalone lifecycle with virtual display",
+        "Build desktop distribution with bundled Java",
+        "Packaged application lifecycle",
+        "Actual packaged session previews without external Java or Node",
+        "Actual packaged session previews with virtual display",
+        "Actual packaged themes, sidebar and preference restart",
+        "Actual packaged Java workspace writer",
+        "Actual packaged Java and Web native terminals without external Java or Node",
+        "Preserve desktop distributions",
+        "Post Run actions/setup-node@v4"
+      ]
+    }
+  ],
+  "macosEvidence": {
+    "artifact": {
+      "file": ".runtime\\alpha21-ci\\artifact-14410048626-run-44263865457-attempt-1\\evidence-macos-latest-14410048626.zip",
+      "bytes": 79709128,
+      "sha256": "4baac9789d31d7ea42f1061576031c10ff4f06b71c1bb5536d8d216f2dc5344c"
+    },
+    "wholeArtifactDigestVerified": true,
+    "receipt": {
+      "file": ".runtime/alpha21-ci/artifact-14410048626-run-44263865457-attempt-1/receipt.json",
+      "bytes": 553,
+      "sha256": "6ceb1fd965dc52a895601671f06ca88b1755faf86cc0a15fd901f97784a2e69d"
+    },
+    "suites": 46,
+    "totals": {
+      "tests": 563,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 11
+    },
+    "selectedEntryReceipt": {
+      "file": ".runtime/alpha21-ci/ui-entries-14410048626-1794990250965/receipt.json",
+      "bytes": 2760,
+      "sha256": "1c690e4b5d0112ebaa105278d18394e9772c5f7c2981c6f53c12800431fe2af1"
+    },
+    "network": {
+      "file": ".runtime/alpha22-macos-ui-trace-fourth-473ef0bf441f422e90b594262e01b7c6/1-trace.network",
+      "bytes": 8418,
+      "sha256": "64be23cc3acb9459f1581ace7a78dae1b000ec4b0f16ee0a3abab2a659b8290d"
+    },
+    "errorContext": {
+      "file": ".runtime/alpha21-ci/ui-entries-14410048626-1794990250965/diff-view-逐文件树、原新行号、多个差异块与字面文本-1440px-error-context.md",
+      "bytes": 14505,
+      "sha256": "225b9e2774b31c543eca60823c219a574f0a432aad2ea616682e7b2fc20d11f7"
+    },
+    "configuration": {
+      "status": 200,
+      "timeMs": 953.0450000000001
+    },
+    "stateRequestInTrace": false,
+    "observations": "Configuration HTTP 200, no /api/state in trace, disconnected signal timed out. Root cause unproven; full process timeout cannot be inferred from one network duration."
+  },
+  "scope": "EXACT_PREVIEW_FIX_CI_TERMINAL_OUTCOME; SUCCESSFUL_WINDOWS_AND_UBUNTU_JOBS_FROM_ORIGINAL_LOGS; MACOS_WHOLE_EVIDENCE_DIGEST_AND_XML_VERIFIED; CONNECTION_RECOVERY_REQUIRES_ITS_OWN_CI"
+}
