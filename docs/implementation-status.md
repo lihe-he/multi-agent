@@ -42,6 +42,8 @@ Windows 创建改为先登记同一锁定 detached worktree，再在目标目录
 
 `34fff04` 的 [run44242815474](https://github.com/lihe-he/multi-agent/actions/runs/44242815474) 中，macOS 原生 PTY 11 项通过，核心共 557 项中另有 1 项失败：实时终端重复读取将增长的 `publishedEnd`（234→242）也作为不可变响应比较。两次原字节、摘要和段身份相同。测试改为仅对发布末尾断言单调不减，其余响应继续全量相等校验；本机 CLONE/WORKTREE 两项真实集成路径通过。六份 Java 文件保留 97 条原注释。见[原失败与定向复验](./qa/alpha22-terminal-read-regression-win32.json)和[固定版本进程研究](./research/process-identities-2026-11-18.md)。该失败运行不能作为三端成功验收。
 
+包含输出测试修正的 [run44244487383](https://github.com/lihe-he/multi-agent/actions/runs/44244487383) 已终态：Ubuntu 完整成功；macOS 核心与协议成功、UI 228/229 通过，剩余一项在 diff-view 测试共用任务入口复现初始化 `signal timed out`；Windows 核心成功，协议取消场景未到达延迟模型夹具请求，任务/模型操作进入 UNKNOWN，其他后续步骤跳过。三端核心通过不等于完整工作流验收。macOS 两轮原始 trace 都记录 workbench 配置 HTTP 200、没有 `/api/state` 请求；原因尚未确定，未放宽初始化超时。Windows 原事件记录 `MODEL_REQUEST` 后收到 UNKNOWN，夹具没有对应请求；详细原因尚未确定，未增添重试。双平台日志和 artifact SHA-256 已核验，证据见[CI 终态回执](./qa/alpha22-ci-final-7f4c192.json)。
+
 本轮汇总见[预览验证回执](./qa/alpha21-preview-validation-win32.json)。[原生页面截图](./qa/alpha21-native-preview.png)与[工作台外壳截图](./qa/alpha21-workbench-chrome.png)分别捕获，后者不包含独立原生视图的合成画面。
 
 ## 0.2.0-alpha.20 开发迭代

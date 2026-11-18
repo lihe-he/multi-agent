@@ -1,0 +1,154 @@
+{
+  "recordedAt": "2026-11-18T06:13:48.294Z",
+  "headSha": "7f4c1923ba6520792dde2c606a837cd39a04aac9",
+  "runId": 44244487383,
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/44244487383",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs": [
+    {
+      "id": 134600185511,
+      "name": "verify (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "core": "success",
+      "protocol": "success",
+      "ui": "success"
+    },
+    {
+      "id": 134600185895,
+      "name": "verify (macos-latest)",
+      "status": "completed",
+      "conclusion": "failure",
+      "core": "success",
+      "protocol": "success",
+      "ui": "failure"
+    },
+    {
+      "id": 134600185900,
+      "name": "verify (windows-latest)",
+      "status": "completed",
+      "conclusion": "failure",
+      "core": "success",
+      "protocol": "failure",
+      "ui": "skipped"
+    }
+  ],
+  "macos": {
+    "jobId": 134600185895,
+    "logSha256": "85ae9e9e75b1aca23fa250d8486d8515097df061ca21d8c74bca6dc7945c2787",
+    "logBytes": 100921,
+    "tests": 557,
+    "failures": 1,
+    "skipped": 11,
+    "uiPassed": 228,
+    "uiFailed": 1,
+    "uiFailedTest": "tests/diff-view.spec.ts:54",
+    "fixture": "tests/fixtures/workspaces.ts:85",
+    "failure": "connection initialization timed out; config HTTP 200, no /api/state request; sources/build/assets unchanged",
+    "artifact": {
+      "id": 14401578426,
+      "bytes": 79709867,
+      "sha256": "db298d2486d4ace9ce61face43e0474fbe3a0a62203ccc58469ce45374ef2dd1",
+      "verified": true
+    },
+    "traceFiles": [
+      ".runtime/alpha22-macos-ui-trace-second/error-context.md",
+      ".runtime/alpha22-macos-ui-trace-second/1-trace.network",
+      ".runtime/alpha22-macos-ui-trace-second/1-trace.trace"
+    ]
+  },
+  "windows": {
+    "jobId": 134600185900,
+    "logSha256": "db0ddd247e878223de179823ab77ff08be86e92eff96f5273568611c3072a503",
+    "logBytes": 53858,
+    "corePassed": true,
+    "protocolPassed": false,
+    "assertion": "delayed model request absent; task entered UNKNOWN before cancellation",
+    "taskId": "ee159215-8d40-4db7-ba26-c296ce05fefb",
+    "operationId": "d36819ce-084f-4b56-bbdf-373a5b3ec87a",
+    "operationState": "UNKNOWN",
+    "evidenceId": "2f55e022-abb0-4bf8-8587-99ff71f72141",
+    "processSessionId": "81de1204-4d5b-4ad9-a414-90a107364481",
+    "executorPid": 2568,
+    "events": [
+      {
+        "id": 689,
+        "type": "AGENT_QUEUED",
+        "message": "analysis · AgentRun f075755a-816f-4782-94f6-51750254cb5f"
+      },
+      {
+        "id": 690,
+        "type": "RESOURCE_WAIT",
+        "message": "等待模型与路由容量"
+      },
+      {
+        "id": 691,
+        "type": "RESOURCE_ACQUIRED",
+        "message": "已取得模型与路由容量"
+      },
+      {
+        "id": 692,
+        "type": "ROUTE_SELECTED",
+        "message": "使用已固定路由 Local fixture 1794981390953；遵守锁定、根预算与阶段权限"
+      },
+      {
+        "id": 693,
+        "type": "OPERATION_PREPARED",
+        "message": "analysis：已保存操作意图"
+      },
+      {
+        "id": 694,
+        "type": "WORKER_DISPATCHED",
+        "message": "analysis · 操作 d36819ce-084f-4b56-bbdf-373a5b3ec87a · Worker 503c96a3-1664-487e-9225-d79067a340de"
+      },
+      {
+        "id": 695,
+        "type": "MODEL_REQUEST",
+        "message": "analysis · 请求 2a500041-1f0d-45ba-9ce3-efe0151aabd7：已承诺根预算，准备派发"
+      },
+      {
+        "id": 696,
+        "type": "LOG",
+        "message": "analysis · 模型请求 1 · smoke-model"
+      },
+      {
+        "id": 697,
+        "type": "MODEL_RESPONSE",
+        "message": "analysis · 请求 2a500041-1f0d-45ba-9ce3-efe0151aabd7：UNKNOWN"
+      },
+      {
+        "id": 698,
+        "type": "EVIDENCE",
+        "message": "analysis：UNKNOWN"
+      },
+      {
+        "id": 699,
+        "type": "CHECKPOINT",
+        "message": "已保存阶段记录与内容标识"
+      },
+      {
+        "id": 700,
+        "type": "AGENT_FINISHED",
+        "message": "analysis · AgentRun f075755a-816f-4782-94f6-51750254cb5f：UNKNOWN"
+      },
+      {
+        "id": 701,
+        "type": "RESULT_UNKNOWN",
+        "message": "运行器返回结果未知，必须核对后才能继续"
+      }
+    ],
+    "smokeReportSha256": "76b5b1fa577224c9a117df2d0596263865793f5625f1c08ef495699182056940",
+    "artifact": {
+      "id": 14401728721,
+      "bytes": 68418390,
+      "sha256": "6d83fa4ce3cbd853961bd99e9cb3d304c66dead42325a9392833684469959210",
+      "verified": true
+    },
+    "rootCause": "UNDETERMINED_FROM_AVAILABLE_WINDOWS_SMOKE_EVIDENCE"
+  },
+  "ubuntu": {
+    "conclusion": "success"
+  },
+  "scope": "THREE_PLATFORM_CORE_VERIFIED; FULL_WORKFLOW_RUN_FAILED_ON_MACOS_UI_AND_WINDOWS_PROTOCOL_LIFECYCLE"
+}
