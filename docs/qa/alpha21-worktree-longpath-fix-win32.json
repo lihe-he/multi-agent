@@ -85,8 +85,13 @@
       "core\\src\\test\\java\\dev\\agentworkbench\\WorkspaceLongPathTest.java"
     ],
     "fullCoreVerify": {
-      "status": "in_progress",
-      "directory": ".runtime/alpha21-core-verify-EZJSjY"
+      "status": "passed",
+      "receipt": "docs/qa/alpha21-worktree-core-build-win32.json",
+      "tests": 556,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 10,
+      "sourcesUnchanged": true
     },
     "commentAudit": {
       "recordedAt": "2026-11-18T02:01:39.641Z",
