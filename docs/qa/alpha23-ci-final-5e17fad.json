@@ -1,0 +1,127 @@
+{
+  "recordedAt": "2026-11-19T04:59:18Z",
+  "repository": "lihe-he/multi-agent",
+  "workflow": ".github/workflows/verify.yml",
+  "headBranch": "main",
+  "headSha": "5e17fadddd5c1ac466c165613f51514ea66a312b",
+  "runId": 44454119818,
+  "runAttempt": 1,
+  "event": "push",
+  "url": "https://github.com/lihe-he/multi-agent/actions/runs/44454119818",
+  "status": "completed",
+  "conclusion": "success",
+  "startedAt": "2026-11-19T03:49:37Z",
+  "updatedAt": "2026-11-19T04:40:16Z",
+  "jobs": [
+    {
+      "platform": "windows-latest",
+      "jobId": 135324884253,
+      "url": "https://github.com/lihe-he/multi-agent/actions/runs/44454119818/job/135324884253",
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-11-19T04:40:15Z",
+      "coreFromLog": { "tests": 611, "passed": 603, "failures": 0, "errors": 0, "skipped": 8 },
+      "workflowExecutionFromLog": { "tests": 5, "passed": 5, "failures": 0, "errors": 0, "skipped": 0 },
+      "uiFromLog": { "tests": 260, "passed": 260, "failures": 0, "skipped": 0, "flaky": 0 },
+      "conditionallySkippedSteps": [
+        "Actual desktop session previews with virtual display",
+        "Standalone lifecycle with virtual display",
+        "Actual packaged session previews with virtual display"
+      ],
+      "failedSteps": [],
+      "originalLog": {
+        "file": ".runtime/alpha21-ci/run-44454119818-attempt-1/job-135324884253.log",
+        "bytes": 226736,
+        "sha256": "6ead04f9eec383e8ed149b1b3d63177dd7a0d7ecd13d9b81b42222b6ee1ac6a2"
+      }
+    },
+    {
+      "platform": "ubuntu-latest",
+      "jobId": 135324884576,
+      "url": "https://github.com/lihe-he/multi-agent/actions/runs/44454119818/job/135324884576",
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-11-19T04:12:33Z",
+      "coreFromLog": { "tests": 611, "passed": 600, "failures": 0, "errors": 0, "skipped": 11 },
+      "workflowExecutionFromLog": { "tests": 5, "passed": 5, "failures": 0, "errors": 0, "skipped": 0 },
+      "uiFromLog": { "tests": 260, "passed": 260, "failures": 0, "skipped": 0, "flaky": 0 },
+      "conditionallySkippedSteps": [
+        "Actual desktop session previews and persistent login",
+        "Standalone browser and attached desktop lifecycle",
+        "Actual packaged session previews without external Java or Node"
+      ],
+      "failedSteps": [],
+      "originalLog": {
+        "file": ".runtime/alpha21-ci/run-44454119818-attempt-1/job-135324884576.log",
+        "bytes": 231197,
+        "sha256": "33f8ede3431ce942d99500783cf9f7b0ee84b557053e7aa21626fe3ace4129f2"
+      }
+    },
+    {
+      "platform": "macos-latest",
+      "jobId": 135324884609,
+      "url": "https://github.com/lihe-he/multi-agent/actions/runs/44454119818/job/135324884609",
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-11-19T04:20:35Z",
+      "coreFromLog": { "tests": 611, "passed": 600, "failures": 0, "errors": 0, "skipped": 11 },
+      "workflowExecutionFromLog": { "tests": 5, "passed": 5, "failures": 0, "errors": 0, "skipped": 0 },
+      "uiFromLog": { "tests": 260, "passed": 260, "failures": 0, "skipped": 0, "flaky": 0 },
+      "conditionallySkippedSteps": [
+        "Actual desktop session previews with virtual display",
+        "Standalone lifecycle with virtual display",
+        "Actual packaged session previews with virtual display"
+      ],
+      "failedSteps": [],
+      "originalLog": {
+        "file": ".runtime/alpha21-ci/run-44454119818-attempt-1/job-135324884609.log",
+        "bytes": 219656,
+        "sha256": "83a5e63a843fb8831a2e6151770962d4e260d8ff33754d4bb1d5c2a72ec87c11"
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "artifactId": 14499650971,
+      "name": "evidence-windows-latest",
+      "sizeInBytes": 312645893,
+      "githubDigest": "sha256:b8a7d637acae5297f82a51077a3f46e9247cd34e3231bfa3169bbaac38643b75"
+    },
+    {
+      "artifactId": 14499301959,
+      "name": "desktop-windows-latest",
+      "sizeInBytes": 157818367,
+      "githubDigest": "sha256:0e028bb2e18a5f295bc299661ad1890963f6baa7e9117b5b76ea905698693a8b"
+    },
+    {
+      "artifactId": 14498785224,
+      "name": "evidence-ubuntu-latest",
+      "sizeInBytes": 317384296,
+      "githubDigest": "sha256:07b522016a6c5494c356705392d38207e691de0618ae73705124399d6f1f6ee9"
+    },
+    {
+      "artifactId": 14498460660,
+      "name": "desktop-ubuntu-latest",
+      "sizeInBytes": 190038513,
+      "githubDigest": "sha256:0f6791423b274f958b47dec69cbcded49fd559dd5f224fd9827e5baadfbb3f4a"
+    },
+    {
+      "artifactId": 14498487710,
+      "name": "evidence-macos-latest",
+      "sizeInBytes": 304249088,
+      "githubDigest": "sha256:bbc637aa39a7dfd695669b88334b7d57eb6b6379b67782ea28505784ad28dc10"
+    },
+    {
+      "artifactId": 14498492718,
+      "name": "desktop-macos-latest",
+      "sizeInBytes": 180632404,
+      "githubDigest": "sha256:bceed1bd218a76eee99cb2f019da61ad620cb9db76321cddc9d5fd46f42bf61b"
+    }
+  ],
+  "evidenceScope": {
+    "skipPolicy": "Linux uses virtual-display entries in place of the other platforms' desktop preview, standalone and packaged preview entries.",
+    "jobResults": "GitHub Actions run and job metadata; test counts from original job logs with locally computed SHA-256.",
+    "artifactDigests": "Reported by the GitHub Actions artifacts API. The complete ZIPs were not re-downloaded or verified locally; a partial download is not verification.",
+    "artifactZipsVerifiedLocally": false
+  }
+}

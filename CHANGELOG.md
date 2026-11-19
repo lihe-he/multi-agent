@@ -6,6 +6,8 @@
 
 增加只读流程候选生成、原请求来源追踪、编辑与显式发布，防止生成内容直接切换任务流程；任务可查看运行/尝试、固定历史版本、复核冲突后换版。ZIP 导出新增 Workflow 运行、尝试、生成和候选记录。DSL/API/恢复约束和 alpha.23 准确验证现状见[Workflow 协议](./docs/workflow-contract.md)与[实施记录](./docs/implementation-status.md)。
 
+实现提交 `5e17fad` 的 [CI Run 44454119818](https://github.com/lihe-he/multi-agent/actions/runs/44454119818) 在 Windows、Ubuntu、macOS 均成功，每端 `WorkflowExecutionTest` 5/5、生产 Web UI 260/260 通过。核心测试计数、平台条件跳过、原始日志和 artifact 元数据见[CI 终态回执](./docs/qa/alpha23-ci-final-5e17fad.json)；本机 Windows 回归的团队请求时序失败仍记录在[实施记录](./docs/implementation-status.md#020-alpha23-版本化-workflow)。
+
 ## 0.2.0-alpha.22 — 请求诊断与页面/终端恢复
 
 模型请求保存最多八层异常类型链，保留未知结果、费用和预算边界；界面可展开并检索原因类型。预览打开操作可跨越宿主连续成功的有界页面元数据更新，相同元数据不重复推进版本，操作错误在成功轮询后继续显示。
