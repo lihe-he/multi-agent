@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-11-19T10:08:56.4012802Z",
+  "recordedAt": "2026-11-19T10:58:01.0358581Z",
   "repository": "lihe-he/multi-agent",
   "branch": "main",
   "baseCommit": "786b17e2a1e5ea8404177194ef85771062a73a06",
@@ -239,5 +239,45 @@
       "artifactDigests": "GitHub Actions artifact digests and sizes are preserved from API metadata. The complete evidence ZIPs were not re-downloaded or verified locally.",
       "artifactZipsVerifiedLocally": false
     }
+  },
+  "documentationFollowUp": {
+    "commit": "d7005b5eba7485ffd0c174305b1c6796b35f238c",
+    "runId": 44503691251,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/44503691251",
+    "status": "completed",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "platform": "ubuntu-latest",
+        "conclusion": "success",
+        "failedSteps": []
+      },
+      {
+        "platform": "macos-latest",
+        "conclusion": "success",
+        "failedSteps": []
+      },
+      {
+        "platform": "windows-latest",
+        "conclusion": "failure",
+        "failedSteps": [
+          "Core tests and package"
+        ],
+        "suite": "dev.agentworkbench.TeamExecutionTest",
+        "tests": 12,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "failedTest": "actualDelegationSharesRootBudgetAndDependencySnapshotBeforeGuardedAdoption",
+        "observedError": "WORKER_RESULT_MISSING led to UNKNOWN while resolving a dependency worker",
+        "jobId": 135489669766,
+        "originalJobLog": {
+          "file": ".runtime/alpha23-ci-windows-job-135489669766-logs.txt",
+          "bytes": 91960,
+          "sha256": "202b22d2e19cc118fa670d698bb72c65b7c54551d52ac1b96813024c7f3edbb6"
+        }
+      }
+    ],
+    "scope": "Documentation-only follow-up run. The prior code commit 13665a5 had a separate three-platform successful run 44490957185; this failure is retained as an observed platform timing result and is not reclassified as a code regression."
   }
 }
