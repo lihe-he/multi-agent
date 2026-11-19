@@ -11,6 +11,7 @@ import { WorkspaceWrites } from './WorkspaceWrites';
 import { FileToolOperations } from './FileToolOperations';
 import { DiffView } from './DiffView';
 import { Checkpoints } from './Checkpoints';
+import { TaskWorkflow } from './TaskWorkflow';
 import './task-detail.css';
 import type { Evidence, Project, Route, RunEvent, Stage, Task } from './types';
 import { Badge, Checklist, Empty, Field, formatTime, kindLabel, Modal, modeLabel, SaveButton, SectionHeading, shortHash } from './ui';
@@ -30,7 +31,14 @@ export function TaskDetail({ task: initial, project, routes, onBack, onAction, o
   const [editBudget, setEditBudget] = useState(false);
   const [reconcile, setReconcile] = useState(false);
   useEffect(() => { setRequestFocus(''); }, [initial.id]);
-  useEffect(() => { setTask(current => current.id === initial.id ? { ...current, ...initial, collaboration: initial.collaboration ? { ...current.collaboration, ...initial.collaboration, definitions: initial.collaboration.definitions || current.collaboration?.definitions } : current.collaboration } : initial); }, [initial]);
+  useEffect(() => { setTask(current => {
+    if (current.id !== initial.id) return initial;
+    if (Date.parse(current.updatedAt || '') > Date.parse(initial.updatedAt || '')) return current;
+    return { ...current, ...initial,
+      workflow: initial.workflow && { ...initial.workflow, ...(current.workflow?.snapshotDigest === initial.workflow.snapshotDigest ? current.workflow : {}) },
+      collaboration: initial.collaboration ? { ...current.collaboration, ...initial.collaboration, definitions: initial.collaboration.definitions || current.collaboration?.definitions } : current.collaboration,
+    };
+  }); }, [initial]);
   useEffect(() => {
     let active = true; let timer: ReturnType<typeof setTimeout>;
     cursor.current = 0; setEvents([]); setDiff(null);
@@ -42,7 +50,7 @@ export function TaskDetail({ task: initial, project, routes, onBack, onAction, o
           api<McpOperation[]>(`/tasks/${initial.id}/mcp-operations`),
         ]);
         if (!active) return;
-        setTask(detail);
+        setTask(current => Date.parse(current.updatedAt || '') > Date.parse(detail.updatedAt || '') ? current : detail);
         setMcpOperations(mcpOps);
         if (batch.events?.length) {
           cursor.current = batch.cursor || batch.events[batch.events.length - 1].id;
@@ -90,8 +98,10 @@ export function TaskDetail({ task: initial, project, routes, onBack, onAction, o
     {task.dispatch?.state === 'PENDING' && <div className="info-banner"><Activity size={18} /><span>第 {task.taskExecution?.attempt} 次执行已排队，尚未领取。{task.dispatch.waitReason || '条件满足后开始执行，重开应用可保留这次排队。'}</span></div>}
     {tab === 'overview' && <DelegationContract task={task} />}
     {tab === 'overview' && <ExecutionContract task={task} onSaved={async () => { setTask(await api<Task>(`/tasks/${task.id}`)); onNotice('执行授权已更新，任务保持暂停并保留原证据'); }} />}
-    <div className="task-summary-strip"><span><GitBranch size={15} />{modeLabel(task.mode)}</span><span><Fingerprint size={15} />基线 <code>{shortHash(task.baseline)}</code></span><span><Activity size={15} />{route?.name || '待选择路由'}</span><span><Circle size={12} />更新于 {formatTime(task.updatedAt)}</span></div>
-    <nav className="tabs task-detail-tabs" aria-label="任务详情">{[{ id: 'overview', label: '协作计划', icon: GitBranch }, { id: 'evidence', label: '验证与审查', icon: ShieldCheck, count: evidence.length }, { id: 'diff', label: '代码差异', icon: Code2 }, ...(task.checkpointProtocolVersion === 1 ? [{ id: 'checkpoints', label: '检查点与撤销', icon: RotateCcw }] : []), { id: 'terminal', label: '终端', icon: Terminal }, { id: 'dispatch', label: '任务派发', icon: Activity }, { id: 'runs', label: 'Agent 运行', icon: Activity }, { id: 'requests', label: '模型请求', icon: Activity }, { id: 'files', label: '文件操作', icon: FileCode2 }, { id: 'team', label: '团队与副 Agent', icon: Activity }, { id: 'worker', label: 'Worker 执行', icon: Terminal }, { id: 'context', label: '执行上下文', icon: LayersIcon }, { id: 'events', label: '活动记录', icon: Activity }].map(item => <button key={item.id} className={tab === item.id ? 'active' : ''} onClick={() => setTab(item.id)}><item.icon size={16} />{item.label}{'count' in item && !!item.count && <span>{item.count}</span>}</button>)}</nav>
+    <div className="task-summary-strip"><span><GitBranch size={15} />{task.workflow ? `${task.workflow.name} · v${task.workflow.version}` : modeLabel(task.mode)}</span><span><Fingerprint size={15} />基线 <code>{shortHash(task.baseline)}</code></span><span><Activity size={15} />{route?.name || '待选择路由'}</span><span><Circle size={12} />更新于 {formatTime(task.updatedAt)}</span></div>
+    <nav className="tabs task-detail-tabs" aria-label="任务详情">{[{ id: 'overview', label: '协作计划', icon: GitBranch }, ...(task.workflowProtocolVersion === 1 ? [{ id: 'workflow', label: '流程协作', icon: GitBranch }] : []), { id: 'evidence', label: '验证与审查', icon: ShieldCheck, count: evidence.length }, { id: 'diff', label: '代码差异', icon: Code2 }, ...(task.checkpointProtocolVersion === 1 ? [{ id: 'checkpoints', label: '检查点与撤销', icon: RotateCcw }] : []), { id: 'terminal', label: '终端', icon: Terminal }, { id: 'dispatch', label: '任务派发', icon: Activity }, { id: 'runs', label: 'Agent 运行', icon: Activity }, { id: 'requests', label: '模型请求', icon: Activity }, { id: 'files', label: '文件操作', icon: FileCode2 }, { id: 'team', label: '团队与副 Agent', icon: Activity }, { id: 'worker', label: 'Worker 执行', icon: Terminal }, { id: 'context', label: '执行上下文', icon: LayersIcon }, { id: 'events', label: '活动记录', icon: Activity }].map(item => <button key={item.id} className={tab === item.id ? 'active' : ''} onClick={() => setTab(item.id)}><item.icon size={16} />{item.label}{'count' in item && !!item.count && <span>{item.count}</span>}</button>)}</nav>
+    {tab === 'workflow' && <TaskWorkflow key={task.id} task={task} project={project} routes={routes} onChanged={setTask} onSelectionSaved={() => setTab('overview')} onNotice={onNotice}
+      onEvidence={id => { setEvidenceTarget(id); setTab('evidence'); }} onRequest={id => { setRequestFocus(id); setTab('requests'); }} />}
     {tab === 'overview' && <div className="detail-grid"><div className="detail-main">
       <section className="card"><SectionHeading title="协作流程" subtitle={task.modeReason || '各阶段按依赖推进，验证与审查结果单独保存。'} /><div className="pipeline">{stages.length ? stages.map((stage, i) => <div className={`pipeline-step ${stage.state?.toLowerCase() || 'pending'}`} key={stage.id}><div className="stage-rail"><span>{['COMPLETED', 'SUCCEEDED'].includes(stage.state || '') ? <Check size={15} /> : String(i + 1).padStart(2, '0')}</span>{i < stages.length - 1 && <i />}</div><div className="stage-content"><div><h3>{stage.title || stage.id}</h3><Badge state={stage.state || 'PENDING'} /></div><p>{stage.role || 'Agent'}{stage.dependencies?.length ? <><span className="dot-sep">·</span>依赖 {stage.dependencies.join('、')}</> : <><span className="dot-sep">·</span>可独立开始</>}</p></div></div>) : <Empty icon={<GitBranch size={25} />} title="计划准备中" description="核心生成的执行阶段将在这里显示。" />}</div></section>
       <section className="card"><SectionHeading title="完成约定" subtitle="验证和独立审查始终以这份约定为准。" /><div className="contract-content"><h4><Flag size={15} />验收条件</h4><Checklist items={task.contract?.acceptance || []} /><h4><Terminal size={15} />必要验证</h4><div className="command-stack">{task.contract?.commands?.map((command, i) => <code key={i}><span>$</span> {command}</code>)}</div><h4><FolderOpen size={15} />修改范围</h4><div className="chips">{task.contract?.scope?.map(scope => <span className="chip mono" key={scope}>{scope}</span>)}</div></div></section>

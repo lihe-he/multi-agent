@@ -35,7 +35,7 @@ public class ExecutionStore implements AutoCloseable {
     /**
      * 结构化状态版本包含终端会话、原动作与字节游标索引。
      */
-    public static final int SCHEMA_VERSION = 10;
+    public static final int SCHEMA_VERSION = 11;
     private final Connection connection;
     private final ObjectMapper mapper;
     private final Path directory;
@@ -112,6 +112,12 @@ public class ExecutionStore implements AutoCloseable {
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_terminal_action_state ON entities(json_extract(body,'$.terminalId'),json_extract(body,'$.state')) WHERE kind='terminalAction'");
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_terminal_output_offset ON entities(json_extract(body,'$.terminalId'),json_extract(body,'$.epoch'),json_extract(body,'$.offset')) WHERE kind='terminalOutputSegment'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_terminal_output_next ON entities(json_extract(body,'$.terminalId'),json_extract(body,'$.epoch'),json_extract(body,'$.next')) WHERE kind='terminalOutputSegment'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_workflow_generation ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.generation')) WHERE kind='workflowRun'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_workflow_run_task ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.state')) WHERE kind='workflowRun'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_workflow_node_attempt ON entities(json_extract(body,'$.workflowRunId'),json_extract(body,'$.nodeId'),json_extract(body,'$.attempt')) WHERE kind='workflowNodeAttempt'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_workflow_node_active ON entities(json_extract(body,'$.workflowRunId'),json_extract(body,'$.nodeId')) WHERE kind='workflowNodeAttempt' AND json_extract(body,'$.endedAt') IS NULL");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_workflow_nodes_run ON entities(json_extract(body,'$.workflowRunId'),json_extract(body,'$.nodeId')) WHERE kind='workflowNodeAttempt'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_workflow_proposal_source ON entities(json_extract(body,'$.agentRunId'),json_extract(body,'$.modelRequestId'),json_extract(body,'$.toolCallId')) WHERE kind='workflowProposal'");
                 boolean rebuildSearch;
                 try (var tables = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_search'")) { rebuildSearch = schemaVersion < 3 || !tables.next(); }
                 statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS session_search USING fts5(project_id UNINDEXED,session_id UNINDEXED,message_id UNINDEXED,sequence UNINDEXED,content,tokenize='trigram case_sensitive 1')");
@@ -691,6 +697,7 @@ public class ExecutionStore implements AutoCloseable {
             write("operation", operation); write("task", task);
             if (run != null) {
                 write("agentRun", run);
+                workflowAgentState(run);
                 if (!str(run, "subtaskId").isBlank()) {
                     Map<String, Object> child = subtask(taskId, str(run, "subtaskId")); child.put("state", "RUNNING"); write("subtask", child);
                 }
@@ -736,6 +743,7 @@ public class ExecutionStore implements AutoCloseable {
         run.put("state", state);
         transaction(() -> {
             write("agentRun", run);
+            workflowAgentState(run);
             if (!str(run, "subtaskId").isBlank()) {
                 Map<String, Object> child = subtask(str(run, "taskId"), str(run, "subtaskId"));
                 if (child.containsKey("endedAt")) throw new ApiException(409, "已结束的副任务不可重新运行");
@@ -774,6 +782,27 @@ public class ExecutionStore implements AutoCloseable {
     }
 
     /**
+     * 节点完成边界与实际 AgentRun 同事务发布，崩溃不能留下可复用的半个节点。
+     */
+    synchronized void finishWorkflowAttempt(Map<String, Object> attempt, Map<String, Object> workflow, String state, String reason) {
+        Map<String, Object> run = get("agentRun", str(attempt, "agentRunId")), current = get("workflowNodeAttempt", str(attempt, "id"));
+        if (current.containsKey("endedAt") || !str(attempt, "workflowRunId").equals(str(workflow, "id"))
+                || !str(attempt, "id").equals(str(run, "workflowNodeAttemptId")) || !WorkflowLedger.LIVE.contains(str(run, "state"))
+                || !Set.of("SUCCEEDED", "FAILED", "UNKNOWN", "CANCELLED", "PAUSED", "WAITING_INPUT", "BUDGET_EXHAUSTED").contains(state)) throw new ApiException(409, "流程节点终态缺少原运行归属");
+        List<Map<String, Object>> pending;
+        try { pending = pendingModelRequests(str(run, "id")); }
+        catch (Exception exception) { throw failure(exception); }
+        if ("SUCCEEDED".equals(state) && !pending.isEmpty()) throw new ApiException(409, "节点原请求仍在途，不能发布成功");
+        run.putAll(obj("state", state, "reason", reason, "endedAt", attempt.get("endedAt")));
+        run.put("elapsedMs", Math.max(0, java.time.Duration.between(java.time.Instant.parse(str(run, "createdAt")), java.time.Instant.parse(str(run, "endedAt"))).toMillis()));
+        transaction(() -> {
+            for (Map<String, Object> request : pending) endModelRequest(request, obj("state", "UNKNOWN", "errorType", "MISSING_OBSERVATION", "reason", "节点结束但原请求缺少回执，不自动重试"));
+            write("agentRun", run); write("workflowNodeAttempt", attempt); write("workflowRun", workflow);
+            appendEvent(str(run, "taskId"), "WORKFLOW_NODE_FINISHED", str(attempt, "nodeId") + " · 第 " + num(attempt, "attempt", 1) + " 次：" + state);
+        });
+    }
+
+    /**
      * 请求身份、运行调用和根预算同事务保存；拒绝时不生成请求记录。
      */
     public synchronized String beginModelRequest(String taskId, String runId, boolean reserved, Map<String, Object> metadata) {
@@ -785,7 +814,7 @@ public class ExecutionStore implements AutoCloseable {
             "sequence", num(run, "calls", 0) + 1, "state", "DISPATCHING", "createdAt", now(), "attempt", 1,
             "routeId", run.get("routeId"), "routeVersion", run.get("routeVersion"), "engine", run.get("engine"), "model", run.get("model"),
             "unit", run.get("callUnit"), "usage", obj("cost", "UNKNOWN"));
-        for (String key : List.of("taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId", "teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid", "processSessionId")) if (run.containsKey(key)) request.put(key, run.get(key));
+        for (String key : List.of("taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId", "teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "workflowRunId", "workflowNodeId", "workflowNodeAttemptId", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid", "processSessionId")) if (run.containsKey(key)) request.put(key, run.get(key));
         for (String key : List.of("round", "messageCount", "inputBytes", "inputDigest", "toolCount", "inputPreview", "inputTruncated")) {
             if (metadata.containsKey(key)) request.put(key, metadata.get(key));
         }
@@ -908,6 +937,32 @@ public class ExecutionStore implements AutoCloseable {
         return definition;
     }
 
+    /**
+     * 不可变流程版本与当前指针同事务保存，旧版本不被编辑或回退覆盖。
+     */
+    synchronized Map<String, Object> saveWorkflowVersion(Map<String, Object> definition, Map<String, Object> version, int expectedVersion) {
+        return saveWorkflowVersion(definition, version, expectedVersion, Map.of());
+    }
+
+    synchronized Map<String, Object> saveWorkflowVersion(Map<String, Object> definition, Map<String, Object> version, int expectedVersion, Map<String, Object> publication) {
+        String definitionId = str(definition, "id");
+        Map<String, Object> current = find("workflowDefinition", definitionId);
+        int actual = current == null ? 0 : num(current, "version", -1), next = num(definition, "version", -1);
+        if (actual != expectedVersion || next != actual + 1) throw new ApiException(409, "Workflow 版本冲突，请刷新后编辑");
+        if (!definitionId.equals(str(version, "definitionId")) || num(version, "version", -1) != next
+                || !str(definition, "currentVersionId").equals(str(version, "id"))
+                || !str(version, "id").equals(definitionId + ":v" + next)) throw new ApiException(400, "Workflow 版本归属无效");
+        if (find("workflowVersion", str(version, "id")) != null) throw new ApiException(409, "Workflow 历史版本已经存在，不能覆盖");
+        transaction(() -> {
+            write("workflowVersion", version); write("workflowDefinition", definition);
+            if (!publication.isEmpty()) {
+                write("workflowProposal", publication);
+                appendEvent(str(publication, "taskId"), "WORKFLOW_PROPOSAL_PUBLISHED", "用户已发布原候选的流程版本，现有任务的流程保持固定");
+            }
+        });
+        return definition;
+    }
+
     private Map<String, Object> agentRequest(String taskId, String runId, String requestId) {
         Map<String, Object> run = get("agentRun", runId), request = get("modelRequest", requestId);
         if (!taskId.equals(str(run, "taskId")) || !taskId.equals(str(request, "taskId")) || !runId.equals(str(request, "agentRunId")) || !"SUCCEEDED".equals(str(request, "state"))) throw new ApiException(403, "工具操作没有所属运行的成功模型回执");
@@ -929,9 +984,10 @@ public class ExecutionStore implements AutoCloseable {
         Map<String, Object> run = agentRequest(taskId, runId, requestId), permissions = map(run, "permissions");
         if (toolCallId.isBlank() || toolCallId.length() > 200 || bool(run, "readOnly", true) || Set.of("PROPOSAL", "REVIEW").contains(str(run, "kind"))
                 || !AgentPermissions.has(permissions, "mcp") || !AgentPermissions.has(permissions, "write")) throw new ApiException(403, "执行者没有固定 MCP 权限或原工具身份");
-        if (!str(run, "subtaskId").isBlank() && (!AgentPermissions.unrestricted(permissions, "read") || !AgentPermissions.unrestricted(permissions, "write"))) throw new ApiException(403, "窄范围副任务不能证明外部 MCP 的文件访问边界，请交回根授权阶段");
+        boolean scopedActor = !str(run, "subtaskId").isBlank() || !str(run, "workflowNodeAttemptId").isBlank();
+        if (scopedActor && (!AgentPermissions.unrestricted(permissions, "read") || !AgentPermissions.unrestricted(permissions, "write"))) throw new ApiException(403, "窄范围执行者不能证明外部 MCP 的文件访问边界，请交回根授权阶段");
         Map<String, Object> source = obj("agentRunId", runId, "modelRequestId", requestId, "toolCallId", toolCallId, "rootTaskId", run.get("rootTaskId"), "actorKind", run.get("kind"));
-        for (String key : List.of("taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId", "teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "sessionId", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid")) if (run.containsKey(key)) source.put(key, run.get(key));
+        for (String key : List.of("taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId", "teamId", "subtaskId", "parentRunId", "definitionId", "definitionVersion", "depth", "workflowRunId", "workflowNodeId", "workflowNodeAttemptId", "sessionId", "workerLeaseId", "workerId", "workerEpoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "deployment", "executorPid", "processStartedAt", "corePid")) if (run.containsKey(key)) source.put(key, run.get(key));
         return source;
     }
 
@@ -1122,8 +1178,26 @@ public class ExecutionStore implements AutoCloseable {
         if (after < 0 || !str(task, "teamId").equals(str(run, "teamId")) || str(run, "teamId").isBlank()) throw new ApiException(404, "收件箱不属于此团队");
         if (Set.of("PROPOSAL", "REVIEW").contains(str(run, "kind"))) return List.of();
         return list("teamMessage").stream().filter(message -> str(task, "teamId").equals(str(message, "teamId")) && num(message, "sequence", 0) > after)
+            .filter(message -> workflowMessageVisible(run, message))
             .filter(message -> str(message, "recipient").isBlank() || reader.equals(str(message, "recipient")) || reader.equals(str(message, "sender")))
             .sorted(java.util.Comparator.comparingInt(message -> num(message, "sequence", 0))).limit(40).toList();
+    }
+
+    private boolean workflowMessageVisible(Map<String, Object> reader, Map<String, Object> message) {
+        if (str(reader, "workflowRunId").isBlank() || "USER".equals(str(message, "sender"))) return true;
+        Map<String, Object> sender = find("agentRun", str(message, "sender"));
+        return sender != null && str(reader, "workflowRunId").equals(str(sender, "workflowRunId"))
+            && (str(reader, "workflowNodeId").equals(str(sender, "workflowNodeId")) || strings(reader.get("workflowAncestorNodeIds")).contains(str(sender, "workflowNodeId")));
+    }
+
+    private void workflowAgentState(Map<String, Object> run) throws Exception {
+        if (str(run, "workflowNodeAttemptId").isBlank() || !str(run, "subtaskId").isBlank()) return;
+        Map<String, Object> attempt = get("workflowNodeAttempt", str(run, "workflowNodeAttemptId"));
+        if (!str(run, "id").equals(str(attempt, "agentRunId")) || attempt.containsKey("endedAt")) throw new ApiException(409, "流程节点状态缺少原尝试归属");
+        Map<String, Object> workflow = get("workflowRun", str(attempt, "workflowRunId"));
+        if (!str(workflow, "id").equals(str(get("task", str(attempt, "taskId")), "workflowRunId"))) throw new ApiException(409, "旧节点状态不能进入新流程");
+        attempt.put("state", run.get("state")); map(map(workflow, "nodes"), str(attempt, "nodeId")).put("state", run.get("state"));
+        write("workflowNodeAttempt", attempt); write("workflowRun", workflow);
     }
 
     public synchronized void markOperation(String operationId, String state, Map<String, Object> details) {
@@ -1302,7 +1376,7 @@ public class ExecutionStore implements AutoCloseable {
      * 根尝试来源从原任务或父运行传递；历史记录没有来源时不推测补造。
      */
     static void copyTaskExecutionSource(Map<String, Object> target, Map<String, Object> source) {
-        for (String key : List.of("taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId")) if (!str(source, key).isBlank()) target.put(key, source.get(key));
+        for (String key : List.of("taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId", "workflowRunId", "workflowNodeId", "workflowNodeAttemptId", "workflowAncestorNodeIds")) if (!str(source, key).isBlank()) target.put(key, source.get(key));
     }
 
     /**

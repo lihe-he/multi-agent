@@ -1,3 +1,5 @@
+import type { WorkflowSnapshot } from './workflow-types';
+
 export interface Project {
   id: string; name: string; path: string; branch?: string; head?: string;
   dirty?: boolean; fileCount?: number; modules?: string[]; files?: string[]; indexedAt?: string;
@@ -30,7 +32,7 @@ export interface Task {
   state: string; outcome?: string; createdAt?: string; updatedAt?: string; routeId?: string;
   routeSnapshot?: Route;
   contract?: { scope?: string[]; acceptance?: string[]; commands?: string[] };
-  budget?: { maxCalls?: number; reserveCalls?: number; usedCalls?: number; committedCalls?: number };
+  budget?: { maxCalls?: number; reserveCalls?: number; usedCalls?: number; committedCalls?: number; developmentAvailable?: number };
   mcpAuthorization?: { version?: number; bindings?: { serverId: string; serverName?: string; name: string; actionKey: string; fixedArguments: Record<string, unknown>; timeoutMs: number }[] };
   mcpBudget?: { maxCalls?: number; maxDurationMs?: number; usedCalls?: number; committedDurationMs?: number };
   locks?: Record<string, string>; baseline?: string; workspace?: string; version?: string;
@@ -53,6 +55,9 @@ export interface Task {
   workspaceWrite?: WorkspaceWriteLease; workspaceWriteHistoryPresent?: boolean;
   taskExecution?: { id: string; attempt: number; state: string; createdAt: string; endedAt?: string; reconciled?: boolean };
   dispatch?: { id: string; state: string; dispatchCount: number; createdAt: string; claimedAt?: string; waitReason?: string };
+  workflowProtocolVersion?: number; workflow?: WorkflowSnapshot; workflowRunId?: string;
+  workflowHistory?: { snapshot: WorkflowSnapshot; runId: string; actor: string; note: string; createdAt: string }[];
+  pendingWorkflowGenerationId?: string; lastWorkflowGenerationId?: string; latestWorkflowProposalId?: string;
 }
 export interface WorkbenchState {
   projects: Project[]; tasks: Task[]; routes: Route[]; memories: Memory[]; profiles: Profile[];

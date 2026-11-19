@@ -15,6 +15,7 @@ import static dev.agentworkbench.Json.*;
  * 根任务持久队列。只领取未开始的原动作，已领取的未知结果永不自动重放。
  */
 final class TaskDispatchQueue {
+    static final String WORKFLOW_GENERATION = "USER_WORKFLOW_GENERATION";
     static final Set<String> EXECUTION_STATES = Set.of("QUEUED", "RUNNING", "SUCCEEDED", "FAILED", "UNKNOWN", "PAUSED", "CANCELLED", "WAITING_INPUT");
     static final Set<String> ACTION_STATES = Set.of("PENDING", "CLAIMED", "SETTLED", "WITHDRAWN", "UNKNOWN");
     static final int MAX_ACTIVE_TERMINALS = 4;
@@ -39,12 +40,14 @@ final class TaskDispatchQueue {
         synchronized (store) {
             Map<String, Object> task = store.get("task", taskId);
             boolean terminalStart = "USER_TERMINAL".equals(trigger);
+            boolean generationStart = WORKFLOW_GENERATION.equals(trigger);
             if (!Set.of("DRAFT", "PAUSED", "WAITING_INPUT", "FAILED").contains(str(task, "state"))
-                    && !(("USER_CHECKPOINT_RESTORE".equals(trigger) || terminalStart) && "AWAITING_ACCEPTANCE".equals(str(task, "state")))) throw new ApiException(409, "当前任务不能建立新的执行尝试");
+                    && !(("USER_CHECKPOINT_RESTORE".equals(trigger) || terminalStart || generationStart) && "AWAITING_ACCEPTANCE".equals(str(task, "state")))
+                    && !(generationStart && "COMPLETED".equals(str(task, "state")))) throw new ApiException(409, "当前任务不能建立新的执行尝试");
             if (store.hasUnknownTaskExecution(taskId) || store.hasUnknownEffects(taskId)) throw new ApiException(409, "根执行或外部效果尚未核对，不能建立新尝试");
             String previousState = str(task, "state"), time = now(), executionId = id(), actionId = id();
             edit.accept(task);
-            if (!bool(map(task, "contract"), "confirmed", false)) throw new ApiException(409, "完成约定尚未确认");
+            if (!generationStart && !bool(map(task, "contract"), "confirmed", false)) throw new ApiException(409, "完成约定尚未确认");
             int attempt = store.nextTaskExecutionAttempt(taskId);
             Map<String, Object> execution = obj("id", executionId, "schemaVersion", 1, "taskId", taskId, "rootTaskId", taskId,
                 "projectId", task.get("projectId"), "sessionId", task.getOrDefault("sessionId", ""), "attempt", attempt, "trigger", trigger,
@@ -58,6 +61,13 @@ final class TaskDispatchQueue {
                 "enqueuedCoreSessionId", store.coreSessionId(), "authorization", authorization(task));
             Map<String, Object> terminal = terminalStart ? terminalStart(task, related, executionId, actionId) : obj();
             if (!terminal.isEmpty()) { execution.put("terminalId", terminal.get("id")); action.put("terminalId", terminal.get("id")); }
+            Map<String, Object> generation = generationStart ? generationIntent(task, related, executionId, actionId) : obj();
+            if (!generation.isEmpty()) {
+                execution.put("workflowGenerationId", generation.get("id")); action.put("workflowGenerationId", generation.get("id"));
+                Map<String, Object> original = obj();
+                for (String key : List.of("state", "outcome", "error", "stoppedAt")) if (task.containsKey(key)) original.put(key, task.get(key));
+                execution.put("beforeWorkflowGeneration", original);
+            }
             task.putAll(obj("state", "QUEUED", "taskExecutionId", executionId, "dispatchActionId", actionId, "updatedAt", time));
             task.remove("workspaceWriteLeaseId");
             task.remove("error"); summarize(task, execution, action);
@@ -66,8 +76,9 @@ final class TaskDispatchQueue {
             if ("USER_RESUME".equals(trigger)) events.add(obj("type", "CONTEXT_REFRESHED", "message", "按当前有效记忆重新组装上下文，旧证据保留"));
             events.add(obj("type", "QUEUED", "message", "任务与第 " + attempt + " 次执行已同事务进入持久队列，动作 " + actionId + " 尚未领取"));
             Map<String, List<Map<String, Object>>> records = records(task, execution, action);
-            if (!terminalStart && !Set.of("checkpointRestorePreview").containsAll(related.keySet())) throw new ApiException(400, "根队列包含无效关联记录。");
+            if (!terminalStart && !generationStart && !Set.of("checkpointRestorePreview").containsAll(related.keySet())) throw new ApiException(400, "根队列包含无效关联记录。");
             if (terminalStart) records.put("terminalSession", List.of(terminal));
+            else if (generationStart) records.put("workflowGeneration", List.of(generation));
             else records.putAll(related);
             store.commitRecords(records, taskId, events);
             return action;
@@ -87,6 +98,9 @@ final class TaskDispatchQueue {
             }
             if (!str(action, "terminalId").isBlank() && !queuedTerminal(task, execution, action)) {
                 waiting(actionId, "原终端启动意图或根归属已变化，当前动作不会领取"); return Map.of();
+            }
+            if (WORKFLOW_GENERATION.equals(str(execution, "trigger")) && !queuedGeneration(task, execution, action)) {
+                waiting(actionId, "原生成意图或根归属已变化，当前动作不会领取"); return Map.of();
             }
             if (store.hasUnknownEffects(str(task, "id")) || store.hasUnknownTaskExecution(str(task, "id"))) {
                 waiting(actionId, "存在尚未核对的根执行或外部效果，当前动作不会领取"); return Map.of();
@@ -126,11 +140,15 @@ final class TaskDispatchQueue {
             Map<String, Object> task = store.get("task", taskId), action = store.find("dispatchAction", str(task, "dispatchActionId"));
             if (action == null || !"PENDING".equals(str(action, "state")) || num(action, "dispatchCount", -1) != 0) return false;
             Map<String, Object> execution = store.get("taskExecution", str(action, "taskExecutionId"));
+            if (!unclaimed(task, execution, action)) throw new ApiException(409, "原任务不再是未领取意图");
+            boolean generation = WORKFLOW_GENERATION.equals(str(execution, "trigger"));
+            if (generation && !queuedGeneration(task, execution, action)) throw new ApiException(409, "原流程生成不再是未领取意图");
+            Map<String, List<Map<String, Object>>> records = records(task, execution, action);
             task.putAll(obj("state", state, "updatedAt", now(), "stoppedAt", now()));
             if ("CANCELLED".equals(state)) task.put("outcome", "CANCELLED");
+            if (generation) closeGeneration(records, task, execution, state, reason);
             end(execution, task, state, reason); action.putAll(obj("state", "WITHDRAWN", "version", num(action, "version", 1) + 1, "endedAt", now(), "reason", reason));
             summarize(task, execution, action);
-            Map<String, List<Map<String, Object>>> records = records(task, execution, action);
             if (!str(action, "terminalId").isBlank()) {
                 Map<String, Object> terminal = store.get("terminalSession", str(action, "terminalId"));
                 if (!"QUEUED".equals(str(terminal, "state")) || bool(terminal, "nativeLaunchAttempted", true)
@@ -169,10 +187,19 @@ final class TaskDispatchQueue {
                 case "FAILED", "PAUSED", "CANCELLED", "WAITING_INPUT" -> str(task, "state");
                 default -> "UNKNOWN";
             };
-            end(execution, task, state, str(task, "error"));
+            boolean generation = WORKFLOW_GENERATION.equals(str(execution, "trigger"));
+            if (generation && !"UNKNOWN".equals(str(task, "state"))) {
+                Map<String, Object> original = store.get("workflowGeneration", str(execution, "workflowGenerationId"));
+                if (Set.of("COMPLETED", "INVALID").contains(str(original, "state"))) state = "SUCCEEDED";
+                else if ("SUCCEEDED".equals(state)) state = "UNKNOWN";
+            }
+            Map<String, List<Map<String, Object>>> records = records(task, execution, action);
+            if (generation && "UNKNOWN".equals(state) && !"UNKNOWN".equals(str(task, "state"))) unresolved(task, "流程生成缺少原结束回执，保留原编号供核对");
+            String reason = str(task, "error");
+            if (generation) closeGeneration(records, task, execution, state, reason);
+            end(execution, task, state, reason);
             action.putAll(obj("state", "UNKNOWN".equals(state) ? "UNKNOWN" : "SETTLED", "version", num(action, "version", 1) + 1, "endedAt", now(), "executionState", state));
             if (executionId.equals(str(task, "taskExecutionId"))) { task.put("updatedAt", now()); summarize(task, execution, action); }
-            Map<String, List<Map<String, Object>>> records = records(task, execution, action);
             if (!terminal.isEmpty()) records.put("terminalSession", List.of(terminal));
             if (writeLease != null && !bool(writeLease, "protectionReleased", false)) records.put("workspaceWriteLease", List.of(writeLease));
             store.commitRecords(records, str(task, "id"), "TASK_EXECUTION_FINISHED", "根执行 " + executionId + "：" + state + "；任务状态与人工验收另行保存");
@@ -189,7 +216,8 @@ final class TaskDispatchQueue {
                 Map<String, Object> action = store.get("dispatchAction", str(original, "id")), execution = store.get("taskExecution", str(action, "taskExecutionId")), task = store.get("task", str(action, "taskId"));
                 if (!"CLAIMED".equals(str(action, "state"))) continue;
                 String reason = "核心重启，原动作已领取但根结束回执缺失；保留原身份和预算，不自动重放";
-                if (str(execution, "id").equals(str(task, "taskExecutionId")) && !Set.of("COMPLETED", "CANCELLED").contains(str(task, "state"))) task.putAll(obj("state", "UNKNOWN", "error", reason, "updatedAt", now()));
+                boolean generation = WORKFLOW_GENERATION.equals(str(execution, "trigger"));
+                if (str(execution, "id").equals(str(task, "taskExecutionId")) && (generation || !Set.of("COMPLETED", "CANCELLED").contains(str(task, "state")))) task.putAll(obj("state", "UNKNOWN", "error", reason, "updatedAt", now()));
                 if ("RUNNING".equals(str(execution, "state"))) end(execution, task, "UNKNOWN", reason);
                 action.putAll(obj("state", "UNKNOWN", "version", num(action, "version", 1) + 1, "endedAt", now(), "reason", reason, "executionState", "UNKNOWN"));
                 if (str(execution, "id").equals(str(task, "taskExecutionId"))) summarize(task, execution, action);
@@ -201,6 +229,7 @@ final class TaskDispatchQueue {
                         records.put("terminalSession", List.of(terminal));
                     }
                 }
+                if (generation) closeGeneration(records, task, execution, "UNKNOWN", reason);
                 store.commitRecords(records, str(task, "id"), "RECOVERY_REQUIRED", reason);
             }
         }
@@ -248,8 +277,53 @@ final class TaskDispatchQueue {
     private static Map<String, Object> authorization(Map<String, Object> task) {
         Map<String, Object> authorization = new LinkedHashMap<>();
         for (String field : List.of("contract", "execution", "workspaceSelection", "routeId", "routeSnapshot", "locks", "mcpAuthorization", "collaboration", "policyVersion")) if (task.containsKey(field)) authorization.put(field, task.get(field));
+        if (task.containsKey("workflow")) authorization.put("workflowSnapshotDigest", map(task, "workflow").get("snapshotDigest"));
+        if (task.containsKey("pendingWorkflowGenerationId")) authorization.put("pendingWorkflowGenerationId", task.get("pendingWorkflowGenerationId"));
         if (!str(task, "pendingTerminalId").isBlank()) for (String field : List.of("pendingTerminalId", "workspace", "workspaceOwnership")) authorization.put(field, task.get(field));
         return authorization;
+    }
+
+    /**
+     * 只读生成拥有独立原编号；排队不改变实现计划的确认状态。
+     */
+    private Map<String, Object> generationIntent(Map<String, Object> task, Map<String, List<Map<String, Object>>> related, String executionId, String actionId) {
+        if (!related.keySet().equals(Set.of("workflowGeneration")) || related.get("workflowGeneration").size() != 1) throw new ApiException(400, "生成需要唯一原意图");
+        Map<String, Object> generation = new LinkedHashMap<>(related.get("workflowGeneration").getFirst());
+        if (!"QUEUED".equals(str(generation, "state")) || !str(generation, "taskId").equals(str(task, "id"))
+                || !str(generation, "projectId").equals(str(task, "projectId")) || !str(generation, "id").equals(str(task, "pendingWorkflowGenerationId"))
+                || store.find("workflowGeneration", str(generation, "id")) != null) throw new ApiException(409, "生成意图与任务不一致");
+        generation.putAll(obj("taskExecutionId", executionId, "dispatchActionId", actionId)); return generation;
+    }
+
+    private boolean queuedGeneration(Map<String, Object> task, Map<String, Object> execution, Map<String, Object> action) {
+        Map<String, Object> generation = store.find("workflowGeneration", str(action, "workflowGenerationId"));
+        return generation != null && "QUEUED".equals(str(generation, "state")) && str(generation, "id").equals(str(task, "pendingWorkflowGenerationId"))
+            && str(generation, "id").equals(str(execution, "workflowGenerationId")) && str(task, "id").equals(str(generation, "taskId"))
+            && str(execution, "id").equals(str(generation, "taskExecutionId")) && str(action, "id").equals(str(generation, "dispatchActionId"));
+    }
+
+    /**
+     * 根结束和原生成的状态一同保存；核心重启只保留真正未领取的原生成。
+     */
+    private void closeGeneration(Map<String, List<Map<String, Object>>> records, Map<String, Object> task, Map<String, Object> execution, String state, String reason) {
+        Map<String, Object> generation = store.get("workflowGeneration", str(execution, "workflowGenerationId"));
+        if (!str(execution, "id").equals(str(generation, "taskExecutionId")) || !str(execution, "dispatchActionId").equals(str(generation, "dispatchActionId"))
+                || !str(task, "id").equals(str(generation, "taskId"))) throw new ApiException(409, "原生成根执行归属不完整");
+        if (Set.of("QUEUED", "RUNNING").contains(str(generation, "state"))) {
+            generation.putAll(obj("state", state, "reason", reason, "endedAt", now()));
+            records.put("workflowGeneration", List.of(generation));
+        }
+        if (str(generation, "id").equals(str(task, "pendingWorkflowGenerationId"))) {
+            task.remove("pendingWorkflowGenerationId"); task.put("lastWorkflowGenerationId", generation.get("id"));
+            Map<String, Object> original = map(execution, "beforeWorkflowGeneration");
+            if (original.containsKey("outcome")) task.put("outcome", original.get("outcome")); else task.remove("outcome");
+            if (!"UNKNOWN".equals(state)) {
+                for (String key : List.of("state", "error", "stoppedAt")) {
+                    if (original.containsKey(key)) task.put(key, original.get(key)); else task.remove(key);
+                }
+                if (!str(generation, "proposalId").isBlank()) task.put("latestWorkflowProposalId", generation.get("proposalId"));
+            }
+        }
     }
 
     /**

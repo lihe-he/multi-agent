@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { execFileSync } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
 import { mkdtemp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -22,6 +23,7 @@ let releaseDelayed;
 const delayedResponseGate = new Promise(resolve => { releaseDelayed = resolve; });
 let routeId;
 let routeConfig;
+let workflowCandidate;
 let server;
 
 function git(...args) {
@@ -93,6 +95,13 @@ async function startFixture() {
       calls.push({ number: calls.length + 1, path: incoming.url, kind, stage, tools: toolNames, completedTools: completedTools.length, arrivedAt: new Date().toISOString(), delayed: prompt.includes('SMOKE_DELAY'),
         proposalIncludesPriorHandoffs: stage === 'PROPOSAL' && prompt.includes('已完成阶段交接资料') });
       if (teamProtocol.matches(body)) { reply(response, await teamProtocol.message(body)); return; }
+      if (stage === 'WORKFLOW_GENERATION') {
+        assert.ok(workflowCandidate, 'The read-only Workflow fixture must be configured before generation');
+        if (completedTools.length === 0 && toolNames.includes('read_file')) { reply(response, { content: null, tool_calls: [tool('read_file', { path: 'src/greeting.txt' })] }); return; }
+        assert.equal(completedTools.length, 1, 'Workflow generation must inspect the frozen project once before returning its candidate');
+        assert.equal(JSON.parse(completedTools[0].content).content, 'hello agent\n');
+        reply(response, { content: JSON.stringify(workflowCandidate) }); return;
+      }
       if (prompt.includes('SMOKE_DELAY')) {
         const pending = { callNumber: calls.length, arrivedAt: new Date().toISOString(), releasedAt: null, closedAt: null };
         delayedRequests.push(pending); response.once('close', () => { pending.closedAt = new Date().toISOString(); });
@@ -181,7 +190,7 @@ try {
   });
   await check('Session routes require authentication and preserve server-owned message identity', async () => {
     const health = (await request('/health')).data;
-    assert.equal(health.schemaVersion, 10); assert.equal(health.apiVersion, 1);
+    assert.equal(health.schemaVersion, 11); assert.equal(health.apiVersion, 1);
     const base = `/projects/${project.id}/sessions`;
     await request(base, undefined, { expected: 401, authorized: false });
     await request(`${base}/search?q=background`, undefined, { expected: 401, authorized: false });
@@ -383,6 +392,82 @@ try {
     assert.ok(archive.includes(Buffer.from('agent-runs.json')), '交付包必须包含运行记录');
     assert.ok(archive.includes(Buffer.from('model-requests.json')), '交付包必须包含请求追踪');
     await writeFile(path.join(fixture, 'delivery.zip'), archive);
+  });
+  await check('Generate and publish a read-only Workflow candidate with its original request', async () => {
+    const agents = await request(`/agent-definitions?projectId=${project.id}`);
+    const actor = agents.data.find(item => item.id === 'agent-research' && item.enabled);
+    assert.ok(actor, 'The built-in read-only workflow role must be enabled');
+    workflowCandidate = { name: 'Smoke read-only Workflow', dsl: { dslVersion: 1, inputs: ['goal', 'contract', 'context', 'baseline'], maxParallel: 1, nodes: [
+      { id: 'inspect', kind: 'INVESTIGATE', title: 'Inspect the retained source', role: actor.role, goal: 'Inspect the source and retain its evidence without modifying the project.',
+        definitionId: actor.id, definitionVersion: actor.version, dependencies: [], inputs: ['goal', 'contract', 'context', 'baseline'], outputs: ['inspect:result'], scope: actor.scope,
+        permissions: ['read'], maxCalls: 2, timeoutSeconds: 60, acceptance: ['Source evidence is retained'], termination: 'Stop after reporting evidence.' },
+    ] } };
+    const requestId = randomUUID();
+    const body = { requestId, maxCalls: 2, instructions: 'Inspect the source and create one read-only investigation stage.', definitionIds: [actor.id],
+      expectedVersion: finished.version, expectedSnapshotDigest: finished.workflow?.snapshotDigest || '', expectedRunId: finished.workflowRunId || '' };
+    await request(`/tasks/${task.id}/workflow-generations`, body);
+    const deadline = Date.now() + 90_000;
+    let generation;
+    while (Date.now() < deadline) {
+      generation = (await request(`/tasks/${task.id}/workflow-generations`)).data.find(item => item.requestId === requestId);
+      if (generation && ['COMPLETED', 'INVALID', 'FAILED', 'UNKNOWN', 'CANCELLED'].includes(generation.state)) break;
+      await new Promise(resolveWait => setTimeout(resolveWait, 100));
+    }
+    assert.ok(generation, 'The original generation request must retain a durable record');
+    assert.equal(generation.state, 'COMPLETED', JSON.stringify(generation));
+    assert.equal(generation.id, `${task.id}:${requestId}`); assert.equal(generation.sequence, 1);
+    const proposal = (await request(`/tasks/${task.id}/workflow-proposals/${generation.proposalId}`)).data;
+    assert.equal(proposal.state, 'VALIDATED'); assert.equal(proposal.generationId, generation.id);
+    assert.equal(proposal.agentRunId, generation.agentRunId); assert.ok(proposal.sourceDigest.length === 64);
+    const publish = { name: workflowCandidate.name, expectedSourceDigest: proposal.sourceDigest };
+    const first = (await request(`/tasks/${task.id}/workflow-proposals/${proposal.id}/publish`, publish)).data;
+    const repeated = (await request(`/tasks/${task.id}/workflow-proposals/${proposal.id}/publish`, publish)).data;
+    assert.equal(first.version.id, repeated.version.id); assert.equal(first.version.version, 1);
+    assert.equal(first.version.source, 'GENERATED'); assert.equal(first.version.sourceVersionId, proposal.id);
+    await request(`/tasks/${task.id}/workflow-proposals/${proposal.id}/publish`, { ...publish, name: 'Conflicting retry' }, { expected: 409 });
+    const originalAfterPublish = (await request(`/tasks/${task.id}`)).data;
+    assert.equal(originalAfterPublish.workflow, undefined, 'Publishing does not silently replace the task pinned workflow');
+    const response = await fetch(`${baseUrl}/api/tasks/${task.id}/export`, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(20_000) });
+    assert.equal(response.status, 200);
+    const archive = Buffer.from(await response.arrayBuffer()), json = name => JSON.parse(zipEntry(archive, name).toString('utf8'));
+    assert.ok(archive.includes(Buffer.from('workflow-generations.json')));
+    const generations = json('workflow-generations.json'), proposals = json('workflow-proposals.json');
+    assert.equal(generations.length, 1); assert.equal(generations[0].id, generation.id);
+    assert.equal(generations[0].taskId, task.id); assert.equal(generations[0].requestId, requestId);
+    assert.equal(generations[0].proposalId, proposal.id); assert.equal(generations[0].agentRunId, generation.agentRunId);
+    assert.equal(generations[0].dispatchActionId, originalAfterPublish.dispatchActionId);
+    assert.equal(proposals.length, 1); assert.equal(proposals[0].generationId, generations[0].id);
+    assert.equal(proposals[0].state, 'PUBLISHED'); assert.equal(proposals[0].sourceDigest, proposal.sourceDigest);
+    const history = (await request('/workflows')).data.flatMap(item => item.id === first.definition.id ? [item] : []);
+    assert.equal(history.length, 1); assert.equal(history[0].version, 1);
+    await writeFile(path.join(fixture, 'workflow-delivery.zip'), archive);
+    const workflowTask = await request('/tasks', { ...definition, title: 'SMOKE published Workflow execution', goal: 'SMOKE: investigate src/greeting.txt with the just-published Workflow, retain evidence, verify it and stop at root review.',
+      workflow: { definitionId: first.definition.id, version: first.version.version, digest: first.version.digest, allowedRouteIds: [] } });
+    assert.equal(workflowTask.data.state, 'DRAFT'); assert.equal(workflowTask.data.workflow.definitionId, first.definition.id);
+    assert.equal(workflowTask.data.workflow.version, first.version.version); assert.equal(workflowTask.data.workflow.digest, first.version.digest);
+    await request(`/tasks/${workflowTask.data.id}/approve`, {});
+    const workflowFinished = await check('Execute the published Workflow with separate root verification and review', async () => {
+      const result = await untilTask(workflowTask.data.id, ['AWAITING_ACCEPTANCE']);
+      assert.equal(await readFile(path.join(result.workspace, 'src/greeting.txt'), 'utf8'), 'hello\n');
+      assert.equal(result.verification.status, 'PASSED'); assert.equal(result.review.status, 'APPROVED');
+      const runs = (await request(`/tasks/${result.id}/workflow-runs`)).data.runs;
+      assert.equal(runs.length, 1); assert.equal(runs[0].state, 'SUCCEEDED'); assert.equal(runs[0].definitionVersion, first.version.version);
+      const attempts = (await request(`/tasks/${result.id}/workflow-runs/${runs[0].id}/attempts`)).data.attempts;
+      assert.equal(attempts.length, 1); assert.equal(attempts[0].nodeId, 'inspect'); assert.equal(attempts[0].state, 'SUCCEEDED');
+      assert.equal(attempts[0].definitionId, actor.id); assert.equal(attempts[0].definitionVersion, actor.version);
+      assert.equal(git('status', '--porcelain'), '', 'Workflow execution must retain the real source repository');
+      return result;
+    });
+    await request(`/tasks/${workflowFinished.id}/accept`, {});
+    const workflowArchiveResponse = await fetch(`${baseUrl}/api/tasks/${workflowFinished.id}/export`, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(20_000) });
+    assert.equal(workflowArchiveResponse.status, 200);
+    const workflowArchive = Buffer.from(await workflowArchiveResponse.arrayBuffer()), workflowJson = name => JSON.parse(zipEntry(workflowArchive, name).toString('utf8'));
+    assert.deepEqual(workflowJson('workflow-runs.json').map(run => run.id), [(await request(`/tasks/${workflowFinished.id}/workflow-runs`)).data.runs[0].id]);
+    assert.equal(workflowJson('workflow-node-attempts.json')[0].state, 'SUCCEEDED');
+    assert.ok(workflowJson('agent-runs.json').some(run => run.workflowNodeId === 'inspect'));
+    await writeFile(path.join(fixture, 'workflow-execution-delivery.zip'), workflowArchive);
+    return { generationId: generation.id, proposalId: proposal.id, definitionId: first.definition.id, versionId: first.version.id,
+      workflowTaskId: workflowFinished.id, workflowRunId: workflowJson('workflow-runs.json')[0].id, nodeAttemptId: workflowJson('workflow-node-attempts.json')[0].id };
   });
   await check('Disable knowledge while preserving its revision', async () => {
     const value = (await request(`/memories/${memory.id}`, { status: 'DISABLED' }, { method: 'PATCH' })).data;

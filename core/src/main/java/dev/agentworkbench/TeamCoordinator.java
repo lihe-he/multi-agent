@@ -41,7 +41,11 @@ final class TeamCoordinator {
     }
 
     Session session(String taskId, String runId, String workspace, Map<String, Object> route, BooleanSupplier cancelled) {
-        return new Session(taskId, runId, workspace, route, cancelled);
+        return new Session(taskId, runId, workspace, route, cancelled, 900);
+    }
+
+    Session session(String taskId, String runId, String workspace, Map<String, Object> route, BooleanSupplier cancelled, int timeoutSeconds) {
+        return new Session(taskId, runId, workspace, route, cancelled, timeoutSeconds);
     }
 
     WorkspaceRuntime.FixedToolInvoker fixedTools(String taskId, String runId, String stageKind, BooleanSupplier cancelled) {
@@ -84,11 +88,11 @@ final class TeamCoordinator {
         private final AtomicBoolean closing = new AtomicBoolean();
         private long messageCursor;
 
-        private Session(String taskId, String runId, String workspace, Map<String, Object> route, BooleanSupplier cancelled) {
+        private Session(String taskId, String runId, String workspace, Map<String, Object> route, BooleanSupplier cancelled, int timeoutSeconds) {
             this.taskId = taskId; this.runId = runId; this.workspace = workspace; this.route = route; this.cancelled = cancelled;
             this.permissions = map(store.get("agentRun", runId), "permissions");
-            this.sharedTeam = !Set.of("PROPOSAL", "REVIEW").contains(str(store.get("agentRun", runId), "kind"));
-            this.deadline = System.nanoTime() + Duration.ofMinutes(15).toNanos();
+            this.sharedTeam = !Set.of("PROPOSAL", "REVIEW", "WORKFLOW_GENERATION").contains(str(store.get("agentRun", runId), "kind"));
+            this.deadline = System.nanoTime() + Duration.ofSeconds(timeoutSeconds).toNanos();
         }
 
         @Override public Map<String, Object> permissions() { return permissions; }

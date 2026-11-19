@@ -178,6 +178,19 @@ class McpIntegrationTest {
     }
 
     @Test
+    void fixedToolGateRejectsScopedWorkflowActorBeforeTransportOrBudget() {
+        Map<String, Object> saved = manager.save(httpConfiguration());
+        String taskId = "workflow-scope", alias = fixedTask(taskId, saved, manager.probe(str(saved, "id")));
+        store.put("agentRun", obj("id", "node-run", "taskId", taskId, "rootTaskId", taskId, "kind", "IMPLEMENT", "state", "RUNNING",
+            "workflowNodeAttemptId", "node-attempt", "readOnly", false, "permissions", obj("capabilities", List.of("read", "write", "mcp"),
+                "readScopeLayers", List.of(List.of("**"), List.of("src/**")), "writeScopeLayers", List.of(List.of("**")))));
+        store.put("modelRequest", obj("id", "request", "taskId", taskId, "agentRunId", "node-run", "state", "SUCCEEDED"));
+        ApiException denied = assertThrows(ApiException.class, () -> manager.invokeFixedTool(taskId, "IMPLEMENT", alias, "node-run", "request", "fixed-call", () -> false));
+        assertEquals(403, denied.status()); assertEquals(0, calls.get()); assertTrue(store.list("mcpOperation").isEmpty());
+        assertEquals(0, num(map(store.get("task", taskId), "mcpBudget"), "usedCalls", -1));
+    }
+
+    @Test
     void cancellingRealStdioTreeConfirmsLocalStopButKeepsEffectUnknown() throws Exception {
         Path marker = directory.resolve("stdio-pids.json"), script = directory.resolve("hanging-tree.mjs");
         Files.writeString(script, """

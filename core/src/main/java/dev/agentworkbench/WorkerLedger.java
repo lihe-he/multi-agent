@@ -123,7 +123,9 @@ final class WorkerLedger {
     private String subject(Map<String, Object> operation, Map<String, Object> task) {
         if ("ADOPT_SUBAGENT".equals(str(operation, "kind"))) return str(operation, "target");
         if (!str(operation, "agentRunId").isBlank()) {
-            String child = str(store.get("agentRun", str(operation, "agentRunId")), "subtaskId"); if (!child.isBlank()) return child;
+            Map<String, Object> run = store.get("agentRun", str(operation, "agentRunId"));
+            String child = str(run, "subtaskId"); if (!child.isBlank()) return child;
+            if (!str(run, "workflowNodeAttemptId").isBlank()) return str(run, "workflowNodeAttemptId");
         }
         return str(task, "id");
     }

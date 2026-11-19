@@ -44,6 +44,11 @@ class TaskDispatchQueueTest {
         return queue.enqueue(taskId, "USER_APPROVAL", task -> map(task, "contract").put("confirmed", true));
     }
 
+    private Map<String, Object> enqueueGeneration(String generationId) {
+        return queue.enqueue(taskId, TaskDispatchQueue.WORKFLOW_GENERATION, task -> task.put("pendingWorkflowGenerationId", generationId),
+            Map.of("workflowGeneration", List.of(obj("id", generationId, "taskId", taskId, "projectId", "project", "state", "QUEUED"))));
+    }
+
     private void sql(String statement) throws Exception {
         try (var database = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite")); var command = database.createStatement()) { command.execute(statement); }
     }
@@ -198,6 +203,49 @@ class TaskDispatchQueueTest {
         assertEquals(finished, store.get("taskExecution", executionId));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"PAUSED", "CANCELLED"})
+    void unclaimedGenerationWithdrawalOnlyEndsTheOriginalGeneration(String state) {
+        String generationId = id(); Map<String, Object> action = enqueueGeneration(generationId);
+        assertTrue(queue.withdraw(taskId, state, "stop generation"));
+        assertTrue(queue.claim(str(action, "id"), 1, ignored -> fail("withdrawn generation reached preflight")).isEmpty());
+        Map<String, Object> task = store.get("task", taskId), execution = store.get("taskExecution", str(action, "taskExecutionId"));
+        assertEquals("DRAFT", task.get("state")); assertEquals("UNDETERMINED", task.get("outcome")); assertFalse(task.containsKey("stoppedAt"));
+        assertFalse(bool(map(task, "contract"), "confirmed", true)); assertFalse(task.containsKey("pendingWorkflowGenerationId")); assertEquals(generationId, task.get("lastWorkflowGenerationId"));
+        assertEquals(state, execution.get("state")); assertEquals("DRAFT", execution.get("taskStateAtEnd")); assertEquals("UNDETERMINED", execution.get("taskOutcomeAtEnd"));
+        assertEquals(state, store.get("workflowGeneration", generationId).get("state")); assertFalse(execution.containsKey("startedAt"));
+        assertEquals(0, num(store.get("dispatchAction", str(action, "id")), "dispatchCount", -1)); assertTrue(store.list("modelRequest").isEmpty());
+    }
+
+    @Test
+    void generationReopenRetainsUnclaimedIdentityAndFencesTheSameClaimAfterAnotherReopen() throws Exception {
+        store.editTask(taskId, task -> { task.put("state", "COMPLETED"); task.put("outcome", "ACCEPTED"); task.put("acceptance", obj("note", "original receipt")); }, null, "");
+        String generationId = id(); Map<String, Object> action = enqueueGeneration(generationId);
+        String actionId = str(action, "id"), executionId = str(action, "taskExecutionId");
+        Map<String, Object> original = store.get("workflowGeneration", generationId); store.close(); store = new ExecutionStore(new ObjectMapper(), directory.toString()); queue = new TaskDispatchQueue(store); queue.recover();
+        assertEquals(original, store.get("workflowGeneration", generationId)); assertTrue(queue.unclaimed(store.get("task", taskId)));
+        assertEquals(executionId, queue.claim(actionId, 1, ignored -> {}).get("id"));
+        store.editTask(taskId, task -> { task.put("state", "CANCELLED"); task.put("outcome", "CANCELLED"); map(task, "budget").put("usedCalls", 1); }, null, "");
+        store.close(); store = new ExecutionStore(new ObjectMapper(), directory.toString()); queue = new TaskDispatchQueue(store); queue.recover();
+        Map<String, Object> task = store.get("task", taskId), closed = store.get("workflowGeneration", generationId);
+        assertEquals("UNKNOWN", task.get("state")); assertEquals("ACCEPTED", task.get("outcome")); assertEquals(obj("note", "original receipt"), task.get("acceptance"));
+        assertEquals(generationId, task.get("lastWorkflowGenerationId")); assertFalse(task.containsKey("pendingWorkflowGenerationId"));
+        assertEquals("UNKNOWN", closed.get("state")); assertEquals(executionId, closed.get("taskExecutionId")); assertEquals(actionId, closed.get("dispatchActionId"));
+        assertEquals(1, num(map(store.get("taskExecution", executionId), "budgetAtEnd"), "usedCalls", 0)); assertTrue(store.hasUnknownTaskExecution(taskId));
+        assertTrue(queue.claim(actionId, 1, ignored -> fail("unknown generation replay")).isEmpty());
+        queue.recover(); assertEquals(closed, store.get("workflowGeneration", generationId)); assertEquals(1, store.list("dispatchAction").size());
+    }
+
+    @Test
+    void generationWithoutCandidateReceiptCannotFinishFromTaskText() {
+        String generationId = id(); Map<String, Object> action = enqueueGeneration(generationId);
+        queue.claim(str(action, "id"), 1, ignored -> {});
+        store.editTask(taskId, task -> task.put("state", "AWAITING_ACCEPTANCE"), null, "");
+        queue.finish(str(action, "taskExecutionId"));
+        assertEquals("UNKNOWN", store.get("task", taskId).get("state"));
+        assertEquals("UNKNOWN", store.get("workflowGeneration", generationId).get("state")); assertTrue(store.hasUnknownTaskExecution(taskId));
+    }
+
     @Test
     void pendingUnknownEffectsBlockPreflightWithoutErasingOriginalEffect() {
         Map<String, Object> action = enqueue(); store.put("operation", obj("id", "unknown-effect", "taskId", taskId, "state", "UNKNOWN"));
@@ -235,6 +283,26 @@ class TaskDispatchQueueTest {
         sql("DROP INDEX entities_task_execution_attempt"); sql("DROP INDEX entities_dispatch_execution"); sql("DROP INDEX entities_dispatch_active_task"); sql("DROP INDEX entities_dispatch_pending"); sql("DROP INDEX entities_dispatch_task"); sql("PRAGMA user_version=5");
         store = new ExecutionStore(new ObjectMapper(), directory.toString());
         assertEquals(original, store.get("task", taskId)); assertTrue(store.list("taskExecution").isEmpty()); assertTrue(store.list("dispatchAction").isEmpty());
-        try (var database = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite")); var command = database.createStatement(); var version = command.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(10, version.getInt(1)); }
+        try (var database = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite")); var command = database.createStatement(); var version = command.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(ExecutionStore.SCHEMA_VERSION, version.getInt(1)); }
+    }
+
+    @Test
+    void schemaTenInstallsWorkflowIndexesAndKeepsOriginalPendingAction() throws Exception {
+        Map<String, Object> action = enqueue(), task = store.get("task", taskId); store.close();
+        Set<String> indexes = Set.of("entities_workflow_generation", "entities_workflow_run_task", "entities_workflow_node_attempt",
+            "entities_workflow_node_active", "entities_workflow_nodes_run", "entities_workflow_proposal_source");
+        for (String index : indexes) sql("DROP INDEX " + index);
+        sql("PRAGMA user_version=10");
+        store = new ExecutionStore(new ObjectMapper(), directory.toString());
+        assertEquals(task, store.get("task", taskId)); assertEquals(action, store.get("dispatchAction", str(action, "id")));
+        assertTrue(store.list("workflowRun").isEmpty()); assertTrue(store.list("workflowProposal").isEmpty());
+        try (var database = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("workbench.sqlite")); var command = database.createStatement()) {
+            try (var version = command.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(ExecutionStore.SCHEMA_VERSION, version.getInt(1)); }
+            Set<String> restored = new HashSet<>();
+            try (var rows = command.executeQuery("SELECT name FROM sqlite_master WHERE type='index' AND name GLOB 'entities_workflow_*'")) {
+                while (rows.next()) restored.add(rows.getString(1));
+            }
+            assertEquals(indexes, restored);
+        }
     }
 }

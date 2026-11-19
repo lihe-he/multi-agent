@@ -6,6 +6,9 @@ import type { AgentDefinition, ExecutionNode, Memory, Profile, Project, Reposito
 import { Field, lines, Modal, SaveButton } from './ui';
 import { WorkspacePicker } from './WorkspacePicker';
 import type { WorkspaceChoice } from './types';
+import { WorkflowPicker } from './WorkflowPicker';
+import type { WorkflowSelection } from './workflow-types';
+import './task-dialog.css';
 
 type DialogProps = { onClose: () => void; onSaved: () => void };
 function ErrorMessage({ error }: { error: string }) { return error ? <div role="alert" className="form-error"><TriangleAlert size={16} />{error}</div> : null; }
@@ -31,6 +34,7 @@ export function TaskDialog({ projects, routes, bindings = [], nodes = [], select
   const [projectId, setProjectId] = useState(selectedProject || projects[0]?.id || '');
   const [title, setTitle] = useState(''); const [goal, setGoal] = useState('');
   const [mode, setMode] = useState('AUTO'); const [routeId, setRouteId] = useState(routes.find(r => r.enabled !== false)?.id || '');
+  const [useWorkflow, setUseWorkflow] = useState(false); const [workflow, setWorkflow] = useState<WorkflowSelection | null>(null);
   const [scope, setScope] = useState('.'); const [acceptance, setAcceptance] = useState(''); const [commands, setCommands] = useState('');
   const [maxCalls, setMaxCalls] = useState(24); const [reserveCalls, setReserveCalls] = useState(4);
   const [lockRoute, setLockRoute] = useState(false); const [lockModel, setLockModel] = useState(false);
@@ -68,6 +72,7 @@ export function TaskDialog({ projects, routes, bindings = [], nodes = [], select
     try {
       if (binding && (!workspaceChoice || workspaceChoice.bindingId !== binding.id || workspaceChoice.bindingVersion !== binding.version)) throw new Error('请先读取并确认当前仓库的有效启动提交与现场选择。');
       if (binding && !executionNode?.enabled) throw new Error('当前执行节点尚未启用，请刷新配置后再创建任务。');
+      if (useWorkflow && (!workflow || route?.engine !== 'API')) throw new Error('请选择流程版本，并确认使用的 API 运行路由。');
       if (reserveCalls >= maxCalls) throw new Error('验证预留需要小于总调用预算，给开发阶段留出可用额度。');
       const mcpBindings = Object.entries(mcpSelections).map(([key, selected]) => {
         const tool = mcpTools.find(item => `${item.serverId}:${item.name}` === key);
@@ -79,19 +84,21 @@ export function TaskDialog({ projects, routes, bindings = [], nodes = [], select
       });
       if (mcpBindings.length && route?.engine !== 'API') throw new Error('MCP 固定动作目前只支持 API 运行路由。');
       const collaboration = { enabled: delegation && route?.engine === 'API' && selectedDefinitions.length > 0, definitionIds: selectedDefinitions, definitionVersions: Object.fromEntries(definitions.filter(definition => selectedDefinitions.includes(definition.id)).map(definition => [definition.id, definition.version])), maxActive, maxDepth, maxTotal, allowedRouteIds: definitions.filter(definition => selectedDefinitions.includes(definition.id) && definition.routeId).map(definition => definition.routeId!) };
-      const task = await post<Task>('/tasks', { projectId, ...(binding && executionNode ? { repositoryBindingId: binding.id, bindingVersion: binding.version, nodeVersion: executionNode.version } : {}), ...(workspaceChoice ? { workspaceSelection: workspaceChoice.input } : {}), ...(sessionId ? { sessionId } : {}), title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, collaboration, mcpBindings, mcpBudget: { maxCalls: mcpMaxCalls, maxDurationMs: mcpMaxDurationMs }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges: workspaceChoice?.includeChanges ?? includeChanges });
+      const task = await post<Task>('/tasks', { projectId, ...(binding && executionNode ? { repositoryBindingId: binding.id, bindingVersion: binding.version, nodeVersion: executionNode.version } : {}), ...(workspaceChoice ? { workspaceSelection: workspaceChoice.input } : {}), ...(sessionId ? { sessionId } : {}), ...(useWorkflow ? { workflow } : {}), title, goal, mode, routeId, contract: { scope: lines(scope), acceptance: lines(acceptance), commands: lines(commands) }, budget: { maxCalls, reserveCalls }, collaboration, mcpBindings, mcpBudget: { maxCalls: mcpMaxCalls, maxDurationMs: mcpMaxDurationMs }, locks: { ...(lockRoute ? { routeId } : {}), ...(lockModel && route?.model ? { model: route.model } : {}), ...(lockEngine && route ? { engine: route.engine } : {}), ...(lockProvider && route?.provider ? { provider: route.provider } : {}) }, includeChanges: workspaceChoice?.includeChanges ?? includeChanges });
       onCreated(task); onClose();
     } catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   }
-  return <Modal wide title="创建研发任务" description="先明确目标和完成约定，再确认平台生成的协作计划。" onClose={onClose}><form onSubmit={submit}><div className="form-body">
-    <div className="form-grid"><Field label="所属项目"><select disabled={!!sessionId} value={projectId} onChange={e => setProjectId(e.target.value)} required>{projects.map(p => <option value={p.id} key={p.id}>{p.name}</option>)}</select></Field><Field label="任务名称"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="给这次工作一个清晰的名称" maxLength={180} /></Field></div>
+  return <Modal wide scrollable title="创建研发任务" description="先明确目标和完成约定，再确认平台生成的协作计划。" onClose={onClose}><form onSubmit={submit}><div className="form-body">
+    <div className="form-grid"><Field label="所属项目"><select disabled={!!sessionId} value={projectId} onChange={e => { setProjectId(e.target.value); setWorkflow(null); }} required>{projects.map(p => <option value={p.id} key={p.id}>{p.name}</option>)}</select></Field><Field label="任务名称"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="给这次工作一个清晰的名称" maxLength={180} /></Field></div>
     {binding && <><Field label="执行仓库绑定"><select value={binding.id} onChange={event => setBindingId(event.target.value)}>{availableBindings.map(binding => <option key={binding.id} value={binding.id}>{binding.name} · v{binding.version}</option>)}</select></Field><p className="form-note execution-source">{executionNode?.name || binding.executionNodeId} · 节点 v{executionNode?.version} · <code>{binding.path}</code></p></>}
     {binding && <WorkspacePicker key={binding.id} bindingId={binding.id} bindingVersion={binding.version} onChange={setWorkspaceChoice} />}
     <Field label="你希望完成什么？"><textarea className="goal-input" required rows={3} value={goal} onChange={e => setGoal(e.target.value)} placeholder="描述用户行为、现有问题、预期结果，以及需要遵守的约束…" /></Field>
-    <Field label="协作方式"><div className="mode-picker">{[
+    {!useWorkflow && <Field label="协作方式"><div className="mode-picker">{[
       { id: 'AUTO', title: '自动选择', sub: '根据任务推荐', icon: Sparkles }, { id: 'LEAD', title: '主副协作', sub: '调查、拆分与实现', icon: Network },
       { id: 'ROUNDTABLE', title: '圆桌讨论', sub: '独立提案与质疑', icon: Bot }, { id: 'PIPELINE', title: '研发流水线', sub: '明确阶段与门禁', icon: Layers3 },
-    ].map(m => <button type="button" key={m.id} className={`mode-choice ${mode === m.id ? 'selected' : ''}`} onClick={() => setMode(m.id)}><m.icon size={20} /><strong>{m.title}</strong><small>{m.sub}</small>{mode === m.id && <Check size={13} className="mode-check" />}</button>)}</div></Field>
+    ].map(m => <button type="button" key={m.id} className={`mode-choice ${mode === m.id ? 'selected' : ''}`} onClick={() => setMode(m.id)}><m.icon size={20} /><strong>{m.title}</strong><small>{m.sub}</small>{mode === m.id && <Check size={13} className="mode-check" />}</button>)}</div></Field>}
+    <label className="checkbox-card"><input type="checkbox" checked={useWorkflow} onChange={event => { setUseWorkflow(event.target.checked); setWorkflow(null); }} /><span><b>使用版本化流程</b><small>选择内置或已发布流程，并核对节点依赖与职责。</small></span></label>
+    {useWorkflow && (projectId && route?.engine === 'API' ? <WorkflowPicker key={`${projectId}:${route.id}`} projectId={projectId} rootRoute={route} routes={routes} onChange={setWorkflow} /> : <p className="form-note">请先选择项目及支持逐请求记录的 API 运行路由。</p>)}
     <div className="form-divider"><ShieldCheck size={16} /><span>完成约定</span><small>在执行前固定，作为验证与审查依据</small></div>
     <div className="form-grid"><Field label="验收条件" hint="每行一项，描述可以验证的结果。"><textarea required rows={4} value={acceptance} onChange={e => setAcceptance(e.target.value)} placeholder={'目标功能在正常输入下可用\n边界与错误场景有明确处理\n通过现有回归检查'} /></Field><Field label="必要验证命令" hint="每行一条，在任务工作目录内执行。"><textarea required rows={4} value={commands} onChange={e => setCommands(e.target.value)} placeholder={'npm test\nnpm run build'} className="mono" /></Field></div>
     <Field label="允许修改的范围" hint="项目内相对路径，每行一项；“.” 表示整个项目。具体运行器的执行边界以能力探测为准。"><textarea required rows={2} className="mono" value={scope} onChange={e => setScope(e.target.value)} /></Field>
@@ -108,7 +115,7 @@ export function TaskDialog({ projects, routes, bindings = [], nodes = [], select
       <div className="form-grid"><Field label="MCP 最大调用数"><input type="number" min={1} max={64} value={mcpMaxCalls} onChange={event => setMcpMaxCalls(Number(event.target.value))} /></Field><Field label="MCP 总超时承诺（毫秒）"><input type="number" min={1000} max={3600000} step={1000} value={mcpMaxDurationMs} onChange={event => setMcpMaxDurationMs(Number(event.target.value))} /></Field></div>
     </div>}
     <div className="form-divider"><LockKeyhole size={16} /><span>执行资源与预算</span></div>
-    <div className="form-grid three"><Field label="首选运行路由"><select required value={routeId} onChange={e => setRouteId(e.target.value)}><option value="">请选择运行器</option>{routes.filter(r => r.enabled !== false).map(r => <option key={r.id} value={r.id}>{r.name} · {r.engine}</option>)}</select></Field><Field label="总调用预算"><input type="number" min={2} max={1000} value={maxCalls} onChange={e => setMaxCalls(Number(e.target.value))} /></Field><Field label="验证与审查预留"><input type="number" min={1} max={999} value={reserveCalls} onChange={e => setReserveCalls(Number(e.target.value))} /></Field></div>
+    <div className="form-grid three"><Field label="首选运行路由"><select required value={routeId} onChange={e => { setRouteId(e.target.value); setWorkflow(null); }}><option value="">请选择运行器</option>{routes.filter(r => r.enabled !== false).map(r => <option key={r.id} value={r.id}>{r.name} · {r.engine}</option>)}</select></Field><Field label="总调用预算"><input type="number" min={2} max={1000} value={maxCalls} onChange={e => setMaxCalls(Number(e.target.value))} /></Field><Field label="验证与审查预留"><input type="number" min={1} max={999} value={reserveCalls} onChange={e => setReserveCalls(Number(e.target.value))} /></Field></div>
     <div className="checkbox-row"><label><input type="checkbox" checked={lockRoute} onChange={e => setLockRoute(e.target.checked)} />锁定此路由</label><label><input type="checkbox" checked={lockModel} disabled={!route?.model} onChange={e => setLockModel(e.target.checked)} />锁定此模型</label><label><input type="checkbox" checked={lockEngine} disabled={!route} onChange={e => setLockEngine(e.target.checked)} />锁定此引擎</label><label><input type="checkbox" checked={lockProvider} disabled={!route?.provider} onChange={e => setLockProvider(e.target.checked)} />锁定此供应商</label></div>
     <p className="form-note">CLI 按会话记录软预算；API 按实际请求累计。开发不能占用验证预留，故障切换遵守硬锁定。</p>
     <div className="form-divider"><Bot size={16} /><span>动态副 Agent 与团队</span><small>继承同一根预算、范围与硬锁定</small></div>
@@ -118,7 +125,7 @@ export function TaskDialog({ projects, routes, bindings = [], nodes = [], select
     {!binding && project?.dirty && <label className="checkbox-card"><input type="checkbox" checked={includeChanges} onChange={e => setIncludeChanges(e.target.checked)} /><span><b>带入当前未提交修改</b><small>在隔离副本中执行，保留原项目与暂存状态。实际支持范围由核心检查。</small></span></label>}
     <ErrorMessage error={error} />
     {!routes.some(r => r.enabled !== false) && <div className="form-error">请先在「资源与设置」中配置一个运行器。</div>}
-  </div><footer><span className="footer-hint">创建后仍需确认计划才会执行</span><button type="button" className="button secondary" onClick={onClose}>取消</button><SaveButton busy={busy}>生成任务计划</SaveButton></footer></form></Modal>;
+  </div><footer><span className="footer-hint">创建后仍需确认计划才会执行</span><button type="button" className="button secondary" onClick={onClose}>取消</button><SaveButton busy={busy} disabled={useWorkflow && (!workflow || route?.engine !== 'API')}>生成任务计划</SaveButton></footer></form></Modal>;
 }
 
 export function RouteDialog({ route, onClose, onSaved }: DialogProps & { route?: Route }) {

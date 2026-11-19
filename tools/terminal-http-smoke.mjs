@@ -64,7 +64,7 @@ async function startCore() {
   const instance = { child, number: cores.length + 1, logs: '' }; cores.push(instance); currentCore = instance;
   for (const stream of [child.stdout, child.stderr]) stream.on('data', bytes => { instance.logs += bytes.toString('utf8').replaceAll(coreToken, '[LOCAL_CORE_TOKEN_REDACTED]'); });
   await until('original independent core startup', () => { if (child.exitCode !== null || child.signalCode !== null) throw new Error('Original independent core exited during startup'); const port = instance.logs.match(/Tomcat started on port (\d+)/)?.[1]; if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; } });
-  instance.identity = identity(child.pid); const health = await api('/health'); assert.equal(health.version, corePackage.version); assert.equal(health.schemaVersion, 10); assert.equal(health.terminalProtocolVersion, 1); assert.equal(health.corePid, child.pid); instance.health = health;
+  instance.identity = identity(child.pid); const health = await api('/health'); assert.equal(health.version, corePackage.version); assert.equal(health.schemaVersion, 11); assert.equal(health.terminalProtocolVersion, 1); assert.equal(health.corePid, child.pid); instance.health = health;
   instance.workers = (await api('/workers')).filter(worker => worker.state === 'RUNNING'); instance.workers.forEach(remember); return instance;
 }
 async function settled(taskId) { return until('original root receipt settlement', async () => { const task = await api(`/tasks/${taskId}`), page = await api(`/tasks/${taskId}/task-executions?limit=1`); return ['PAUSED', 'AWAITING_ACCEPTANCE', 'UNKNOWN'].includes(task.state) && page.executions[0]?.endedAt ? task : null; }); }
@@ -74,7 +74,7 @@ async function output(terminalId, epoch, limit) { const all = []; let cursor = 0
 async function stopObserved(original, name) { const observations = []; await until(name, () => { const value = probe('inspect', original); observations.push({ at: new Date().toISOString(), ...value }); return value.originalStopped; }); save(`${name}.json`, observations); }
 try {
   phase = 'start-and-authenticate'; await startCore();
-  const unauthenticated = await fetch(`${baseUrl}/api/tasks/missing/terminals`, { method: 'POST', headers: { 'Content-Type': 'application/json', Connection: 'close' }, body: '{}' }); assert.equal(unauthenticated.status, 401); pass('Actual production Jar required the original core Bearer header and exposed schema 10');
+  const unauthenticated = await fetch(`${baseUrl}/api/tasks/missing/terminals`, { method: 'POST', headers: { 'Content-Type': 'application/json', Connection: 'close' }, body: '{}' }); assert.equal(unauthenticated.status, 401); pass('Actual production Jar required the original core Bearer header and exposed schema 11');
   const project = await api('/projects', { name: 'Original terminal HTTP source', path: source });
   const route = await api('/routes', { name: 'Only local terminal fixture model', engine: 'API', model: 'terminal-http-fixture', baseUrl: `http://127.0.0.1:${model.address().port}/v1`, apiKey: 'public-local-fixture-key', enabled: true });
   for (const strategy of ['CLONE', 'WORKTREE']) {
@@ -176,7 +176,7 @@ finally {
   const files = [];
   function inventory(path, relative = '') { for (const entry of readdirSync(path, { withFileTypes: true })) { const name = relative ? `${relative}/${entry.name}` : entry.name, full = join(path, entry.name); if (entry.isDirectory()) inventory(full, name); else if (entry.isFile()) { const bytes = readFileSync(full); files.push({ file: name, bytes: bytes.length, sha256: hash(bytes) }); } else files.push({ file: name, unsupportedType: true }); } }
   save('requests.json', requests); inventory(directory); save('report.json', { recordedAt: new Date().toISOString(), status: finalStatus === 'passed' && stopped && sourcesUnchanged && jarUnchanged && cleanup.length === 0 ? 'passed' : 'failed', phase,
-    productionJar: packageDirectory, jarSha256: corePackage.jarSha256, version: corePackage.version, schemaVersion: 10, terminalProtocolVersion: 1, sourcesUnchanged, jarUnchanged, checks, modelCalls, tasks, archives,
+    productionJar: packageDirectory, jarSha256: corePackage.jarSha256, version: corePackage.version, schemaVersion: 11, terminalProtocolVersion: 1, sourcesUnchanged, jarUnchanged, checks, modelCalls, tasks, archives,
     cores: cores.map(core => ({ number: core.number, identity: core.identity, health: core.health, exitCode: core.child.exitCode, signalCode: core.child.signalCode })), originalIdentitiesStopped: stopped, originalIdentities: [...identities.values()], originalStops: stops, cleanup, error,
     fixtureFiles: files, originalFailuresAndUnknownsRetained: true, runtimeJava: java, runtimeJavaSha256: corePackage.javaSha256, modelTransport: 'LOCAL_CONNECTION_CLOSE_NO_APPLICATION_RETRY', scope: 'ACTUAL_PRODUCTION_MAIN_JAR_REAL_HTTP_WORKER_NATIVE_AND_FORCED_CORE_PID_CRASH; PRODUCT_UI_PACKAGED_JRE_AND_COMPLETE_HISTORICAL_PROCESS_TREE_ACCEPTANCE_SEPARATE' });
   const report = JSON.parse(readFileSync(join(directory, 'report.json'), 'utf8'));

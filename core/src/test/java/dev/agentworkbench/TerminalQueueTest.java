@@ -172,7 +172,7 @@ class TerminalQueueTest {
         assertEquals(original, store.get("task", taskId)); assertTrue(store.list("terminalSession").isEmpty()); assertTrue(store.list("taskExecution").isEmpty());
         assertTrue(store.list("terminalAction").isEmpty()); assertTrue(store.list("terminalOutputSegment").isEmpty());
         try (var database = DriverManager.getConnection("jdbc:sqlite:" + data.resolve("workbench.sqlite")); var command = database.createStatement()) {
-            try (var version = command.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(10, version.getInt(1)); }
+            try (var version = command.executeQuery("PRAGMA user_version")) { assertTrue(version.next()); assertEquals(ExecutionStore.SCHEMA_VERSION, version.getInt(1)); }
             try (var indexes = command.executeQuery("SELECT count(*) FROM sqlite_master WHERE type='index' AND name LIKE 'entities_terminal_%'")) { assertTrue(indexes.next()); assertEquals(8, indexes.getInt(1)); }
         }
     }

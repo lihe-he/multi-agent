@@ -1,0 +1,13 @@
+.modal.scrollable {
+  height: 92vh;
+  max-height: 92vh;
+}
+
+.modal.scrollable > form {
+  flex: 1;
+}
+
+.modal.scrollable .form-body {
+  flex: 1;
+  min-height: 0;
+}

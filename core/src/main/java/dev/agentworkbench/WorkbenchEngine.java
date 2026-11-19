@@ -38,6 +38,8 @@ public class WorkbenchEngine {
     private final ObjectMapper mapper;
     private final McpManager mcp;
     private final TeamCoordinator teams;
+    private final WorkflowCoordinator workflows;
+    private final WorkflowProposals workflowProposals;
     private final LocalExecutionWorker executionWorker;
     private final ManagedProcessLedger processLedger;
     private final TaskDispatchQueue dispatchQueue;
@@ -71,6 +73,8 @@ public class WorkbenchEngine {
         this.dispatchQueue = runtime instanceof ProcessWorkspaceRuntime ? new TaskDispatchQueue(store, workspaceWrites, executionWorker::identity) : new TaskDispatchQueue(store);
         this.processLedger = runtime instanceof ProcessWorkspaceRuntime processRuntime ? processRuntime.managedProcesses() : new ManagedProcessLedger(store);
         this.teams = new TeamCoordinator(store, catalog, runtime, resources, mapper, mcp, workers, executionWorker);
+        this.workflows = new WorkflowCoordinator(store, catalog, runtime, resources, mapper, teams, executionWorker, workers);
+        this.workflowProposals = new WorkflowProposals(store, catalog.workflows(), mapper);
     }
 
     Map<String, Object> workerIdentity() { return executionWorker.identity(); }
@@ -103,6 +107,7 @@ public class WorkbenchEngine {
         }
         for (Map<String, Object> operation : store.list("operation")) if (Set.of("PREPARED", "DISPATCHED").contains(str(operation, "state"))) store.markOperation(str(operation, "id"), "UNKNOWN", obj("reason", "核心重启，子运行与根操作一起核对"));
         for (Map<String, Object> operation : store.list("teamOperation")) if (Set.of("PREPARED", "DISPATCHED").contains(str(operation, "state"))) store.finishTeamOperation(str(operation, "id"), "UNKNOWN", obj("reason", "核心重启，团队操作不自动重放"));
+        workflows.recover();
         for (Map<String, Object> task : store.list("task")) {
             if (Set.of("QUEUED", "RUNNING", "PAUSING", "CANCELLING", "WAITING_RESOURCE").contains(str(task, "state"))) {
                 if (dispatchQueue.unclaimed(task)) continue;
@@ -123,7 +128,7 @@ public class WorkbenchEngine {
         Map<String, Object> task = store.get("task", taskId);
         String state = str(task, "state");
         if (Set.of("approve", "resume").contains(action)) processLedger.requireDispatch();
-        if (Set.of("accept", "revalidate", "budget", "mcp-authorization", "execution-authorization", "workspace-selection").contains(action)) requireExecutionSettled(taskId);
+        if (Set.of("accept", "revalidate", "budget", "mcp-authorization", "execution-authorization", "workspace-selection", "workflow-selection", "workflow-restart").contains(action)) requireExecutionSettled(taskId);
         switch (action) {
             case "approve" -> {
                 requireState(state, Set.of("DRAFT", "WAITING_INPUT"));
@@ -151,6 +156,8 @@ public class WorkbenchEngine {
             case "mcp-authorization" -> reauthorizeMcp(taskId, task, body);
             case "execution-authorization" -> reauthorizeExecution(taskId, task, body);
             case "workspace-selection" -> reselectWorkspace(taskId, task, body);
+            case "workflow-selection", "workflow-restart" -> selectWorkflow(taskId, task, body, "workflow-restart".equals(action));
+            case "generate-workflow" -> generateWorkflow(taskId, task, body);
             case "revalidate" -> {
                 requireState(state, Set.of("PAUSED", "WAITING_INPUT", "FAILED", "AWAITING_ACCEPTANCE"));
                 if (hasUnknownOperation(taskId)) { throw new ApiException(409, "未知操作必须先核对"); }
@@ -177,7 +184,97 @@ public class WorkbenchEngine {
             Map<String, Object> execution = store.find("taskExecution", str(task, "taskExecutionId")), action = store.find("dispatchAction", str(task, "dispatchActionId"));
             if (controls.containsKey(taskId) || (execution != null && Set.of("QUEUED", "RUNNING").contains(str(execution, "state")))
                     || (action != null && Set.of("PENDING", "CLAIMED").contains(str(action, "state")))) throw new ApiException(409, "根执行尚未结束，请等待执行结束回执后继续");
+            workflows.requireStopped(taskId);
         } finally { dispatchGate.unlock(); }
+    }
+
+    Map<String, Object> workflowRunPage(String taskId, int before, int limit) {
+        if (before < 0 || limit < 1 || limit > 30) throw new ApiException(400, "流程运行游标或页大小无效");
+        List<Map<String, Object>> selected = workflows.ledger().runs(taskId).stream().filter(run -> before == 0 || num(run, "generation", 0) < before)
+            .sorted((a, b) -> Integer.compare(num(b, "generation", 0), num(a, "generation", 0))).toList();
+        List<Map<String, Object>> page = selected.stream().limit(limit).toList();
+        return obj("runs", page, "hasMore", selected.size() > page.size(), "next", page.isEmpty() ? before : num(page.getLast(), "generation", 0));
+    }
+
+    Map<String, Object> workflowAttemptPage(String taskId, String runId, int before, int limit) {
+        if (before < 0 || limit < 1 || limit > 100) throw new ApiException(400, "流程节点游标或页大小无效");
+        List<Map<String, Object>> selected = workflows.ledger().attempts(taskId, runId).stream().filter(attempt -> before == 0 || num(attempt, "sequence", 0) < before)
+            .sorted((a, b) -> Integer.compare(num(b, "sequence", 0), num(a, "sequence", 0))).toList();
+        List<Map<String, Object>> page = selected.stream().limit(limit).toList();
+        return obj("attempts", page, "hasMore", selected.size() > page.size(), "next", page.isEmpty() ? before : num(page.getLast(), "sequence", 0));
+    }
+
+    WorkflowProposals workflowProposals() { return workflowProposals; }
+
+    Map<String, Object> publishWorkflowProposal(String taskId, String proposalId, Map<String, Object> body) {
+        dispatchGate.lock();
+        try { requireExecutionSettled(taskId); return workflowProposals.publish(taskId, proposalId, body); }
+        finally { dispatchGate.unlock(); }
+    }
+
+    private void generateWorkflow(String taskId, Map<String, Object> task, Map<String, Object> body) {
+        String generationId = taskId + ":" + workflowProposals.requestId(body);
+        Map<String, Object> original = store.find("workflowGeneration", generationId);
+        if (original != null) {
+            if (!str(original, "requestFingerprint").equals(WorkflowDsl.digest(body, mapper))) throw new ApiException(409, "原生成编号与本次输入冲突，未新增调用");
+            return;
+        }
+        requireState(str(task, "state"), Set.of("DRAFT", "PAUSED", "WAITING_INPUT", "FAILED", "AWAITING_ACCEPTANCE", "COMPLETED"));
+        requireExecutionSettled(taskId); processLedger.requireDispatch();
+        if (shuttingDown || !store.healthy()) throw new ApiException(503, "核心当前不能开始流程生成");
+        if (hasUnknownOperation(taskId)) throw new ApiException(409, "先核对原执行和未知效果，不能开始新生成");
+        if (!(body.get("expectedSnapshotDigest") instanceof String) || !(body.get("expectedRunId") instanceof String)
+                || !str(body, "expectedSnapshotDigest").equals(str(map(task, "workflow"), "snapshotDigest")) || !str(body, "expectedRunId").equals(str(task, "workflowRunId"))) throw new ApiException(409, "任务流程或运行代次已变化，请刷新后生成");
+        catalog.nodes().requireCurrent(task); teams.requireStopped(taskId); workflows.requireStopped(taskId); executionWorker.requireStopped(taskId);
+        if (!str(task, "workspace").isBlank()) {
+            runtime.requireWorkspaceOwnership(taskId, str(task, "workspace"), task);
+            if (!(body.get("expectedVersion") instanceof String) || !str(body, "expectedVersion").equals(runtime.fingerprint(str(task, "workspace")))) throw new ApiException(409, "原现场已变化，请核对当前版本再生成");
+        }
+        if (!executionWorker.current(taskId)) throw new ApiException(409, "当前 Worker 不能领取生成任务");
+        if (!BudgetPolicy.acquire(new LinkedHashMap<>(map(task, "budget")), false)) throw new ApiException(409, "根开发额度不足，不能占用验证预留生成流程");
+        Map<String, Object> generation = workflowProposals.prepare(task, body);
+        dispatchQueue.enqueue(taskId, TaskDispatchQueue.WORKFLOW_GENERATION, value -> {
+            value.put("pendingWorkflowGenerationId", generation.get("id")); value.put("workflowGenerationSequence", generation.get("sequence"));
+        }, Map.of("workflowGeneration", List.of(generation)));
+        startDispatcher();
+    }
+
+    /**
+     * 流程换版在原执行完整停止后确认；新代次以当前现场为基线，旧节点与预算保留。
+     */
+    private void selectWorkflow(String taskId, Map<String, Object> task, Map<String, Object> body, boolean restart) {
+        requireState(str(task, "state"), Set.of("DRAFT", "PAUSED", "WAITING_INPUT", "FAILED", "AWAITING_ACCEPTANCE"));
+        if (!Set.of("selection", "expectedSnapshotDigest", "expectedRunId", "expectedVersion", "note").containsAll(body.keySet())
+                || !(body.get("selection") instanceof Map<?, ?>) || !(body.get("expectedSnapshotDigest") instanceof String) || !(body.get("expectedRunId") instanceof String)
+                || !str(body, "expectedSnapshotDigest").equals(str(map(task, "workflow"), "snapshotDigest")) || !str(body, "expectedRunId").equals(str(task, "workflowRunId"))) throw new ApiException(409, "任务固定流程或运行代次已变化，请刷新后确认");
+        boolean started = !str(task, "workflowRunId").isBlank() || !str(task, "workspace").isBlank();
+        if (started && !restart) throw new ApiException(409, "已有执行现场，请明确重新开始流程并保留原运行记录");
+        if (restart && (!(body.get("note") instanceof String) || str(body, "note").isBlank() || str(body, "note").length() > 3000)) throw new ApiException(400, "重新开始流程需要记录依据");
+        if (hasUnknownOperation(taskId)) throw new ApiException(409, "请先核对原进程和未知效果，不能直接重开流程");
+        teams.requireStopped(taskId); workflows.requireStopped(taskId); processLedger.requireTaskStopped(taskId); executionWorker.requireStopped(taskId);
+        if (mcp != null) mcp.requireTaskStopped(taskId);
+        String workspace = str(task, "workspace"), version = workspace.isBlank() ? str(task, "version") : runtime.fingerprint(workspace);
+        if (!workspace.isBlank()) {
+            runtime.requireWorkspaceOwnership(taskId, workspace, task);
+            if (!(body.get("expectedVersion") instanceof String) || !str(body, "expectedVersion").equals(version)) throw new ApiException(409, "原根现场已变化，请重新核对当前版本");
+        }
+        Map<String, Object> candidate = new LinkedHashMap<>(task), contract = new LinkedHashMap<>(map(task, "contract")); candidate.put("contract", contract);
+        List<String> permissions = new ArrayList<>(strings(contract.get("permissions")));
+        if (bool(map(task, "collaboration"), "enabled", false) && !permissions.contains("delegate")) permissions.add("delegate");
+        if (!objects(map(task, "mcpAuthorization").get("bindings")).isEmpty() && !permissions.contains("mcp")) permissions.add("mcp"); contract.put("permissions", permissions);
+        Map<String, Object> snapshot = catalog.workflows().snapshot(candidate, map(body, "selection")); List<Map<String, Object>> plan = catalog.workflowPlan(snapshot);
+        Map<String, Object> validation = new PlanValidator().validate(obj("stages", plan, "permissions", permissions, "maxRoles", 6, "inputs", List.of("contract")));
+        if (!bool(validation, "valid", false)) throw new ApiException(409, "流程根门禁无法满足，请核对完成约定与授权");
+        if (!workspace.isBlank() && !version.equals(runtime.fingerprint(workspace))) throw new ApiException(409, "确认流程期间原现场变化，请重新核对");
+        store.editTask(taskId, value -> {
+            List<Map<String, Object>> history = new ArrayList<>(objects(value.get("workflowHistory")));
+            if (!map(value, "workflow").isEmpty()) history.add(obj("snapshot", value.get("workflow"), "runId", value.getOrDefault("workflowRunId", ""), "actor", "USER", "note", str(body, "note"), "createdAt", now()));
+            value.put("workflowHistory", history); value.put("workflow", snapshot); value.put("plan", plan); value.put("planValidation", validation);
+            map(value, "contract").put("permissions", permissions); value.put("workflowRestartRequested", started || restart);
+            value.put("state", "DRAFT"); map(value, "contract").put("confirmed", false); value.put("version", version); value.remove("error");
+            if (str(value, "teamId").isBlank()) value.put("teamId", id());
+            value.put("verification", obj("status", "NOT_RUN")); value.put("review", obj("status", "NOT_RUN"));
+        }, restart ? "WORKFLOW_RESTART_CONFIRMED" : "WORKFLOW_SELECTION_CONFIRMED", "用户固定流程版本；请核对新计划后确认执行，原证据与累计预算保留");
     }
 
     public Map<String, Object> checkpointPage(String taskId, long before, int limit) {
@@ -332,6 +429,7 @@ public class WorkbenchEngine {
         }
         if (controls.containsKey(taskId)) throw new ApiException(409, "任务执行仍在停止或收尾中，请等待停止确认");
         teams.requireStopped(taskId);
+        workflows.requireStopped(taskId);
         processLedger.requireTaskStopped(taskId);
         executionWorker.requireStopped(taskId);
         if (mcp != null) mcp.requireTaskStopped(taskId);
@@ -579,10 +677,12 @@ public class WorkbenchEngine {
                 executionWorker.finish(str(operation, "id"), "ACKNOWLEDGED", acquired);
                 store.editTask(taskId, value -> value.remove("activeOperation"), "WORKSPACE_WRITE_HELD", "原 Worker 已取得本次根尝试的现场写入保护");
             }
-            store.editTask(taskId, value -> value.put("state", "RUNNING"), "RUNNING", "开始执行已确认的计划");
+            boolean generating = !str(task, "pendingWorkflowGenerationId").isBlank();
+            store.editTask(taskId, value -> value.put("state", "RUNNING"), "RUNNING", generating ? "开始只读生成流程候选" : "开始执行已确认的计划");
             task = store.get("task", taskId);
             if (!str(task, "pendingCheckpointRestoreId").isBlank()) { executeCheckpointUndo(taskId, control); return; }
             if (!str(task, "pendingTerminalId").isBlank()) { executeTerminal(taskId, control); return; }
+            if (!str(task, "pendingWorkflowGenerationId").isBlank()) { executeWorkflowGeneration(taskId, control); return; }
             automaticCheckpoint(taskId, "WORKSPACE_READY", "prepare");
             while (true) {
                 checkStopped(control);
@@ -611,6 +711,19 @@ public class WorkbenchEngine {
                         }
                     }
                     case "DELIVERY" -> { }
+                    case "WORKFLOW" -> {
+                        try { workflows.execute(taskId, () -> cancelled(control), () -> "CANCEL".equals(control.request) ? "CANCELLED" : "PAUSED"); }
+                        catch (WorkflowCoordinator.Failure failure) {
+                            switch (failure.state) {
+                                case "UNKNOWN" -> throw new UnknownResult(failure.getMessage());
+                                case "BUDGET_EXHAUSTED" -> throw new BudgetExhausted(failure.getMessage());
+                                case "CANCELLED", "PAUSED" -> throw new CancellationException(failure.getMessage());
+                                case "WAITING_INPUT" -> throw new NeedsInput(failure.getMessage());
+                                default -> throw new ApiException(409, failure.getMessage());
+                            }
+                        }
+                        checkScope(taskId);
+                    }
                     default -> modelStage(taskId, next, control, false, "");
                 }
                 checkStopped(control);
@@ -622,12 +735,13 @@ public class WorkbenchEngine {
         } catch (BudgetExhausted exception) {
             try {
                 Map<String, Object> current = store.get("task", taskId);
-                if (!str(current, "workspace").isBlank() && !"review".equals(str(current, "currentStage")) && !cancelled(control)) {
+                boolean generating = !str(current, "pendingWorkflowGenerationId").isBlank();
+                if (!generating && !str(current, "workspace").isBlank() && !"review".equals(str(current, "currentStage")) && !cancelled(control)) {
                     store.event(taskId, "VERIFICATION_RESERVE", "开发额度不足，停止新增开发并尝试使用剩余预留完成验证与独立审查");
                     boolean verified = verification(taskId, "verify", false, control);
                     if (verified && num(map(store.get("task", taskId), "budget"), "usedCalls", 0) < num(map(current, "budget"), "maxCalls", 0)) { review(taskId, "review", control); }
                 }
-                waitInput(taskId, exception.getMessage() + "；预留内可执行的验证已记录，未完成部分保持未验证");
+                waitInput(taskId, exception.getMessage() + (generating ? "；只读生成已停止，验证预留保留" : "；预留内可执行的验证已记录，未完成部分保持未验证"));
             } catch (UnknownResult unknown) {
                 try { store.editTask(taskId, task -> { task.put("state", "UNKNOWN"); task.put("error", unknown.getMessage()); }, "RESULT_UNKNOWN", unknown.getMessage()); } catch (RuntimeException ignored) { }
             } catch (CancellationException cancelled) { stopped(control); }
@@ -665,6 +779,34 @@ public class WorkbenchEngine {
                 }
             }
         }
+    }
+
+    /**
+     * 生成沿用原根队列和只读工具循环，成功后保留原计划，候选不会自动执行。
+     */
+    private void executeWorkflowGeneration(String taskId, Control control) throws Exception {
+        Map<String, Object> task = store.get("task", taskId); String generationId = str(task, "pendingWorkflowGenerationId"), workspace = str(task, "workspace");
+        Map<String, Object> generation = store.get("workflowGeneration", generationId), route = new LinkedHashMap<>(map(task, "routeSnapshot")); route.put("allowedCommands", List.of());
+        String before = runtime.fingerprint(workspace);
+        Map<String, Object> stage = obj("id", "workflow-generation", "kind", "WORKFLOW_GENERATION", "title", "生成可编辑流程候选", "role", "lead", "readOnly", true, "permissions", List.of("read", "search"));
+        store.event(taskId, "WORKFLOW_GENERATION", "只读调查并生成流程候选；不派发根实现计划");
+        String completedRun = trackedAgent(task, stage, workspace, before, false, control, runId -> {
+            workflowProposals.started(generationId, runId, before);
+            Map<String, Object> operation = store.beginOperation(taskId, "workflow-generation", "WORKFLOW_GENERATION", workspace, runId);
+            executionWorker.dispatch(str(operation, "id"), workspace, obj("workflowGenerationId", generationId));
+            TeamCoordinator.Session session = teams.session(taskId, runId, workspace, route, () -> cancelled(control)); AtomicBoolean denied = new AtomicBoolean();
+            RequestObservation observer = new RequestObservation(store, catalog, taskId, runId, false, session::stopped, denied, session::checkCurrent, session, num(generation, "maxCalls", 2), checkpoints);
+            try {
+                Map<String, Object> result = runtime.runWithMcp(route, catalog.credential(str(route, "id"), num(route, "version", 1)), workspace, workflowProposals.prompt(generation), true,
+                    List.of("**"), session::stopped, message -> log(taskId, "workflow-generation", message), observer, List.of(), teams.fixedTools(taskId, runId, "WORKFLOW_GENERATION", session::stopped));
+                String version = runtime.fingerprint(workspace); Map<String, Object> evidence = evidence("workflow-generation", "WORKFLOW_GENERATION", version, "", result);
+                evidence.put("inputVersion", before); evidence.put("workflowGenerationId", generationId);
+                if (!before.equals(version)) evidence.put("status", "UNKNOWN"); executionWorker.evidence(taskId, str(operation, "id"), evidence);
+                if (!before.equals(version) || "UNKNOWN".equals(str(evidence, "status"))) throw new UnknownResult("流程生成没有保全原只读现场或实际执行未知");
+                checkResult(result, control, denied.get()); session.settle(); return runId;
+            } finally { session.stopChildren(); session.requireStoppedChildren(); }
+        });
+        executionWorker.settleRun(completedRun); workflowProposals.record(generationId);
     }
 
     private void executeCheckpointUndo(String taskId, Control control) {
@@ -706,7 +848,7 @@ public class WorkbenchEngine {
 
     private void captureFinalCheckpoint(String taskId) {
         Map<String, Object> task = store.get("task", taskId);
-        if (!checkpoints.available(task)) return;
+        if (!str(task, "pendingWorkflowGenerationId").isBlank() || !checkpoints.available(task)) return;
         try {
             teams.requireStopped(taskId); processLedger.requireTaskStopped(taskId); executionWorker.requireStopped(taskId);
             if (mcp != null) mcp.requireTaskCallsReturned(taskId);
@@ -1124,7 +1266,8 @@ public class WorkbenchEngine {
             task.put("state", unknown ? "UNKNOWN" : "CANCEL".equals(control.request) ? "CANCELLED" : "PAUSED");
             task.put("error", unknown ? "仍有未确认操作，保留写入现场供核对" : control.reason);
             if ("CANCEL".equals(control.request) && !unknown) { task.put("outcome", "CANCELLED"); }
-            task.put("stoppedAt", now()); resetRunningStages(task);
+            task.put("stoppedAt", now());
+            if (str(task, "pendingWorkflowGenerationId").isBlank()) resetRunningStages(task);
         }, "STOPPED", "运行器已返回，已记录实际停止状态与未确认操作");
     }
 
@@ -1149,7 +1292,10 @@ public class WorkbenchEngine {
     }
 
     private void waitInput(String taskId, String reason) {
-        store.editTask(taskId, task -> { task.put("state", "WAITING_INPUT"); task.put("error", reason); resetRunningStages(task); }, "NEEDS_ATTENTION", reason);
+        store.editTask(taskId, task -> {
+            task.put("state", "WAITING_INPUT"); task.put("error", reason);
+            if (str(task, "pendingWorkflowGenerationId").isBlank()) resetRunningStages(task);
+        }, "NEEDS_ATTENTION", reason);
     }
 
     private void log(String taskId, String stageId, String message) {

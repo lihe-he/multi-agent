@@ -23,13 +23,15 @@ public class WorkbenchCatalog {
     private final WorkspaceRuntime runtime;
     private final PlanValidator validator;
     private final ExecutionNodes nodes;
+    private final WorkflowCatalog workflows;
     private final Map<String, String> credentials = new ConcurrentHashMap<>();
 
     public WorkbenchCatalog(ExecutionStore store, WorkspaceRuntime runtime, PlanValidator validator) {
-        this.store = store; this.runtime = runtime; this.validator = validator; this.nodes = new ExecutionNodes(store, runtime);
+        this.store = store; this.runtime = runtime; this.validator = validator; this.nodes = new ExecutionNodes(store, runtime); this.workflows = new WorkflowCatalog(store);
     }
 
     ExecutionNodes nodes() { return nodes; }
+    WorkflowCatalog workflows() { return workflows; }
 
     /**
      * 项目规则来源于当前确认的仓库绑定，切换草稿源目录时重新固定规则。
@@ -66,6 +68,7 @@ public class WorkbenchCatalog {
     void defaults() {
         nodes.localNode();
         defaultAgentDefinitions();
+        workflows.defaults();
         if (!store.list("profile").isEmpty()) { return; }
         for (Map<String, Object> profile : List.of(
             obj("id", "builtin-lead", "name", "研发负责人", "role", "lead", "instructions", "基于证据规划工作，保留未知、失败与交接信息。不得自行降低验收条件。", "capabilities", List.of("read", "search")),
@@ -244,6 +247,7 @@ public class WorkbenchCatalog {
 
     public synchronized Map<String, Object> createTask(Map<String, Object> body) {
         if (body.containsKey("collaboration") && !(body.get("collaboration") instanceof Map<?, ?>)) throw new ApiException(400, "collaboration 必须为对象");
+        if (body.containsKey("workflow") && !(body.get("workflow") instanceof Map<?, ?>)) throw new ApiException(400, "workflow 必须为流程选择对象");
         Map<String, Object> project = store.get("project", required(body, "projectId", 100));
         Map<String, Object> execution = nodes.snapshot(str(project, "id"), body, 1);
         Map<String, Object> selection = body.containsKey("workspaceSelection") ? workspaceSelection(str(execution, "sourcePath"), body, bool(body, "includeChanges", false), 1) : Map.of();
@@ -296,10 +300,28 @@ public class WorkbenchCatalog {
         task.put("mcpAuthorization", McpTaskPolicy.snapshot(store, str(project, "id"), route, body.get("mcpBindings"), 1));
         task.put("mcpBudget", McpTaskPolicy.budget(map(body, "mcpBudget"), Map.of()));
         task.put("collaboration", CollaborationPolicy.snapshot(store, str(project, "id"), route, locks, map(body, "collaboration")));
+        if (body.containsKey("workflow")) {
+            List<String> permissions = new ArrayList<>(strings(contract.get("permissions")));
+            if (bool(map(task, "collaboration"), "enabled", false)) permissions.add("delegate");
+            if (!objects(map(task, "mcpAuthorization").get("bindings")).isEmpty()) permissions.add("mcp");
+            contract.put("permissions", permissions);
+            Map<String, Object> workflow = workflows.snapshot(task, map(body, "workflow")); task.put("workflow", workflow);
+            task.put("plan", workflowPlan(workflow));
+            task.put("planValidation", validator.validate(obj("stages", task.get("plan"), "permissions", permissions, "maxRoles", 6, "inputs", List.of("contract"))));
+            task.put("teamId", id());
+        }
         if (bool(map(task, "collaboration"), "enabled", false)) task.put("teamId", id());
         String sessionId = str(body, "sessionId");
         if (!sessionId.isBlank()) { store.session(str(project, "id"), sessionId); task.put("sessionId", sessionId); }
         return store.createTask(task);
+    }
+
+    List<Map<String, Object>> workflowPlan(Map<String, Object> workflow) {
+        List<Map<String, Object>> old = plan("LEAD"), stages = new ArrayList<>();
+        stages.add(old.getFirst());
+        stages.add(stage("workflow", str(workflow, "name") + " · v" + num(workflow, "version", 1), "lead", List.of("baseline"), "WORKFLOW", false));
+        Map<String, Object> verify = old.get(3); verify.put("dependencies", List.of("workflow")); verify.put("inputs", List.of("workflow:result"));
+        stages.add(verify); stages.add(old.get(4)); stages.add(old.get(5)); return stages;
     }
 
     private List<Map<String, Object>> plan(String mode) {

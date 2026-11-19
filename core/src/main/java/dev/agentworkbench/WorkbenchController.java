@@ -64,6 +64,8 @@ public class WorkbenchController {
         List<Map<String, Object>> summaries = tasks.stream().map(task -> {
             Map<String, Object> value = taskSnapshot(task);
             value.remove("evidence"); value.remove("context"); value.remove("profileSnapshot"); value.remove("routeSnapshot");
+            if (value.containsKey("workflow")) { Map<String, Object> workflow = new java.util.LinkedHashMap<>(map(value, "workflow")); workflow.remove("dsl"); workflow.remove("bindings"); workflow.remove("agentDefinitions"); value.put("workflow", workflow); }
+            value.remove("workflowHistory");
             if (value.containsKey("collaboration")) { Map<String, Object> collaboration = new java.util.LinkedHashMap<>(map(value, "collaboration")); collaboration.remove("definitions"); value.put("collaboration", collaboration); }
             value.put("evidenceCount", objects(task.get("evidence")).size()); return value;
         }).toList();
@@ -149,6 +151,7 @@ public class WorkbenchController {
         snapshot.put("diffViewProtocolVersion", 1);
         snapshot.put("checkpointProtocolVersion", 1);
         snapshot.put("terminalProtocolVersion", 1);
+        snapshot.put("workflowProtocolVersion", 1);
         String terminalId = str(task, "pendingTerminalId");
         if (terminalId.isBlank()) terminalId = str(task, "lastTerminalId");
         if (!terminalId.isBlank()) snapshot.put("terminal", engine.terminal(terminalId));
@@ -316,6 +319,59 @@ public class WorkbenchController {
     @PostMapping("/plans/validate")
     public Map<String, Object> validate(@RequestBody Map<String, Object> body) { return validator.validate(body); }
 
+    @GetMapping("/workflows")
+    public List<Map<String, Object>> workflows(@RequestParam(defaultValue = "") String projectId) { return catalog.workflows().definitions(projectId); }
+
+    @PostMapping("/workflows")
+    public Map<String, Object> workflow(@RequestBody Map<String, Object> body) { return catalog.workflows().save(body); }
+
+    @PostMapping("/workflows/validate")
+    public Map<String, Object> validateWorkflow(@RequestBody Map<String, Object> body) { return catalog.workflows().validateDefinition(body); }
+
+    @PostMapping("/workflows/import")
+    public Map<String, Object> importWorkflow(@RequestBody Map<String, Object> body) { return catalog.workflows().imported(body); }
+
+    @GetMapping("/workflows/{id}/versions")
+    public Map<String, Object> workflowVersions(@PathVariable String id, @RequestParam(defaultValue = "0") int before, @RequestParam(defaultValue = "30") int limit) { return catalog.workflows().versionPage(id, before, limit); }
+
+    @GetMapping("/workflows/{id}/versions/{version}")
+    public Map<String, Object> workflowVersion(@PathVariable String id, @PathVariable int version) { return catalog.workflows().version(id, version); }
+
+    @GetMapping("/workflows/{id}/versions/{version}/export")
+    public Map<String, Object> exportWorkflow(@PathVariable String id, @PathVariable int version) { return catalog.workflows().exported(id, version); }
+
+    @PostMapping("/workflows/{id}/rollback")
+    public Map<String, Object> rollbackWorkflow(@PathVariable String id, @RequestBody Map<String, Object> body) { return catalog.workflows().rollback(id, body); }
+
+    @GetMapping("/tasks/{id}/workflow-runs")
+    public Map<String, Object> workflowRuns(@PathVariable String id, @RequestParam(defaultValue = "0") int before, @RequestParam(defaultValue = "30") int limit) { return engine.workflowRunPage(id, before, limit); }
+
+    @GetMapping("/tasks/{id}/workflow-runs/{runId}/attempts")
+    public Map<String, Object> workflowAttempts(@PathVariable String id, @PathVariable String runId, @RequestParam(defaultValue = "0") int before, @RequestParam(defaultValue = "30") int limit) { return engine.workflowAttemptPage(id, runId, before, limit); }
+
+    @PostMapping("/tasks/{id}/workflow-selection")
+    public Map<String, Object> selectWorkflow(@PathVariable String id, @RequestBody Map<String, Object> body) { return taskSnapshot(engine.action(id, "workflow-selection", body)); }
+
+    @PostMapping("/tasks/{id}/workflow-restart")
+    public Map<String, Object> restartWorkflow(@PathVariable String id, @RequestBody Map<String, Object> body) { return taskSnapshot(engine.action(id, "workflow-restart", body)); }
+
+    @PostMapping("/tasks/{id}/workflow-generations")
+    public Map<String, Object> generateWorkflow(@PathVariable String id, @RequestBody Map<String, Object> body) { return taskSnapshot(engine.action(id, "generate-workflow", body)); }
+
+    @GetMapping("/tasks/{id}/workflow-generations")
+    public List<Map<String, Object>> workflowGenerations(@PathVariable String id) { return engine.workflowProposals().generations(id); }
+
+    @GetMapping("/tasks/{id}/workflow-proposals")
+    public Map<String, Object> workflowProposals(@PathVariable String id, @RequestParam(defaultValue = "0") int before, @RequestParam(defaultValue = "30") int limit) { return engine.workflowProposals().page(id, before, limit); }
+
+    @GetMapping("/tasks/{id}/workflow-proposals/{proposalId}")
+    public Map<String, Object> workflowProposal(@PathVariable String id, @PathVariable String proposalId) { return engine.workflowProposals().proposal(id, proposalId); }
+
+    @PostMapping("/tasks/{id}/workflow-proposals/{proposalId}/publish")
+    public Map<String, Object> publishWorkflowProposal(@PathVariable String id, @PathVariable String proposalId, @RequestBody Map<String, Object> body) {
+        return engine.publishWorkflowProposal(id, proposalId, body);
+    }
+
     @GetMapping("/tasks/{id}/export")
     public ResponseEntity<byte[]> export(@PathVariable String id) throws IOException {
         engine.requireExecutionSettled(id);
@@ -365,6 +421,10 @@ public class WorkbenchController {
             putZip(zip, "team.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.team(id)));
             putZip(zip, "team-messages.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("teamMessage").stream().filter(message -> id.equals(str(message, "taskId"))).toList()));
             putZip(zip, "team-operations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("teamOperation").stream().filter(operation -> id.equals(str(operation, "taskId"))).toList()));
+            putZip(zip, "workflow-runs.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("workflowRun").stream().filter(run -> id.equals(str(run, "taskId"))).toList()));
+            putZip(zip, "workflow-node-attempts.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("workflowNodeAttempt").stream().filter(attempt -> id.equals(str(attempt, "taskId"))).toList()));
+            putZip(zip, "workflow-proposals.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("workflowProposal").stream().filter(proposal -> id.equals(str(proposal, "taskId"))).toList()));
+            putZip(zip, "workflow-generations.json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(store.list("workflowGeneration").stream().filter(generation -> id.equals(str(generation, "taskId"))).toList()));
             StringBuilder lines = new StringBuilder(); long cursor = 0;
             while (true) {
                 Map<String, Object> page = store.events(id, cursor, 200);

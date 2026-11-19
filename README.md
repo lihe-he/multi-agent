@@ -4,7 +4,7 @@
 
 平台使用 Java 21、Spring Boot、SQLite、React、TypeScript 和 Electron。任务在独立工作目录中执行，验证和审查记录绑定代码版本，最终由用户验收。验收操作记录用户决定，不会自动提交、推送或改写原项目。
 
-当前开发版本为 **0.2.0-alpha.22**，增加请求失败类型诊断、明确连接重试、预览元数据竞争修复及页面/终端读取恢复，稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
+当前开发版本为 **0.2.0-alpha.23**，新增版本化 Workflow、受限 DAG 校验、独立节点现场、来源追踪、暂停恢复，以及只读生成候选到用户编辑发布的流程。alpha.23 的 Workflow 定向验证和生产 JAR 本机协议集成已通过；完整核心 `mvn verify` 为 610/611，保留一个团队请求时序失败，跨平台 CI 与完整计划验收仍待完成。具体证据与未完成边界见[实施与验收记录](./docs/implementation-status.md)。稳定预览基线仍为 `v0.1.0`。实际任务现场、模型、文件工具和验证由独立 Java Worker 执行，核心独占 SQLite、预算、授权与团队调度。私有管道交接原操作租约，界面和导出分别保存 Worker PID 与核心 PID；关闭客户端保留在途执行，失联或回执缺失保持 UNKNOWN，不自动启动替代 Worker 或重放。核心重启后按原 PID/出生核验 Worker 和 MCP stdio，分别记录进程覆盖与任务外部效果；已知仍活着或无法核验的进程不能由人工勾选绕过。协议见[独立进程约定](./docs/worker-process-contract.md)与[进程恢复约定](./docs/process-recovery-contract.md)。
 
 “协作会话 → 网页预览”可绑定本机端口、打开多个网页标签，并在桌面完整退出重开后保留登录数据。核心只保存脱敏地址和标签，浏览数据保存在隔离的桌面分区中；支持清理当前站点和重置整个会话存储。独立 Web 明确显示桌面能力提示。端口授权不证明服务进程身份，远程转发与外部 OAuth 尚待分别验收，具体边界见[会话预览约定](./docs/preview-contract.md)。
 
@@ -30,9 +30,11 @@ alpha.19 生产提交 `eb666f4` 的 Windows、macOS、Linux CI 已通过，三�
 
 API Agent 覆盖已有文本前须完整读取并提供原 `readVersion`；删除须提供当前读取或检查回执。用户在读取后修改文件时，旧操作被拒绝，重新读取后才可决定修改；未解决冲突进入等待输入。任务详情“文件操作”页显示版本、冲突和原请求来源，ZIP 包含完整根/副 Agent 历史。协议及外部写入窗口见[文件版本约定](./docs/file-version-contract.md)。
 
+任务可固定一个已有 Workflow 版本，按声明依赖、输入、权限和路由执行真实 DAG 节点。每个节点在独立现场留下原 Worker 和模型来源证据，成功成果按版本检查后才整合；暂停恢复只复用完整成功记录，不重发原请求。可从已有任务生成只读候选，核验原模型输出并在发布前编辑；只有明确发布才产生新 Workflow 版本，版本记录也包含在任务导出中。使用和协议边界见[Workflow 协议](./docs/workflow-contract.md)；完整验收以 alpha.23 最新验证记录为准。
+
 Windows 原 PID 被受限进程复用、Java 句柄无法读取当前出生时间时，核心通过只读系统快照补充出生信息，核对后保留原身份和新的出生。快照无法核验时继续显示未知；请求停止仍逐项检查原 Java 句柄的出生时间。具体边界见[进程恢复约定](./docs/process-recovery-contract.md)。
 
-API 任务可按创建时固定的定义、模型路由和限制实际委派副 Agent。副任务在独立 Git 副本中执行，父 Agent 等待时释放模型容量，核对依赖成果后采纳文件；全部后代共用根模型和 MCP 预算。设置页可编辑版本化定义，任务页显示真实父子状态、权限、依赖、消息、原模型/工具来源和采纳回执。逐轮请求追踪、会话搜索、独立验证/审查及人工验收继续保留；未知效果不自动重放。协议见[动态团队约定](./docs/team-contract.md)、[模型请求协议](./docs/model-request-contract.md)及[Agent 运行协议](./docs/agent-run-contract.md)。远程队列与配对、完整操作系统历史树与资源隔离、项目会话级与远程终端、动态 workflow、Token 趋势、原生 CLI 委派、完整备份恢复与正式发布仍在实施。
+API 任务可按创建时固定的定义、模型路由和限制实际委派副 Agent。副任务在独立 Git 副本中执行，父 Agent 等待时释放模型容量，核对依赖成果后采纳文件；全部后代共用根模型和 MCP 预算。设置页可编辑版本化定义，任务页显示真实父子状态、权限、依赖、消息、原模型/工具来源和采纳回执。逐轮请求追踪、会话搜索、独立验证/审查及人工验收继续保留；未知效果不自动重放。协议见[动态团队约定](./docs/team-contract.md)、[模型请求协议](./docs/model-request-contract.md)及[Agent 运行协议](./docs/agent-run-contract.md)。远程队列与配对、完整操作系统历史树与资源隔离、项目会话级与远程终端、跨核心动态 Workflow 编排、Token 趋势、原生 CLI 委派、完整备份恢复与正式发布仍在实施。
 
 前后端分离的本机启动、独立构建、配置与客户端退出语义见[独立部署说明](./docs/standalone-deployment.md)。新增需求 F01—F21 及后续节点架构见[架构审查](./docs/research/current-architecture-audit-2026-11-06.md)，本轮来源和范围见[迭代记录](./docs/research/iteration-foundation-2026-11-06.md)。独立入口不代表远程多用户或移动端能力已交付。
 

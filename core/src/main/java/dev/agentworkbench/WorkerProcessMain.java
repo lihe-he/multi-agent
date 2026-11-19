@@ -186,12 +186,12 @@ public final class WorkerProcessMain {
             case "WORKSPACE_WRITE" -> Set.of("ACQUIRE_WRITE");
             case "CHECKPOINT_RESTORE" -> Set.of("RESTORE_CHECKPOINT");
             case "TERMINAL" -> Set.of("TERMINAL");
-            case "MODEL", "SUBAGENT_MODEL", "REVIEW" -> Set.of("RUN");
+            case "MODEL", "SUBAGENT_MODEL", "WORKFLOW_MODEL", "WORKFLOW_GENERATION", "REVIEW" -> Set.of("RUN");
             case "VERIFICATION" -> Set.of("VERIFY");
-            case "REVIEW_SNAPSHOT" -> Set.of("REVIEW_COPY");
-            case "SUBAGENT_SNAPSHOT" -> Set.of("DELEGATION_COPY");
-            case "SUBAGENT_DEPENDENCIES" -> Set.of("INTEGRATE", "REVIEW_COPY");
-            case "ADOPT_SUBAGENT" -> Set.of("INTEGRATE");
+            case "REVIEW_SNAPSHOT", "WORKFLOW_ROOT_SNAPSHOT" -> Set.of("REVIEW_COPY");
+            case "SUBAGENT_SNAPSHOT", "WORKFLOW_SNAPSHOT" -> Set.of("DELEGATION_COPY");
+            case "SUBAGENT_DEPENDENCIES", "WORKFLOW_INPUTS" -> Set.of("INTEGRATE", "REVIEW_COPY");
+            case "ADOPT_SUBAGENT", "WORKFLOW_INTEGRATE" -> Set.of("INTEGRATE");
             default -> Set.of();
         };
         if (!allowed.contains(method)) throw new ApiException(403, "现场方法不属于原操作类型");

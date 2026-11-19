@@ -47,7 +47,7 @@ export function TabBar({ children }: { children: ReactNode }) {
   }}>{children}</nav>;
 }
 
-export function Modal({ title, description, children, onClose, wide = false }: { title: string; description?: string; children: ReactNode; onClose: () => void; wide?: boolean }) {
+export function Modal({ title, description, children, onClose, wide = false, scrollable = false }: { title: string; description?: string; children: ReactNode; onClose: () => void; wide?: boolean; scrollable?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
@@ -68,7 +68,7 @@ export function Modal({ title, description, children, onClose, wide = false }: {
     document.body.style.overflow = 'hidden';
     return () => { window.removeEventListener('keydown', key); document.body.style.overflow = ''; oldFocus?.focus(); };
   }, []);
-  return <div className="modal-overlay" onMouseDown={e => { if (e.target === e.currentTarget) onClose(); }}><div ref={ref} className={`modal ${wide ? 'wide' : ''}`} role="dialog" aria-modal="true" aria-label={title}><header><div><h2>{title}</h2>{description && <p>{description}</p>}</div><button className="icon-button" aria-label="关闭对话框" onClick={onClose}><X size={19} /></button></header>{children}</div></div>;
+  return <div className="modal-overlay" onMouseDown={e => { if (e.target === e.currentTarget) onClose(); }}><div ref={ref} className={`modal ${wide ? 'wide' : ''} ${scrollable ? 'scrollable' : ''}`} role="dialog" aria-modal="true" aria-label={title}><header><div><h2>{title}</h2>{description && <p>{description}</p>}</div><button className="icon-button" aria-label="关闭对话框" onClick={onClose}><X size={19} /></button></header>{children}</div></div>;
 }
 
 export function Field({ label, hint, children, full = false }: { label: string; hint?: string; children: ReactNode; full?: boolean }) {

@@ -95,8 +95,10 @@ const receipt = { startedAt, recordedAt: new Date().toISOString(), status: passe
   selection, originalHistoricalImagesPreserved: historical.length, runnerSha256: hash(scriptSource), directory,
   scope: selection.length ? 'SELECTED_ACTUAL_PRODUCTION_WEB_BROWSER_PROTOCOL_FIXTURES' : 'COMPLETE_ACTUAL_PRODUCTION_WEB_UI_CORPUS_WITH_BROWSER_PROTOCOL_FIXTURES; REAL_NATIVE_AND_RELEASE_ACCEPTANCE_SEPARATE' };
 save('receipt.json', receipt); save('report.json', receipt);
-const qa = join(root, 'docs/qa'), reportFile = join(qa, `ui-production-${process.platform}.json`); mkdirSync(qa, { recursive: true });
-if (existsSync(reportFile)) writeFileSync(join(directory, 'previous-qa-report.json'), readFileSync(reportFile), { flag: 'wx' });
-writeFileSync(reportFile, JSON.stringify(receipt, null, 2) + '\n');
+if (process.env.WORKBENCH_PRESERVE_QA !== '1') {
+  const qa = join(root, 'docs/qa'), reportFile = join(qa, `ui-production-${process.platform}.json`); mkdirSync(qa, { recursive: true });
+  if (existsSync(reportFile)) writeFileSync(join(directory, 'previous-qa-report.json'), readFileSync(reportFile), { flag: 'wx' });
+  writeFileSync(reportFile, JSON.stringify(receipt, null, 2) + '\n');
+}
 console.log(JSON.stringify({ directory, status: receipt.status, stats: receipt.stats, sourcesUnchanged, buildSourcesUnchanged, assetsUnchanged, historicalImagesPreserved: historical.length }));
 process.exitCode = passed ? 0 : ending.exitCode || 1;

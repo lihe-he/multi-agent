@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 import { appendFileSync, copyFileSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 import { randomBytes } from 'node:crypto';
 import net from 'node:net';
 import { javaHome } from './java-runtime.mjs';
@@ -11,10 +11,13 @@ const fixtureRoot = join(dir, 'fixtures'); mkdirSync(fixtureRoot);
 for (const file of ['ci-smoke.mjs', 'smoke-test.mjs', 'team-smoke-fixture.mjs']) copyFileSync(join('tools', file), join(dir, file));
 const port = await new Promise(resolvePort => { const server = net.createServer(); server.listen(0, '127.0.0.1', () => { const { port } = server.address(); server.close(() => resolvePort(port)); }); });
 const token = randomBytes(32).toString('hex');
-const env = { ...process.env, WORKBENCH_PORT: String(port), WORKBENCH_URL: `http://127.0.0.1:${port}`, WORKBENCH_TOKEN: token, WORKBENCH_DATA_DIR: dir, WORKBENCH_SMOKE_ROOT: fixtureRoot, WORKBENCH_REPORT_PATH: resolve(`docs/qa/smoke-${process.platform}.json`) };
+const env = { ...process.env, WORKBENCH_PORT: String(port), WORKBENCH_URL: `http://127.0.0.1:${port}`, WORKBENCH_TOKEN: token, WORKBENCH_DATA_DIR: dir, WORKBENCH_SMOKE_ROOT: fixtureRoot,
+  WORKBENCH_REPORT_PATH: process.env.WORKBENCH_PRESERVE_QA === '1' ? join(dir, 'report.json') : resolve(`docs/qa/smoke-${process.platform}.json`) };
 const java = join(javaHome(resolve('.')), 'bin', process.platform === 'win32' ? 'java.exe' : 'java');
 const version = JSON.parse(readFileSync(resolve('package.json'), 'utf8')).version;
-const child = spawn(java, ['-Dfile.encoding=UTF-8', '-Djdk.virtualThreadScheduler.parallelism=2', '-Djdk.virtualThreadScheduler.maxPoolSize=2', `-Djdk.net.unixdomain.tmpdir=${dir}`, '-jar', resolve(`core/target/agent-workbench-core-${version}.jar`)], { env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+const root = resolve('.'), runtimeArgument = relative(root, dir);
+const jar = join('core', 'target', `agent-workbench-core-${version}.jar`);
+const child = spawn(java, ['-Dfile.encoding=UTF-8', '-Djdk.virtualThreadScheduler.parallelism=2', '-Djdk.virtualThreadScheduler.maxPoolSize=2', `-Djdk.net.unixdomain.tmpdir=${runtimeArgument}`, '-jar', jar], { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
 env.WORKBENCH_EXPECTED_CORE_PID = String(child.pid);
 const log = join(dir, 'core.log'); writeFileSync(log, '', { flag: 'wx' });
 let logs = ''; for (const stream of [child.stdout, child.stderr]) stream.on('data', bytes => { appendFileSync(log, bytes); logs = (logs + bytes).slice(-10000); });

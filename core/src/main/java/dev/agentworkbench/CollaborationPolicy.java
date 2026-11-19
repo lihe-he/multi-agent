@@ -64,6 +64,10 @@ public final class CollaborationPolicy {
         List<Map<String, Object>> profiles = objects(task.get("profileSnapshot")).stream().filter(profile -> str(stage, "role").equals(str(profile, "role"))).toList();
         List<String> actor = profiles.isEmpty() ? phase : strings(profiles.getFirst().get("capabilities"));
         List<String> actual = new ArrayList<>(phase.stream().filter(root::contains).filter(actor::contains).toList());
+        if (!map(task, "workflow").isEmpty() || "WORKFLOW_GENERATION".equals(str(stage, "kind"))) {
+            if ("WORKFLOW_GENERATION".equals(str(stage, "kind"))) actual.removeIf(capability -> !List.of("read", "search").contains(capability));
+            return obj("capabilities", actual, "readScopeLayers", List.of(List.of("**")), "writeScopeLayers", List.of(AgentPermissions.scope(map(task, "contract").get("scope"))));
+        }
         if (!"REVIEW".equals(str(stage, "kind")) && !"PROPOSAL".equals(str(stage, "kind")) && bool(map(task, "collaboration"), "enabled", false)) actual.add("delegate");
         if (actual.contains("write") && !objects(map(task, "mcpAuthorization").get("bindings")).isEmpty()) actual.add("mcp");
         return obj("capabilities", actual.stream().distinct().toList(), "readScopeLayers", List.of(List.of("**")), "writeScopeLayers", List.of(AgentPermissions.scope(map(task, "contract").get("scope"))));
