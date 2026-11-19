@@ -775,7 +775,7 @@ public class ExecutionStore implements AutoCloseable {
         if (!str(run, "startedAt").isBlank()) run.put("queueMs", Math.max(0, java.time.Duration.between(java.time.Instant.parse(str(run, "createdAt")), java.time.Instant.parse(str(run, "startedAt"))).toMillis()));
         transaction(() -> {
             for (Map<String, Object> request : pendingModelRequests(runId)) {
-                endModelRequest(request, obj("state", "UNKNOWN", "errorType", "MISSING_OBSERVATION", "reason", "执行已结束但请求回执缺失，不推测成功或自动重试"));
+                endModelRequest(request, obj("state", "UNKNOWN", "remoteOutcome", "UNKNOWN", "errorType", "MISSING_OBSERVATION", "reason", "执行已结束但请求回执缺失，不推测成功或自动重试"));
             }
             write("agentRun", run); appendEvent(str(run, "taskId"), "AGENT_FINISHED", str(run, "stage") + " · AgentRun " + runId + "：" + state);
         });
@@ -796,7 +796,7 @@ public class ExecutionStore implements AutoCloseable {
         run.putAll(obj("state", state, "reason", reason, "endedAt", attempt.get("endedAt")));
         run.put("elapsedMs", Math.max(0, java.time.Duration.between(java.time.Instant.parse(str(run, "createdAt")), java.time.Instant.parse(str(run, "endedAt"))).toMillis()));
         transaction(() -> {
-            for (Map<String, Object> request : pending) endModelRequest(request, obj("state", "UNKNOWN", "errorType", "MISSING_OBSERVATION", "reason", "节点结束但原请求缺少回执，不自动重试"));
+            for (Map<String, Object> request : pending) endModelRequest(request, obj("state", "UNKNOWN", "remoteOutcome", "UNKNOWN", "errorType", "MISSING_OBSERVATION", "reason", "节点结束但原请求缺少回执，不自动重试"));
             write("agentRun", run); write("workflowNodeAttempt", attempt); write("workflowRun", workflow);
             appendEvent(str(run, "taskId"), "WORKFLOW_NODE_FINISHED", str(attempt, "nodeId") + " · 第 " + num(attempt, "attempt", 1) + " 次：" + state);
         });

@@ -1,0 +1,107 @@
+{
+  "recordedAt": "2026-11-19T08:46:22.5298400Z",
+  "repository": "lihe-he/multi-agent",
+  "branch": "main",
+  "baseCommit": "786b17e2a1e5ea8404177194ef85771062a73a06",
+  "subject": "Workflow crash recovery request outcome and root budget reserve follow-up",
+  "localEnvironment": {
+    "os": "Windows",
+    "java": "21",
+    "maven": "3.9.11"
+  },
+  "fullCore": {
+    "status": "passed",
+    "command": "mvn -B -ntp -f core/pom.xml verify",
+    "testSuites": 50,
+    "tests": 613,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 10,
+    "startedAt": "2026-11-19T15:58:47.6276194+08:00",
+    "completedAt": "2026-11-19T16:44:08.4997017+08:00",
+    "sourceSnapshotUnchanged": true,
+    "receipt": ".runtime/alpha23-workflow-full-verify-20261119/receipt.json",
+    "originalLog": ".runtime/alpha23-workflow-full-verify-20261119/maven.log",
+    "jar": {
+      "path": "core/target/agent-workbench-core-0.2.0-alpha.23.jar",
+      "sha256": "c9c747723de89c83c6274c96faada349b33abebe8a1db4f08a5fdfe3f00e6b78"
+    }
+  },
+  "workflowTargeted": {
+    "status": "passed",
+    "tests": 48,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "dev.agentworkbench.ModelRequestStoreTest(alpha23-e289ff26fdd3491c8b08f1c7bc0da812)",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "f9af6667ca9ae75d076321b18c71094420d5289f05bb2ea3c15d0aba57fc6de9"
+      },
+      {
+        "name": "dev.agentworkbench.WorkflowCatalogTest(alpha23-e289ff26fdd3491c8b08f1c7bc0da812)",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "e0054b1d4424f9639a8b8a747b7882722dd56a193ef183bdf06054038ccb6eee"
+      },
+      {
+        "name": "dev.agentworkbench.WorkflowDslTest(alpha23-e289ff26fdd3491c8b08f1c7bc0da812)",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "5d97816fd6dcf6340ef7bfefeb41a301a99499335409e8b6d3507b5c7943647a"
+      },
+      {
+        "name": "dev.agentworkbench.WorkflowExecutionTest(alpha23-e289ff26fdd3491c8b08f1c7bc0da812)",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "d2f3b6dff5461ff87a13cb2a4bcba08a3cc6af49850593ec1d77a9d335b48571"
+      },
+      {
+        "name": "dev.agentworkbench.WorkflowLedgerTest(alpha23-e289ff26fdd3491c8b08f1c7bc0da812)",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "0db149eb96fcc75697ab60361988ef7ddb4b457243ecb13d6eb2c32d4a251668"
+      }
+    ],
+    "receipt": ".runtime/alpha23-workflow-recovery-final-8757b208ad5a49ae89d7e7605592b35e/receipt.json"
+  },
+  "newWorkflowCoverage": {
+    "actualWorkerForceStoppedDuringHeldHttpRequest": "passed",
+    "restartRecoversAttemptWorkflowAgentOperationLeaseAndRequestAsUnknown": "passed",
+    "missingRequestReceiptSetsRemoteOutcomeUnknown": "passed",
+    "unknownRequestIsNotReplayedAfterRestart": "passed",
+    "committedModelCallBudgetIsPreserved": "passed",
+    "workflowBudgetReserve": {
+      "test": "WorkflowExecutionTest.developmentBudgetExhaustionPreservesReserveForRootVerificationAndReview",
+      "status": "passed",
+      "developmentRequests": 2,
+      "verification": "PASSED",
+      "independentReview": "APPROVED",
+      "receipt": ".runtime/alpha23-workflow-budget-boundary-final-b908c5676baf4b34bfe369c18cd974de/receipt.json"
+    }
+  },
+  "priorRun786b": {
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/44475220769",
+    "headSha": "786b17e2a1e5ea8404177194ef85771062a73a06",
+    "includedCurrentUncommittedChanges": false,
+    "platforms": [
+      "windows-latest",
+      "ubuntu-latest",
+      "macos-latest"
+    ]
+  }
+}

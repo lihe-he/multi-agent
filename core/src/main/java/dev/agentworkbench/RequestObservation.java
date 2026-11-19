@@ -43,7 +43,7 @@ final class RequestObservation implements ModelCallObserver {
         before.run();
         if (cancelled.getAsBoolean()) return false;
         if (maxCalls > 0 && num(store.get("agentRun", runId), "calls", 0) >= maxCalls) { denied.set(true); return false; }
-        if (!requestId.isBlank()) end(obj("state", "UNKNOWN", "errorType", "MISSING_OBSERVATION", "reason", "前次请求缺少观测回执"));
+        if (!requestId.isBlank()) end(obj("state", "UNKNOWN", "remoteOutcome", "UNKNOWN", "errorType", "MISSING_OBSERVATION", "reason", "前次请求缺少观测回执"));
         Map<String, Object> safeInput = new LinkedHashMap<>(metadata);
         if (safeInput.containsKey("inputPreview")) {
             String redacted = catalog.redact(str(safeInput, "inputPreview"));

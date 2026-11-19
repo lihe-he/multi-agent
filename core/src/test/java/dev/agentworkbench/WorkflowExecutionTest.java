@@ -211,6 +211,71 @@ class WorkflowExecutionTest {
     }
 
     @Test
+    void workerCrashDuringWorkflowRequestRecoversUnknownWithoutReplayingTheNode() throws Exception {
+        CountDownLatch held = new CountDownLatch(1);
+        AtomicInteger firstCalls = new AtomicInteger();
+        fixture.set((prompt, results, names) -> {
+            if (node(prompt, "first")) {
+                firstCalls.incrementAndGet();
+                held.countDown();
+                release.await(20, TimeUnit.SECONDS);
+                return answer("Late response from the original workflow request");
+            }
+            return ordinary(prompt);
+        });
+        String taskId = str(task("WORKER_CRASH_DURING_WORKFLOW_REQUEST", List.of(node("first", "left-actor", List.of(), false))), "id");
+        engine.action(taskId, "approve", obj());
+        assertTrue(held.await(90, TimeUnit.SECONDS), "The original node request must reach the HTTP fixture before the worker is stopped");
+        Map<String, Object> attempt = store.list("workflowNodeAttempt").stream().filter(value -> "first".equals(str(value, "nodeId"))).findFirst().orElseThrow();
+        Map<String, Object> request = store.list("modelRequest").stream().filter(value -> str(attempt, "agentRunId").equals(str(value, "agentRunId"))).findFirst().orElseThrow();
+        Map<String, Object> originalWorkflow = store.get("workflowRun", str(attempt, "workflowRunId"));
+        int committedCalls = num(map(store.get("task", taskId), "budget"), "usedCalls", -1);
+        long workerPid = num(engine.workerIdentity(), "pid", 0);
+        ProcessHandle worker = ProcessHandle.of(workerPid).orElseThrow();
+        assertEquals(str(engine.workerIdentity(), "processStartedAt"), worker.info().startInstant().orElseThrow().toString());
+        assertEquals("DISPATCHING", str(request, "state"));
+        assertEquals(1, firstCalls.get());
+
+        store.close();
+        store = null;
+        worker.destroyForcibly();
+        worker.onExit().get(10, TimeUnit.SECONDS);
+        engine.shutdown();
+        engine = null;
+        release.countDown();
+
+        store = new ExecutionStore(mapper, directory.resolve("data").toString());
+        runtime = new ProcessWorkspaceRuntime(mapper, directory.resolve("data").toString());
+        catalog = new WorkbenchCatalog(store, runtime, new PlanValidator());
+        resources = new ResourceManager();
+        engine = new WorkbenchEngine(store, catalog, runtime, resources, mapper);
+        engine.recover();
+
+        Map<String, Object> recoveredTask = store.get("task", taskId);
+        Map<String, Object> recoveredAttempt = store.get("workflowNodeAttempt", str(attempt, "id"));
+        Map<String, Object> recoveredRequest = store.get("modelRequest", str(request, "id"));
+        Map<String, Object> recoveredWorkflow = store.get("workflowRun", str(originalWorkflow, "id"));
+        Map<String, Object> recoveredAgent = store.get("agentRun", str(attempt, "agentRunId"));
+        Map<String, Object> recoveredOperation = store.get("operation", str(recoveredAgent, "operationId"));
+        assertEquals("UNKNOWN", str(recoveredTask, "state"));
+        assertEquals("UNKNOWN", str(recoveredWorkflow, "state"));
+        assertEquals("UNKNOWN", str(recoveredAttempt, "state"));
+        assertTrue(recoveredAttempt.containsKey("endedAt"));
+        assertEquals("UNKNOWN", str(recoveredAgent, "state"));
+        assertEquals("UNKNOWN", str(recoveredRequest, "state"));
+        assertEquals("UNKNOWN", str(recoveredRequest, "remoteOutcome"));
+        assertEquals("UNKNOWN", str(recoveredOperation, "state"));
+        assertEquals("UNKNOWN", str(store.get("workerLease", str(recoveredOperation, "workerLeaseId")), "state"));
+        assertEquals(committedCalls, num(map(recoveredTask, "budget"), "usedCalls", -1));
+        assertEquals(1, store.list("workflowNodeAttempt").size());
+        assertEquals(1, store.list("modelRequest").stream().filter(value -> str(attempt, "agentRunId").equals(str(value, "agentRunId"))).count());
+        assertEquals(1, firstCalls.get());
+        assertEquals(0, resources.activeModels());
+        assertEquals(409, assertThrows(ApiException.class, () -> engine.action(taskId, "resume", obj())).status());
+        assertEquals("base\n", Files.readString(source.resolve("src/source.txt")));
+    }
+
+    @Test
     void pauseBeforeTheNextModelRequestReusesOnlyTheCompletedNodeAndKeepsTheRootBudget() throws Exception {
         AtomicInteger firstCalls = new AtomicInteger(); actor("waiting-writer", "developer", str(otherRoute, "id"), true);
         fixture.set((prompt, results, names) -> {
@@ -241,6 +306,39 @@ class WorkflowExecutionTest {
         assertEquals(List.of(1, 2), store.list("workflowNodeAttempt").stream().filter(attempt -> "writer".equals(str(attempt, "nodeId"))).map(attempt -> num(attempt, "attempt", 0)).sorted().toList());
         assertTrue(num(map(finished, "budget"), "usedCalls", 0) > 1); assertEquals("done\n", Files.readString(Path.of(str(finished, "workspace")).resolve("src/source.txt")));
         assertEquals("base\n", Files.readString(source.resolve("src/source.txt"))); assertTrue(errors.isEmpty(), errors.toString());
+    }
+
+    @Test
+    void developmentBudgetExhaustionPreservesReserveForRootVerificationAndReview() throws Exception {
+        fixture.set((prompt, results, names) -> ordinary(prompt));
+        String taskId = str(task("WORKFLOW_BUDGET_RESERVE", List.of(
+            node("first", "left-actor", List.of(), false),
+            node("second", "left-actor", List.of(), false),
+            node("third", "left-actor", List.of(), false))), "id");
+        store.editTask(taskId, task -> map(task, "budget").putAll(obj("maxCalls", 6, "reserveCalls", 4)), null, "");
+
+        engine.action(taskId, "approve", obj());
+        Map<String, Object> waiting = awaitTask(taskId, Set.of("WAITING_INPUT"));
+        Map<String, Object> budget = map(waiting, "budget");
+        Map<String, Object> workflow = store.get("workflowRun", str(waiting, "workflowRunId"));
+
+        assertEquals("BUDGET_EXHAUSTED", str(workflow, "state"));
+        assertEquals("PASSED", str(map(waiting, "verification"), "status"));
+        assertEquals("APPROVED", str(map(waiting, "review"), "status"));
+        assertEquals(3, num(budget, "usedCalls", -1));
+        assertEquals(2, num(budget, "usedDevelopmentCalls", -1));
+        assertEquals(1, num(budget, "usedReservedCalls", -1));
+        List<Map<String, Object>> attempts = store.list("workflowNodeAttempt");
+        assertTrue(attempts.size() >= 2 && attempts.size() <= 3, attempts.toString());
+        assertTrue(attempts.stream().allMatch(attempt -> attempt.containsKey("endedAt")), attempts.toString());
+        if (attempts.size() == 3) assertEquals("BUDGET_EXHAUSTED", str(attempts.stream().filter(attempt -> "third".equals(str(attempt, "nodeId"))).findFirst().orElseThrow(), "state"));
+        assertEquals(2, store.list("modelRequest").stream().filter(request -> !str(request, "workflowNodeAttemptId").isBlank()).count());
+        assertFalse(store.list("modelRequest").stream().anyMatch(request -> "third".equals(str(request, "workflowNodeId"))));
+        assertTrue(store.list("agentRun").stream().anyMatch(run -> "review".equals(str(run, "stage")) && bool(run, "reserved", false)));
+        assertTrue(store.list("evidence").stream().anyMatch(evidence -> "VERIFICATION".equals(str(evidence, "kind")) && "PASSED".equals(str(evidence, "status"))));
+        assertEquals(3, calls.get());
+        assertEquals("base\n", Files.readString(source.resolve("src/source.txt")));
+        assertTrue(errors.isEmpty(), errors.toString());
     }
 
     @Test
