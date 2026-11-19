@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-11-19T08:46:22.5298400Z",
+  "recordedAt": "2026-11-19T10:08:56.4012802Z",
   "repository": "lihe-he/multi-agent",
   "branch": "main",
   "baseCommit": "786b17e2a1e5ea8404177194ef85771062a73a06",
@@ -103,5 +103,141 @@
       "ubuntu-latest",
       "macos-latest"
     ]
+  },
+  "currentCommitCI": {
+    "id": 44490957185,
+    "attempt": 1,
+    "headSha": "13665a58971f262d9488cfdda509af984fdd92f9",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/44490957185",
+    "createdAt": "2026-11-19T08:49:56Z",
+    "updatedAt": "2026-11-19T09:54:07Z",
+    "jobs": [
+      {
+        "name": "verify (macos-latest)",
+        "platform": "macos-latest",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAt": "2026-11-19T08:49:59Z",
+        "completedAt": "2026-11-19T09:23:36Z",
+        "coreStep": {
+          "status": "completed",
+          "conclusion": "success"
+        },
+        "uiTests": {
+          "status": "completed",
+          "conclusion": "success"
+        },
+        "failedSteps": [],
+        "conditionallySkippedSteps": [
+          "Actual desktop session previews with virtual display",
+          "Standalone lifecycle with virtual display",
+          "Actual packaged session previews with virtual display"
+        ]
+      },
+      {
+        "name": "verify (ubuntu-latest)",
+        "platform": "ubuntu-latest",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAt": "2026-11-19T08:49:58Z",
+        "completedAt": "2026-11-19T09:14:46Z",
+        "coreStep": {
+          "status": "completed",
+          "conclusion": "success"
+        },
+        "uiTests": {
+          "status": "completed",
+          "conclusion": "success"
+        },
+        "failedSteps": [],
+        "conditionallySkippedSteps": [
+          "Actual desktop session previews and persistent login",
+          "Standalone browser and attached desktop lifecycle",
+          "Actual packaged session previews without external Java or Node"
+        ]
+      },
+      {
+        "name": "verify (windows-latest)",
+        "platform": "windows-latest",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAt": "2026-11-19T08:49:59Z",
+        "completedAt": "2026-11-19T09:54:06Z",
+        "coreStep": {
+          "status": "completed",
+          "conclusion": "success"
+        },
+        "uiTests": {
+          "status": "completed",
+          "conclusion": "success"
+        },
+        "failedSteps": [],
+        "conditionallySkippedSteps": [
+          "Actual desktop session previews with virtual display",
+          "Standalone lifecycle with virtual display",
+          "Actual packaged session previews with virtual display"
+        ]
+      }
+    ],
+    "artifacts": [
+      {
+        "id": 14517526391,
+        "name": "evidence-windows-latest",
+        "size_in_bytes": 312940843,
+        "expired": false,
+        "created_at": "2026-11-19T09:54:02Z",
+        "updated_at": "2026-11-19T09:54:02Z"
+      },
+      {
+        "id": 14517261820,
+        "name": "desktop-windows-latest",
+        "size_in_bytes": 157818153,
+        "expired": false,
+        "created_at": "2026-11-19T09:53:29Z",
+        "updated_at": "2026-11-19T09:53:29Z"
+      },
+      {
+        "id": 14515676389,
+        "name": "evidence-macos-latest",
+        "size_in_bytes": 304216201,
+        "expired": false,
+        "created_at": "2026-11-19T09:23:30Z",
+        "updated_at": "2026-11-19T09:23:30Z"
+      },
+      {
+        "id": 14514827517,
+        "name": "desktop-macos-latest",
+        "size_in_bytes": 180625953,
+        "expired": false,
+        "created_at": "2026-11-19T09:22:59Z",
+        "updated_at": "2026-11-19T09:22:59Z"
+      },
+      {
+        "id": 14514815684,
+        "name": "evidence-ubuntu-latest",
+        "size_in_bytes": 317392916,
+        "expired": false,
+        "created_at": "2026-11-19T09:14:44Z",
+        "updated_at": "2026-11-19T09:14:44Z"
+      },
+      {
+        "id": 14514098061,
+        "name": "desktop-ubuntu-latest",
+        "size_in_bytes": 190037887,
+        "expired": false,
+        "created_at": "2026-11-19T09:14:24Z",
+        "updated_at": "2026-11-19T09:14:24Z"
+      }
+    ],
+    "evidenceScope": {
+      "jobResults": "GitHub Actions run and job metadata for the exact pushed commit; all three platform jobs concluded successfully.",
+      "testResults": "The core test and package step and UI interaction step completed successfully on all three platforms; this receipt does not invent per-platform test counts from unavailable log downloads. Exact local full-core and targeted-suite results are recorded separately above.",
+      "originalLogs": "Original platform logs and JUnit evidence are retained by their GitHub Actions evidence artifacts and can be inspected from the linked run.",
+      "artifactDigests": "GitHub Actions artifact digests and sizes are preserved from API metadata. The complete evidence ZIPs were not re-downloaded or verified locally.",
+      "artifactZipsVerifiedLocally": false
+    }
   }
 }
