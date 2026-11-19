@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-11-19T10:58:01.0358581Z",
+  "recordedAt": "2026-11-19T13:05:34.086116+00:00",
   "repository": "lihe-he/multi-agent",
   "branch": "main",
   "baseCommit": "786b17e2a1e5ea8404177194ef85771062a73a06",
@@ -189,7 +189,8 @@
         "size_in_bytes": 312940843,
         "expired": false,
         "created_at": "2026-11-19T09:54:02Z",
-        "updated_at": "2026-11-19T09:54:02Z"
+        "updated_at": "2026-11-19T09:54:02Z",
+        "digest": "sha256:aa66ff0c1dbad7bcf885df2a40a9262ea60f93e97c441cc645a001cf45907766"
       },
       {
         "id": 14517261820,
@@ -197,7 +198,8 @@
         "size_in_bytes": 157818153,
         "expired": false,
         "created_at": "2026-11-19T09:53:29Z",
-        "updated_at": "2026-11-19T09:53:29Z"
+        "updated_at": "2026-11-19T09:53:29Z",
+        "digest": "sha256:76774eef5869211a246ff7a7c5a450f13b56f351724a0d384fcb4f5c19fb1a92"
       },
       {
         "id": 14515676389,
@@ -205,7 +207,8 @@
         "size_in_bytes": 304216201,
         "expired": false,
         "created_at": "2026-11-19T09:23:30Z",
-        "updated_at": "2026-11-19T09:23:30Z"
+        "updated_at": "2026-11-19T09:23:30Z",
+        "digest": "sha256:e1180a36d52d1b9f7d44e5ae9e99e9557f44326037844daef50f7bd73e220e3e"
       },
       {
         "id": 14514827517,
@@ -213,7 +216,8 @@
         "size_in_bytes": 180625953,
         "expired": false,
         "created_at": "2026-11-19T09:22:59Z",
-        "updated_at": "2026-11-19T09:22:59Z"
+        "updated_at": "2026-11-19T09:22:59Z",
+        "digest": "sha256:f7fc18fe6b0c846ede01c4c9785a4b5435be7a313d149d5f1c607993b02c6007"
       },
       {
         "id": 14514815684,
@@ -221,7 +225,8 @@
         "size_in_bytes": 317392916,
         "expired": false,
         "created_at": "2026-11-19T09:14:44Z",
-        "updated_at": "2026-11-19T09:14:44Z"
+        "updated_at": "2026-11-19T09:14:44Z",
+        "digest": "sha256:20daec83df71e6db2dadbda068271bab75ca7db15d26af75a5d8b8346cd05b31"
       },
       {
         "id": 14514098061,
@@ -229,7 +234,8 @@
         "size_in_bytes": 190037887,
         "expired": false,
         "created_at": "2026-11-19T09:14:24Z",
-        "updated_at": "2026-11-19T09:14:24Z"
+        "updated_at": "2026-11-19T09:14:24Z",
+        "digest": "sha256:35e8cd461950f57e7663ae4ba9ee755105b4651d3faf58d9c6d8c6d212356bf1"
       }
     ],
     "evidenceScope": {
@@ -245,39 +251,209 @@
     "runId": 44503691251,
     "url": "https://github.com/lihe-he/multi-agent/actions/runs/44503691251",
     "status": "completed",
-    "conclusion": "failure",
+    "conclusion": "success",
     "jobs": [
       {
-        "platform": "ubuntu-latest",
-        "conclusion": "success",
-        "failedSteps": []
-      },
-      {
-        "platform": "macos-latest",
-        "conclusion": "success",
-        "failedSteps": []
-      },
-      {
+        "jobId": 135513694580,
         "platform": "windows-latest",
-        "conclusion": "failure",
-        "failedSteps": [
-          "Core tests and package"
-        ],
-        "suite": "dev.agentworkbench.TeamExecutionTest",
-        "tests": 12,
-        "failures": 1,
-        "errors": 0,
-        "skipped": 0,
-        "failedTest": "actualDelegationSharesRootBudgetAndDependencySnapshotBeforeGuardedAdoption",
-        "observedError": "WORKER_RESULT_MISSING led to UNKNOWN while resolving a dependency worker",
-        "jobId": 135489669766,
-        "originalJobLog": {
-          "file": ".runtime/alpha23-ci-windows-job-135489669766-logs.txt",
-          "bytes": 91960,
-          "sha256": "202b22d2e19cc118fa670d698bb72c65b7c54551d52ac1b96813024c7f3edbb6"
+        "status": "completed",
+        "conclusion": "success",
+        "startedAt": "2026-11-19T10:59:11Z",
+        "completedAt": "2026-11-19T11:51:54Z",
+        "execution": "rerun_failed_job",
+        "failedSteps": [],
+        "core": {
+          "tests": 613,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 8,
+          "passed": 605
+        },
+        "suites": {
+          "WorkflowExecutionTest": {
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "TeamExecutionTest": {
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        },
+        "productionUI": {
+          "tests": 260,
+          "passed": 260
+        },
+        "originalLog": {
+          "file": ".runtime/alpha21-ci/job-135513694580-run-44503691251-attempt-2/job.log",
+          "bytes": 225809,
+          "sha256": "fd7326ed4a35076c381459c277d6a92e76367e9fa7448455fc6816e16d6b7534"
+        }
+      },
+      {
+        "jobId": 135513696420,
+        "platform": "ubuntu-latest",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAt": "2026-11-19T10:13:51Z",
+        "completedAt": "2026-11-19T10:34:14Z",
+        "execution": "reused_successful_attempt_1_job",
+        "failedSteps": [],
+        "core": {
+          "tests": 613,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 11,
+          "passed": 602
+        },
+        "suites": {
+          "WorkflowExecutionTest": {
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "TeamExecutionTest": {
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        },
+        "productionUI": {
+          "tests": 260,
+          "passed": 260
+        },
+        "originalLog": {
+          "file": ".runtime/alpha21-ci/job-135513696420-run-44503691251-attempt-2/job.log",
+          "bytes": 232332,
+          "sha256": "dff1e79df23b2715d69e2affae773a2eb6d9a74f75090bf52dc29a5789dcf163"
+        }
+      },
+      {
+        "jobId": 135513696899,
+        "platform": "macos-latest",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAt": "2026-11-19T10:13:52Z",
+        "completedAt": "2026-11-19T10:47:00Z",
+        "execution": "reused_successful_attempt_1_job",
+        "failedSteps": [],
+        "core": {
+          "tests": 613,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 11,
+          "passed": 602
+        },
+        "suites": {
+          "WorkflowExecutionTest": {
+            "tests": 7,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "TeamExecutionTest": {
+            "tests": 12,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        },
+        "productionUI": {
+          "tests": 260,
+          "passed": 260
+        },
+        "originalLog": {
+          "file": ".runtime/alpha21-ci/job-135513696899-run-44503691251-attempt-2/job.log",
+          "bytes": 220375,
+          "sha256": "d3229c9d8817310a286c2e53995e61ae6673f88e91846b8333fd8b3a18677ff9"
         }
       }
     ],
-    "scope": "Documentation-only follow-up run. The prior code commit 13665a5 had a separate three-platform successful run 44490957185; this failure is retained as an observed platform timing result and is not reclassified as a code regression."
+    "scope": "Attempt 2 reran only the failed Windows job; Ubuntu and macOS retain their successful attempt 1 executions. All three current jobs succeeded. The first Windows failure and incomplete fixture are retained; rerun success does not establish the original failure cause or exclude a code defect.",
+    "attempt": 2,
+    "firstAttempt": {
+      "status": "completed",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "platform": "ubuntu-latest",
+          "conclusion": "success",
+          "failedSteps": []
+        },
+        {
+          "platform": "macos-latest",
+          "conclusion": "success",
+          "failedSteps": []
+        },
+        {
+          "platform": "windows-latest",
+          "conclusion": "failure",
+          "failedSteps": [
+            "Core tests and package"
+          ],
+          "suite": "dev.agentworkbench.TeamExecutionTest",
+          "tests": 12,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0,
+          "failedTest": "actualDelegationSharesRootBudgetAndDependencySnapshotBeforeGuardedAdoption",
+          "observedError": "WORKER_RESULT_MISSING led to UNKNOWN while resolving a dependency worker",
+          "jobId": 135489669766,
+          "originalJobLog": {
+            "file": ".runtime/alpha23-ci-windows-job-135489669766-logs.txt",
+            "bytes": 91960,
+            "sha256": "202b22d2e19cc118fa670d698bb72c65b7c54551d52ac1b96813024c7f3edbb6"
+          }
+        }
+      ],
+      "attempt": 1,
+      "core": {
+        "tests": 613,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 8
+      },
+      "failedWindowsArtifact": {
+        "id": 14520288008,
+        "name": "evidence-windows-latest",
+        "createdAt": "2026-11-19T10:41:30Z",
+        "size": 26042439,
+        "sha256": "e71d4abcd56afd60c9a92e4631d3794730f6f27863b6f7c23d1fb0b0f50b647d",
+        "wholeZipDigestVerifiedLocally": true,
+        "artifactAttempt": 1,
+        "runAttemptWhenCollected": 2,
+        "downloadReceipt": ".runtime/alpha21-ci/artifact-14520288008-run-44503691251-attempt-2/receipt.json",
+        "fixturePreservation": {
+          "file": ".runtime/alpha21-ci/artifact-14520288008-run-44503691251-attempt-2/inspection/fixture-preservation.json",
+          "sha256": "246d320931815eeab34b222cc0995ce3c99610c19dcc0c75fed95cde6a243ca5",
+          "test": "actualDelegationSharesRootBudgetAndDependencySnapshotBeforeGuardedAdoption()",
+          "completeCopy": false,
+          "copyGaps": [
+            {
+              "file": "data\\.core.lock",
+              "reason": "java.io.IOException: The process cannot access the file because another process has locked a portion of the file"
+            },
+            {
+              "file": "data\\workbench.sqlite-shm",
+              "reason": "java.io.IOException: The process cannot access the file because another process has locked a portion of the file"
+            },
+            {
+              "file": "data\\workbench.sqlite-wal",
+              "reason": "java.io.IOException: Original fixture changed during preservation: data\\workbench.sqlite-wal"
+            }
+          ],
+          "copiedFiles": 224,
+          "databaseScope": "Non-atomic copied database and WAL; the WAL changed during copying. SQLite quick_check passed on the extracted copy, which does not establish snapshot completeness or causality."
+        },
+        "rootCause": "UNDETERMINED",
+        "observedBoundary": "The dependency input workspace contains made\\n, but SUBAGENT_DEPENDENCIES has no complete acknowledgement. Worker failure category and original cause are not retained by WORKER_RESULT_MISSING."
+      }
+    },
+    "successfulArtifactZipsVerifiedLocally": false
   }
 }
