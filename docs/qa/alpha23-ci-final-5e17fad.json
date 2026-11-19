@@ -123,5 +123,127 @@
     "jobResults": "GitHub Actions run and job metadata; test counts from original job logs with locally computed SHA-256.",
     "artifactDigests": "Reported by the GitHub Actions artifacts API. The complete ZIPs were not re-downloaded or verified locally; a partial download is not verification.",
     "artifactZipsVerifiedLocally": false
+  },
+  "documentationCommitFollowUp": {
+    "purpose": "Confirm that the documentation commit recording this receipt also completed cross-platform CI.",
+    "run": {
+      "id": 44463016113,
+      "attempt": 1,
+      "headSha": "eb26bcb15e38970b6c00eed3c5c1a45f66e567ca",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lihe-he/multi-agent/actions/runs/44463016113",
+      "createdAt": "2026-11-19T05:07:56Z",
+      "updatedAt": "2026-11-19T06:08:38Z"
+    },
+    "jobs": [
+      {
+        "platform": "ubuntu-latest",
+        "jobId": 135354074716,
+        "status": "completed",
+        "conclusion": "success",
+        "completedAt": "2026-11-19T05:25:32Z",
+        "coreFromLog": { "tests": 611, "passed": 600, "failures": 0, "errors": 0, "skipped": 11 },
+        "workflowExecutionFromLog": { "tests": 5, "passed": 5, "failures": 0, "errors": 0, "skipped": 0 },
+        "productionUiFromLog": { "tests": 260, "passed": 260, "failures": 0, "skipped": 0, "flaky": 0, "historicalImagesPreserved": 44 },
+        "conditionallySkippedSteps": [
+          "Actual desktop session previews and persistent login",
+          "Standalone browser and attached desktop lifecycle",
+          "Actual packaged session previews without external Java or Node"
+        ],
+        "failedSteps": [],
+        "originalLog": {
+          "file": ".runtime/alpha21-ci/job-135354074716-run-44463016113-attempt-1/job.log",
+          "bytes": 232379,
+          "sha256": "5a05c99fbf80805c86cc646654d40f00dd4eafb509e17ff3c4d5253751a9a383"
+        }
+      },
+      {
+        "platform": "macos-latest",
+        "jobId": 135354074998,
+        "status": "completed",
+        "conclusion": "success",
+        "completedAt": "2026-11-19T05:39:27Z",
+        "coreFromLog": { "tests": 611, "passed": 600, "failures": 0, "errors": 0, "skipped": 11 },
+        "workflowExecutionFromLog": { "tests": 5, "passed": 5, "failures": 0, "errors": 0, "skipped": 0 },
+        "productionUiFromLog": { "tests": 260, "passed": 260, "failures": 0, "skipped": 0, "flaky": 0, "historicalImagesPreserved": 44 },
+        "conditionallySkippedSteps": [
+          "Actual desktop session previews with virtual display",
+          "Standalone lifecycle with virtual display",
+          "Actual packaged session previews with virtual display"
+        ],
+        "failedSteps": [],
+        "originalLog": {
+          "file": ".runtime/alpha21-ci/job-135354074998-run-44463016113-attempt-1/job.log",
+          "bytes": 220538,
+          "sha256": "7a23c1a9dd9be9eea1b4c927e405266f3c243a8b8a21537b8c418f74ee7c24c6"
+        }
+      },
+      {
+        "platform": "windows-latest",
+        "jobId": 135354075093,
+        "status": "completed",
+        "conclusion": "success",
+        "completedAt": "2026-11-19T06:08:37Z",
+        "coreFromLog": { "tests": 611, "passed": 603, "failures": 0, "errors": 0, "skipped": 8 },
+        "workflowExecutionFromLog": { "tests": 5, "passed": 5, "failures": 0, "errors": 0, "skipped": 0 },
+        "productionUiFromLog": { "tests": 260, "passed": 260, "failures": 0, "skipped": 0, "flaky": 0, "historicalImagesPreserved": 44 },
+        "conditionallySkippedSteps": [
+          "Actual desktop session previews with virtual display",
+          "Standalone lifecycle with virtual display",
+          "Actual packaged session previews with virtual display"
+        ],
+        "failedSteps": [],
+        "originalLog": {
+          "file": ".runtime/alpha21-ci/job-135354075093-run-44463016113-attempt-1/job.log",
+          "bytes": 225371,
+          "sha256": "9f8c496fb7e22258de232e3161d215c81e9a2fe45b3cd01d2c9b50e88ef051a1"
+        }
+      }
+    ],
+    "artifacts": [
+      {
+        "artifactId": 14503787217,
+        "name": "desktop-windows-latest",
+        "sizeInBytes": 157818569,
+        "githubDigest": "sha256:c317affe1b10b6af248f107dd6dd7e17872402db445806ecbab3c205484af0f9"
+      },
+      {
+        "artifactId": 14503028944,
+        "name": "evidence-windows-latest",
+        "sizeInBytes": 312964844,
+        "githubDigest": "sha256:00c77e7e901525b8831c19263b896d477df10f487326d40c4660ec762cc624ec"
+      },
+      {
+        "artifactId": 14502930057,
+        "name": "desktop-macos-latest",
+        "sizeInBytes": 180632511,
+        "githubDigest": "sha256:a3c66dd421145a884cce807dd31abc2ad9684cc7a6b4a8804a3db297f2187e4a"
+      },
+      {
+        "artifactId": 14502160414,
+        "name": "desktop-ubuntu-latest",
+        "sizeInBytes": 190037903,
+        "githubDigest": "sha256:6f4660493d1c5fa5f6e99e6c7c4d896799a580272dead7859b58b405e8d6ccc3"
+      },
+      {
+        "artifactId": 14501614227,
+        "name": "evidence-macos-latest",
+        "sizeInBytes": 304306558,
+        "githubDigest": "sha256:f4261e15d917f30189bf405f1c9776638dc1144ce549946bd3e24fc90db7ce1b"
+      },
+      {
+        "artifactId": 14501577449,
+        "name": "evidence-ubuntu-latest",
+        "sizeInBytes": 317354489,
+        "githubDigest": "sha256:eea913900fad1424c6c65dfdec27960806019975dee11a5ae9eb31ae4b697591"
+      }
+    ],
+    "evidenceScope": {
+      "jobLogs": "Original GitHub job logs were downloaded locally; sizes and SHA-256 were recomputed locally.",
+      "artifactDigests": "Reported by GitHub Actions artifact metadata. Complete ZIPs were not re-downloaded or verified locally.",
+      "artifactZipsVerifiedLocally": false
+    }
   }
 }

@@ -10,7 +10,7 @@
 
 另提供只读生成候选：绑定实际根目标、合同、上下文、执行/锁定数据与允许的职责版本；解析输出后按同一 DSL、归属、权限和版本规则校验，所有失败继续保留原请求/Worker/模型来源。生成不会自动改写任务流程或发布定义；用户可编辑 DSL，按原候选摘要验证后显式发布，版本冲突或同一发布请求重放均有边界检查。任务界面支持版本选择、生成记录、原运行/节点回执与证据浏览、冲突后重新开始。任务 ZIP 新增 `workflow-runs.json`、`workflow-node-attempts.json`、`workflow-proposals.json` 和 `workflow-generations.json`。
 
-协议和功能边界见[Workflow 协议](./workflow-contract.md)。alpha.23 实现提交 `5e17fad` 的 [GitHub Actions Run 44454119818](https://github.com/lihe-he/multi-agent/actions/runs/44454119818) 已结束，Windows、Ubuntu、macOS 三端均成功。各端核心均为 **611 项、0 失败、0 错误**，条件跳过分别为 **8 / 11 / 11** 项；各端 `WorkflowExecutionTest` **5/5**、生产 Web UI **260/260** 通过。平台互斥的桌面入口按条件跳过，其余 CI 步骤成功。[CI 终态回执](./qa/alpha23-ci-final-5e17fad.json)记录了三份原始日志的本机路径及 SHA-256；artifact 摘要来自 GitHub 元数据，完整 ZIP 未在本机重新下载核验。
+协议和功能边界见[Workflow 协议](./workflow-contract.md)。alpha.23 实现提交 `5e17fad` 的 [GitHub Actions Run 44454119818](https://github.com/lihe-he/multi-agent/actions/runs/44454119818) 已结束，Windows、Ubuntu、macOS 三端均成功。各端核心均为 **611 项、0 失败、0 错误**，条件跳过分别为 **8 / 11 / 11** 项；各端 `WorkflowExecutionTest` **5/5**、生产 Web UI **260/260** 通过。平台互斥的桌面入口按条件跳过，其余 CI 步骤成功。[CI 终态回执](./qa/alpha23-ci-final-5e17fad.json)记录了三份原始日志的本机路径及 SHA-256；artifact 摘要来自 GitHub 元数据，完整 ZIP 未在本机重新下载核验。文档回执提交 `eb26bcb` 的[后续 Run 44463016113](https://github.com/lihe-he/multi-agent/actions/runs/44463016113)也已三端成功，核心为 Windows **611 项、603 通过、8 条件跳过**，Ubuntu/macOS 各 **611 项、600 通过、11 条件跳过**；各端 `WorkflowExecutionTest` 5/5、生产 UI 260/260。该 Run 的日志、步骤、artifact 元数据及未本机下载完整 ZIP 的范围一并记在同一回执中。
 
 本机独立验证：Windows 固定 Chromium 通道生产 Web UI **260/260** 通过，0 跳过/失败/重试；源码与资产摘要前后稳定，44 张历史截图保持原字节，新增流程选择、候选发布、换版冲突和生成重试用例覆盖 1440px 与 430px。[UI 原始回执](./../.runtime/ui-production-vR7qei/receipt.json) · [UI 日志](./../.runtime/ui-production-vR7qei/command.log)。
 
