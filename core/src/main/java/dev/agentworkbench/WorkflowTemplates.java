@@ -1,6 +1,7 @@
 package dev.agentworkbench;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import static dev.agentworkbench.Json.*;
@@ -48,6 +49,25 @@ final class WorkflowTemplates {
             "依据前置交接和根完成约定实际完成实现。保留原注释、已有工作和原失败；交付供根验证与独立审查。", true));
         return obj("dslVersion", WorkflowDsl.VERSION, "inputs", List.of("goal", "contract", "context", "baseline"),
             "maxParallel", 3, "nodes", nodes);
+    }
+
+    /**
+     * 为新内置版本的实现节点显式声明根目标和完成约定。
+     */
+    static Map<String, Object> withDeclaredImplementationInputs(Map<String, Object> dsl) {
+        Map<String, Object> updated = new LinkedHashMap<>(dsl);
+        List<Map<String, Object>> nodes = new ArrayList<>();
+        for (Map<String, Object> node : objects(dsl.get("nodes"))) {
+            if (!"IMPLEMENT".equals(str(node, "kind"))) { nodes.add(node); continue; }
+            Map<String, Object> implementation = new LinkedHashMap<>(node);
+            List<String> declared = new ArrayList<>(strings(node.get("inputs")));
+            if (!declared.contains("goal")) declared.add("goal");
+            if (!declared.contains("contract")) declared.add("contract");
+            implementation.put("inputs", declared);
+            nodes.add(implementation);
+        }
+        updated.put("nodes", nodes);
+        return updated;
     }
 
     private static Map<String, Object> node(String id, String kind, String title, Map<String, Object> actor,

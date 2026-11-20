@@ -50,6 +50,7 @@ async function main() {
   } else if (command === 'build') await build();
   else if (command === 'build:core') await run(maven, ['-B', '-ntp', 'package'], path.join(root, 'core'), environment());
   else if (command === 'build:web') await run(npm, ['run', 'build'], path.join(root, 'web'));
+  else if (command === 'verify:core') await run(maven, ['-B', '-ntp', 'clean', 'verify'], path.join(root, 'core'), environment());
   else if (command === 'test') {
     await run(maven, ['-B', '-ntp', 'test'], path.join(root, 'core'), environment());
     await run(npm, ['run', 'build'], path.join(root, 'web'));

@@ -1,40 +1,40 @@
 {
-  "createdAt": "2026-11-16T01:20:04.910Z",
+  "createdAt": "2026-11-20T03:03:52.409Z",
   "platform": "win32",
   "status": "passed",
-  "baseUrl": "http://127.0.0.1:62290",
-  "fixture": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-l3lwXG",
-  "projectPath": "C:\\Users\\ZENGQI~1\\AppData\\Local\\Temp\\agent-workbench-smoke-l3lwXG\\中文 sample project",
+  "baseUrl": "http://127.0.0.1:57610",
+  "fixture": "D:\\Projects\\多Agent研发工作台\\.runtime\\ci-9Lqf92\\fixtures\\agent-workbench-smoke-oxR0AQ",
+  "projectPath": "D:\\Projects\\多Agent研发工作台\\.runtime\\ci-9Lqf92\\fixtures\\agent-workbench-smoke-oxR0AQ\\中文 sample project",
   "checks": [
     {
       "name": "API rejects missing access token",
       "status": "passed",
-      "durationMs": 13
+      "durationMs": 18
     },
     {
       "name": "Core returns persisted state",
       "status": "passed",
-      "durationMs": 11
+      "durationMs": 13
     },
     {
       "name": "Import real Git repository with Chinese and spaced path",
       "status": "passed",
-      "durationMs": 624
+      "durationMs": 610
     },
     {
       "name": "Local execution node and repository binding are authoritative and versioned",
       "status": "passed",
-      "durationMs": 81
+      "durationMs": 105
     },
     {
       "name": "Search reports source locations and coverage",
       "status": "passed",
-      "durationMs": 122
+      "durationMs": 138
     },
     {
       "name": "Session routes require authentication and preserve server-owned message identity",
       "status": "passed",
-      "durationMs": 135
+      "durationMs": 185
     },
     {
       "name": "Save project knowledge with an explicit source",
@@ -44,112 +44,132 @@
     {
       "name": "Reject unsupported permission in an imported role template",
       "status": "passed",
-      "durationMs": 8
+      "durationMs": 14
     },
     {
       "name": "Reject cyclic execution plan before dispatch",
       "status": "passed",
-      "durationMs": 6
+      "durationMs": 16
     },
     {
       "name": "Configure local protocol test route",
       "status": "passed",
-      "durationMs": 8
+      "durationMs": 5
     },
     {
       "name": "Create task with fixed contract and route locks",
       "status": "passed",
-      "durationMs": 33
+      "durationMs": 31
     },
     {
       "name": "One session carries multiple tasks with source goals and scoped activity",
       "status": "passed",
-      "durationMs": 76
+      "durationMs": 63
     },
     {
       "name": "Reject route that does not match the hard model lock",
       "status": "passed",
-      "durationMs": 9
+      "durationMs": 15
     },
     {
       "name": "Reject acceptance before required execution and evidence",
       "status": "passed",
-      "durationMs": 19
+      "durationMs": 17
     },
     {
       "name": "Execute actual Java API tool loop, verification and independent review",
       "status": "passed",
-      "durationMs": 40999
+      "durationMs": 24759
     },
     {
       "name": "Agent runs persist real calls, scoped pages and evidence identity",
       "status": "passed",
-      "durationMs": 100
+      "durationMs": 59
     },
     {
       "name": "Durable root attempt keeps its original action, owner and execution receipt",
       "status": "passed",
-      "durationMs": 144
+      "durationMs": 45
     },
     {
       "name": "Model request trace binds each API round to budget, usage and provider receipt",
       "status": "passed",
-      "durationMs": 92
+      "durationMs": 33
     },
     {
       "name": "Preserve source Git worktree and staged state",
       "status": "passed",
-      "durationMs": 169
+      "durationMs": 211
     },
     {
       "name": "Diff and evidence are bound to the delivered version",
       "status": "passed",
-      "durationMs": 1491
+      "durationMs": 1316
     },
     {
       "name": "Persistent events can be replayed with a cursor",
       "status": "passed",
-      "durationMs": 19
+      "durationMs": 11
     },
     {
       "name": "Reject acceptance and export when content changes after review",
       "status": "passed",
-      "durationMs": 345
+      "durationMs": 264
     },
     {
       "name": "Manual acceptance records completion without writing source",
       "status": "passed",
-      "durationMs": 202
+      "durationMs": 124
     },
     {
       "name": "Export portable delivery archive",
       "status": "passed",
-      "durationMs": 3892
+      "durationMs": 1514
+    },
+    {
+      "name": "Workflow readiness exposes exact routes and declared inputs without credentials or execution",
+      "status": "passed",
+      "durationMs": 61
+    },
+    {
+      "name": "Task Workflow readiness preserves the pinned route and digest without task or model request changes",
+      "status": "passed",
+      "durationMs": 73
+    },
+    {
+      "name": "Execute the published Workflow with separate root verification and review",
+      "status": "passed",
+      "durationMs": 26756
+    },
+    {
+      "name": "Generate and publish a read-only Workflow candidate with its original request",
+      "status": "passed",
+      "durationMs": 32609
     },
     {
       "name": "Disable knowledge while preserving its revision",
       "status": "passed",
-      "durationMs": 32
+      "durationMs": 15
     },
     {
       "name": "Complete LEAD stages under the same root budget",
       "status": "passed",
-      "durationMs": 22598
+      "durationMs": 23567
     },
     {
       "name": "Complete ROUNDTABLE stages under the same root budget",
       "status": "passed",
-      "durationMs": 37247
+      "durationMs": 35555
     },
     {
       "name": "Actual dynamic team shares the root budget, adopts dependencies and preserves MCP source in the ZIP",
       "status": "passed",
-      "durationMs": 54775
+      "durationMs": 39952
     },
     {
       "name": "Cancel an in-flight task and keep source intact",
       "status": "passed",
-      "durationMs": 11133
+      "durationMs": 7998
     }
   ],
   "calls": [
@@ -165,6 +185,8 @@
         "search_files"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:01:12.001Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -179,6 +201,8 @@
         "search_files"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:01:13.031Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -196,6 +220,8 @@
         "run_command"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:01:15.106Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -213,6 +239,8 @@
         "run_command"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:01:15.909Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -230,6 +258,8 @@
         "run_command"
       ],
       "completedTools": 2,
+      "arrivedAt": "2026-11-20T03:01:16.708Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -247,6 +277,8 @@
         "run_command"
       ],
       "completedTools": 3,
+      "arrivedAt": "2026-11-20T03:01:17.932Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -261,6 +293,8 @@
         "search_files"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:01:24.791Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -275,13 +309,15 @@
         "search_files"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:01:24.834Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 9,
       "path": "/v1/chat/completions",
       "kind": "analysis",
-      "stage": "INVESTIGATE",
+      "stage": "WORKFLOW_GENERATION",
       "tools": [
         "list_files",
         "read_file",
@@ -289,12 +325,114 @@
         "search_files"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:01:33.292Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 10,
       "path": "/v1/chat/completions",
       "kind": "analysis",
+      "stage": "WORKFLOW_GENERATION",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:01:34.375Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 11,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "INVESTIGATE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "wait_agent",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:01:50.876Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 12,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "INVESTIGATE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "wait_agent",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:01:51.056Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 13,
+      "path": "/v1/chat/completions",
+      "kind": "review",
+      "stage": "REVIEW",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:01:59.255Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 14,
+      "path": "/v1/chat/completions",
+      "kind": "review",
+      "stage": "REVIEW",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:01:59.306Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 15,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "INVESTIGATE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:02:11.579Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 16,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
       "stage": "INVESTIGATE",
       "tools": [
         "list_files",
@@ -303,10 +441,12 @@
         "search_files"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:12.482Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
-      "number": 11,
+      "number": 17,
       "path": "/v1/chat/completions",
       "kind": "implementation",
       "stage": "IMPLEMENT",
@@ -320,10 +460,12 @@
         "run_command"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:02:14.327Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
-      "number": 12,
+      "number": 18,
       "path": "/v1/chat/completions",
       "kind": "implementation",
       "stage": "IMPLEMENT",
@@ -337,10 +479,12 @@
         "run_command"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:15.148Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
-      "number": 13,
+      "number": 19,
       "path": "/v1/chat/completions",
       "kind": "implementation",
       "stage": "IMPLEMENT",
@@ -354,10 +498,12 @@
         "run_command"
       ],
       "completedTools": 2,
+      "arrivedAt": "2026-11-20T03:02:16.072Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
-      "number": 14,
+      "number": 20,
       "path": "/v1/chat/completions",
       "kind": "implementation",
       "stage": "IMPLEMENT",
@@ -371,97 +517,15 @@
         "run_command"
       ],
       "completedTools": 3,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 15,
-      "path": "/v1/chat/completions",
-      "kind": "review",
-      "stage": "REVIEW",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files"
-      ],
-      "completedTools": 0,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 16,
-      "path": "/v1/chat/completions",
-      "kind": "review",
-      "stage": "REVIEW",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files"
-      ],
-      "completedTools": 1,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 17,
-      "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "PROPOSAL",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files"
-      ],
-      "completedTools": 0,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 18,
-      "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "PROPOSAL",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files"
-      ],
-      "completedTools": 1,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 19,
-      "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "PROPOSAL",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files"
-      ],
-      "completedTools": 0,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 20,
-      "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "PROPOSAL",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files"
-      ],
-      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:17.529Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 21,
       "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "PROPOSAL",
+      "kind": "review",
+      "stage": "REVIEW",
       "tools": [
         "list_files",
         "read_file",
@@ -469,13 +533,15 @@
         "search_files"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:02:24.600Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 22,
       "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "PROPOSAL",
+      "kind": "review",
+      "stage": "REVIEW",
       "tools": [
         "list_files",
         "read_file",
@@ -483,13 +549,15 @@
         "search_files"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:24.644Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 23,
       "path": "/v1/chat/completions",
       "kind": "analysis",
-      "stage": "CRITIQUE",
+      "stage": "PROPOSAL",
       "tools": [
         "list_files",
         "read_file",
@@ -497,13 +565,15 @@
         "search_files"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:02:35.016Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 24,
       "path": "/v1/chat/completions",
       "kind": "analysis",
-      "stage": "CRITIQUE",
+      "stage": "PROPOSAL",
       "tools": [
         "list_files",
         "read_file",
@@ -511,13 +581,15 @@
         "search_files"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:35.818Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 25,
       "path": "/v1/chat/completions",
       "kind": "analysis",
-      "stage": "CRITIQUE",
+      "stage": "PROPOSAL",
       "tools": [
         "list_files",
         "read_file",
@@ -525,13 +597,15 @@
         "search_files"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:02:37.840Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 26,
       "path": "/v1/chat/completions",
       "kind": "analysis",
-      "stage": "CRITIQUE",
+      "stage": "PROPOSAL",
       "tools": [
         "list_files",
         "read_file",
@@ -539,13 +613,15 @@
         "search_files"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:38.712Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 27,
       "path": "/v1/chat/completions",
       "kind": "analysis",
-      "stage": "CRITIQUE",
+      "stage": "PROPOSAL",
       "tools": [
         "list_files",
         "read_file",
@@ -553,12 +629,46 @@
         "search_files"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:02:40.565Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 28,
       "path": "/v1/chat/completions",
       "kind": "analysis",
+      "stage": "PROPOSAL",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:41.498Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 29,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "CRITIQUE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:02:43.079Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 30,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
       "stage": "CRITIQUE",
       "tools": [
         "list_files",
@@ -567,90 +677,109 @@
         "search_files"
       ],
       "completedTools": 1,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 29,
-      "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "SYNTHESIS",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files"
-      ],
-      "completedTools": 0,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 30,
-      "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "SYNTHESIS",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files"
-      ],
-      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:43.795Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 31,
       "path": "/v1/chat/completions",
-      "kind": "implementation",
-      "stage": "IMPLEMENT",
+      "kind": "analysis",
+      "stage": "CRITIQUE",
       "tools": [
         "list_files",
         "read_file",
         "inspect_file",
-        "search_files",
-        "write_file",
-        "delete_file",
-        "run_command"
+        "search_files"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:02:45.342Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 32,
       "path": "/v1/chat/completions",
-      "kind": "implementation",
-      "stage": "IMPLEMENT",
+      "kind": "analysis",
+      "stage": "CRITIQUE",
       "tools": [
         "list_files",
         "read_file",
         "inspect_file",
-        "search_files",
-        "write_file",
-        "delete_file",
-        "run_command"
+        "search_files"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:46.081Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 33,
       "path": "/v1/chat/completions",
-      "kind": "implementation",
-      "stage": "IMPLEMENT",
+      "kind": "analysis",
+      "stage": "CRITIQUE",
       "tools": [
         "list_files",
         "read_file",
         "inspect_file",
-        "search_files",
-        "write_file",
-        "delete_file",
-        "run_command"
+        "search_files"
       ],
-      "completedTools": 2,
+      "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:02:47.764Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 34,
       "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "CRITIQUE",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:48.514Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 35,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "SYNTHESIS",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files"
+      ],
+      "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:02:50.170Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 36,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "SYNTHESIS",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files"
+      ],
+      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:50.848Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 37,
+      "path": "/v1/chat/completions",
       "kind": "implementation",
       "stage": "IMPLEMENT",
       "tools": [
@@ -662,71 +791,28 @@
         "delete_file",
         "run_command"
       ],
-      "completedTools": 3,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 35,
-      "path": "/v1/chat/completions",
-      "kind": "review",
-      "stage": "REVIEW",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files"
-      ],
       "completedTools": 0,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 36,
-      "path": "/v1/chat/completions",
-      "kind": "review",
-      "stage": "REVIEW",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files"
-      ],
-      "completedTools": 1,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 37,
-      "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "INVESTIGATE",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files",
-        "delegate_agent",
-        "wait_agent",
-        "send_team_message",
-        "list_team_agents"
-      ],
-      "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:02:52.255Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 38,
       "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "INVESTIGATE",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
       "tools": [
         "list_files",
         "read_file",
         "inspect_file",
         "search_files",
-        "delegate_agent",
-        "wait_agent",
-        "send_team_message",
-        "list_team_agents"
+        "write_file",
+        "delete_file",
+        "run_command"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:02:52.865Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -741,14 +827,11 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
-        "delegate_agent",
-        "wait_agent",
-        "adopt_agent_changes",
-        "send_team_message",
-        "list_team_agents"
+        "run_command"
       ],
-      "completedTools": 0,
+      "completedTools": 2,
+      "arrivedAt": "2026-11-20T03:02:53.505Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -763,102 +846,83 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
-        "delegate_agent",
-        "wait_agent",
-        "adopt_agent_changes",
-        "send_team_message",
-        "list_team_agents"
+        "run_command"
       ],
-      "completedTools": 1,
+      "completedTools": 3,
+      "arrivedAt": "2026-11-20T03:02:54.522Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 41,
       "path": "/v1/chat/completions",
-      "kind": "implementation",
-      "stage": "SUBAGENT",
+      "kind": "review",
+      "stage": "REVIEW",
       "tools": [
         "list_files",
         "read_file",
         "inspect_file",
-        "search_files",
-        "write_file",
-        "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
-        "delegate_agent",
-        "wait_agent",
-        "adopt_agent_changes",
-        "send_team_message",
-        "list_team_agents"
+        "search_files"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:03:00.254Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 42,
       "path": "/v1/chat/completions",
-      "kind": "implementation",
-      "stage": "SUBAGENT",
+      "kind": "review",
+      "stage": "REVIEW",
       "tools": [
         "list_files",
         "read_file",
         "inspect_file",
-        "search_files",
-        "write_file",
-        "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
-        "delegate_agent",
-        "wait_agent",
-        "adopt_agent_changes",
-        "send_team_message",
-        "list_team_agents"
+        "search_files"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:03:00.317Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 43,
       "path": "/v1/chat/completions",
-      "kind": "implementation",
-      "stage": "SUBAGENT",
+      "kind": "analysis",
+      "stage": "INVESTIGATE",
       "tools": [
         "list_files",
         "read_file",
         "inspect_file",
         "search_files",
-        "write_file",
-        "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
         "delegate_agent",
         "wait_agent",
-        "adopt_agent_changes",
         "send_team_message",
         "list_team_agents"
       ],
-      "completedTools": 2,
+      "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:03:11.255Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 44,
       "path": "/v1/chat/completions",
-      "kind": "implementation",
-      "stage": "SUBAGENT",
+      "kind": "analysis",
+      "stage": "INVESTIGATE",
       "tools": [
         "list_files",
         "read_file",
         "inspect_file",
         "search_files",
-        "write_file",
-        "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
         "delegate_agent",
         "wait_agent",
-        "adopt_agent_changes",
         "send_team_message",
         "list_team_agents"
       ],
-      "completedTools": 3,
+      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:03:12.332Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -873,14 +937,16 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
         "send_team_message",
         "list_team_agents"
       ],
-      "completedTools": 2,
+      "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:03:14.216Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -895,7 +961,103 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:03:17.701Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 47,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "SUBAGENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:03:17.867Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 48,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "SUBAGENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:03:18.093Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 49,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "SUBAGENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 2,
+      "arrivedAt": "2026-11-20T03:03:18.360Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 50,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "SUBAGENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -903,84 +1065,8 @@
         "list_team_agents"
       ],
       "completedTools": 3,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 47,
-      "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "SUBAGENT",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files",
-        "wait_agent",
-        "send_team_message",
-        "list_team_agents"
-      ],
-      "completedTools": 0,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 48,
-      "path": "/v1/chat/completions",
-      "kind": "analysis",
-      "stage": "SUBAGENT",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files",
-        "wait_agent",
-        "send_team_message",
-        "list_team_agents"
-      ],
-      "completedTools": 1,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 49,
-      "path": "/v1/chat/completions",
-      "kind": "implementation",
-      "stage": "IMPLEMENT",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files",
-        "write_file",
-        "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
-        "delegate_agent",
-        "wait_agent",
-        "adopt_agent_changes",
-        "send_team_message",
-        "list_team_agents"
-      ],
-      "completedTools": 4,
-      "proposalIncludesPriorHandoffs": false
-    },
-    {
-      "number": 50,
-      "path": "/v1/chat/completions",
-      "kind": "implementation",
-      "stage": "IMPLEMENT",
-      "tools": [
-        "list_files",
-        "read_file",
-        "inspect_file",
-        "search_files",
-        "write_file",
-        "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
-        "delegate_agent",
-        "wait_agent",
-        "adopt_agent_changes",
-        "send_team_message",
-        "list_team_agents"
-      ],
-      "completedTools": 5,
+      "arrivedAt": "2026-11-20T03:03:18.733Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -995,14 +1081,16 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
         "send_team_message",
         "list_team_agents"
       ],
-      "completedTools": 6,
+      "completedTools": 2,
+      "arrivedAt": "2026-11-20T03:03:21.715Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
@@ -1017,18 +1105,58 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
         "send_team_message",
         "list_team_agents"
       ],
-      "completedTools": 7,
+      "completedTools": 3,
+      "arrivedAt": "2026-11-20T03:03:23.117Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
       "number": 53,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "SUBAGENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files",
+        "wait_agent",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:03:25.503Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 54,
+      "path": "/v1/chat/completions",
+      "kind": "analysis",
+      "stage": "SUBAGENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files",
+        "wait_agent",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:03:25.724Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 55,
       "path": "/v1/chat/completions",
       "kind": "implementation",
       "stage": "IMPLEMENT",
@@ -1039,7 +1167,103 @@
         "search_files",
         "write_file",
         "delete_file",
-        "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 4,
+      "arrivedAt": "2026-11-20T03:03:26.468Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 56,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 5,
+      "arrivedAt": "2026-11-20T03:03:28.299Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 57,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 6,
+      "arrivedAt": "2026-11-20T03:03:28.434Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 58,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
+        "delegate_agent",
+        "wait_agent",
+        "adopt_agent_changes",
+        "send_team_message",
+        "list_team_agents"
+      ],
+      "completedTools": 7,
+      "arrivedAt": "2026-11-20T03:03:28.573Z",
+      "delayed": false,
+      "proposalIncludesPriorHandoffs": false
+    },
+    {
+      "number": 59,
+      "path": "/v1/chat/completions",
+      "kind": "implementation",
+      "stage": "IMPLEMENT",
+      "tools": [
+        "list_files",
+        "read_file",
+        "inspect_file",
+        "search_files",
+        "write_file",
+        "delete_file",
+        "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
         "delegate_agent",
         "wait_agent",
         "adopt_agent_changes",
@@ -1047,10 +1271,12 @@
         "list_team_agents"
       ],
       "completedTools": 8,
+      "arrivedAt": "2026-11-20T03:03:29.756Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
-      "number": 54,
+      "number": 60,
       "path": "/v1/chat/completions",
       "kind": "review",
       "stage": "REVIEW",
@@ -1061,10 +1287,12 @@
         "search_files"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:03:37.271Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
-      "number": 55,
+      "number": 61,
       "path": "/v1/chat/completions",
       "kind": "review",
       "stage": "REVIEW",
@@ -1075,10 +1303,12 @@
         "search_files"
       ],
       "completedTools": 1,
+      "arrivedAt": "2026-11-20T03:03:37.316Z",
+      "delayed": false,
       "proposalIncludesPriorHandoffs": false
     },
     {
-      "number": 56,
+      "number": 62,
       "path": "/v1/chat/completions",
       "kind": "analysis",
       "stage": "DESIGN",
@@ -1089,43 +1319,45 @@
         "search_files"
       ],
       "completedTools": 0,
+      "arrivedAt": "2026-11-20T03:03:50.339Z",
+      "delayed": true,
       "proposalIncludesPriorHandoffs": false
     }
   ],
   "teams": [
     {
-      "taskId": "d213021d-e521-45fd-8b87-f808c0c4f1b8",
-      "teamId": "f5d75a3b-a8d1-403e-a03f-fbb7a42589d9",
+      "taskId": "76aa8853-1cc8-4628-808d-55931369bf20",
+      "teamId": "d01a7d24-dc4f-4f12-9935-2e346ecbcb15",
       "rootCalls": 19,
       "children": [
         {
-          "id": "6127d58e-a226-437e-b387-7ca9baaabac8",
-          "agentRunId": "1255a14e-d815-4b85-8f17-eb52cfce405d",
+          "id": "42f4fce5-5584-429c-a77c-e300c6d46a01",
+          "agentRunId": "27751dab-5265-4eda-9ee7-db24fa366c95",
           "state": "SUCCEEDED",
           "dependsOn": [
-            "ac7e81f4-2914-4979-9102-4feeb3559613"
+            "a9bcd80f-e32c-40e7-afdb-9e5a99d71f26"
           ],
           "integrationState": "NOT_ADOPTED"
         },
         {
-          "id": "ac7e81f4-2914-4979-9102-4feeb3559613",
-          "agentRunId": "69bd77d5-4dcc-41b3-94b4-1cc0fdf8adbe",
+          "id": "a9bcd80f-e32c-40e7-afdb-9e5a99d71f26",
+          "agentRunId": "a9aca402-c31f-43ad-b151-4943fd3e613f",
           "state": "SUCCEEDED",
           "dependsOn": [],
           "integrationState": "ADOPTED"
         }
       ],
       "mcpSource": {
-        "id": "2c5864e89da8deaa984699b05e369126eb078c4e2cd2c224f8d51ec24643e8ff",
-        "requestId": "2c5864e89da8deaa984699b05e369126eb078c4e2cd2c224f8d51ec24643e8ff",
-        "taskId": "d213021d-e521-45fd-8b87-f808c0c4f1b8",
-        "projectId": "3d4c8be4-0f38-4372-91db-89fb7f01a771",
+        "id": "d0749f99362a216f3ee2998720024c5b8c25f22797c55b98ae132d9dd4c6fa3e",
+        "requestId": "d0749f99362a216f3ee2998720024c5b8c25f22797c55b98ae132d9dd4c6fa3e",
+        "taskId": "76aa8853-1cc8-4628-808d-55931369bf20",
+        "projectId": "ea69e733-1f8d-4e08-908d-f648e342899f",
         "stage": "IMPLEMENT",
-        "serverId": "5ff082c2-72a6-4970-9ebe-578c91239fdf",
+        "serverId": "d9b67a4e-daeb-4b2c-933a-a6727252d467",
         "serverName": "Team source lifecycle fixture",
-        "identity": "f09191e403b5d93c0cb20d5a73f4943ae89877fdeccac17f6981df7eeb066d43",
+        "identity": "a049bd4651116a4196e426a9e100db05ae19f423035b72e7b6c3b87c2bf89b56",
         "tool": "echo",
-        "actionKey": "0639fab28cca04dd4edf0b0617bf4cbb93c19a09cafe140bca2c6e256b717b2b",
+        "actionKey": "8456047ddc2800c92be6ae36a4281ad1104f92bea9e805bf884eedd207239d5b",
         "authorizationVersion": 1,
         "definitionVersion": 1,
         "argumentKeys": [
@@ -1137,31 +1369,31 @@
         "dispatchState": "ACKNOWLEDGED",
         "stopState": "CONFIRMED",
         "canReconcile": false,
-        "createdAt": "2026-11-16T01:19:18.224785700Z",
-        "agentRunId": "69bd77d5-4dcc-41b3-94b4-1cc0fdf8adbe",
-        "modelRequestId": "9b2c745e-97bc-4d55-8bac-4268fe192ece",
-        "toolCallId": "team-smoke-7-mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
-        "rootTaskId": "d213021d-e521-45fd-8b87-f808c0c4f1b8",
+        "createdAt": "2026-11-20T03:03:18.452540Z",
+        "agentRunId": "a9aca402-c31f-43ad-b151-4943fd3e613f",
+        "modelRequestId": "a5b668e1-7462-42be-b006-06fb83cf49c7",
+        "toolCallId": "team-smoke-7-mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
+        "rootTaskId": "76aa8853-1cc8-4628-808d-55931369bf20",
         "actorKind": "SUBAGENT",
-        "taskExecutionId": "245112fd-2313-4044-af33-e8f17349be19",
-        "dispatchActionId": "456c2cf6-28dd-41db-8e2e-95e3fb7336d0",
-        "workspaceWriteLeaseId": "42f96244-a134-480c-b2d4-03ec98ae524b",
-        "teamId": "f5d75a3b-a8d1-403e-a03f-fbb7a42589d9",
-        "subtaskId": "ac7e81f4-2914-4979-9102-4feeb3559613",
-        "parentRunId": "2a0cf81e-5fc6-49fa-8dc7-61ca4f25027c",
+        "taskExecutionId": "8cce0405-a45d-4633-aeb7-4e21db5b35f7",
+        "dispatchActionId": "d35607d9-39a4-4d88-b7bf-2752ea5b73b1",
+        "workspaceWriteLeaseId": "e1a8ef5b-e52c-4473-a1db-4b67bb9ac708",
+        "teamId": "d01a7d24-dc4f-4f12-9935-2e346ecbcb15",
+        "subtaskId": "a9bcd80f-e32c-40e7-afdb-9e5a99d71f26",
+        "parentRunId": "f5e678e7-3fa9-4901-9e56-33c8207b124c",
         "definitionId": "agent-developer",
         "depth": 1,
-        "sessionId": "db443aa0-9fe0-4e11-8a3e-a339fd1de630",
-        "workerLeaseId": "232cf1f3-ac17-4a18-81e4-f7092ad21383",
-        "workerId": "8c9e38df-30e3-4cb8-bf58-279d994414f8",
+        "sessionId": "8d26a9ea-cde4-44e9-9599-18df025999ba",
+        "workerLeaseId": "82a5b627-a803-49e6-97ab-49474e64c125",
+        "workerId": "ea0a7800-be74-4d37-a6e6-d17e322428eb",
         "workerEpoch": 1,
-        "executionNodeId": "ef881405-26af-419d-b352-64f85fffa8ac",
-        "repositoryBindingId": "60c54236-7b66-4cd1-8a70-b3dd1e0791a6",
+        "executionNodeId": "07eca548-de4f-4490-afa5-41b83038e3cc",
+        "repositoryBindingId": "e6c5a715-1896-42b5-813d-3dc4b4a368e1",
         "bindingVersion": 1,
         "deployment": "LOCAL_PROCESS",
-        "executorPid": 39156,
-        "processStartedAt": "2026-11-16T01:17:07.674Z",
-        "corePid": 47844,
+        "executorPid": 16492,
+        "processStartedAt": "2026-11-20T03:00:59.047Z",
+        "corePid": 50720,
         "transport": "HTTP",
         "result": {
           "content": [
@@ -1172,8 +1404,8 @@
           ],
           "isError": false
         },
-        "completedAt": "2026-11-16T01:19:18.431497600Z",
-        "localStoppedAt": "2026-11-16T01:19:18.444517Z"
+        "completedAt": "2026-11-20T03:03:18.578075200Z",
+        "localStoppedAt": "2026-11-20T03:03:18.581074700Z"
       },
       "calls": [
         {
@@ -1219,7 +1451,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1239,7 +1471,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1259,7 +1491,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1279,7 +1511,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1299,7 +1531,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1319,7 +1551,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1339,7 +1571,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1359,7 +1591,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1409,7 +1641,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1429,7 +1661,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1449,7 +1681,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1469,7 +1701,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1489,7 +1721,7 @@
             "search_files",
             "write_file",
             "delete_file",
-            "mcp_0639fab28cca04dd4edf0b0617bf4cbb93c19a09",
+            "mcp_8456047ddc2800c92be6ae36a4281ad1104f92be",
             "delegate_agent",
             "wait_agent",
             "adopt_agent_changes",
@@ -1525,6 +1757,108 @@
       ],
       "externalMcpCalls": 1,
       "zipSourcesVerified": true
+    }
+  ],
+  "cancellationObservations": [
+    {
+      "at": "2026-11-20T03:03:44.452Z",
+      "taskId": "1feda56f-01a2-4538-baf3-ee69386ba8c1",
+      "state": "QUEUED",
+      "taskExecution": {
+        "id": "552880b4-e484-4756-b520-7eddc5032b26",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-20T03:03:44.433036900Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "modelCalls": 0
+    },
+    {
+      "at": "2026-11-20T03:03:44.585Z",
+      "taskId": "1feda56f-01a2-4538-baf3-ee69386ba8c1",
+      "state": "QUEUED",
+      "taskExecution": {
+        "id": "552880b4-e484-4756-b520-7eddc5032b26",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-20T03:03:44.433036900Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "activeOperation": "01c50452-7843-451c-aa2a-ac53ec05deaf",
+      "modelCalls": 0
+    },
+    {
+      "at": "2026-11-20T03:03:46.572Z",
+      "taskId": "1feda56f-01a2-4538-baf3-ee69386ba8c1",
+      "state": "RUNNING",
+      "taskExecution": {
+        "id": "552880b4-e484-4756-b520-7eddc5032b26",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-20T03:03:44.433036900Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "modelCalls": 0
+    },
+    {
+      "at": "2026-11-20T03:03:48.190Z",
+      "taskId": "1feda56f-01a2-4538-baf3-ee69386ba8c1",
+      "state": "RUNNING",
+      "taskExecution": {
+        "id": "552880b4-e484-4756-b520-7eddc5032b26",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-20T03:03:44.433036900Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "activeOperation": "5dad073b-6ad0-4f0a-b124-04d165d1e7f2",
+      "modelCalls": 0
+    },
+    {
+      "at": "2026-11-20T03:03:48.795Z",
+      "taskId": "1feda56f-01a2-4538-baf3-ee69386ba8c1",
+      "state": "RUNNING",
+      "taskExecution": {
+        "id": "552880b4-e484-4756-b520-7eddc5032b26",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-20T03:03:44.433036900Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "modelCalls": 0
+    },
+    {
+      "at": "2026-11-20T03:03:50.281Z",
+      "taskId": "1feda56f-01a2-4538-baf3-ee69386ba8c1",
+      "state": "WAITING_RESOURCE",
+      "taskExecution": {
+        "id": "552880b4-e484-4756-b520-7eddc5032b26",
+        "attempt": 1,
+        "state": "RUNNING",
+        "createdAt": "2026-11-20T03:03:44.433036900Z",
+        "endedAt": "",
+        "reconciled": false
+      },
+      "modelCalls": 0
+    },
+    {
+      "at": "2026-11-20T03:03:50.388Z",
+      "taskId": "1feda56f-01a2-4538-baf3-ee69386ba8c1",
+      "boundary": "EXACT_DELAYED_RESPONSE_HELD_BEFORE_CANCEL",
+      "callNumber": 62
+    }
+  ],
+  "delayedRequests": [
+    {
+      "callNumber": 62,
+      "arrivedAt": "2026-11-20T03:03:50.339Z",
+      "releasedAt": "2026-11-20T03:03:50.406Z",
+      "closedAt": "2026-11-20T03:03:50.407Z"
     }
   ],
   "scope": "Local deterministic model protocol fixture only; not external provider, CLI or cross-platform certification."

@@ -207,7 +207,16 @@ public class WorkbenchCatalog {
     public Map<String, Object> probe(String routeId) {
         Map<String, Object> route = store.get("route", routeId);
         Map<String, Object> result = runtime.probe(route);
-        route.put("probe", result); route.put("probedAt", now()); store.put("route", route); return result;
+        synchronized (this) {
+            Map<String, Object> current = store.get("route", routeId);
+            if (num(current, "version", 1) != num(route, "version", 1)) {
+                throw new ApiException(409, "探测期间运行路由已变化，请核对新版本后重新探测");
+            }
+            current.put("probe", result);
+            current.put("probedAt", now());
+            store.put("route", current);
+        }
+        return result;
     }
 
     public Map<String, Object> saveMemory(Map<String, Object> body) {
@@ -314,6 +323,18 @@ public class WorkbenchCatalog {
         String sessionId = str(body, "sessionId");
         if (!sessionId.isBlank()) { store.session(str(project, "id"), sessionId); task.put("sessionId", sessionId); }
         return store.createTask(task);
+    }
+
+    Map<String, Object> workflowReadiness(Map<String, Object> body) {
+        if (!Set.of("projectId", "routeId", "locks", "selection").containsAll(body.keySet())
+                || !(body.get("selection") instanceof Map<?, ?>)
+                || body.containsKey("locks") && !(body.get("locks") instanceof Map<?, ?>)) {
+            throw new ApiException(400, "流程路由检查需要项目、根路由与固定流程版本");
+        }
+        String projectId = required(body, "projectId", 100);
+        store.get("project", projectId);
+        Map<String, Object> route = store.get("route", required(body, "routeId", 100));
+        return workflows.readiness(obj("projectId", projectId, "routeSnapshot", route, "locks", map(body, "locks")), map(body, "selection"));
     }
 
     List<Map<String, Object>> workflowPlan(Map<String, Object> workflow) {

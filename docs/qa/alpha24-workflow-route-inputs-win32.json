@@ -1,0 +1,423 @@
+{
+  "recordedAt": "2026-11-20T03:04:18.635628+00:00",
+  "version": "0.2.0-alpha.24",
+  "status": "passed",
+  "repository": "https://github.com/lihe-he/multi-agent",
+  "branch": "main",
+  "baseCommit": "14a65c585b614b31f3e3c9f8e8cf7a07e7f443f7",
+  "subject": "Workflow recipient readiness, exact route-version consent, declared prompt inputs, builtin v2 migration and stale-probe protection",
+  "scope": "LOCAL_WINDOWS_CLEAN_CORE_VERIFY_AND_FINAL_JAR_PROTOCOL_WITH_COMPLETE_PRODUCTION_WEB_FIXTURE_CORPUS; CONDITIONAL_SKIPS_REPORTED; NOT_NATIVE_CLI_EXTERNAL_PROVIDER_OR_CROSS_PLATFORM_RELEASE_ACCEPTANCE",
+  "fullCore": {
+    "command": "npm run verify:core",
+    "receipt": {
+      "file": ".runtime/alpha24-core-clean-28a3cb7df3894d27b90e771d6509b253/receipt.json",
+      "bytes": 20701,
+      "sha256": "6ada265934b575615d22b50706bfb0ea8e6b9cc2e3c53c0e169b986e5fc37536"
+    },
+    "originalLog": {
+      "file": ".runtime/alpha24-core-clean-28a3cb7df3894d27b90e771d6509b253/maven.log",
+      "bytes": 44574,
+      "sha256": "1edd04ccd5a45f5289d7f1815690e4be42a032f7e27afe8509ad538ebd548729"
+    },
+    "startedAt": "2026-11-20T09:53:20.6920465+08:00",
+    "completedAt": "2026-11-20T10:58:40.3064782+08:00",
+    "suites": 52,
+    "tests": 633,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 10,
+    "passed": 623,
+    "sourcesUnchanged": true,
+    "sourceManifest": {
+      "file": ".runtime/alpha24-core-clean-28a3cb7df3894d27b90e771d6509b253/sources-before.json",
+      "bytes": 31301,
+      "sha256": "8777c11ef5cc79820cfe1bd94ab49fc3adb1f64de8c90f7993b2536be8085d6f"
+    },
+    "selectedSuiteResults": [
+      {
+        "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "482181e185b076d20eaf8a56336c0622270dee039c6f62536acbbc5d0d2e486f"
+      },
+      {
+        "name": "dev.agentworkbench.TeamExecutionTest",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "58cbf1dab8061e67aab869cbf0f5b0fca38a3120df0db954e36e3745239041fd"
+      },
+      {
+        "name": "dev.agentworkbench.WorkbenchCatalogTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "353bb8818b6a701bda186aa458e527e2482fa6452c9a5f17214962a723dcd047"
+      },
+      {
+        "name": "dev.agentworkbench.WorkflowCatalogTest",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "a070d3101d9b945cc54489ca5c49caf7d8eb2d534b5a1d0795309256c4b94e34"
+      },
+      {
+        "name": "dev.agentworkbench.WorkflowExecutionTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "496dbd341516fd074adac480f04e6a15249433b655d5071bbf42fb7310e62444"
+      },
+      {
+        "name": "dev.agentworkbench.WorkflowReadinessControllerTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "00dd22e514b9f937d8c7cb126e31b58487f50f41551284cebbd7a11db0908b29"
+      }
+    ],
+    "conditionalSkips": [
+      {
+        "class": "dev.agentworkbench.GitWorkspaceTest",
+        "test": "redirectedTaskParentAndTraversalIdsAreRejected",
+        "message": "org.opentest4j.TestAbortedException: 平台未授予符号链接创建权限"
+      },
+      {
+        "class": "dev.agentworkbench.ManagedProcessLedgerTest",
+        "test": "actualRestrictedWindowsPidReuseLeavesTheReplacementRunning",
+        "message": "org.opentest4j.TestAbortedException: Assumption failed: No restricted live PID on this runner"
+      },
+      {
+        "class": "dev.agentworkbench.runtime.FileVersionRuntimeTest",
+        "test": "successfulTextReplacementPreservesPosixPermissions",
+        "message": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not true"
+      },
+      {
+        "class": "dev.agentworkbench.runtime.GitDiffViewTest",
+        "test": "ordinaryWorkspaceSnapshotDoesNotEnterAnUnreadableGitObjectDirectory",
+        "message": "Disabled on operating system: Windows 11"
+      },
+      {
+        "class": "dev.agentworkbench.runtime.GitDiffViewTest",
+        "test": "posixTabsNewlinesAndBackslashesStayLiteralAndWhitespaceOnlyNamesAreRejected",
+        "message": "Disabled on operating system: Windows 11"
+      },
+      {
+        "class": "dev.agentworkbench.runtime.GitDiffViewTest",
+        "test": "redirectedPreviewRootCannotWriteIntoAForeignOrInternalLinkedDirectory",
+        "message": "org.opentest4j.TestAbortedException: 平台未授予符号链接创建权限"
+      },
+      {
+        "class": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+        "test": "fileExecutionPermissionsAreRestoredAlongWithTheBytes",
+        "message": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not false"
+      },
+      {
+        "class": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+        "test": "readOnlyTargetPermissionsAreRestoredWithoutReopeningTheFileForWrite",
+        "message": "org.opentest4j.TestAbortedException: Assumption failed: assumption is not false"
+      },
+      {
+        "class": "dev.agentworkbench.runtime.WorkspaceCheckpointArchiveTest",
+        "test": "symbolicDirectoryAliasesCannotAuthorizeCheckpointCapture(String)",
+        "message": "Disabled on operating system: Windows 11"
+      },
+      {
+        "class": "dev.agentworkbench.RuntimeIntegrationTest",
+        "test": "fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging",
+        "message": "org.opentest4j.TestAbortedException: Assumption failed: Requires real POSIX executable permissions"
+      }
+    ],
+    "jar": {
+      "file": "agent-workbench-core-0.2.0-alpha.24.jar",
+      "bytes": 44436874,
+      "sha256": "c5fc13433235ecce2ae620cbe00a01afc7d895d3251efcd6635aac2e3e97a9bd"
+    }
+  },
+  "executedBytecode": {
+    "receipt": {
+      "file": ".runtime/alpha24-core-clean-28a3cb7df3894d27b90e771d6509b253/executed-bytecode-verification.json",
+      "bytes": 711,
+      "sha256": "2d28c64fba9cadc753807dad53c0b0f2329fecaf60f32c52a0544899ffa7f861"
+    },
+    "inventory": {
+      "file": ".runtime/alpha24-core-clean-28a3cb7df3894d27b90e771d6509b253/compiled-output-inventory.json",
+      "bytes": 63762,
+      "sha256": "7aff8428c6a10a1895b8dacd238a29f7ed40576145c7b6dbe2c60e5248de6c99"
+    },
+    "productionClasses": 177,
+    "testClasses": 157,
+    "freshCompilationObserved": {
+      "productionSourceCount": 69,
+      "testSourceCount": 53
+    },
+    "allCapturedProductionClassesMatchFinalJar": true,
+    "allCompiledOutputsUnchanged": true
+  },
+  "webBuild": {
+    "receipt": {
+      "file": ".runtime/alpha22-web-build-BsR56K/receipt.json",
+      "bytes": 15795,
+      "sha256": "27cb761bce606dd146620773648080112024a84bbf694b6427807de3cc178c7e"
+    },
+    "version": "0.2.0-alpha.24",
+    "sourcesUnchanged": true,
+    "sourceCount": 74,
+    "assetCount": 20,
+    "distributionNoticesVerified": true,
+    "directoryPrefixIsHistoricalOnly": "alpha22-web-build; actual release metadata is alpha24"
+  },
+  "productionUi": {
+    "receipt": {
+      "file": ".runtime/ui-production-zKm3IZ/receipt.json",
+      "bytes": 21543,
+      "sha256": "39caaf04ef5dacb9611dcd6fcd64897bbed3e98cfa143819552d8bbf922a5565"
+    },
+    "canonical": {
+      "file": "docs/qa/ui-production-win32.json",
+      "bytes": 21543,
+      "sha256": "39caaf04ef5dacb9611dcd6fcd64897bbed3e98cfa143819552d8bbf922a5565"
+    },
+    "browser": "msedge",
+    "stats": {
+      "startTime": "2026-11-20T01:54:58.326Z",
+      "duration": 349948.853,
+      "expected": 272,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "sourceCount": 95,
+    "assetCount": 20,
+    "sourcesUnchanged": true,
+    "buildSourcesUnchanged": true,
+    "assetsUnchanged": true,
+    "selection": [],
+    "historicalImagesPreserved": 44,
+    "serverOwnedByRunner": true,
+    "serverProofVerified": true,
+    "reusedServer": false,
+    "narrowScreenshotReviewed": {
+      "file": ".runtime/ui-production-zKm3IZ/test-results/workflows-流程协作-430px-同一路由换版拒绝旧确认，刷新显示新接收方后重新提交/refreshed-route-consent.png",
+      "bytes": 66263,
+      "sha256": "73d4bec1d01cd44fecf1c8f1a4599e29cb1a65bdd086fe27817741522967ef60"
+    }
+  },
+  "packagedCoreProtocol": {
+    "receipt": {
+      "file": ".runtime/alpha24-jar-integration-WtYYtA/receipt.json",
+      "bytes": 2444,
+      "sha256": "5f9aba0505cca9d5128435e146a460e21a621c1dfaee3326d023f1a68def434a"
+    },
+    "originalLog": {
+      "file": ".runtime/alpha24-jar-integration-WtYYtA/command.log",
+      "bytes": 2442,
+      "sha256": "bd0008e69a7423a8fddc1b37e9f4fdff8e5e5b19c9999529c786c73580d8cfdd"
+    },
+    "report": {
+      "file": "docs/qa/smoke-win32.json",
+      "sha256": "a197626ef598dcc72a48c25e9644713f6dc8381b30163580d1572c3f23c4a69f",
+      "checks": 33,
+      "failed": 0,
+      "calls": 62
+    },
+    "checks": 33,
+    "sourcesUnchanged": true,
+    "jarUnchanged": true,
+    "lifecycle": {
+      "recordedAt": "2026-11-20T03:03:53.832Z",
+      "version": "0.2.0-alpha.24",
+      "corePid": 50720,
+      "exitCode": 0,
+      "signalCode": null,
+      "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\ci-9Lqf92",
+      "fixtureRoot": "D:\\Projects\\多Agent研发工作台\\.runtime\\ci-9Lqf92\\fixtures",
+      "scope": "OBSERVED_CORE_EXIT_ONLY; COMPLETE_ORIGINAL_PROCESS_TREE_REQUIRES_SEPARATE_RECOVERY_ACCEPTANCE"
+    },
+    "scope": "ACTUAL_FINAL_ALPHA24_JAR_WITH_LOCAL_DETERMINISTIC_HTTP_PROTOCOL_FIXTURE; NOT_EXTERNAL_PROVIDER_NATIVE_CLI_OR_CROSS_PLATFORM_RELEASE_ACCEPTANCE"
+  },
+  "nodeGuards": {
+    "command": "node --test tools/install-desktop-deps.test.mjs tools/package-desktop.test.mjs tools/verify-version.test.mjs desktop/preview-policy.test.cjs desktop/preview-host.test.cjs desktop/preview-ipc-policy.test.cjs",
+    "tests": 44,
+    "passed": 44,
+    "failures": 0,
+    "skipped": 0,
+    "provenance": "Observed successful tool command output during this turn; a separate raw output file was not retained."
+  },
+  "javaComments": {
+    "receipt": {
+      "file": ".runtime/alpha24-java-comments.json",
+      "bytes": 2408,
+      "sha256": "13ffcb922ca392c330d89df56e055e2fe4662dc9d6acd8d607968dda4b83a3c1"
+    },
+    "changedOrAddedJavaFiles": 11,
+    "originalCommentsPreserved": 31,
+    "addedMultilineJavadocs": 5,
+    "scope": "COMMENT_TEXT_INDENTATION_AND_ORDER_PRESERVED_WITH_LINE_ENDINGS_NORMALIZED; NEW_JAVADOCS_MULTILINE"
+  },
+  "openSourceReferences": {
+    "receipt": {
+      "file": ".runtime/alpha24-oss-source-verification.json",
+      "bytes": 14617,
+      "sha256": "8c18cb846ecbfa4d10c47f786cf3c72fc86121d541060159139339d2c6d3919f"
+    },
+    "fixedRawFiles": 5,
+    "allBytesAndHashesMatch": true,
+    "sourceLineAnchorsVerified": true,
+    "pageTransportLimitationsRemainRecorded": true,
+    "research": "docs/research/workflow-route-inputs-2026-11-20.md"
+  },
+  "interruptedValidation": {
+    "receipt": {
+      "file": ".runtime/alpha24-core-clean-cfc6d658ae2f49b587b6ad4931a93564/receipt.json",
+      "bytes": 780,
+      "sha256": "2a6018fcb3d4e861ef8e2a7c58e0061fe44ec184b3fcf334db595dcac846c6b1"
+    },
+    "classification": "Logging wrapper interrupted by PowerShell stderr handling; no complete test outcome, not counted as passed."
+  },
+  "codeUnderTest": [
+    {
+      "file": "core/pom.xml",
+      "bytes": 2905,
+      "sha256": "b0c78d5742468fbb45b51fb6867882b0670ef641e3a7b95a98fd9f76a488d6b9"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+      "bytes": 29934,
+      "sha256": "3ce2166afd38b8a99e38bea9d9a359e4661abac7965e3b58d4b206d318c398a3"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkbenchController.java",
+      "bytes": 35129,
+      "sha256": "8088de3b40b442a434942e517a9e5b018b456cdbb3b5d4c2158016d589f4f502"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkflowCatalog.java",
+      "bytes": 31321,
+      "sha256": "5c0aecfc61610a5835bb8ed890a6fa3093041eebd644e592b1aecc73db1b5b94"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkflowCoordinator.java",
+      "bytes": 29644,
+      "sha256": "005fcb5072fb23e19a13fd727e41b6adc8c819b2b93fa1e9b076c3cc800aaa65"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkflowDsl.java",
+      "bytes": 10850,
+      "sha256": "03d49d037053e6283621fbaa4c1f94d0901759727c1d45e9f07e21914bc87250"
+    },
+    {
+      "file": "core/src/main/java/dev/agentworkbench/WorkflowTemplates.java",
+      "bytes": 5613,
+      "sha256": "23ab068b833e4f6a9459a82681556e10542f265d1e35da4a7fe84cd42c2b83cc"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/TeamExecutionTest.java",
+      "bytes": 61059,
+      "sha256": "d9738c970882bd7fcc9308fb2540211bbf3be0db96a99d2d8e85be6aa7904c22"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkbenchCatalogTest.java",
+      "bytes": 4417,
+      "sha256": "213657a3c0f4a7b6ff4aaca61716f418e2e2e9da80bc137a3724397e6c4dd956"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkflowCatalogTest.java",
+      "bytes": 31581,
+      "sha256": "95035340c09aff4491130058d976605ec0bfc14d7278d6cd9e18435901d1fe74"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkflowExecutionTest.java",
+      "bytes": 39958,
+      "sha256": "f55737d4c447b91ace70071f7461ecbd5c2f8c489926abebdb2a9b33a31eb7ec"
+    },
+    {
+      "file": "core/src/test/java/dev/agentworkbench/WorkflowReadinessControllerTest.java",
+      "bytes": 12081,
+      "sha256": "17116f6f507dc52b0eea903d1d1eaaf07c5f85de7228ba2ef73630660e57c47b"
+    },
+    {
+      "file": "package-lock.json",
+      "bytes": 108730,
+      "sha256": "578e670efe07859539a41b31297395f800f8938ef9b64a2a14e827f7be8ad484"
+    },
+    {
+      "file": "package.json",
+      "bytes": 3786,
+      "sha256": "35dbd4f6abaa469de42a9dbdc636c835f57c71a9e395e18f800d7f6448233814"
+    },
+    {
+      "file": "tools/manage.mjs",
+      "bytes": 4673,
+      "sha256": "55d7984477803287f688714d4944dbe069dff83414bfd19e91a10a7b06b52f85"
+    },
+    {
+      "file": "tools/smoke-test.mjs",
+      "bytes": 51188,
+      "sha256": "ea739ff0766f7a86a3d5e06b7fea4953d4f9a2995927bc2c1678bc82868d040f"
+    },
+    {
+      "file": "web/package-lock.json",
+      "bytes": 31557,
+      "sha256": "ed78f5349dfb36fe3c583eb82ca7fabd85b8947fad21775d192f2adaf8a8db08"
+    },
+    {
+      "file": "web/package.json",
+      "bytes": 685,
+      "sha256": "4ae6373338a5244fcab5849fbe49a3707a6870ab2642a29fed3895ea7282de3d"
+    },
+    {
+      "file": "web/src/TaskWorkflow.tsx",
+      "bytes": 21867,
+      "sha256": "de5f1f1ed8799313a707051c8cff75791050a2a0cd4d4759e0da36b50ea7e860"
+    },
+    {
+      "file": "web/src/WorkflowPicker.tsx",
+      "bytes": 12644,
+      "sha256": "4085e8e82e664f01a53427972f03fd17d06f061f937ae6b530eb180456e10208"
+    },
+    {
+      "file": "web/src/dialogs.tsx",
+      "bytes": 30469,
+      "sha256": "0495a7c487cb064ea9e5449866f44789c37746334271c1effa29795185c2ef16"
+    },
+    {
+      "file": "web/src/workflow-types.ts",
+      "bytes": 3935,
+      "sha256": "ec36d8bd9a4b1511b4c0f5d88365be56d355ab775d5ad67b0f079feb96633374"
+    },
+    {
+      "file": "web/src/workflow.css",
+      "bytes": 2487,
+      "sha256": "29d50b5d52b4209bbfef8593f3e3a7d101eff7a8575824adce421351aadb1240"
+    },
+    {
+      "file": "web/tests/workflows.spec.ts",
+      "bytes": 30049,
+      "sha256": "0453e2f115f6b69c55ccc9561846143ea0b3dc4f506b94c58424e851ba6e5935"
+    }
+  ],
+  "independentReview": {
+    "backend": "No demonstrated blocker found in routes, consent, projection, migration, probe concurrency or HTTP boundaries.",
+    "frontend": "Same-frame switch/submit, delayed version/readiness and unconfirmed result tested for creation/restart at 1440/430px.",
+    "documents": "Readiness, prompt disclosure, non-sandbox and native/M2 boundaries checked; fixed OSS normative strength corrected."
+  },
+  "currentCommitCi": {
+    "status": "PENDING_IMPLEMENTATION_PUSH_AND_EXACT_SHA_VERIFICATION",
+    "localPassDoesNotProveCiOrReleasePass": true
+  },
+  "remaining": [
+    "Actual Codex/Claude native Workflow adapters and compatibility",
+    "Task/run/attempt/Worker-claim-bound MCP bridge",
+    "Remote nodes, durable cross-core resource coordination and long-running load",
+    "Full backup/restore and all M0-M3 exit requirements",
+    "Original first Windows CI Worker-loss root cause remains unproven"
+  ]
+}

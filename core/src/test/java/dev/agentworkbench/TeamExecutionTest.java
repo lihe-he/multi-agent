@@ -311,7 +311,12 @@ class TeamExecutionTest {
                 boolean interrupted = false;
                 try {
                     injectionPhase.set("reading prepared workspace"); preparedContent.set(Files.readString(Path.of(workspace).resolve("src/source.txt")));
-                    ProcessHandle original = ProcessHandle.of(((Number) engine.workerIdentity().get("pid")).longValue()).orElseThrow();
+                    Map<String, Object> originalIdentity = engine.workerIdentity();
+                    long originalPid = ((Number) originalIdentity.get("pid")).longValue(); String originalStartedAt = str(originalIdentity, "processStartedAt");
+                    ProcessHandle original = ProcessHandle.of(originalPid).orElseThrow();
+                    if (originalPid <= 0 || original.pid() != originalPid || originalStartedAt.isBlank()
+                            || !originalStartedAt.equals(original.info().startInstant().map(Object::toString).orElse("")))
+                        throw new IllegalStateException("Original Worker process identity could not be verified before the fault injection");
                     var exit = original.onExit();
                     injectionPhase.set("waiting for original process exit");
                     if (!original.destroyForcibly()) throw new IllegalStateException("Original Worker could not be stopped");

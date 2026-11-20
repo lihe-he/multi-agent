@@ -1,13 +1,14 @@
 {
-  "startedAt": "2026-11-17T11:26:55.461Z",
-  "recordedAt": "2026-11-17T11:31:16.073Z",
+  "startedAt": "2026-11-20T01:54:57.797Z",
+  "recordedAt": "2026-11-20T02:00:48.828Z",
   "status": "passed",
   "exitCode": 0,
   "signal": null,
-  "version": "0.2.0-alpha.21",
+  "version": "0.2.0-alpha.24",
   "platform": "win32",
-  "baseCommit": "c6360acd3ff7bcc5ef4abd2f34878efa9554c079",
-  "baseUrl": "http://127.0.0.1:63911",
+  "baseCommit": "14a65c585b614b31f3e3c9f8e8cf7a07e7f443f7",
+  "baseUrl": "http://127.0.0.1:64596",
+  "productionDist": "D:\\Projects\\多Agent研发工作台\\web\\dist",
   "serverOwnedByRunner": true,
   "reusedServer": false,
   "serverProofVerified": true,
@@ -21,13 +22,13 @@
     },
     {
       "file": "web/package-lock.json",
-      "bytes": 30564,
-      "sha256": "da4b8f952458694622f3f1b4f7b432188b210f4ed42b209ecea21783501d9966"
+      "bytes": 31557,
+      "sha256": "ed78f5349dfb36fe3c583eb82ca7fabd85b8947fad21775d192f2adaf8a8db08"
     },
     {
       "file": "web/package.json",
-      "bytes": 658,
-      "sha256": "6c40a7f399dc0760381f5547c30695816d8d0b597deb9829a2793fe1b6591dd1"
+      "bytes": 685,
+      "sha256": "4ae6373338a5244fcab5849fbe49a3707a6870ab2642a29fed3895ea7282de3d"
     },
     {
       "file": "web/playwright.config.ts",
@@ -121,8 +122,8 @@
     },
     {
       "file": "web/src/App.tsx",
-      "bytes": 42026,
-      "sha256": "30c6a1f2f3d61662e75b93320f219c2bc3e46baa262a7626e7898bcfedc90045"
+      "bytes": 43604,
+      "sha256": "ec895d7126b472592745b70568cea8170e4d8f8a9cb640ec6f56e64d75c6c653"
     },
     {
       "file": "web/src/Appearance.tsx",
@@ -166,8 +167,8 @@
     },
     {
       "file": "web/src/ModelRequests.tsx",
-      "bytes": 6002,
-      "sha256": "54397da88e7a3180e576df9e391cb86b545340ced82ca330fd5cbde262e8b7b1"
+      "bytes": 6150,
+      "sha256": "2c4ed2fa3263e27d9d491c1aeab020aaef8be7f44cb1c83ded5a181f0026d22e"
     },
     {
       "file": "web/src/ProcessRecovery.tsx",
@@ -181,8 +182,8 @@
     },
     {
       "file": "web/src/SessionWorkspace.tsx",
-      "bytes": 34211,
-      "sha256": "93990b2da5bf535db141a23aeb60bebfd7bead35077e914208386b463ddf4d85"
+      "bytes": 33561,
+      "sha256": "38da35ad6ffeab5f06c79d3891c66901282e1c792703eeb7ef0c93ab3a76fabd"
     },
     {
       "file": "web/src/SidebarLayout.tsx",
@@ -191,8 +192,8 @@
     },
     {
       "file": "web/src/TaskDetail.tsx",
-      "bytes": 27129,
-      "sha256": "a1947471e7287ef2939c4fbc1b41d3e4626c388fbeba22803969b944c7bb8940"
+      "bytes": 28077,
+      "sha256": "465fb0b05a298bdf134c07908c077563eddcf25ba28908b2392da6e56711a50f"
     },
     {
       "file": "web/src/TaskExecutions.tsx",
@@ -201,8 +202,13 @@
     },
     {
       "file": "web/src/TaskTerminals.tsx",
-      "bytes": 24163,
-      "sha256": "a3bd985968b80642082a4b9752436be7e86efb06477211ec19b059a920505eba"
+      "bytes": 25476,
+      "sha256": "e5668804ae5e2214829e89ffe50bdbf224a9f2444c7da04fcb04118033251187"
+    },
+    {
+      "file": "web/src/TaskWorkflow.tsx",
+      "bytes": 21867,
+      "sha256": "de5f1f1ed8799313a707051c8cff75791050a2a0cd4d4759e0da36b50ea7e860"
     },
     {
       "file": "web/src/TeamPanel.tsx",
@@ -213,6 +219,16 @@
       "file": "web/src/WorkerActivity.tsx",
       "bytes": 9378,
       "sha256": "458e7cf944f750b9a9ffa8dd0416f32d83a9b7865fbf7512a34e3186f2528d2f"
+    },
+    {
+      "file": "web/src/WorkflowLibrary.tsx",
+      "bytes": 19403,
+      "sha256": "3bfa4f24f0037d055b2f6591bed63af472a62aa00c18910024c8ef47778f81c8"
+    },
+    {
+      "file": "web/src/WorkflowPicker.tsx",
+      "bytes": 12644,
+      "sha256": "4085e8e82e664f01a53427972f03fd17d06f061f937ae6b530eb180456e10208"
     },
     {
       "file": "web/src/WorkspaceContract.tsx",
@@ -231,8 +247,8 @@
     },
     {
       "file": "web/src/api.ts",
-      "bytes": 3921,
-      "sha256": "a15a2bf0b33f3d04444f0062ba1dc408644a37d92439be5fe8d028860f553042"
+      "bytes": 4201,
+      "sha256": "f9d261a2626fd1daf02126c8c06e5c541d4bff3b02499f07438ef0721f8a41f8"
     },
     {
       "file": "web/src/appearance.css",
@@ -251,8 +267,8 @@
     },
     {
       "file": "web/src/dialogs.tsx",
-      "bytes": 28505,
-      "sha256": "6a2a3d52372aabfe131029c7d71664f52df66695dc10f4d6144e1d9217d872cf"
+      "bytes": 30469,
+      "sha256": "0495a7c487cb064ea9e5449866f44789c37746334271c1effa29795185c2ef16"
     },
     {
       "file": "web/src/diff-view-contract.ts",
@@ -276,13 +292,18 @@
     },
     {
       "file": "web/src/layout.css",
-      "bytes": 3225,
-      "sha256": "d5610e3d1d84fa163a636021ead5999f18e84731490d85f97f33c7344d52fe21"
+      "bytes": 3401,
+      "sha256": "652b463e9d010114b1971aa3d0be045e3bfe416458262ece3db7a7c067d75c08"
     },
     {
       "file": "web/src/main.tsx",
       "bytes": 304,
       "sha256": "4f1087039c384f2d116b1bfb42f0748ff0141d38228ac9609b7fe629dbd5936c"
+    },
+    {
+      "file": "web/src/page-polling.ts",
+      "bytes": 2572,
+      "sha256": "8dd0ce8856340cde9a4bf66e1b00045c6fcfdae83e94c64a5dfff6709dc6470a"
     },
     {
       "file": "web/src/process-recovery.css",
@@ -310,9 +331,14 @@
       "sha256": "d4c9a364ffc9fabd0a9d6b573fa991b1a8764a674715c7408141a214613cf63c"
     },
     {
+      "file": "web/src/task-dialog.css",
+      "bytes": 161,
+      "sha256": "697dae4001834725c3530f3550be72906fd8d1dab5e3bb64c6050c9ccb578319"
+    },
+    {
       "file": "web/src/terminal-client.ts",
-      "bytes": 16263,
-      "sha256": "1c0231e98a9305d1d053a7012644ec0687476c70eed1ac852223a150f860c9bc"
+      "bytes": 16824,
+      "sha256": "d8ec0fdb6bc307e9f3a20b6ec0ceb69536440ccee3ad21b1cb2db9f7bc4234ba"
     },
     {
       "file": "web/src/terminals.css",
@@ -331,13 +357,23 @@
     },
     {
       "file": "web/src/types.ts",
-      "bytes": 17019,
-      "sha256": "1be025ecbaaa8effc0b3f16f854341ab2235e2b64631a2cd995c2d5e315939b7"
+      "bytes": 17451,
+      "sha256": "173bbd0c2af511d1aa26ae0a6c0a64e616d8ceb0ccb5f7abbeab953a28d0a083"
     },
     {
       "file": "web/src/ui.tsx",
-      "bytes": 7596,
-      "sha256": "4441b7f2fca21028319e97b1e79d0b8b660cb77b0e7a82c03f5e2dcd63f45722"
+      "bytes": 7672,
+      "sha256": "76d27b938eb45968576a6ffe641064297cd3755d061351059ce7041f9837082a"
+    },
+    {
+      "file": "web/src/workflow-types.ts",
+      "bytes": 3935,
+      "sha256": "ec36d8bd9a4b1511b4c0f5d88365be56d355ab775d5ad67b0f079feb96633374"
+    },
+    {
+      "file": "web/src/workflow.css",
+      "bytes": 2487,
+      "sha256": "29d50b5d52b4209bbfef8593f3e3a7d101eff7a8575824adce421351aadb1240"
     },
     {
       "file": "web/src/workspace-writes.css",
@@ -348,6 +384,11 @@
       "file": "web/tests/checkpoints.spec.ts",
       "bytes": 17573,
       "sha256": "df5f5704b5e474db60824f2700a18c5c544fc021f59ef9a644a39f27980dc7bb"
+    },
+    {
+      "file": "web/tests/connection-recovery.spec.ts",
+      "bytes": 8131,
+      "sha256": "e6a702c79b60565fcaf89e2063aaa569928fbf5f27b792a31b1c57bc52715f97"
     },
     {
       "file": "web/tests/diff-view.spec.ts",
@@ -375,14 +416,19 @@
       "sha256": "e2587731c8fa9c84ef0046957a99e4183b1c2e7a8451a868b044ac8f53ab9be7"
     },
     {
+      "file": "web/tests/page-recovery.spec.ts",
+      "bytes": 14199,
+      "sha256": "003b4e8dd0474f50a523ff31ae528c9804542238b6f36b20213c38a7def1b596"
+    },
+    {
       "file": "web/tests/process-recovery.spec.ts",
       "bytes": 9993,
       "sha256": "f0ceec211223af0d31902575c4ec57a49d9fe376a15c06c16046bf13f90423e8"
     },
     {
       "file": "web/tests/session-preview.spec.ts",
-      "bytes": 6409,
-      "sha256": "7ae83da954c0839fdd919853bec7b4818134ed83fae85efd26e67a6c2f48afa2"
+      "bytes": 9451,
+      "sha256": "386a928a1cfc0ec5e52f6a2394139f5a3fbe063b38e7adb5b58ffff202c59c6f"
     },
     {
       "file": "web/tests/sessions.spec.ts",
@@ -401,8 +447,8 @@
     },
     {
       "file": "web/tests/terminals.spec.ts",
-      "bytes": 31471,
-      "sha256": "1354d9ef014c00e997c38c64e1f08228ad19358aa8022e32b2c37574f0ae5817"
+      "bytes": 47861,
+      "sha256": "6fe8ff8ae020cb688b35286fe2ef25c879ab04d679df6a6a63288de36606dcd7"
     },
     {
       "file": "web/tests/themes.spec.ts",
@@ -411,13 +457,18 @@
     },
     {
       "file": "web/tests/ui.spec.ts",
-      "bytes": 23150,
-      "sha256": "afaace10ba06f1a133321d2c983c3c9269ba19c0ea3348cb81ab98a38c378535"
+      "bytes": 24187,
+      "sha256": "210c6f0eff59f679e21760ac9d00cbe27ba6b608b00910f6b65a73fdab781c1b"
     },
     {
       "file": "web/tests/worker.spec.ts",
       "bytes": 17222,
       "sha256": "6b5220497321d48af884f2c21983abfd3ad824e2df0a983c66e4c2690af7d73f"
+    },
+    {
+      "file": "web/tests/workflows.spec.ts",
+      "bytes": 30049,
+      "sha256": "0453e2f115f6b69c55ccc9561846143ea0b3dc4f506b94c58424e851ba6e5935"
     },
     {
       "file": "web/tests/workspace-writes.spec.ts",
@@ -441,7 +492,7 @@
     }
   ],
   "sourcesUnchanged": true,
-  "buildReceiptPath": null,
+  "buildReceiptPath": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha22-web-build-BsR56K\\receipt.json",
   "buildSourcesUnchanged": true,
   "dependencies": [
     {
@@ -496,19 +547,14 @@
   ],
   "assets": [
     {
-      "file": "assets/index-DDRkHQnO.js",
-      "bytes": 434595,
-      "sha256": "1043b23d0dd8420a7163aadb7f4f195d6d2f2be919c27250e020679e58511d5b"
+      "file": "assets/index-aSmNKrQM.css",
+      "bytes": 107748,
+      "sha256": "bb47140566033a24713f2da58881a30e47808fcab790d7be53ec89d248f7ab17"
     },
     {
-      "file": "assets/index-DkxEUAkg.css",
-      "bytes": 105320,
-      "sha256": "39a1f7232ad3e6899a61292d3aae04f12f67bd687d0a2f2ba390704da1e9204e"
-    },
-    {
-      "file": "assets/TaskTerminals-AGoQhemR.js",
-      "bytes": 359579,
-      "sha256": "11a1d160c27eff308ac197bf8dbf17cec3fbef49dbafc564a048dc17e37e6305"
+      "file": "assets/index-C4Q0108M.js",
+      "bytes": 474899,
+      "sha256": "2f8e51f5681e72f3a852b51c5d73b57832d0a5057b336dea6ab7addc83aaa7c2"
     },
     {
       "file": "assets/TaskTerminals-BbT8zRoT.css",
@@ -516,9 +562,14 @@
       "sha256": "cbbcf611656957e8adacaefc7849df70e70db93aa2a6832b5ed771534dddabe5"
     },
     {
+      "file": "assets/TaskTerminals-Lr3Q8SSE.js",
+      "bytes": 360406,
+      "sha256": "a9a2c9ac25dbaba7e3dcd731e0ca91fc4219c7013f094614ee342b5dea8dadcb"
+    },
+    {
       "file": "index.html",
       "bytes": 791,
-      "sha256": "fefe7acb3f9651b14e10aabd4ddf2a7bb0c98f1836fc43462bd050118677ec56"
+      "sha256": "3ff5df397c1566b550d648f2285a4e5ca747aa5900705c78c1fb0c03505c903e"
     },
     {
       "file": "theme-init.js",
@@ -598,16 +649,16 @@
   ],
   "assetsUnchanged": true,
   "stats": {
-    "startTime": "2026-11-17T11:26:55.889Z",
-    "duration": 259605.059,
-    "expected": 229,
+    "startTime": "2026-11-20T01:54:58.326Z",
+    "duration": 349948.853,
+    "expected": 272,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0
   },
   "selection": [],
   "originalHistoricalImagesPreserved": 44,
-  "runnerSha256": "2133a8202d225852c94f4a27e943008ae5a489107f9484b60658ff6c31458f07",
-  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\ui-production-3zdCKE",
+  "runnerSha256": "d8feeca172d310355382a895bd52497a3a6365be0941614a756ede00053b7fb9",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\ui-production-zKm3IZ",
   "scope": "COMPLETE_ACTUAL_PRODUCTION_WEB_UI_CORPUS_WITH_BROWSER_PROTOCOL_FIXTURES; REAL_NATIVE_AND_RELEASE_ACCEPTANCE_SEPARATE"
 }

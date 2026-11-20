@@ -23,7 +23,7 @@ final class WorkflowDsl {
     private static final Set<String> ROOT_FIELDS = Set.of("dslVersion", "inputs", "maxParallel", "nodes");
     private static final Set<String> NODE_FIELDS = Set.of("id", "kind", "title", "role", "goal", "definitionId", "definitionVersion",
         "dependencies", "inputs", "outputs", "scope", "permissions", "maxCalls", "timeoutSeconds", "acceptance", "termination");
-    private static final Set<String> ROOT_INPUTS = Set.of("goal", "contract", "context", "baseline");
+    static final Set<String> ROOT_INPUTS = Set.of("goal", "contract", "context", "baseline");
     private static final Set<String> RESERVED_IDS = Set.of("baseline", "workflow", "verify", "review", "delivery", "prepare");
 
     private WorkflowDsl() { }

@@ -328,6 +328,9 @@ public class WorkbenchController {
     @PostMapping("/workflows/validate")
     public Map<String, Object> validateWorkflow(@RequestBody Map<String, Object> body) { return catalog.workflows().validateDefinition(body); }
 
+    @PostMapping("/workflows/readiness")
+    public Map<String, Object> workflowReadiness(@RequestBody Map<String, Object> body) { return catalog.workflowReadiness(body); }
+
     @PostMapping("/workflows/import")
     public Map<String, Object> importWorkflow(@RequestBody Map<String, Object> body) { return catalog.workflows().imported(body); }
 
@@ -351,6 +354,11 @@ public class WorkbenchController {
 
     @PostMapping("/tasks/{id}/workflow-selection")
     public Map<String, Object> selectWorkflow(@PathVariable String id, @RequestBody Map<String, Object> body) { return taskSnapshot(engine.action(id, "workflow-selection", body)); }
+
+    @PostMapping("/tasks/{id}/workflow-readiness")
+    public Map<String, Object> taskWorkflowReadiness(@PathVariable String id, @RequestBody Map<String, Object> body) {
+        return catalog.workflows().readiness(store.get("task", id), body);
+    }
 
     @PostMapping("/tasks/{id}/workflow-restart")
     public Map<String, Object> restartWorkflow(@PathVariable String id, @RequestBody Map<String, Object> body) { return taskSnapshot(engine.action(id, "workflow-restart", body)); }

@@ -441,10 +441,40 @@ try {
     const history = (await request('/workflows')).data.flatMap(item => item.id === first.definition.id ? [item] : []);
     assert.equal(history.length, 1); assert.equal(history[0].version, 1);
     await writeFile(path.join(fixture, 'workflow-delivery.zip'), archive);
+    const workflowSelection = { definitionId: first.definition.id, version: first.version.version, digest: first.version.digest };
+    const readiness = await check('Workflow readiness exposes exact routes and declared inputs without credentials or execution', async () => {
+      const beforeCalls = calls.length, beforeTasks = (await request('/state')).data.tasks.map(item => item.id).sort();
+      const value = (await request('/workflows/readiness', { projectId: project.id, routeId, locks: definition.locks, selection: workflowSelection })).data;
+      const serialized = JSON.stringify(value);
+      assert.ok(!serialized.includes('test-only-not-a-secret')); assert.ok(!serialized.includes(token));
+      const rootRoute = { id: route.id, version: route.version, name: route.name, engine: route.engine,
+        provider: route.provider, model: route.model, baseUrl: route.baseUrl };
+      assert.ok(Number.isInteger(value.rootRoute.version) && value.rootRoute.version > 0);
+      assert.deepEqual(value, { rootRoute, blockers: [], extraRoutes: [], nodes: first.version.dsl.nodes.map(node => ({
+        id: node.id, title: node.title, inputs: node.inputs, rootInputs: node.inputs.filter(input => first.version.dsl.inputs.includes(input)), blockers: [], route: rootRoute,
+      })) });
+      const stale = await request('/tasks', { ...definition, title: 'SMOKE stale Workflow root route', goal: `${definition.goal}\nSMOKE_WORKFLOW_STALE_ROOT`, workflow: { ...workflowSelection,
+        rootRouteVersion: value.rootRoute.version + 1, allowedRouteVersions: {} } }, { expected: 409 });
+      assert.equal(stale.data.error, '根运行路由版本已变化，请重新检查流程路由');
+      assert.deepEqual((await request('/state')).data.tasks.map(item => item.id).sort(), beforeTasks);
+      assert.equal(calls.length, beforeCalls);
+      return value;
+    });
     const workflowTask = await request('/tasks', { ...definition, title: 'SMOKE published Workflow execution', goal: 'SMOKE: investigate src/greeting.txt with the just-published Workflow, retain evidence, verify it and stop at root review.',
-      workflow: { definitionId: first.definition.id, version: first.version.version, digest: first.version.digest, allowedRouteIds: [] } });
+      workflow: { ...workflowSelection, rootRouteVersion: readiness.rootRoute.version, allowedRouteVersions: {} } });
     assert.equal(workflowTask.data.state, 'DRAFT'); assert.equal(workflowTask.data.workflow.definitionId, first.definition.id);
     assert.equal(workflowTask.data.workflow.version, first.version.version); assert.equal(workflowTask.data.workflow.digest, first.version.digest);
+    await check('Task Workflow readiness preserves the pinned route and digest without task or model request changes', async () => {
+      const endpoint = `/tasks/${workflowTask.data.id}`, before = (await request(endpoint)).data;
+      const beforeCalls = calls.length, beforeRequests = (await request(`${endpoint}/model-requests`)).data;
+      const value = (await request(`${endpoint}/workflow-readiness`, workflowSelection)).data;
+      assert.deepEqual(value, readiness);
+      assert.equal(value.rootRoute.id, before.routeSnapshot.id); assert.equal(value.rootRoute.version, before.routeSnapshot.version);
+      assert.deepEqual({ definitionId: before.workflow.definitionId, version: before.workflow.version, digest: before.workflow.digest }, workflowSelection);
+      assert.deepEqual((await request(endpoint)).data, before);
+      assert.deepEqual(beforeRequests.requests, []); assert.deepEqual((await request(`${endpoint}/model-requests`)).data, beforeRequests);
+      assert.equal(calls.length, beforeCalls);
+    });
     await request(`/tasks/${workflowTask.data.id}/approve`, {});
     const workflowFinished = await check('Execute the published Workflow with separate root verification and review', async () => {
       const result = await untilTask(workflowTask.data.id, ['AWAITING_ACCEPTANCE']);

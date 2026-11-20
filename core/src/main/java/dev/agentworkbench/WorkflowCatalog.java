@@ -13,6 +13,8 @@ import static dev.agentworkbench.Json.*;
  */
 final class WorkflowCatalog {
     private static final Set<String> EDIT_FIELDS = Set.of("id", "expectedVersion", "name", "projectId", "enabled", "dsl");
+    private static final Set<String> VERSION_FIELDS = Set.of("definitionId", "version", "digest");
+    private static final Set<String> SELECTION_FIELDS = Set.of("definitionId", "version", "digest", "rootRouteVersion", "allowedRouteVersions", "allowedRouteIds");
     private final ExecutionStore store;
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -27,10 +29,33 @@ final class WorkflowCatalog {
             actors.put(id, actor);
         }
         if (!strings(actors.get("agent-developer").get("capabilities")).contains("write")) return;
-        for (String mode : WorkflowTemplates.MODES) if (store.find("workflowDefinition", WorkflowTemplates.id(mode)) == null) {
-            save(obj("id", WorkflowTemplates.id(mode), "name", WorkflowTemplates.name(mode), "projectId", "",
-                "dsl", WorkflowTemplates.dsl(mode, actors)), "BUILTIN", "");
+        for (String mode : WorkflowTemplates.MODES) {
+            if (store.find("workflowDefinition", WorkflowTemplates.id(mode)) == null) {
+                save(obj("id", WorkflowTemplates.id(mode), "name", WorkflowTemplates.name(mode), "projectId", "",
+                    "dsl", WorkflowTemplates.dsl(mode, actors)), "BUILTIN", "");
+            }
+            upgradeBuiltinInputs(mode);
         }
+    }
+
+    /**
+     * 仅为未编辑的内置首版发布显式输入新版，历史版本及任务快照保持原样。
+     */
+    private void upgradeBuiltinInputs(String mode) {
+        String definitionId = WorkflowTemplates.id(mode);
+        Map<String, Object> current = store.get("workflowDefinition", definitionId);
+        if (num(current, "version", -1) != 1 || !bool(current, "enabled", false) || !bool(current, "builtin", false)) return;
+        Map<String, Object> original = version(definitionId, 1);
+        if (!"BUILTIN".equals(str(original, "source")) || !str(original, "projectId").isBlank()) return;
+        Map<String, Map<String, Object>> actors = new LinkedHashMap<>();
+        for (Map<String, Object> actor : objects(original.get("agentDefinitions"))) actors.put(str(actor, "id"), actor);
+        if (!actors.keySet().containsAll("ROUNDTABLE".equals(mode) ? List.of("agent-research", "agent-developer", "agent-reviewer")
+                : List.of("agent-research", "agent-developer"))) return;
+        Map<String, Object> oldDsl = WorkflowDsl.normalize(WorkflowTemplates.dsl(mode, actors));
+        if (!digest(oldDsl, objects(original.get("agentDefinitions"))).equals(str(original, "digest"))) return;
+        Map<String, Object> nextDsl = WorkflowTemplates.withDeclaredImplementationInputs(map(original, "dsl"));
+        save(obj("id", definitionId, "expectedVersion", 1, "name", current.get("name"), "projectId", "", "enabled", true,
+            "dsl", nextDsl), "BUILTIN", str(original, "id"));
     }
 
     Map<String, Object> validate(Map<String, Object> input) {
@@ -112,29 +137,33 @@ final class WorkflowCatalog {
      * 任务固定流程、职责和发送路由，节点能力严格取阶段、根授权与职责的交集。
      */
     Map<String, Object> snapshot(Map<String, Object> task, Map<String, Object> selection) {
-        if (!Set.of("definitionId", "version", "digest", "allowedRouteIds").containsAll(selection.keySet())) throw new ApiException(400, "流程选择包含未支持的字段");
-        String definitionId = identifier(selection, "definitionId");
-        if (!(selection.get("version") instanceof Number number) || number.doubleValue() != number.intValue()) throw new ApiException(400, "请选择明确的流程版本");
-        Map<String, Object> definition = store.get("workflowDefinition", definitionId), version = version(definitionId, number.intValue());
-        if (!bool(definition, "enabled", false)) throw new ApiException(409, "流程已停用，请刷新后选择");
-        if (!str(version, "projectId").isBlank() && !str(task, "projectId").equals(str(version, "projectId"))) throw new ApiException(403, "流程不属于当前项目");
-        if (selection.containsKey("digest") && !str(selection, "digest").equals(str(version, "digest"))) throw new ApiException(409, "所选流程内容已变化，请刷新后核对");
-        List<String> allowedRoutes = List.of();
+        if (!SELECTION_FIELDS.containsAll(selection.keySet())) throw new ApiException(400, "流程选择包含未支持的字段");
+        Map<String, Object> version = selectedVersion(task, selection);
         if (selection.containsKey("allowedRouteIds")) {
             if (!(selection.get("allowedRouteIds") instanceof List<?> routes) || routes.size() > 64
                     || routes.stream().anyMatch(route -> !(route instanceof String id) || id.isBlank() || id.length() > 100)) throw new ApiException(400, "流程数据发送路由需要明确身份清单");
-            allowedRoutes = strings(routes);
         }
+        Map<String, Integer> confirmed = confirmedRoutes(selection);
         Map<String, Object> rootRoute = map(task, "routeSnapshot"), contract = map(task, "contract");
+        RoutePlan plan = resolveRoutes(task, version);
+        if (!plan.rootBlocker().isEmpty()) throw new ApiException(409, plan.rootBlocker());
+        if (selection.containsKey("rootRouteVersion") && positiveVersion(selection.get("rootRouteVersion")) != num(rootRoute, "version", -1)) {
+            throw new ApiException(409, "根运行路由版本已变化，请重新检查流程路由");
+        }
+        for (NodeRoute node : plan.nodes()) if (!node.blocker().isEmpty()) throw new ApiException(409, node.blocker());
+        for (var recipient : plan.extraRoutes().entrySet()) {
+            String routeId = recipient.getKey(), name = str(recipient.getValue(), "name");
+            if (!confirmed.containsKey(routeId)) throw new ApiException(403, "请按版本明确确认流程向其他路由发送资料：" + name);
+            if (confirmed.get(routeId) != num(recipient.getValue(), "version", -1)) throw new ApiException(409, "额外发送路由版本已变化，请重新检查并确认：" + name);
+        }
+        if (!confirmed.keySet().equals(plan.extraRoutes().keySet()) || !confirmed.isEmpty() && (!selection.containsKey("rootRouteVersion") || !selection.containsKey("digest"))) {
+            throw new ApiException(409, "流程版本或发送路由清单已变化，请重新检查并确认");
+        }
         Map<String, Object> root = obj("capabilities", AgentPermissions.capabilities(contract.get("permissions")),
             "readScopeLayers", List.of(List.of("**")), "writeScopeLayers", List.of(AgentPermissions.scope(contract.get("scope"))));
         List<Map<String, Object>> bindings = new ArrayList<>();
-        for (Map<String, Object> node : objects(map(version, "dsl").get("nodes"))) {
-            Map<String, Object> actor = actor(version, node), live = store.find("agentDefinition", str(actor, "id"));
-            if (live == null || !bool(live, "enabled", false) || !str(live, "projectId").isBlank() && !str(task, "projectId").equals(str(live, "projectId"))) throw new ApiException(409, "节点职责已停用或项目归属变化");
-            Map<String, Object> route = str(actor, "routeId").isBlank() ? rootRoute : store.get("route", str(actor, "routeId"));
-            if (!"API".equals(str(route, "engine")) || !bool(route, "enabled", false) || !BudgetPolicy.matchesLocks(route, map(task, "locks"))) throw new ApiException(409, "节点路由不支持逐请求执行或不符合根锁定");
-            if (!str(rootRoute, "id").equals(str(route, "id")) && !allowedRoutes.contains(str(route, "id"))) throw new ApiException(403, "请明确确认流程向其他路由发送资料：" + str(route, "name"));
+        for (NodeRoute resolved : plan.nodes()) {
+            Map<String, Object> node = resolved.node(), actor = resolved.actor(), route = resolved.route();
             Map<String, Object> permissions = AgentPermissions.narrow(root, actor, obj("capabilities", node.get("permissions"), "scope", node.get("scope")));
             List<String> actual = new ArrayList<>(strings(permissions.get("capabilities")));
             if (!bool(map(task, "collaboration"), "enabled", false)) actual.remove("delegate");
@@ -143,12 +172,98 @@ final class WorkflowCatalog {
             if (!actual.contains("read")) throw new ApiException(403, "节点没有根授权允许的读取能力");
             bindings.add(obj("nodeId", node.get("id"), "actor", actor, "routeSnapshot", new LinkedHashMap<>(route), "permissions", permissions));
         }
-        Map<String, Object> snapshot = obj("protocolVersion", 1, "definitionId", definitionId, "version", version.get("version"),
+        Map<String, Object> snapshot = obj("protocolVersion", 1, "definitionId", version.get("definitionId"), "version", version.get("version"),
             "versionId", version.get("id"), "name", version.get("name"), "digest", version.get("digest"), "dsl", version.get("dsl"),
             "agentDefinitions", version.get("agentDefinitions"), "bindings", bindings, "createdAt", now());
         snapshot.put("snapshotDigest", snapshotDigest(snapshot));
         return snapshot;
     }
+
+    /**
+     * 只检查路由和职责，按节点展示实际接收者与声明输入，不发起模型调用。
+     */
+    Map<String, Object> readiness(Map<String, Object> task, Map<String, Object> selection) {
+        if (!selection.keySet().equals(VERSION_FIELDS)) throw new ApiException(400, "流程路由检查需要固定版本及摘要");
+        RoutePlan plan = resolveRoutes(task, selectedVersion(task, selection));
+        List<String> blockers = new ArrayList<>();
+        if (!plan.rootBlocker().isEmpty()) blockers.add(plan.rootBlocker());
+        List<Map<String, Object>> nodes = new ArrayList<>();
+        for (NodeRoute resolved : plan.nodes()) {
+            Map<String, Object> node = resolved.node();
+            List<String> inputs = strings(node.get("inputs"));
+            List<String> nodeBlockers = resolved.blocker().isEmpty() ? List.of() : List.of(resolved.blocker());
+            if (!nodeBlockers.isEmpty()) blockers.add(str(node, "title") + "：" + resolved.blocker());
+            Map<String, Object> preview = obj("id", node.get("id"), "title", node.get("title"), "inputs", inputs,
+                "rootInputs", inputs.stream().filter(WorkflowDsl.ROOT_INPUTS::contains).toList(), "blockers", nodeBlockers);
+            if (resolved.route() != null) preview.put("route", routeIdentity(resolved.route()));
+            nodes.add(preview);
+        }
+        return obj("rootRoute", routeIdentity(map(task, "routeSnapshot")), "blockers", blockers, "nodes", nodes,
+            "extraRoutes", plan.extraRoutes().values().stream().map(this::routeIdentity).toList());
+    }
+
+    private Map<String, Object> selectedVersion(Map<String, Object> task, Map<String, Object> selection) {
+        String definitionId = identifier(selection, "definitionId");
+        Map<String, Object> definition = store.get("workflowDefinition", definitionId);
+        Map<String, Object> version = version(definitionId, positiveVersion(selection.get("version")));
+        if (!str(version, "projectId").isBlank() && !str(task, "projectId").equals(str(version, "projectId"))) throw new ApiException(403, "流程不属于当前项目");
+        if (!bool(definition, "enabled", false)) throw new ApiException(409, "流程已停用，请刷新后选择");
+        if (selection.containsKey("digest") && !str(selection, "digest").equals(str(version, "digest"))) throw new ApiException(409, "所选流程内容已变化，请刷新后核对");
+        return version;
+    }
+
+    private RoutePlan resolveRoutes(Map<String, Object> task, Map<String, Object> version) {
+        Map<String, Object> root = map(task, "routeSnapshot"), locks = map(task, "locks");
+        String rootId = str(root, "id"), projectId = str(task, "projectId");
+        Map<String, Object> liveRoot = store.find("route", rootId);
+        Map<String, Map<String, Object>> routes = new LinkedHashMap<>(), extraRoutes = new LinkedHashMap<>();
+        List<NodeRoute> nodes = new ArrayList<>();
+        for (Map<String, Object> node : objects(map(version, "dsl").get("nodes"))) {
+            Map<String, Object> actor = actor(version, node), live = store.find("agentDefinition", str(actor, "id"));
+            if (live == null || !bool(live, "enabled", false) || !str(live, "projectId").isBlank() && !projectId.equals(str(live, "projectId"))) {
+                nodes.add(new NodeRoute(node, actor, null, "节点职责已停用或项目归属变化"));
+                continue;
+            }
+            String routeId = str(actor, "routeId");
+            boolean rootRecipient = routeId.isBlank() || routeId.equals(rootId);
+            if (!rootRecipient && !routes.containsKey(routeId)) routes.put(routeId, store.find("route", routeId));
+            Map<String, Object> route = rootRecipient ? root : routes.get(routeId);
+            nodes.add(new NodeRoute(node, actor, route, routeBlocker(route, rootRecipient ? liveRoot : route, locks)));
+            if (!rootRecipient && route != null) extraRoutes.put(routeId, route);
+        }
+        return new RoutePlan(routeBlocker(root, liveRoot, locks), nodes, extraRoutes);
+    }
+
+    private String routeBlocker(Map<String, Object> route, Map<String, Object> current, Map<String, Object> locks) {
+        if (route == null || current == null || !bool(current, "enabled", false)) return "运行路由已停用或不存在";
+        if (!"API".equals(str(route, "engine"))) return "此流程阶段需要支持逐请求记录的 API 路由，原生 CLI 阶段暂不可用";
+        if (!BudgetPolicy.matchesLocks(route, locks)) return "运行路由不符合根锁定";
+        return "";
+    }
+
+    private Map<String, Object> routeIdentity(Map<String, Object> route) {
+        return obj("id", str(route, "id"), "version", num(route, "version", 1), "name", str(route, "name"), "engine", str(route, "engine"),
+            "provider", str(route, "provider"), "model", str(route, "model"), "baseUrl", "API".equals(str(route, "engine")) ? str(route, "baseUrl") : "");
+    }
+
+    private Map<String, Integer> confirmedRoutes(Map<String, Object> selection) {
+        if (!selection.containsKey("allowedRouteVersions")) return Map.of();
+        if (!(selection.get("allowedRouteVersions") instanceof Map<?, ?> routes) || routes.size() > 64) throw new ApiException(400, "额外发送路由需要明确的版本清单");
+        Map<String, Integer> confirmed = new LinkedHashMap<>();
+        for (var route : routes.entrySet()) {
+            if (!(route.getKey() instanceof String id) || id.isBlank() || id.length() > 100) throw new ApiException(400, "额外发送路由身份无效");
+            confirmed.put(id, positiveVersion(route.getValue()));
+        }
+        return confirmed;
+    }
+
+    private int positiveVersion(Object value) {
+        if (!(value instanceof Number version) || version.doubleValue() != version.intValue() || version.intValue() < 1) throw new ApiException(400, "请选择明确的正整数版本");
+        return version.intValue();
+    }
+
+    private record NodeRoute(Map<String, Object> node, Map<String, Object> actor, Map<String, Object> route, String blocker) { }
+    private record RoutePlan(String rootBlocker, List<NodeRoute> nodes, Map<String, Map<String, Object>> extraRoutes) { }
 
     String snapshotDigest(Map<String, Object> snapshot) {
         return WorkflowDsl.digest(obj("definitionId", snapshot.get("definitionId"), "version", snapshot.get("version"), "digest", snapshot.get("digest"),

@@ -24,8 +24,23 @@ export interface WorkflowSnapshot {
   digest: string; snapshotDigest: string; dsl?: WorkflowDsl; agentDefinitions?: AgentDefinition[];
   bindings?: { nodeId: string; actor: AgentDefinition; routeSnapshot: Route; permissions: AgentPermission }[];
 }
-export interface WorkflowSelection {
-  definitionId: string; version: number; digest: string; allowedRouteIds: string[];
+export interface WorkflowVersionSelection {
+  definitionId: string; version: number; digest: string;
+}
+export interface WorkflowSelection extends WorkflowVersionSelection {
+  rootRouteVersion: number; allowedRouteVersions: Record<string, number>;
+}
+export interface WorkflowRouteIdentity {
+  id: string; version: number; name: string; engine: Route['engine'];
+  model: string; provider: string; baseUrl: string;
+}
+export interface WorkflowReadinessNode {
+  id: string; title: string; rootInputs: string[]; inputs: string[]; blockers: string[];
+  route?: WorkflowRouteIdentity;
+}
+export interface WorkflowReadiness {
+  rootRoute: WorkflowRouteIdentity; blockers: string[];
+  nodes: WorkflowReadinessNode[]; extraRoutes: WorkflowRouteIdentity[];
 }
 export interface WorkflowRun {
   id: string; taskId: string; generation: number; state: string;

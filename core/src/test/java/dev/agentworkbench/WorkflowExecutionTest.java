@@ -74,7 +74,8 @@ class WorkflowExecutionTest {
                 assertNotEquals(ProcessHandle.current().pid(), ((Number) engine.workerIdentity().get("pid")).longValue());
                 assertEquals(engine.workerIdentity().get("id"), request.get("workerId")); assertFalse(str(request, "workerLeaseId").isBlank());
                 assertTrue(num(store.get("agentRun", str(request, "agentRunId")), "calls", 0) > 0);
-                calls.incrementAndGet(); observed.add(obj("requestId", request.get("id"), "nodeId", request.get("workflowNodeId"), "runId", request.get("agentRunId"), "activeModels", resources.activeModels()));
+                calls.incrementAndGet(); observed.add(obj("requestId", request.get("id"), "nodeId", request.get("workflowNodeId"), "runId", request.get("agentRunId"),
+                    "routeId", request.get("routeId"), "httpPath", exchange.getRequestURI().getPath(), "activeModels", resources.activeModels()));
                 List<Map<String, Object>> messages = objects(payload.get("messages"));
                 String prompt = messages.stream().filter(message -> Set.of("system", "user").contains(str(message, "role"))).map(message -> str(message, "content")).reduce("", (a, b) -> a + "\n" + b);
                 List<Map<String, Object>> results = messages.stream().filter(message -> "tool".equals(str(message, "role"))).toList();
@@ -86,7 +87,7 @@ class WorkflowExecutionTest {
             } catch (Throwable error) { errors.add(error.toString()); try { exchange.sendResponseHeaders(500, -1); } catch (Exception ignored) { } }
             finally { exchange.close(); }
         }); server.start();
-        rootRoute = route("Root"); otherRoute = route("Other confirmed route");
+        rootRoute = route("Root", "/v1"); otherRoute = route("Other confirmed route", "/alternate/v1");
         actor("left-actor", "researcher", "", false); actor("right-actor", "reviewer", str(otherRoute, "id"), false); actor("writer-actor", "developer", "", true);
     }
 
@@ -96,9 +97,9 @@ class WorkflowExecutionTest {
         if (httpWorkers != null) httpWorkers.shutdownNow(); if (store != null) store.close();
     }
 
-    private Map<String, Object> route(String name) {
+    private Map<String, Object> route(String name, String path) {
         return catalog.saveRoute(obj("name", name, "engine", "API", "model", "fixture", "provider", "fixture",
-            "baseUrl", "http://127.0.0.1:" + server.getAddress().getPort() + "/v1", "enabled", true));
+            "baseUrl", "http://127.0.0.1:" + server.getAddress().getPort() + path, "enabled", true));
     }
 
     private void actor(String id, String role, String routeId, boolean write) {
@@ -119,10 +120,18 @@ class WorkflowExecutionTest {
         Map<String, Object> published = catalog.workflows().save(obj("name", goal, "projectId", project.get("id"), "dsl",
             obj("dslVersion", 1, "inputs", List.of("goal", "contract", "context", "baseline"), "maxParallel", 2, "nodes", nodes)));
         Map<String, Object> version = map(published, "version");
+        Map<String, Object> allowedRouteVersions = obj();
+        for (Map<String, Object> node : nodes) {
+            String routeId = str(store.get("agentDefinition", str(node, "definitionId")), "routeId");
+            if (!routeId.isBlank() && !routeId.equals(rootRoute.get("id"))) {
+                allowedRouteVersions.put(routeId, store.get("route", routeId).get("version"));
+            }
+        }
         return catalog.createTask(obj("projectId", project.get("id"), "routeId", rootRoute.get("id"), "title", goal, "goal", goal, "mode", "LEAD",
             "contract", obj("scope", List.of("src/**"), "commands", List.of("node verify.mjs"), "acceptance", List.of("Source is correct and the workflow evidence is complete")),
             "budget", obj("maxCalls", 24, "reserveCalls", 4), "collaboration", obj("enabled", false), "workflow",
-            obj("definitionId", version.get("definitionId"), "version", version.get("version"), "digest", version.get("digest"), "allowedRouteIds", List.of(otherRoute.get("id")))));
+            obj("definitionId", version.get("definitionId"), "version", version.get("version"), "digest", version.get("digest"),
+                "rootRouteVersion", rootRoute.get("version"), "allowedRouteVersions", allowedRouteVersions)));
     }
 
     private Map<String, Object> awaitTask(String taskId, Set<String> states) throws Exception {
@@ -181,6 +190,65 @@ class WorkflowExecutionTest {
         assertTrue(observed.stream().filter(value -> value.get("nodeId") != null).allMatch(value -> !str(store.get("modelRequest", str(value, "requestId")), "workflowNodeAttemptId").isBlank()));
         assertEquals("PASSED", str(map(finished, "verification"), "status")); assertEquals("APPROVED", str(map(finished, "review"), "status"));
         engine.action(taskId, "accept", obj()); assertEquals("COMPLETED", str(store.get("task", taskId), "state")); assertTrue(errors.isEmpty(), errors.toString());
+    }
+
+    @Test
+    void alternateRouteReceivesDeclaredHandoffsAndRepositoryRules() throws Exception {
+        String rootGoal = "ROOT_GOAL_FOR_EXPLICIT_WORKFLOW_INPUT", memoryText = "OPTIONAL_MEMORY_FOR_EXPLICIT_WORKFLOW_INPUT";
+        String ruleText = "REPOSITORY_RULE_FOR_EVERY_WORKFLOW_NODE", contractText = "Source is correct and the workflow evidence is complete";
+        String ancestorText = "ORIGINAL_ANCESTOR_OUTPUT_FOR_DECLARED_HANDOFF";
+        Files.writeString(source.resolve("AGENTS.md"), ruleText + "\n");
+        git(source, "add", "AGENTS.md"); git(source, "commit", "-m", "add workflow fixture rule");
+        Map<String, Object> memory = catalog.saveMemory(obj("projectId", project.get("id"), "kind", "RULE", "source", "AGENTS.md", "content", memoryText));
+        fixture.set((prompt, results, names) -> {
+            if (node(prompt, "ancestor")) return answer(ancestorText);
+            if (node(prompt, "limited") || node(prompt, "explicit")) {
+                boolean declared = node(prompt, "explicit");
+                assertEquals(declared, prompt.contains(rootGoal));
+                assertEquals(declared, prompt.contains(contractText));
+                assertEquals(declared, prompt.contains(memoryText));
+                assertEquals(declared, prompt.contains("node verify.mjs"));
+                assertTrue(prompt.contains(ruleText));
+                assertEquals(prompt.indexOf(ruleText), prompt.lastIndexOf(ruleText));
+                assertEquals(prompt.indexOf(memoryText), prompt.lastIndexOf(memoryText));
+                assertFalse(prompt.contains("sourcePath"));
+                assertTrue(prompt.contains(ancestorText));
+                assertTrue(prompt.contains("Retain original evidence and follow the confirmed goal."));
+                assertTrue(prompt.contains("Complete " + (declared ? "explicit" : "limited") + " with original evidence"));
+                assertFalse(names.contains("run_command"));
+                return answer(declared ? "Explicit inputs observed" : "Limited inputs observed");
+            }
+            return ordinary(prompt);
+        });
+        Map<String, Object> ancestor = node("ancestor", "left-actor", List.of(), false);
+        Map<String, Object> limited = node("limited", "right-actor", List.of("ancestor"), false);
+        Map<String, Object> explicit = node("explicit", "right-actor", List.of("ancestor"), false);
+        explicit.put("inputs", List.of("goal", "contract", "context", "ancestor:result"));
+        String taskId = str(task(rootGoal, List.of(ancestor, limited, explicit)), "id");
+        engine.action(taskId, "approve", obj());
+        Map<String, Object> finished = awaitTask(taskId, Set.of("AWAITING_ACCEPTANCE"));
+        assertTrue(errors.isEmpty(), errors.toString());
+
+        List<Map<String, Object>> alternateRequests = observed.stream().filter(request -> otherRoute.get("id").equals(request.get("routeId"))).toList();
+        assertEquals(2, alternateRequests.size());
+        assertEquals(Set.of("limited", "explicit"), alternateRequests.stream().map(request -> str(request, "nodeId")).collect(java.util.stream.Collectors.toSet()));
+        assertTrue(alternateRequests.stream().allMatch(request -> "/alternate/v1/chat/completions".equals(str(request, "httpPath"))));
+        List<Map<String, Object>> attempts = store.list("workflowNodeAttempt");
+        Map<String, Object> sourceAttempt = attempts.stream().filter(attempt -> "ancestor".equals(str(attempt, "nodeId"))).findFirst().orElseThrow();
+        for (Map<String, Object> attempt : attempts.stream().filter(value -> !"ancestor".equals(str(value, "nodeId"))).toList()) {
+            boolean declared = "explicit".equals(str(attempt, "nodeId"));
+            Map<String, Object> inputs = map(attempt, "inputs"), handoff = map(inputs, "ancestor:result");
+            assertEquals(declared ? Set.of("goal", "contract", "context", "ancestor:result") : Set.of("ancestor:result"), inputs.keySet());
+            if (declared) assertEquals(List.of(memory.get("id")), objects(inputs.get("context")).stream().map(item -> item.get("id")).toList());
+            assertEquals(sourceAttempt.get("id"), handoff.get("sourceAttemptId"));
+            assertEquals(sourceAttempt.get("evidenceId"), handoff.get("evidenceId"));
+            assertEquals(sourceAttempt.get("resultVersion"), handoff.get("version"));
+            assertEquals(1, num(attempt, "promptInputProjectionVersion", 0));
+            assertEquals(1, num(store.get("operation", str(attempt, "inputOperationId")), "promptInputProjectionVersion", 0));
+            assertEquals(List.of("AGENTS.md"), objects(attempt.get("projectRuleSources")).stream().map(rule -> str(rule, "source")).toList());
+        }
+        assertEquals("PASSED", str(map(finished, "verification"), "status"));
+        assertEquals("APPROVED", str(map(finished, "review"), "status"));
     }
 
     @Test

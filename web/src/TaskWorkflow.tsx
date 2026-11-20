@@ -6,8 +6,9 @@ import type { AgentDefinition, Project, Route, Task } from './types';
 import { Badge, Field, formatTime, Modal, SaveButton, SectionHeading, shortHash } from './ui';
 import { WorkflowEditor } from './WorkflowLibrary';
 import type { WorkflowSaved } from './WorkflowLibrary';
-import { WorkflowNodes, WorkflowPicker } from './WorkflowPicker';
-import type { WorkflowAttempt, WorkflowGeneration, WorkflowPage, WorkflowProposal, WorkflowRun, WorkflowSelection } from './workflow-types';
+import { currentWorkflowSelection, WorkflowNodes, WorkflowPicker } from './WorkflowPicker';
+import type { ReviewedWorkflowSelection } from './WorkflowPicker';
+import type { WorkflowAttempt, WorkflowGeneration, WorkflowPage, WorkflowProposal, WorkflowRun } from './workflow-types';
 
 const editableStates = new Set(['DRAFT', 'PAUSED', 'WAITING_INPUT', 'FAILED', 'AWAITING_ACCEPTANCE']);
 const states: Record<string, string> = { VALIDATED: '待人工发布', INVALID: '校验未通过', PUBLISHED: '已发布', PREPARING: '准备基线', INTEGRATED: '已整合', NOT_INTEGRATED: '未整合' };
@@ -130,18 +131,23 @@ function SelectWorkflow({ task, route, routes, restart, onClose, onSaved }: {
   task: Task; route: Route; routes: Route[]; restart: boolean; onClose: () => void; onSaved: (value: Task) => void;
 }) {
   const [expected] = useState(() => fields(task));
-  const [selection, setSelection] = useState<WorkflowSelection | null>(null);
+  const [reviewed, setReviewed] = useState<ReviewedWorkflowSelection | null>(null);
+  const [invalidation, setInvalidation] = useState(0);
   const [note, setNote] = useState(''); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
+  const context = { projectId: task.projectId, rootRoute: route, locks: task.locks || {}, routes, taskId: task.id };
+  const selection = currentWorkflowSelection(context, reviewed);
   async function submit(event: FormEvent) {
     event.preventDefault(); if (!selection || (restart && !note.trim()) || busy) return;
     setBusy(true); setError('');
     try { onSaved(await post<Task>(`${rootOf(task.id)}/${restart ? 'workflow-restart' : 'workflow-selection'}`, { ...expected, selection, ...(restart ? { note: note.trim() } : {}) })); }
-    catch (error) { setError((error as Error).message); } finally { setBusy(false); }
+    catch (error) {
+      setReviewed(null); setInvalidation(value => value + 1); setError((error as Error).message);
+    } finally { setBusy(false); }
   }
   return <Modal wide title={restart ? '用当前现场开始新流程' : '选择任务流程'} description={restart ? '以当前任务现场作为新一代基线，保留原流程、节点证据和已用预算。应用后仍需确认执行。' : '选择明确版本后，回到协作计划确认执行。'} onClose={() => { if (!busy) onClose(); }}>
     <form onSubmit={submit}><div className="form-body workflow-stack">
       {restart && <p className="workflow-meta">当前现场 <code title={expected.expectedVersion}>{shortHash(expected.expectedVersion)}</code></p>}
-      <WorkflowPicker projectId={task.projectId} rootRoute={route} routes={routes} onChange={setSelection} />
+      <WorkflowPicker context={context} invalidation={invalidation} disabled={busy} onChange={setReviewed} />
       {restart && <Field label="重新开始的原因"><textarea rows={3} maxLength={3000} required disabled={busy} value={note} onChange={event => setNote(event.target.value)} /></Field>}
       {error && <p className="form-error" role="alert">{error}</p>}
     </div><footer><button type="button" className="button secondary" disabled={busy} onClick={onClose}>取消</button><SaveButton busy={busy} disabled={!selection || (restart && !note.trim())}>应用并返回计划</SaveButton></footer></form>

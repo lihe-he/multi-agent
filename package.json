@@ -1,6 +1,6 @@
 {
   "name": "multi-agent-workbench",
-  "version": "0.2.0-alpha.23",
+  "version": "0.2.0-alpha.24",
   "description": "本地多 Agent 智能研发工作台",
   "private": true,
   "main": "desktop/main.cjs",
@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "verify:version": "node tools/verify-version.mjs",
+    "verify:core": "node tools/manage.mjs verify:core",
     "setup": "node tools/manage.mjs setup",
     "build": "node tools/manage.mjs build",
     "build:core": "node tools/manage.mjs build:core",

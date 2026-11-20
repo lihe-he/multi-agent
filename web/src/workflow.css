@@ -13,6 +13,12 @@
 .workflow-node-row span { display: block; margin-top: 2px; color: var(--text-secondary); }
 .workflow-consent { display: grid; gap: 8px; margin: 0; padding: 10px 12px; min-width: 0; border-radius: 8px; border: 1px solid var(--border); font-size: 12px; }
 .workflow-consent label { display: flex; align-items: center; gap: 6px; overflow-wrap: anywhere; }
+.workflow-readiness, .workflow-route-detail { display: grid; gap: 8px; min-width: 0; }
+.workflow-route-detail { padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; overflow-wrap: anywhere; }
+.workflow-route-detail > .workflow-meta { display: flex; flex-wrap: wrap; gap: 3px 12px; }
+.workflow-route-detail label { font-weight: 600; }
+.workflow-blockers, .workflow-route-inputs { margin: 0; padding-inline-start: 30px; overflow-wrap: anywhere; }
+.workflow-blockers { display: grid; gap: 4px; }
 .workflow-json { max-height: 48vh; overflow: auto; }
 .workflow-record { border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
 .workflow-record summary { cursor: pointer; font-size: 13px; font-weight: 600; }
