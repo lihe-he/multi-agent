@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 import static dev.agentworkbench.Json.*;
 
 /**
@@ -24,6 +25,7 @@ final class RequestObservation implements ModelCallObserver {
     private final AgentToolSession tools;
     private final int maxCalls;
     private final CheckpointLedger checkpoints;
+    private final Function<Map<String, Object>, Map<String, Object>> stageInput;
     private String requestId = "";
     private String receiptId = "";
 
@@ -32,9 +34,15 @@ final class RequestObservation implements ModelCallObserver {
     }
 
     RequestObservation(ExecutionStore store, WorkbenchCatalog catalog, String taskId, String runId, boolean reserved, BooleanSupplier cancelled, AtomicBoolean denied, Runnable before, AgentToolSession tools, int maxCalls, CheckpointLedger checkpoints) {
+        this(store, catalog, taskId, runId, reserved, cancelled, denied, before, tools, maxCalls, checkpoints, null);
+    }
+
+    RequestObservation(ExecutionStore store, WorkbenchCatalog catalog, String taskId, String runId, boolean reserved, BooleanSupplier cancelled, AtomicBoolean denied, Runnable before, AgentToolSession tools, int maxCalls, CheckpointLedger checkpoints,
+                       Function<Map<String, Object>, Map<String, Object>> stageInput) {
         this.store = store; this.catalog = catalog; this.taskId = taskId; this.runId = runId; this.reserved = reserved;
         this.cancelled = cancelled; this.denied = denied; this.before = before; this.tools = tools; this.maxCalls = maxCalls;
         this.checkpoints = checkpoints;
+        this.stageInput = stageInput;
     }
 
     @Override
@@ -67,6 +75,11 @@ final class RequestObservation implements ModelCallObserver {
 
     @Override public AgentToolSession tools() { return tools; }
     @Override public String lastRequestId() { return receiptId; }
+    @Override public Map<String, Object> stageInput(Map<String, Object> lease) {
+        if (stageInput == null) return obj();
+        if (!taskId.equals(str(lease, "taskId")) || !runId.equals(str(lease, "agentRunId"))) throw new ApiException(403, "阶段输入缺少原任务与运行来源");
+        return stageInput.apply(lease);
+    }
     @Override public Map<String, Object> checkpointContext() { return checkpoints == null ? obj() : checkpoints.context(taskId, runId); }
     @Override public void checkpoint(Map<String, Object> descriptor) {
         if (checkpoints == null || receiptId.isBlank()) throw new ApiException(403, "文件检查点缺少原成功请求来源。");

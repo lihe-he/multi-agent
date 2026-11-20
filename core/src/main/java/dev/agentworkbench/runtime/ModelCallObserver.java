@@ -13,6 +13,11 @@ public interface ModelCallObserver extends BooleanSupplier {
     default String lastRequestId() { return ""; }
 
     /**
+     * 可选的阶段输入只由核心按原领取投影，不从模型或 Worker 参数取得。
+     */
+    default Map<String, Object> stageInput(Map<String, Object> lease) { return Map.of(); }
+
+    /**
      * 文件检查点上下文由原核心提供，不从模型参数取得。
      */
     default Map<String, Object> checkpointContext() { return Map.of(); }

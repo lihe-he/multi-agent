@@ -17,6 +17,7 @@ const checks = [];
 const calls = [];
 const teamProtocol = createTeamProtocol();
 const teamReports = [];
+const mcpTokens = [];
 const cancellationObservations = [];
 const delayedRequests = [];
 let releaseDelayed;
@@ -167,6 +168,33 @@ try {
     assert.ok(value.id);
     assert.equal(value.head, originalHead);
     return value;
+  });
+  await check('Internal stage input rejects unrelated credentials and exposes no management mint endpoint', async () => {
+    const grant = (await request('/mcp/access', { projectId: project.id })).data;
+    if (typeof grant.token === 'string' && grant.token) mcpTokens.push(grant.token);
+    try {
+      assert.ok(typeof grant.id === 'string' && grant.id.length > 0, 'Project MCP grant must have an id');
+      assert.ok(typeof grant.token === 'string' && grant.token.startsWith('mcp_'), 'Project MCP grant must use its own token scope');
+      const endpoint = `/api/mcp/stage-input/${randomUUID()}`;
+      const credentials = [['missing', undefined], ['desktop', token], ['project', grant.token], ['fake stage', `stage_${'x'.repeat(43)}`]];
+      for (const [label, credential] of credentials) {
+        for (const method of ['GET', 'POST']) {
+          const response = await fetch(`${baseUrl}${endpoint}`, { method,
+            headers: { ...(credential ? { Authorization: `Bearer ${credential}` } : {}), ...(method === 'POST' ? { 'Content-Type': 'application/json', 'MCP-Protocol-Version': '2025-06-18' } : {}) },
+            ...(method === 'POST' ? { body: JSON.stringify({ jsonrpc: '2.0', id: 'stage-access-probe', method: 'initialize', params: { protocolVersion: '2025-06-18' } }) } : {}),
+            signal: AbortSignal.timeout(20_000) });
+          const raw = await response.text();
+          assert.ok([401, 403].includes(response.status), `${label} ${method} must not reach internal stage input (HTTP ${response.status})`);
+          assert.ok(!raw.includes(token) && !raw.includes(grant.token), 'Stage input denial must not expose credentials');
+        }
+      }
+      for (const endpoint of ['/mcp/stage-input', '/mcp/stage-input/access', '/mcp/stage-input/issue']) {
+        const result = await request(endpoint, { projectId: project.id, identity: { projectId: project.id }, lifetimeMs: 60_000 }, { expected: 401, authorized: false });
+        assert.ok(!JSON.stringify(result.data).includes('stage_'), 'Management requests must not mint a stage input token');
+      }
+    } finally {
+      if (typeof grant.id === 'string' && grant.id) await request(`/mcp/access/${encodeURIComponent(grant.id)}`, undefined, { method: 'DELETE' });
+    }
   });
   await check('Local execution node and repository binding are authoritative and versioned', async () => {
     await request('/execution-nodes', undefined, { expected: 401, authorized: false });
@@ -420,11 +448,21 @@ try {
     assert.equal(proposal.state, 'VALIDATED'); assert.equal(proposal.generationId, generation.id);
     assert.equal(proposal.agentRunId, generation.agentRunId); assert.ok(proposal.sourceDigest.length === 64);
     const publish = { name: workflowCandidate.name, expectedSourceDigest: proposal.sourceDigest };
-    const first = (await request(`/tasks/${task.id}/workflow-proposals/${proposal.id}/publish`, publish)).data;
-    const repeated = (await request(`/tasks/${task.id}/workflow-proposals/${proposal.id}/publish`, publish)).data;
+    const publishEndpoint = `/tasks/${task.id}/workflow-proposals/${proposal.id}/publish`;
+    const publishDeadline = Date.now() + 30_000;
+    let first;
+    let pendingPublish;
+    while (Date.now() < publishDeadline) {
+      pendingPublish = await request(publishEndpoint, publish, { expected: [200, 409] });
+      if (pendingPublish.response.status === 200) { first = pendingPublish.data; break; }
+      assert.equal(pendingPublish.data.error, '根执行尚未结束，请等待执行结束回执后继续');
+      await new Promise(resolveWait => setTimeout(resolveWait, 100));
+    }
+    assert.ok(first, `Wait for root execution settlement before publish; last response=${JSON.stringify(pendingPublish?.data)}`);
+    const repeated = (await request(publishEndpoint, publish)).data;
     assert.equal(first.version.id, repeated.version.id); assert.equal(first.version.version, 1);
     assert.equal(first.version.source, 'GENERATED'); assert.equal(first.version.sourceVersionId, proposal.id);
-    await request(`/tasks/${task.id}/workflow-proposals/${proposal.id}/publish`, { ...publish, name: 'Conflicting retry' }, { expected: 409 });
+    await request(publishEndpoint, { ...publish, name: 'Conflicting retry' }, { expected: 409 });
     const originalAfterPublish = (await request(`/tasks/${task.id}`)).data;
     assert.equal(originalAfterPublish.workflow, undefined, 'Publishing does not silently replace the task pinned workflow');
     const response = await fetch(`${baseUrl}/api/tasks/${task.id}/export`, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(20_000) });
@@ -611,7 +649,7 @@ try {
   }
   const report = { createdAt: new Date().toISOString(), platform: process.platform, status: process.exitCode ? 'failed' : 'passed', baseUrl, fixture, projectPath, checks, calls, teams: teamReports, cancellationObservations, delayedRequests, scope: 'Local deterministic model protocol fixture only; not external provider, CLI or cross-platform certification.' };
   const serialized = JSON.stringify(report, (_key, value) => typeof value === 'string'
-    ? value.replaceAll(token, '[REDACTED]').replaceAll('test-only-not-a-secret', '[REDACTED_FIXTURE_KEY]')
+    ? mcpTokens.reduce((safe, secret) => safe.replaceAll(secret, '[REDACTED_MCP_TOKEN]'), value.replaceAll(token, '[REDACTED]').replaceAll('test-only-not-a-secret', '[REDACTED_FIXTURE_KEY]'))
     : value, 2);
   const reportFile = path.join(fixture, 'smoke-report.json');
   await writeFile(reportFile, serialized);

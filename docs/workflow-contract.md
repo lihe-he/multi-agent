@@ -1,6 +1,12 @@
-# Workflow 协议（alpha.24）
+# Workflow 协议（alpha.25）
 
-本文说明 `0.2.0-alpha.24` 的版本化流程定义、候选发布、节点运行和导出边界。该增量提供本地 API 模型路由的基础 DAG 路径；M0–M3 的完整产品退出条件及三端发行验收仍未完成。
+本文说明 `0.2.0-alpha.25` 的版本化流程定义、候选发布、节点运行、内部阶段输入桥和导出边界。该增量提供本地 API 模型路由的基础 DAG 路径及原调用限定的只读输入投影；M0–M3 的完整产品退出条件、真实原生 CLI 混合执行及三端发行验收仍未完成。
+
+## 原调用限定的阶段输入桥
+
+节点的私有 Worker 调用可以在输入准备、原领取和工作区写入归属全部建立后取得短期 `stage_` Bearer。`POST /api/mcp/stage-input/{id}` 只接受固定 MCP 协议的 `initialize`、`ping`、`tools/list` 和 `tools/call`；工具清单只有只读 `stage_input`。每次握手、调用和 GET 方法检查都会重新核验原任务、流程代次、节点尝试、AgentRun、输入准备 ACK、Worker 领取、权限、工作区写入身份、授权版本和输入摘要。返回值仅包含白名单身份、节点描述、声明输入及脱敏仓库规则。
+
+令牌在正常收尾、取消、超时、领取失效、输入或权限投影变化、Worker 失联以及核心重启后均失效；令牌本身不能替代原领取或扩大项目、管理或其他阶段授权。`arguments` 可省略，也可以显式为空对象；非空或非对象参数、额外字段、其他工具名和不适用令牌都会拒绝。alpha.25 的桥仍未由 Worker 启动真实 Codex/Claude CLI 消费，因此不声称原生 CLI、配置层合并、外部沙箱或供应商 MCP 兼容性已经验收。
 
 ## 定义与版本
 
@@ -74,10 +80,12 @@ Workflow 使用版本 `1` 的 JSON DSL，仅接受 `dslVersion`、根输入、`m
 - `POST/GET /api/tasks/{id}/workflow-generations`、`GET /workflow-proposals`：提交只读生成和读取来源历史。
 - `GET /api/tasks/{id}/workflow-proposals/{proposalId}`、`POST /workflow-proposals/{proposalId}/publish`：查看候选并按摘要明确发布。
 
-上述路由均遵循 API 原有认证、任务项目归属、原请求来源及并发控制。该 API/Worker 协议在 alpha.24 不改变版本号 `1`。
+上述路由均遵循 API 原有认证、任务项目归属、原请求来源及并发控制。该 API/Worker 协议在 alpha.25 不改变版本号 `1`。
 
 ## 未完成验收
 
-alpha.24 不代表流程调度完整满足计划书 M2：远程 Worker 节点、跨核心持久租约/资源等待环、真实 Codex/Claude CLI 的混合执行、全平台发行验收、长期负载、完整数据库备份恢复及 F01–F21 整体退出条件仍需单独完成。开发期的固定版本 OSS 参考、内容校验记录见任务运行目录，不进入产品依赖。
+alpha.25 不代表流程调度完整满足计划书 M2：远程 Worker 节点、跨核心持久租约/资源等待环、Worker 消费 `stageInputBridge` 的原生 CLI 阶段、真实 Codex/Claude CLI 配置与工具兼容性、全平台发行验收、长期负载、完整数据库备份恢复及 F01–F21 整体退出条件仍需单独完成。开发期的固定版本 OSS 参考、内容校验记录见任务运行目录，不进入产品依赖。
 
 2026-11-20 的路由检查、版本确认及提示输入调整已由本机 Windows 清洁核心 **633 项（623 通过、10 项条件跳过）**、`WorkflowExecutionTest` 8/8、生产 UI **272/272** 和最终 alpha.24 Jar 本机协议 **33/33** 覆盖；本机 JAR/class 逐字节核对通过。命令、逐套件报告、跳过项与源码、build、UI、Jar 摘要见[alpha.24 本机验收回执](./qa/alpha24-workflow-route-inputs-win32.json)。准确实现提交 `26b8ded` 的三端 CI 首次运行成功，每端核心 633 项零失败/错误、Workflow 执行 8/8、生产 UI 272/272、实际 Jar 协议 33/33，平台跳过、发行步骤及 artifact 元数据限定见[CI 终态回执](./qa/alpha24-ci-final-26b8ded.json)。真实 CLI/外部服务及完整 M2 尚未验收；固定开源来源和实施边界见[研究记录](./research/workflow-route-inputs-2026-11-20.md)。
+
+alpha.25 的桥接增量经本机 Windows 清洁核心 **673 项（663 通过、10 项条件跳过）**、实际 alpha.25 Jar 协议 **34/34** 和 Edge 生产 UI **272/272** 验收；实际 Jar SHA-256 与清洁构建回执相同。新增 controller、注册表、输入投影和实际 Workflow Worker HTTP 生命周期测试合计 **39/39**。完整本机结果与保存的两轮首次协议夹具失败见[alpha.25 验收回执](./qa/alpha25-stage-input-win32.json)。这不是准确提交的 CI、真实原生 CLI 或跨平台发行证明。

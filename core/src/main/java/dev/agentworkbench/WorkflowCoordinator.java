@@ -203,7 +203,8 @@ final class WorkflowCoordinator {
             String operationId = str(operation, "id");
             worker.dispatch(operationId, workspace, obj("workflowRunId", workflowId, "workflowNodeAttemptId", attemptId, "inputVersion", inputs.get("inputVersion")));
             AtomicBoolean denied = new AtomicBoolean(); TeamCoordinator.Session active = session;
-            RequestObservation observer = new RequestObservation(store, catalog, taskId, runId, false, active::stopped, denied, active::checkCurrent, active, num(node, "maxCalls", 8));
+            RequestObservation observer = new RequestObservation(store, catalog, taskId, runId, false, active::stopped, denied, active::checkCurrent, active, num(node, "maxCalls", 8), null,
+                AgentPermissions.unrestricted(permissions, "read") ? new WorkflowStageInputs(store, catalog, mapper)::read : null);
             String prompt = "你是已确认 Workflow 的节点执行者。阶段 kind=" + str(node, "kind") + "，role=" + str(node, "role") + "。\n节点：" + str(node, "id")
                 + "\n节点目标：" + str(node, "goal") + "\n固定职责：" + str(map(binding, "actor"), "instructions")
                 + "\n适用的仓库规则：" + mapper.writeValueAsString(projectRules)

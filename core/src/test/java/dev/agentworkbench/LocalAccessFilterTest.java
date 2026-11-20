@@ -5,6 +5,8 @@ import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import dev.agentworkbench.mcp.McpAccessRegistry;
+import dev.agentworkbench.mcp.StageInputMcpRegistry;
+import java.time.Duration;
 import static dev.agentworkbench.Json.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -90,6 +92,26 @@ class LocalAccessFilterTest {
         assertTrue(str(issued, "token").startsWith("mcp_"));
         assertFalse(registry.list().toString().contains(str(issued, "token")));
         assertFalse(registry.list().getFirst().containsKey("token")); assertFalse(registry.list().getFirst().containsKey("tokenHash"));
+    }
+
+    @Test
+    void stageGrantRequiresItsOwnCredentialAndCannotReachProjectOrManagementApis() throws Exception {
+        var projectAccess = new McpAccessRegistry(); var project = projectAccess.issue("project-a");
+        var stageAccess = new StageInputMcpRegistry();
+        var stage = stageAccess.open(obj("invocationId", "original-call"), () -> obj("inputs", obj("goal", "approved")), Duration.ofMinutes(1));
+        var other = stageAccess.open(obj("invocationId", "other-call"), () -> obj(), Duration.ofMinutes(1));
+        var filter = new LocalAccessFilter(TOKEN, projectAccess, stageAccess);
+        assertEquals(200, invoke(filter, "POST", stage.endpoint(), stage.token()));
+        assertEquals(200, invoke(filter, "GET", stage.endpoint(), stage.token()));
+        assertEquals(401, invoke(filter, "POST", other.endpoint(), stage.token()));
+        assertEquals(401, invoke(filter, "POST", stage.endpoint(), TOKEN));
+        assertEquals(401, invoke(filter, "POST", stage.endpoint(), str(project, "token")));
+        for (String path : new String[]{"/api/state", "/api/tasks", "/api/shutdown", "/api/mcp/access", "/api/mcp/rpc/project-a"}) {
+            assertEquals(401, invoke(filter, "POST", path, stage.token()));
+        }
+        assertEquals(401, invoke(filter, "DELETE", stage.endpoint(), stage.token()));
+        stageAccess.revoke(stage.id());
+        assertEquals(401, invoke(filter, "POST", stage.endpoint(), stage.token()));
     }
 
     private int invoke(LocalAccessFilter filter, String method, String path, String token) throws Exception {

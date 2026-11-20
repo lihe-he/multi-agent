@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.agentworkbench.runtime.AgentToolSession;
 import dev.agentworkbench.runtime.ModelCallObserver;
 import dev.agentworkbench.runtime.WorkspaceRuntime;
+import dev.agentworkbench.mcp.StageInputMcpRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,8 @@ import static dev.agentworkbench.Json.*;
 public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
     private final ObjectMapper mapper;
     private final String dataDirectory;
+    private final StageInputMcpRegistry stageInputs;
+    private final String coreSessionId = id();
     private final ThreadLocal<Claim> current = new ThreadLocal<>();
     private final Map<String, Claim> claims = new ConcurrentHashMap<>();
     private final Map<String, Invocation> invocations = new ConcurrentHashMap<>();
@@ -41,7 +45,12 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
     private boolean started;
 
     public ProcessWorkspaceRuntime(ObjectMapper mapper, @Value("${workbench.data-dir:./data}") String dataDirectory) {
-        super(mapper, dataDirectory); this.mapper = mapper; this.dataDirectory = dataDirectory;
+        this(mapper, dataDirectory, new StageInputMcpRegistry());
+    }
+
+    @Autowired
+    public ProcessWorkspaceRuntime(ObjectMapper mapper, @Value("${workbench.data-dir:./data}") String dataDirectory, StageInputMcpRegistry stageInputs) {
+        super(mapper, dataDirectory); this.mapper = mapper; this.dataDirectory = dataDirectory; this.stageInputs = stageInputs;
     }
 
     synchronized LocalExecutionWorker startWorker(ExecutionStore store, ExecutionNodes nodes) {
@@ -60,8 +69,8 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
     void requireDispatch() { processLedger.requireDispatch(); }
     void requireAvailable() { if (process == null) throw new ApiException(409, "独立 Worker 尚未启动"); process.requireAvailable(); }
     void bind(Map<String, Object> identity, Consumer<Map<String, Object>> pulses, Consumer<String> lost) { process.bind(identity, pulses, lost); }
-    void fence(String reason) { if (process != null) process.fence(reason); }
-    void closeProcess() { if (process != null) process.close(); }
+    void fence(String reason) { invocations.values().forEach(Invocation::revokeStageInput); if (process != null) process.fence(reason); }
+    void closeProcess() { invocations.values().forEach(Invocation::revokeStageInput); if (process != null) process.close(); }
 
     void handoff(Map<String, Object> lease, String token) {
         requireAvailable();
@@ -161,7 +170,11 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
             cancelled, log, observer, mcpInvoker));
     }
 
-    @Override public void stop(String taskId) { if (process != null && !taskId.isBlank()) process.cancel(taskId); }
+    @Override public void stop(String taskId) {
+        if (taskId.isBlank()) return;
+        invocations.values().stream().filter(call -> taskId.equals(str(call.claim.lease, "taskId"))).forEach(Invocation::revokeStageInput);
+        if (process != null) process.cancel(taskId);
+    }
 
     Map<String, Object> executeTerminal(Map<String, Object> terminal, TerminalLedger ledger, BooleanSupplier cancelled) {
         return objectValue(invoke("TERMINAL", obj("workspace", terminal.get("workspace"), "terminalId", terminal.get("id"),
@@ -207,11 +220,14 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         Invocation call = new Invocation(id(), claim, sequence, method, cancelled, log, observer, mcp, terminalLedger); invocations.put(call.id, call);
         boolean interrupted = false;
         try {
+            call.openStageInput(parameters);
             var result = process.invoke(call.id, claim.lease, claim.token, sequence, method, parameters);
             long deadline = "TERMINAL".equals(method) ? Long.MAX_VALUE : System.nanoTime() + Duration.ofMinutes(16).toNanos();
             Map<String, Object> response;
             while (true) {
-                if ((cancelled.getAsBoolean() || !worker.current(str(claim.lease, "taskId"))) && call.cancelSent.compareAndSet(false, true)) process.cancel(str(claim.lease, "taskId"));
+                if ((cancelled.getAsBoolean() || !worker.current(str(claim.lease, "taskId"))) && call.cancelSent.compareAndSet(false, true)) {
+                    call.revokeStageInput(); process.cancel(str(claim.lease, "taskId"));
+                }
                 if (System.nanoTime() >= deadline) process.fence("WORKER_CALL_TIMED_OUT");
                 try { response = objectValue(result.get(150, TimeUnit.MILLISECONDS)); break; }
                 catch (TimeoutException ignored) { }
@@ -247,6 +263,7 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
             call.callbackLock.lock();
             try {
                 call.closed = true;
+                call.revokeStageInput();
                 try {
                     if (call.requestInFlight) {
                         call.observer.end(obj("state", "UNKNOWN", "errorType", "WORKER_RECEIPT_MISSING", "remoteOutcome", "UNKNOWN", "reason", "原 Worker 调用结束但模型观测未取得回执，不自动重放"));
@@ -313,10 +330,72 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         long callbacks;
         boolean requestInFlight;
         boolean closed;
+        volatile StageInputMcpRegistry.Handle stageInput;
+        final AtomicBoolean stageInputRevoked = new AtomicBoolean();
+        String stageInputDigest = "";
         Invocation(String id, Claim claim, long sequence, String method, BooleanSupplier cancelled, Consumer<String> log, ModelCallObserver observer, FixedToolInvoker mcp, TerminalLedger terminalLedger) {
             this.id = id; this.claim = claim; this.sequence = sequence; this.method = method; this.cancelled = cancelled; this.log = log; this.observer = observer;
             this.tools = observer == null ? null : observer.tools(); this.mcp = mcp;
             this.terminalLedger = terminalLedger;
+        }
+
+        /**
+         * 阶段令牌仅随原 Worker 私有调用传递，原生运行器尚未获得自动注入能力。
+         */
+        void openStageInput(Map<String, Object> parameters) {
+            if (!"RUN".equals(method) || observer == null) return;
+            callbackLock.lock();
+            try {
+                synchronized (store) {
+                    if (stageInputRevoked.get()) throw new CancellationException("阶段输入授权已撤销");
+                    requireCurrent(claim, cancelled);
+                    Map<String, Object> snapshot = observer.stageInput(claim.lease);
+                    if (snapshot.isEmpty()) return;
+                    stageInputDigest = WorkflowDsl.digest(snapshot, mapper);
+                    Map<String, Object> identity = new LinkedHashMap<>(claim.lease);
+                    identity.putAll(obj("coreSessionId", coreSessionId, "invocationId", id, "callSequence", sequence, "stageInputDigest", stageInputDigest));
+                    stageInput = stageInputs.open(identity, this::readStageInput, Duration.ofMinutes(16));
+                    if (stageInputRevoked.get()) {
+                        stageInputs.revoke(stageInput.id()); throw new CancellationException("阶段输入授权已撤销");
+                    }
+                    parameters.put("stageInputBridge", obj("endpoint", stageInput.endpoint(), "token", stageInput.token()));
+                }
+            } finally { callbackLock.unlock(); }
+        }
+
+        /**
+         * HTTP 线程显式定位原调用，复查领取和固定输入，不借用线程本地身份。
+         */
+        Map<String, Object> readStageInput() {
+            callbackLock.lock();
+            try {
+                synchronized (store) {
+                    if (closed || cancelSent.get() || stageInputRevoked.get() || invocations.get(id) != this || !claim.active.get() || claim.sequence != sequence
+                            || claims.get(str(claim.lease, "operationId")) != claim || stageInput == null) throw new ApiException(403, "阶段输入的原调用已经结束");
+                    requireCurrent(claim, cancelled);
+                    Map<String, Object> lease = store.get("workerLease", str(claim.lease, "id"));
+                    for (String key : List.of("id", "operationId", "operationKind", "taskId", "projectId", "agentRunId", "taskExecutionId", "dispatchActionId", "workspaceWriteLeaseId", "workspaceWriteIdentity",
+                            "workerId", "epoch", "executionNodeId", "repositoryBindingId", "bindingVersion", "authorizationVersion", "workingDirectory", "realWorkingDirectory", "operationType", "subjectId", "claimDigest",
+                            "executorPid", "processStartedAt", "corePid", "processSessionId", "workspaceSelection", "workspaceOwnership", "terminalId",
+                            "workflowRunId", "workflowNodeId", "workflowNodeAttemptId", "workflowAncestorNodeIds")) {
+                        if (!WorkflowDsl.digest(obj("value", claim.lease.get(key)), mapper).equals(WorkflowDsl.digest(obj("value", lease.get(key)), mapper))) {
+                            throw new ApiException(403, "阶段输入的原领取来源已变化");
+                        }
+                    }
+                    if (!java.time.Instant.now().isBefore(java.time.Instant.parse(str(lease, "expiresAt")))) throw new ApiException(403, "阶段输入的原领取已经过期");
+                    if (tools != null) tools.checkCurrent();
+                    Map<String, Object> snapshot = observer.stageInput(claim.lease);
+                    if (!stageInputDigest.equals(WorkflowDsl.digest(snapshot, mapper))) throw new ApiException(403, "阶段输入或其授权已变化");
+                    requireCurrent(claim, cancelled);
+                    return snapshot;
+                }
+            } finally { callbackLock.unlock(); }
+        }
+
+        void revokeStageInput() {
+            stageInputRevoked.set(true);
+            StageInputMcpRegistry.Handle handle = stageInput;
+            if (handle != null) stageInputs.revoke(handle.id());
         }
 
         Object callback(Map<String, Object> message) throws Exception {

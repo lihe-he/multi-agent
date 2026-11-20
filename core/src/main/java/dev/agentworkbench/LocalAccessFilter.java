@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import dev.agentworkbench.mcp.McpAccessRegistry;
+import dev.agentworkbench.mcp.StageInputMcpRegistry;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.net.URI;
@@ -24,12 +25,17 @@ import java.util.Set;
 public class LocalAccessFilter extends OncePerRequestFilter {
     private final String token;
     private final McpAccessRegistry mcpAccess;
+    private final StageInputMcpRegistry stageInputs;
 
     public LocalAccessFilter(String configured) { this(configured, new McpAccessRegistry()); }
 
-    @Autowired
     public LocalAccessFilter(@Value("${workbench.token:}") String configured, McpAccessRegistry mcpAccess) {
-        this.mcpAccess = mcpAccess;
+        this(configured, mcpAccess, new StageInputMcpRegistry());
+    }
+
+    @Autowired
+    public LocalAccessFilter(@Value("${workbench.token:}") String configured, McpAccessRegistry mcpAccess, StageInputMcpRegistry stageInputs) {
+        this.mcpAccess = mcpAccess; this.stageInputs = stageInputs;
         if (configured.isBlank()) {
             byte[] bytes = new byte[32]; new SecureRandom().nextBytes(bytes);
             token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
@@ -61,7 +67,10 @@ public class LocalAccessFilter extends OncePerRequestFilter {
         if ("OPTIONS".equals(request.getMethod())) { response.setStatus(204); return; }
         String authorization = request.getHeader("Authorization");
         byte[] actual = authorization == null ? new byte[0] : authorization.getBytes(StandardCharsets.UTF_8);
-        if (!MessageDigest.isEqual(("Bearer " + token).getBytes(StandardCharsets.UTF_8), actual) && !mcpAccess.permits(authorization, request.getRequestURI(), request.getMethod())) { reject(response, 401, "连接令牌无效、已撤销或不适用于此范围"); return; }
+        boolean stagePath = request.getRequestURI().startsWith("/api/mcp/stage-input/");
+        boolean authorized = stagePath ? stageInputs.permits(authorization, request.getRequestURI(), request.getMethod())
+            : MessageDigest.isEqual(("Bearer " + token).getBytes(StandardCharsets.UTF_8), actual) || mcpAccess.permits(authorization, request.getRequestURI(), request.getMethod());
+        if (!authorized) { reject(response, 401, "连接令牌无效、已撤销或不适用于此范围"); return; }
         if (TerminalRequestBody.applies(request)) {
             try { request = TerminalRequestBody.bounded(request); }
             catch (TerminalRequestBody.TooLarge exception) { reject(response, 413, "终端请求体超过允许范围，未派发到原 shell"); return; }
