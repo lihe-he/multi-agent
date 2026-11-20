@@ -410,8 +410,13 @@
     "documents": "Readiness, prompt disclosure, non-sandbox and native/M2 boundaries checked; fixed OSS normative strength corrected."
   },
   "currentCommitCi": {
-    "status": "PENDING_IMPLEMENTATION_PUSH_AND_EXACT_SHA_VERIFICATION",
-    "localPassDoesNotProveCiOrReleasePass": true
+    "status": "VERIFIED_THREE_PLATFORM_CI",
+    "implementationCommit": "26b8dedfe4571aa3436f24848041ec3822bc47fd",
+    "runId": 44665907542,
+    "runAttempt": 1,
+    "receipt": "docs/qa/alpha24-ci-final-26b8ded.json",
+    "localJobLogsAndArtifactDigests": "see separate cross-platform receipt",
+    "fullArtifactZipDownloadsVerifiedLocally": false
   },
   "remaining": [
     "Actual Codex/Claude native Workflow adapters and compatibility",

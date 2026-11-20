@@ -52,7 +52,7 @@
 
 本机 Windows `npm run verify:core` 于 2026-11-20 在 52 个测试套件运行 **633 项：623 通过、0 失败、0 错误、10 项条件跳过**，命令回执与 JUnit 原报告、源码清单保存在 `.runtime/alpha24-core-clean-28a3cb7df3894d27b90e771d6509b253/`。重新编译了 69 个生产与 53 个测试源文件；177 个生产 class 和 157 个测试 class 在测试结束后保持原字节，最终 Jar 内生产 class 与捕获字节完全一致，Jar SHA-256 为 `c5fc13433235ecce2ae620cbe00a01afc7d895d3251efcd6635aac2e3e97a9bd`。本机 alpha.24 生产 Web 构建成功，独立完整生产 UI **272/272**，零失败、跳过、flaky 或重试；实际最终 Jar 的本机协议集成 **33/33**，运行期源码与 Jar 摘要稳定。完整生产 UI/Jar 汇总和截图引用见提交版 QA 回执，原始明细与构建回执位于其中所指的本机 `.runtime` 目录。固定开源文件的字节与行号核验另存于本机 `.runtime/alpha24-oss-source-verification.json`，只证明来源定位，不替代产品验收。
 
-上述均为本机 Windows 证据；此次提交的三端 CI 以及三端发行验收待对应完整提交 SHA 的 CI 结束后单独记录。它们不证明外部供应商可用或原生 Codex/Claude CLI 兼容。
+上述为本机 Windows 证据；实现提交 `26b8dedfe4571aa3436f24848041ec3822bc47fd` 随后在 [Run 44665907542](https://github.com/lihe-he/multi-agent/actions/runs/44665907542) 首次运行三端成功。每端核心 633 项、0 失败/错误，Windows 条件跳过 8 项、macOS/Ubuntu 各 11 项；每端生产 UI 272/272、实际 Jar 协议 33/33，适用发行构建和包内 Java/Web 运行步骤均成功。逐平台门禁、原始日志 SHA 和 artifact 仅为 API 摘要元数据的限定见[CI 终态回执](../qa/alpha24-ci-final-26b8ded.json)。这些结果不证明外部供应商可用、原生 Codex/Claude CLI 兼容或完整 M0–M3 退出条件均已满足。
 
 1. 路由检查无任务资料、凭据和写入；跨项目、停用职责、缺失/原生路由、硬锁定不满足分别拒绝。检查的路由身份和实际快照一致。
 2. 额外身份列表不能替代版本批准；旧/缺失/多报的额外版本及过期根版本拒绝，同根旧选择保留兼容。配置变更后的 UI 旧确认及迟到响应失效，探针不回写新配置。

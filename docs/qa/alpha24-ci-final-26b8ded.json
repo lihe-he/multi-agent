@@ -1,0 +1,317 @@
+{
+  "recordedAt": "2026-11-20T05:56:09.369762+00:00",
+  "status": "passed",
+  "repository": "https://github.com/lihe-he/multi-agent",
+  "workflow": ".github/workflows/verify.yml",
+  "event": "push",
+  "runId": 44665907542,
+  "runAttempt": 1,
+  "implementationCommit": "26b8dedfe4571aa3436f24848041ec3822bc47fd",
+  "implementationCommitMessage": "feat: verify workflow recipients and inputs",
+  "runUrl": "https://github.com/lihe-he/multi-agent/actions/runs/44665907542",
+  "runStartedAt": "2026-11-20T03:10:32Z",
+  "runConclusion": "success",
+  "crossPlatform": true,
+  "platforms": [
+    {
+      "name": "windows-latest",
+      "jobId": 136055009099,
+      "jobStatus": "completed",
+      "conclusion": "success",
+      "core": {
+        "tests": 633,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 8,
+        "passed": 625
+      },
+      "workflowExecutionTest": {
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "localJarProtocol": {
+        "checks": 33,
+        "failures": 0
+      },
+      "productionUi": {
+        "tests": 272,
+        "passed": 272,
+        "failed": 0,
+        "skipped": 0,
+        "flaky": 0,
+        "didNotRun": 0
+      },
+      "packagedRuntimeEvidence": [
+        {
+          "desktop": "PASS",
+          "version": "0.2.0-alpha.24",
+          "packaged": true,
+          "externalJavaDisabled": true,
+          "pageErrors": []
+        }
+      ],
+      "distributionBuildStep": "success",
+      "packagedApplicationLifecycleStep": "success",
+      "steps": {
+        "total": 43,
+        "success": 40,
+        "skipped": [
+          {
+            "name": "Actual desktop session previews with virtual display",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Standalone lifecycle with virtual display",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual packaged session previews with virtual display",
+            "status": "completed",
+            "conclusion": "skipped"
+          }
+        ],
+        "failed": []
+      },
+      "jobLog": {
+        "file": ".runtime/alpha21-ci/job-136055009099-run-44665907542-attempt-1/job.log",
+        "bytes": 230364,
+        "sha256": "e5000868b9a88ce17c3bec299c59bf5a32aca64fb703f7d89b555d24e8c77c56"
+      }
+    },
+    {
+      "name": "macos-latest",
+      "jobId": 136055009387,
+      "jobStatus": "completed",
+      "conclusion": "success",
+      "core": {
+        "tests": 633,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 11,
+        "passed": 622
+      },
+      "workflowExecutionTest": {
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "localJarProtocol": {
+        "checks": 33,
+        "failures": 0
+      },
+      "productionUi": {
+        "tests": 272,
+        "passed": 272,
+        "failed": 0,
+        "skipped": 0,
+        "flaky": 0,
+        "didNotRun": 0
+      },
+      "packagedRuntimeEvidence": [
+        {
+          "desktop": "PASS",
+          "version": "0.2.0-alpha.24",
+          "packaged": true,
+          "externalJavaDisabled": true,
+          "pageErrors": []
+        }
+      ],
+      "distributionBuildStep": "success",
+      "packagedApplicationLifecycleStep": "success",
+      "steps": {
+        "total": 43,
+        "success": 40,
+        "skipped": [
+          {
+            "name": "Actual desktop session previews with virtual display",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Standalone lifecycle with virtual display",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual packaged session previews with virtual display",
+            "status": "completed",
+            "conclusion": "skipped"
+          }
+        ],
+        "failed": []
+      },
+      "jobLog": {
+        "file": ".runtime/alpha21-ci/job-136055009387-run-44665907542-attempt-1/job.log",
+        "bytes": 224880,
+        "sha256": "28915fafebc313a73fba0e641f3b2b48f6dd60fb79e53a1c03dd232857503a96"
+      }
+    },
+    {
+      "name": "ubuntu-latest",
+      "jobId": 136055009526,
+      "jobStatus": "completed",
+      "conclusion": "success",
+      "core": {
+        "tests": 633,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 11,
+        "passed": 622
+      },
+      "workflowExecutionTest": {
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "localJarProtocol": {
+        "checks": 33,
+        "failures": 0
+      },
+      "productionUi": {
+        "tests": 272,
+        "passed": 272,
+        "failed": 0,
+        "skipped": 0,
+        "flaky": 0,
+        "didNotRun": 0
+      },
+      "packagedRuntimeEvidence": [
+        {
+          "desktop": "PASS",
+          "version": "0.2.0-alpha.24",
+          "packaged": true,
+          "externalJavaDisabled": true,
+          "pageErrors": []
+        }
+      ],
+      "distributionBuildStep": "success",
+      "packagedApplicationLifecycleStep": "success",
+      "steps": {
+        "total": 43,
+        "success": 40,
+        "skipped": [
+          {
+            "name": "Actual desktop session previews and persistent login",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Standalone browser and attached desktop lifecycle",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Actual packaged session previews without external Java or Node",
+            "status": "completed",
+            "conclusion": "skipped"
+          }
+        ],
+        "failed": []
+      },
+      "jobLog": {
+        "file": ".runtime/alpha21-ci/job-136055009526-run-44665907542-attempt-1/job.log",
+        "bytes": 237450,
+        "sha256": "333f071bfbe9721a1dc832aea7ed635d6f5415f01adb99bfc68b23c02fa1466c"
+      }
+    }
+  ],
+  "artifactMetadata": [
+    {
+      "id": 14600551953,
+      "name": "desktop-windows-latest",
+      "sizeBytes": 157826180,
+      "apiDigest": "sha256:c8d1f38c55b8170aaacce19f2eb2adcb07a1184f6bb4934660e74ffe5212f3d3",
+      "expired": false,
+      "workflowRun": {
+        "id": 44665907542,
+        "repository_id": 1447098069,
+        "head_repository_id": 1447098069,
+        "head_branch": "main",
+        "head_sha": "26b8dedfe4571aa3436f24848041ec3822bc47fd"
+      },
+      "fullZipDownloadedAndVerifiedLocally": false
+    },
+    {
+      "id": 14600157645,
+      "name": "evidence-windows-latest",
+      "sizeBytes": 313048435,
+      "apiDigest": "sha256:c1b0a6a2af1f773f2d5c96c288c39101eb0ad8ccebcdf73bf8b996e5b97d2123",
+      "expired": false,
+      "workflowRun": {
+        "id": 44665907542,
+        "repository_id": 1447098069,
+        "head_repository_id": 1447098069,
+        "head_branch": "main",
+        "head_sha": "26b8dedfe4571aa3436f24848041ec3822bc47fd"
+      },
+      "fullZipDownloadedAndVerifiedLocally": false
+    },
+    {
+      "id": 14598683432,
+      "name": "evidence-macos-latest",
+      "sizeBytes": 304711195,
+      "apiDigest": "sha256:1df0f717ee2dd3b7752491a5e7e0b10c4dff6fd645fb628901c5e0c46e70d0fd",
+      "expired": false,
+      "workflowRun": {
+        "id": 44665907542,
+        "repository_id": 1447098069,
+        "head_repository_id": 1447098069,
+        "head_branch": "main",
+        "head_sha": "26b8dedfe4571aa3436f24848041ec3822bc47fd"
+      },
+      "fullZipDownloadedAndVerifiedLocally": false
+    },
+    {
+      "id": 14598388921,
+      "name": "desktop-macos-latest",
+      "sizeBytes": 180638442,
+      "apiDigest": "sha256:e63d52f0d886ee0c31ed1e1869c696be308a728faf1862de9e804f2930bbfbe0",
+      "expired": false,
+      "workflowRun": {
+        "id": 44665907542,
+        "repository_id": 1447098069,
+        "head_repository_id": 1447098069,
+        "head_branch": "main",
+        "head_sha": "26b8dedfe4571aa3436f24848041ec3822bc47fd"
+      },
+      "fullZipDownloadedAndVerifiedLocally": false
+    },
+    {
+      "id": 14598103147,
+      "name": "evidence-ubuntu-latest",
+      "sizeBytes": 317808313,
+      "apiDigest": "sha256:c6c4a2815f1245405c3df5bb2fdee0d59fb5283f254f1829e2a09d4defb8ca22",
+      "expired": false,
+      "workflowRun": {
+        "id": 44665907542,
+        "repository_id": 1447098069,
+        "head_repository_id": 1447098069,
+        "head_branch": "main",
+        "head_sha": "26b8dedfe4571aa3436f24848041ec3822bc47fd"
+      },
+      "fullZipDownloadedAndVerifiedLocally": false
+    },
+    {
+      "id": 14597958911,
+      "name": "desktop-ubuntu-latest",
+      "sizeBytes": 190048799,
+      "apiDigest": "sha256:c182e1e106402d8acd05906b9ab6d1ddfdd8a535942b21aa96c5023b8a59493c",
+      "expired": false,
+      "workflowRun": {
+        "id": 44665907542,
+        "repository_id": 1447098069,
+        "head_repository_id": 1447098069,
+        "head_branch": "main",
+        "head_sha": "26b8dedfe4571aa3436f24848041ec3822bc47fd"
+      },
+      "fullZipDownloadedAndVerifiedLocally": false
+    }
+  ],
+  "scope": "EXACT_IMPLEMENTATION_SHA_THREE_PLATFORM_GITHUB_ACTIONS_FULL_JOB_LOGS; ARTIFACT_API_DIGESTS_ARE_METADATA_ONLY_AND_FULL_ZIPS_WERE_NOT_DOWNLOADED; DOES_NOT_COMPLETE_ALL_M0_M3_PRODUCT_EXIT_CRITERIA"
+}

@@ -8,6 +8,8 @@
 
 子任务准备期间丢失 Worker 回执时保留 `UNKNOWN`。新增 `npm run verify:core`，用于清理旧编译产物并执行完整核心验证。验证范围及后续原生阶段见[实施记录](./docs/implementation-status.md)。
 
+实现提交 `26b8ded` 的三端 [CI Run 44665907542](https://github.com/lihe-he/multi-agent/actions/runs/44665907542) 首次运行成功：每端核心 633 项零失败/错误，Windows 条件跳过 8 项、macOS/Ubuntu 各 11 项；每端生产 UI 272/272、实际 Jar 协议 33/33，适用发行与包内运行步骤成功。准确范围和 artifact 只记录上传摘要元数据的限定见[CI 终态回执](./docs/qa/alpha24-ci-final-26b8ded.json)。
+
 ## 0.2.0-alpha.23 — 版本化 Workflow
 
 增加版本化 Workflow DSL、定义目录与受限 DAG 执行。任务固定流程与 Agent/路由/权限快照；节点在独立 Worker 现场按祖先产物依赖运行，保存模型请求、证据、原执行租约、版本与整合回执。成功尝试需核对完整来源才能复用，确认尚未请求模型时的暂停可继续，原模型请求已发出但停止边界不明确时保持 UNKNOWN。
