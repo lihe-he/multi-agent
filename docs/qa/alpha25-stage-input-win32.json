@@ -6,7 +6,7 @@
   "branch": "main",
   "baseCommit": "8855e2a0538416f85f5959c46c38a8a0561a0db3",
   "subject": "Workflow invocation-scoped read-only stage_input MCP bridge and fixed MCP optional arguments",
-  "scope": "LOCAL_WINDOWS_CLEAN_CORE_VERIFY_FINAL_JAR_PROTOCOL_AND_PRODUCTION_WEB_FIXTURES; NOT_NATIVE_CLI_PROVIDER_OR_CROSS_PLATFORM_RELEASE_ACCEPTANCE",
+  "scope": "LOCAL_WINDOWS_CLEAN_CORE_VERIFY_FINAL_JAR_PROTOCOL_PRODUCTION_WEB_FIXTURES_AND_EXACT_SHA_CROSS_PLATFORM_CI; NOT_NATIVE_CLI_PROVIDER_OR_FULL_RELEASE_ACCEPTANCE",
   "fullCore": {
     "command": "npm run verify:core",
     "receipt": {
@@ -708,11 +708,101 @@
     "bytes": 2523,
     "sha256": "1bea28e4190868ffacf352973603683d0327825363ab28f8a63f823d524c83be"
   },
+  "crossPlatformCi": {
+    "workflow": ".github/workflows/verify.yml",
+    "runId": 44725940690,
+    "runAttempt": 1,
+    "headSha": "bc8ea20f973209e86a2ba9740742fe59bb3d9c24",
+    "runUrl": "https://github.com/lihe-he/multi-agent/actions/runs/44725940690",
+    "startedAt": "2026-11-20T11:14:19Z",
+    "completedAt": "2026-11-20T12:21:34Z",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "verify (windows-latest)",
+        "jobId": 136253244822,
+        "conclusion": "success",
+        "completedAt": "2026-11-20T12:21:33Z",
+        "skippedSteps": [
+          "Actual desktop session previews with virtual display",
+          "Standalone lifecycle with virtual display",
+          "Actual packaged session previews with virtual display"
+        ]
+      },
+      {
+        "name": "verify (macos-latest)",
+        "jobId": 136253244176,
+        "conclusion": "success",
+        "completedAt": "2026-11-20T11:51:22Z",
+        "skippedSteps": [
+          "Actual desktop session previews with virtual display",
+          "Standalone lifecycle with virtual display",
+          "Actual packaged session previews with virtual display"
+        ]
+      },
+      {
+        "name": "verify (ubuntu-latest)",
+        "jobId": 136253244706,
+        "conclusion": "success",
+        "completedAt": "2026-11-20T11:32:37Z",
+        "skippedSteps": [
+          "Actual desktop session previews and persistent login",
+          "Standalone browser and attached desktop lifecycle",
+          "Actual packaged session previews without external Java or Node"
+        ]
+      }
+    ],
+    "stepAccounting": "Each platform job had 43 steps: 40 succeeded, 3 platform-conditioned steps skipped, 0 failed.",
+    "criticalStepsSuccessful": [
+      "Core tests and package",
+      "Web build",
+      "Full local protocol lifecycle",
+      "UI interaction tests",
+      "Actual final Jar and production Web file diff review",
+      "Actual core crash and original process recovery",
+      "Actual durable root queue and explicit recovery",
+      "Build desktop distribution with bundled Java",
+      "Packaged application lifecycle"
+    ],
+    "artifacts": [
+      {
+        "name": "evidence-windows-latest",
+        "bytes": 313580527,
+        "sha256": "7c692cce746e0e7b360207ca6f204485d37deba9ef5ad1ba91eab41678cd6405"
+      },
+      {
+        "name": "desktop-windows-latest",
+        "bytes": 157851293,
+        "sha256": "1a07841f369548d03a2d3fa7575f1f27bde2c6377ac5eefc39fea808c590c5be"
+      },
+      {
+        "name": "desktop-macos-latest",
+        "bytes": 180659749,
+        "sha256": "7fe7fd91cb85fb8e9b2b89b3dc8fb7d580f2ca863db577414562eab5600956f8"
+      },
+      {
+        "name": "evidence-macos-latest",
+        "bytes": 305012344,
+        "sha256": "1055cf4ad5320523ac67e7f534dd58880a2703dadfc1ce400e47d97329b78b38"
+      },
+      {
+        "name": "desktop-ubuntu-latest",
+        "bytes": 190073006,
+        "sha256": "76e672137e2e4d80507b5399efa598b474ddfdbe5afa1aa2900da137daab0f8f"
+      },
+      {
+        "name": "evidence-ubuntu-latest",
+        "bytes": 318004735,
+        "sha256": "87b66e49143e76878726bb162f60c6a91df48a79bb1eb06e78faf2ed6ee95895"
+      }
+    ],
+    "artifactVerification": "GitHub API metadata size and digest only; ZIP contents were not downloaded and rehashed locally."
+  },
   "remaining": [
     "Actual Codex/Claude native Workflow adapters and compatibility",
     "Native Worker consumption of stageInputBridge and actual bound loopback endpoint",
     "Effective CLI configuration, credentials, process-tree and external sandbox proof",
     "Remote nodes, cross-core durable resource coordination, long-running load, full backup/restore and M0-M3 exit requirements",
-    "Exact SHA CI and cross-platform release acceptance"
+    "Full release acceptance and artifact ZIP content revalidation"
   ]
 }

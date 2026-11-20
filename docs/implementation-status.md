@@ -10,6 +10,8 @@ MCP 固定 schema 将 `tools/call.params.arguments` 定义为可选，控制器�
 
 本机 Windows 验收证据：`npm run verify:core` 清洁运行 **673 项（663 通过、0 失败、0 错误、10 条件跳过）**，最终 Jar `agent-workbench-core-0.2.0-alpha.25.jar` 为 44,461,821 字节、SHA-256 `4e75501991b345ce0073a29c447f843b514d5cb99e494481ba1cfb3cad635724`；生产 Web 构建成功，Edge 生产 UI **272/272** 通过，源码、构建输入、资产摘要稳定且 44 张历史截图保持；实际 Jar 确定性 HTTP 协议 **34/34** 通过，包含阶段输入未授权/无 mint 入口、现有 Workflow、取消和导出检查。首次集成夹具中无凭据管理路径返回通用 500，以及发布请求短暂遇到根收尾 409；两次失败原始目录均保留，最终夹具改为无凭据探针并对明确的根收尾 409 做有界等待，未放宽授权或业务门禁。完整汇总见[alpha.25 本机验收回执](./qa/alpha25-stage-input-win32.json)。
 
+准确提交 `bc8ea20f973209e86a2ba9740742fe59bb3d9c24` 的 [CI Run 44725940690](https://github.com/lihe-he/multi-agent/actions/runs/44725940690) 已在 Windows、Ubuntu、macOS 三端终态成功。三份验证 job 的核心测试、生产 Web、Jar 协议、桌面生命周期、恢复、内置 Java/Web 终端和适用的发行步骤均成功；平台互斥的虚拟显示或非虚拟显示步骤按条件跳过且无失败。六个 artifact 的大小与 GitHub API digest 已记录，完整 ZIP 未下载到本机重验，不能把 artifact 元数据当作本地字节复核。准确 run、job、跳过步骤和 artifact 摘要见[alpha.25 验收回执](./qa/alpha25-stage-input-win32.json)。
+
 ## 0.2.0-alpha.24 Workflow 路由确认与声明输入
 
 创建任务和替换已有任务流程前，可检查固定 Workflow 版本的实际根路由、额外接收路由、节点声明输入及阻塞原因。检查与最终快照共用解析器；已有任务继续使用原根路由快照，额外接收者必须按明确版本逐项确认。旧 ID 列表不再授予跨路由发送权限，同根旧选择仍兼容。最终提交重验版本与清单，探针结束也复核路由版本，拒绝用旧结果覆盖新配置。检查不运行模型或探针，也不证明凭据、协议兼容性或最终权限交集已经验证。
