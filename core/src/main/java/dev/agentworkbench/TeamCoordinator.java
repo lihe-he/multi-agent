@@ -67,6 +67,21 @@ final class TeamCoordinator {
         return text.substring(0, Math.min(3000, text.length()));
     }
 
+    /**
+     * 准备失联后的 UNKNOWN 不能降为普通失败；收尾期间失联也以持久终态为准。
+     */
+    private String finishFailedPreparation(String operationId, Exception exception) {
+        String observed = str(store.get("operation", operationId), "state");
+        String state = Set.of("DISPATCHED", "UNKNOWN").contains(observed) ? "UNKNOWN" : exception instanceof CancellationException ? "CANCELLED" : "FAILED";
+        if (Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(observed)) {
+            try { executionWorker.finish(operationId, state.equals("FAILED") ? "REJECTED" : state, obj("error", safe(exception))); }
+            catch (RuntimeException failure) {
+                if (!store.healthy() || !"UNKNOWN".equals(str(store.get("operation", operationId), "state"))) throw failure;
+            }
+        }
+        return "UNKNOWN".equals(str(store.get("operation", operationId), "state")) ? "UNKNOWN" : state;
+    }
+
     private Map<String, Object> childResult(String taskId, String childId) {
         Map<String, Object> child = store.subtask(taskId, childId);
         Map<String, Object> evidence = str(child, "evidenceId").isBlank() ? Map.of() : store.get("evidence", str(child, "evidenceId"));
@@ -213,9 +228,7 @@ final class TeamCoordinator {
                     store.agentRunWaiting(childRun, objectsOrStringsEmpty(child.get("dependsOn")) ? "WAITING_RESOURCE" : "WAITING_DEPENDENCY");
                 } catch (Exception exception) {
                     if (store.healthy()) {
-                        boolean dispatched = "DISPATCHED".equals(str(store.get("operation", str(preparation, "id")), "state"));
-                        String state = dispatched ? "UNKNOWN" : exception instanceof CancellationException ? "CANCELLED" : "FAILED";
-                        executionWorker.finish(str(preparation, "id"), state.equals("FAILED") ? "REJECTED" : state, obj("error", safe(exception)));
+                        String state = finishFailedPreparation(str(preparation, "id"), exception);
                         store.finishAgentRun(childRun, state, safe(exception)); store.finishSubtask(taskId, childId, state, safe(exception));
                     }
                     throw exception;
@@ -340,9 +353,8 @@ final class TeamCoordinator {
             reason = state.equals("SUCCEEDED") ? "副任务已执行并核对范围；根验证、审查和人工验收仍需完成" : "副任务返回 " + state;
         } catch (Exception exception) {
             reason = safe(exception);
-            boolean dispatchedPreparation = !preparationId.isBlank() && store.healthy() && "DISPATCHED".equals(str(store.get("operation", preparationId), "state"));
-            state = dispatchedPreparation ? "UNKNOWN" : exception instanceof CancellationException ? "CANCELLED" : operationId.isBlank() ? "FAILED" : "UNKNOWN";
-            if (!preparationId.isBlank() && store.healthy()) executionWorker.finish(preparationId, state.equals("FAILED") ? "REJECTED" : state, obj("error", reason));
+            state = !store.healthy() ? "UNKNOWN" : !preparationId.isBlank() ? finishFailedPreparation(preparationId, exception)
+                : exception instanceof CancellationException ? "CANCELLED" : operationId.isBlank() ? "FAILED" : "UNKNOWN";
             if (!operationId.isBlank() && store.healthy()) executionWorker.finish(operationId, state.equals("UNKNOWN") ? "UNKNOWN" : "ACKNOWLEDGED", obj("error", reason));
         } finally {
             if (session != null) {

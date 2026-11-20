@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.net.InetSocketAddress;
@@ -20,6 +22,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import static dev.agentworkbench.Json.*;
@@ -153,6 +156,13 @@ class TeamExecutionTest {
      * 不同撤回检查共用失败现场，原等待期限保持不变。
      */
     private String childStartFailure(String taskId, String withdrawal) {
+        return executionWaitFailure(taskId, "child request must reach the fixture before " + withdrawal);
+    }
+
+    /**
+     * 阶段等待失败时保留原任务、领取与虚拟线程事实。
+     */
+    private String executionWaitFailure(String taskId, String requirement) {
         Path evidence = Path.of("target", "team-child-start-failure-" + System.nanoTime()).toAbsolutePath();
         try {
             Files.createDirectories(evidence);
@@ -162,8 +172,8 @@ class TeamExecutionTest {
                 "executions", store.taskDispatchRecords("taskExecution", taskId), "actions", store.taskDispatchRecords("dispatchAction", taskId),
                 "agentRuns", store.list("agentRun"), "subtasks", store.list("subtask"), "modelRequests", store.list("modelRequest"),
                 "operations", store.list("operation"), "leases", store.workerLeases("", taskId, ""), "errors", errors, "prompts", prompts));
-            return "child request must reach the fixture before " + withdrawal + "; evidence=" + evidence;
-        } catch (Exception error) { return "child request did not reach the fixture; diagnostic=" + error.getClass().getSimpleName(); }
+            return requirement + "; evidence=" + evidence;
+        } catch (Exception error) { return requirement + "; diagnostic=" + error.getClass().getSimpleName(); }
     }
 
     @Test
@@ -206,18 +216,22 @@ class TeamExecutionTest {
 
     @Test
     void nodeRevocationStopsTheActualChildRequestAndRestartPreservesUnknownLeases() throws Exception {
-        CountDownLatch entered = new CountDownLatch(1);
+        CountDownLatch parentEntered = new CountDownLatch(1), entered = new CountDownLatch(1);
         fixture.set((prompt, results, names) -> {
             if (stage(prompt, "SUBAGENT")) { entered.countDown(); release.await(15, TimeUnit.SECONDS); return answer("held child returned"); }
             if (stage(prompt, "INVESTIGATE")) {
-                if (results.isEmpty()) return call("delegate_agent", obj("definitionId", "agent-research", "title", "held worker child", "goal", "WORKER_HELD_CHILD", "scope", List.of("src/")));
+                if (results.isEmpty()) {
+                    parentEntered.countDown();
+                    return call("delegate_agent", obj("definitionId", "agent-research", "title", "held worker child", "goal", "WORKER_HELD_CHILD", "scope", List.of("src/")));
+                }
                 if (results.size() == 1) return call("wait_agent", obj("subtaskId", map(result(results, 0), "agent").get("subtaskId")));
             }
             return ordinary(prompt);
         });
         Map<String, Object> created = task("WORKER_NODE_REVOKED", 24), identity = engine.workerIdentity(); String taskId = str(created, "id"); engine.action(taskId, "approve", obj());
         // 原现场准备与子请求启动分开计时，子请求仍须在原十五秒内到达。
-        awaitTask(taskId, Set.of("RUNNING"));
+        assertTrue(parentEntered.await(60, TimeUnit.SECONDS), () -> executionWaitFailure(taskId, "root must reach the delegation stage before node revocation"));
+        assertEquals("RUNNING", store.get("task", taskId).get("state"));
         assertTrue(entered.await(15, TimeUnit.SECONDS), () -> childStartFailure(taskId)); Map<String, Object> child = store.list("subtask").getFirst();
         Map<String, Object> request = store.list("modelRequest").stream().filter(value -> child.get("agentRunId").equals(value.get("agentRunId"))).findFirst().orElseThrow();
         assertEquals("DISPATCHING", request.get("state")); assertTrue(store.workerLeases("", taskId, "ACTIVE").stream().anyMatch(lease -> child.get("agentRunId").equals(lease.get("agentRunId"))));
@@ -238,7 +252,9 @@ class TeamExecutionTest {
 
     @Test
     void actualDelegationSharesRootBudgetAndDependencySnapshotBeforeGuardedAdoption() throws Exception {
+        CountDownLatch parentEntered = new CountDownLatch(1);
         fixture.set((prompt, results, names) -> {
+            if (stage(prompt, "INVESTIGATE") && results.isEmpty()) parentEntered.countDown();
             if (stage(prompt, "SUBAGENT") && prompt.contains("委派目标：CHILD_WRITE")) {
                 assertFalse(names.contains("run_command"), "narrow file scope cannot grant command access");
                 if (results.isEmpty()) return call("read_file", obj("path", "outside.txt"));
@@ -263,6 +279,8 @@ class TeamExecutionTest {
             return ordinary(prompt);
         });
         Map<String, Object> task = task("TEAM_FULL", 40); String taskId = str(task, "id"); engine.action(taskId, "approve", obj());
+        // 首轮实际请求前的准备另设门禁，根执行结束仍须满足原完成条件。
+        assertTrue(parentEntered.await(60, TimeUnit.SECONDS), () -> executionWaitFailure(taskId, "root must start an actual request before delegation and guarded adoption"));
         Map<String, Object> finished = awaitTask(taskId, Set.of("AWAITING_ACCEPTANCE"));
         assertEquals("made\n", Files.readString(Path.of(str(finished, "workspace")).resolve("src/source.txt"))); assertEquals("base\n", Files.readString(source.resolve("src/source.txt")));
         List<Map<String, Object>> children = objects(store.team(taskId).get("agents")); assertEquals(2, children.size()); assertTrue(children.stream().allMatch(child -> "SUCCEEDED".equals(str(child, "state"))));
@@ -275,6 +293,105 @@ class TeamExecutionTest {
         assertEquals(1, objects(store.teamMessages(taskId, 0, 0, 40, "").get("messages")).size());
         assertTrue(peak.get() <= 2); assertEquals(0, resources.activeModels()); assertTrue(errors.isEmpty(), errors.toString());
         engine.action(taskId, "accept", obj()); assertEquals("COMPLETED", str(store.get("task", taskId), "state"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"SUBAGENT_SNAPSHOT", "SUBAGENT_DEPENDENCIES"})
+    void workerLossDuringChildPreparationPreservesUnknownAndDoesNotReplay(String operationKind) throws Exception {
+        AtomicReference<String> preparationId = new AtomicReference<>(), preparedWorkspace = new AtomicReference<>(); AtomicInteger failuresInjected = new AtomicInteger();
+        AtomicReference<Throwable> injectionFailure = new AtomicReference<>(); AtomicReference<String> injectionPhase = new AtomicReference<>("not entered");
+        AtomicReference<String> preparedContent = new AtomicReference<>(), dependencyReceipt = new AtomicReference<>();
+        AtomicBoolean originalStopped = new AtomicBoolean(), unknownBeforeFailure = new AtomicBoolean(), interruptedObserved = new AtomicBoolean();
+        engine.shutdown();
+        runtime = new ProcessWorkspaceRuntime(mapper, directory.resolve("data").toString()) {
+            private void stopBeforePreparationReceipt(String workspace) {
+                Map<String, Object> preparation = store.list("operation").stream().filter(operation -> operationKind.equals(str(operation, "kind"))
+                    && "DISPATCHED".equals(str(operation, "state"))).findFirst().orElseThrow();
+                preparationId.set(str(preparation, "id")); preparedWorkspace.set(workspace); failuresInjected.incrementAndGet();
+                boolean interrupted = false;
+                try {
+                    injectionPhase.set("reading prepared workspace"); preparedContent.set(Files.readString(Path.of(workspace).resolve("src/source.txt")));
+                    ProcessHandle original = ProcessHandle.of(((Number) engine.workerIdentity().get("pid")).longValue()).orElseThrow();
+                    var exit = original.onExit();
+                    injectionPhase.set("waiting for original process exit");
+                    if (!original.destroyForcibly()) throw new IllegalStateException("Original Worker could not be stopped");
+                    long exitDeadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
+                    // RPC 关闭会中断此回调；沿原期限确认故障边界，再恢复中断并交给普通异常收尾。
+                    for (;;) {
+                        long remaining = exitDeadline - System.nanoTime();
+                        if (remaining <= 0) throw new java.util.concurrent.TimeoutException("Original Worker did not exit before the fault boundary");
+                        try { exit.get(remaining, TimeUnit.NANOSECONDS); break; }
+                        catch (InterruptedException exception) { interrupted = true; interruptedObserved.set(true); }
+                    }
+                    if (original.isAlive()) throw new IllegalStateException("Original Worker is still alive after its exit receipt");
+                    originalStopped.set(true); injectionPhase.set("waiting for persisted UNKNOWN");
+                    long timeout = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
+                    while (!"UNKNOWN".equals(str(store.get("operation", preparationId.get()), "state"))) {
+                        if (System.nanoTime() >= timeout) throw new java.util.concurrent.TimeoutException("Original preparation did not become UNKNOWN before cleanup");
+                        try { Thread.sleep(25); }
+                        catch (InterruptedException exception) { interrupted = true; interruptedObserved.set(true); }
+                    }
+                    unknownBeforeFailure.set(true); injectionPhase.set("ordinary preparation failure");
+                } catch (Throwable failure) { injectionFailure.compareAndSet(null, failure); }
+                finally { if (interrupted) Thread.currentThread().interrupt(); }
+                // 独立现场已有实际写入，整次准备尚未完成；先封闭原操作，再进入协调器收尾。
+                throw new IllegalStateException("Original Worker stopped before the child preparation receipt");
+            }
+            @Override public Map<String, Object> delegationCopy(String workspace, String subtaskId, String version) {
+                Map<String, Object> copy = super.delegationCopy(workspace, subtaskId, version);
+                if ("SUBAGENT_SNAPSHOT".equals(operationKind)) stopBeforePreparationReceipt(str(copy, "workspace"));
+                return copy;
+            }
+            @Override public Map<String, Object> integrateDelegation(String baseline, String working, String targetWorkspace, String expectedResult, Map<String, Object> permissions) {
+                Map<String, Object> receipt = super.integrateDelegation(baseline, working, targetWorkspace, expectedResult, permissions);
+                dependencyReceipt.set(str(receipt, "state"));
+                if ("SUBAGENT_DEPENDENCIES".equals(operationKind)) stopBeforePreparationReceipt(targetWorkspace);
+                return receipt;
+            }
+        };
+        catalog = new WorkbenchCatalog(store, runtime, new PlanValidator()); engine = new WorkbenchEngine(store, catalog, runtime, resources, mapper);
+        fixture.set((prompt, results, names) -> {
+            if (stage(prompt, "SUBAGENT")) {
+                assertTrue(prompt.contains("委派目标：CHILD_WRITE"), "the dependent reader must not issue a model request after unknown input preparation");
+                if (results.isEmpty()) return call("read_file", obj("path", "src/source.txt"));
+                if (results.size() == 1) return call("write_file", obj("path", "src/source.txt", "content", "made\n", "expectedVersion", str(result(results, 0), "readVersion")));
+                return answer("writer completed in its independent workspace");
+            }
+            if (stage(prompt, "IMPLEMENT")) {
+                if (results.isEmpty()) return call("delegate_agent", obj("definitionId", "agent-developer", "title", "writer", "goal", "CHILD_WRITE", "scope", List.of("src/")));
+                if (results.size() == 1) return call("delegate_agent", obj("definitionId", "agent-reviewer", "title", "dependent reader", "goal", "CHILD_READ", "scope", List.of("src/"), "dependsOn", List.of(str(map(result(results, 0), "agent"), "subtaskId"))));
+                if (results.size() == 2) return call("wait_agent", obj("subtaskId", map(result(results, 1), "agent").get("subtaskId")));
+            }
+            return ordinary(prompt);
+        });
+        String taskId = str(task("CHILD_PREPARATION_WORKER_LOST", 24), "id"); engine.action(taskId, "approve", obj()); awaitTask(taskId, Set.of("UNKNOWN"));
+        long timeout = System.nanoTime() + TimeUnit.SECONDS.toNanos(15);
+        while ((store.list("subtask").stream().anyMatch(child -> !child.containsKey("endedAt")) || resources.activeModels() != 0) && System.nanoTime() < timeout) Thread.sleep(25);
+        Map<String, Object> preparation = store.get("operation", preparationId.get());
+        Map<String, Object> child = store.list("subtask").stream().filter(value -> preparation.get("agentRunId").equals(value.get("agentRunId"))).findFirst().orElseThrow();
+        assertNull(injectionFailure.get(), () -> "fault injection failed during " + injectionPhase.get() + ": " + injectionFailure.get()
+            + "; cause=" + injectionFailure.get().getCause() + "; " + executionWaitFailure(taskId, "child preparation fault injection must reach its ordinary exception"));
+        assertTrue(originalStopped.get()); assertTrue(unknownBeforeFailure.get());
+        assertEquals("SUBAGENT_SNAPSHOT".equals(operationKind) ? "base\n" : "made\n", preparedContent.get());
+        if ("SUBAGENT_DEPENDENCIES".equals(operationKind)) assertEquals("ACKNOWLEDGED", dependencyReceipt.get());
+        assertTrue(child.containsKey("endedAt"), () -> "injectionPhase=" + injectionPhase.get() + "; interruptedObserved=" + interruptedObserved.get()
+            + "; " + executionWaitFailure(taskId, "child preparation must finish after the confirmed Worker loss"));
+        assertEquals("UNKNOWN", child.get("state"));
+        assertEquals("UNKNOWN", store.get("agentRun", str(child, "agentRunId")).get("state"));
+        assertEquals("UNKNOWN", preparation.get("state")); assertEquals(1, num(preparation, "dispatchCount", 0));
+        assertEquals("UNKNOWN", store.get("workerLease", str(preparation, "workerLeaseId")).get("state")); assertEquals(1, failuresInjected.get());
+        assertEquals("SUBAGENT_SNAPSHOT".equals(operationKind) ? "base\n" : "made\n", Files.readString(Path.of(preparedWorkspace.get()).resolve("src/source.txt")));
+        assertEquals("base\n", Files.readString(Path.of(str(store.get("task", taskId), "workspace")).resolve("src/source.txt")));
+        assertEquals("base\n", Files.readString(source.resolve("src/source.txt"))); assertEquals(0, resources.activeModels()); assertTrue(errors.isEmpty(), errors.toString());
+        assertTrue(store.list("modelRequest").stream().noneMatch(request -> child.get("agentRunId").equals(request.get("agentRunId"))));
+        int before = calls.get(); assertEquals(before, num(map(store.get("task", taskId), "budget"), "usedCalls", -1));
+        engine.shutdown(); engine = null; store.close(); store = new ExecutionStore(mapper, directory.resolve("data").toString());
+        runtime = new ProcessWorkspaceRuntime(mapper, directory.resolve("data").toString()); catalog = new WorkbenchCatalog(store, runtime, new PlanValidator());
+        resources = new ResourceManager(); engine = new WorkbenchEngine(store, catalog, runtime, resources, mapper); engine.recover();
+        assertEquals("UNKNOWN", store.get("task", taskId).get("state")); assertEquals("UNKNOWN", store.subtask(taskId, str(child, "id")).get("state"));
+        assertEquals("UNKNOWN", store.get("agentRun", str(child, "agentRunId")).get("state")); assertEquals("UNKNOWN", store.get("operation", preparationId.get()).get("state"));
+        assertEquals(409, assertThrows(ApiException.class, () -> engine.action(taskId, "resume", obj())).status()); assertEquals(before, calls.get());
+        assertEquals(before, num(map(store.get("task", taskId), "budget"), "usedCalls", -1)); assertEquals(1, num(store.get("operation", preparationId.get()), "dispatchCount", 0));
     }
 
     @Test
@@ -302,14 +419,20 @@ class TeamExecutionTest {
 
     @Test
     void cancellingChildHttpWaitPreservesUnknownFactsAndDoesNotReplay() throws Exception {
-        CountDownLatch childEntered = new CountDownLatch(1);
+        CountDownLatch parentEntered = new CountDownLatch(1), childEntered = new CountDownLatch(1);
         fixture.set((prompt, results, names) -> {
             if (stage(prompt, "SUBAGENT")) { childEntered.countDown(); release.await(15, TimeUnit.SECONDS); return answer("late remote result"); }
-            if (stage(prompt, "INVESTIGATE") && results.isEmpty()) return call("delegate_agent", obj("definitionId", "agent-research", "title", "pending child", "goal", "WAIT", "scope", List.of("src/")));
+            if (stage(prompt, "INVESTIGATE") && results.isEmpty()) {
+                parentEntered.countDown();
+                return call("delegate_agent", obj("definitionId", "agent-research", "title", "pending child", "goal", "WAIT", "scope", List.of("src/")));
+            }
             if (stage(prompt, "INVESTIGATE") && results.size() == 1) return call("wait_agent", obj("subtaskId", map(result(results, 0), "agent").get("subtaskId")));
             return ordinary(prompt);
         });
-        Map<String, Object> task = task("CANCEL_PARENT", 24); String taskId = str(task, "id"); engine.action(taskId, "approve", obj()); assertTrue(childEntered.await(20, TimeUnit.SECONDS));
+        Map<String, Object> task = task("CANCEL_PARENT", 24); String taskId = str(task, "id"); engine.action(taskId, "approve", obj());
+        // 根准备和子请求分别有界，取消仍发生在实际子 HTTP 的原十五秒窗口内。
+        assertTrue(parentEntered.await(60, TimeUnit.SECONDS), () -> executionWaitFailure(taskId, "root must reach the delegation stage before child cancellation"));
+        assertTrue(childEntered.await(20, TimeUnit.SECONDS), () -> childStartFailure(taskId, "parent cancellation"));
         engine.action(taskId, "cancel", obj()); awaitTask(taskId, Set.of("UNKNOWN")); int before = calls.get(); Thread.sleep(250); assertEquals(before, calls.get());
         Map<String, Object> child = store.list("subtask").getFirst(); assertEquals("UNKNOWN", str(child, "state"));
         Map<String, Object> request = store.list("modelRequest").stream().filter(value -> str(child, "id").equals(str(value, "subtaskId"))).findFirst().orElseThrow();
@@ -378,9 +501,10 @@ class TeamExecutionTest {
 
     @Test
     void independentProposalsCannotReceiveBroadcastsOrPublishThroughHiddenTeamTools() throws Exception {
-        AtomicInteger proposals = new AtomicInteger();
+        AtomicInteger proposals = new AtomicInteger(); CountDownLatch proposalEntered = new CountDownLatch(1);
         fixture.set((prompt, results, names) -> {
             if (stage(prompt, "PROPOSAL")) {
+                proposalEntered.countDown();
                 assertFalse(prompt.contains("BROADCAST_SECRET")); assertFalse(prompt.contains("OTHER_PROPOSAL_SECRET"));
                 assertFalse(names.contains("delegate_agent")); assertFalse(names.contains("send_team_message")); assertFalse(names.contains("list_team_agents"));
                 if (results.isEmpty()) return call("send_team_message", obj("content", "OTHER_PROPOSAL_SECRET"));
@@ -389,20 +513,28 @@ class TeamExecutionTest {
             return ordinary(prompt);
         });
         Map<String, Object> task = task("INDEPENDENT_TEAM", 40, obj("mode", "ROUNDTABLE")); String taskId = str(task, "id"); store.teamMessage(taskId, "USER", "", "before-proposals", "BROADCAST_SECRET", "", ""); engine.action(taskId, "approve", obj());
+        // 独立提案真正开始后仍须在原六十秒内完成根收尾，准备阶段另设有界门禁。
+        assertTrue(proposalEntered.await(60, TimeUnit.SECONDS), () -> executionWaitFailure(taskId, "root must start an actual independent proposal"));
         awaitTask(taskId, Set.of("AWAITING_ACCEPTANCE")); assertEquals(3, proposals.get()); assertEquals(1, store.list("teamMessage").size()); assertTrue(store.list("subtask").isEmpty());
         assertTrue(prompts.stream().anyMatch(prompt -> stage(prompt, "CRITIQUE") && prompt.contains("BROADCAST_SECRET")), "shared input becomes available only after independent proposals"); assertTrue(errors.isEmpty(), errors.toString());
     }
 
     @Test
     void disablingDefinitionStopsPendingChildWithoutChangingItsFixedVersionOrRetrying() throws Exception {
-        CountDownLatch entered = new CountDownLatch(1);
+        CountDownLatch parentEntered = new CountDownLatch(1), entered = new CountDownLatch(1);
         fixture.set((prompt, results, names) -> {
             if (stage(prompt, "SUBAGENT")) { entered.countDown(); release.await(15, TimeUnit.SECONDS); return answer("late child response"); }
-            if (stage(prompt, "INVESTIGATE") && results.isEmpty()) return call("delegate_agent", obj("definitionId", "agent-research", "title", "withdrawn child", "goal", "WITHDRAW", "scope", List.of("src/")));
+            if (stage(prompt, "INVESTIGATE") && results.isEmpty()) {
+                parentEntered.countDown();
+                return call("delegate_agent", obj("definitionId", "agent-research", "title", "withdrawn child", "goal", "WITHDRAW", "scope", List.of("src/")));
+            }
             if (stage(prompt, "INVESTIGATE") && results.size() == 1) return call("wait_agent", obj("subtaskId", map(result(results, 0), "agent").get("subtaskId")));
             return ordinary(prompt);
         });
-        Map<String, Object> task = task("WITHDRAW_DEFINITION", 24); String taskId = str(task, "id"); engine.action(taskId, "approve", obj()); assertTrue(entered.await(20, TimeUnit.SECONDS), () -> childStartFailure(taskId, "definition withdrawal"));
+        Map<String, Object> task = task("WITHDRAW_DEFINITION", 24); String taskId = str(task, "id"); engine.action(taskId, "approve", obj());
+        // 先有界确认根已进入委派阶段，再保留子请求二十秒与在途十五秒的原窗口。
+        assertTrue(parentEntered.await(60, TimeUnit.SECONDS), () -> executionWaitFailure(taskId, "root must reach the delegation stage before definition withdrawal"));
+        assertTrue(entered.await(20, TimeUnit.SECONDS), () -> childStartFailure(taskId, "definition withdrawal"));
         Map<String, Object> update = new java.util.LinkedHashMap<>(store.get("agentDefinition", "agent-research")); update.put("expectedVersion", 1); update.put("enabled", false); catalog.saveAgentDefinition(update);
         awaitTask(taskId, Set.of("UNKNOWN")); int before = calls.get(); Thread.sleep(150); assertEquals(before, calls.get());
         Map<String, Object> child = store.list("subtask").getFirst(); assertEquals(1, num(child, "definitionVersion", 0)); assertEquals("UNKNOWN", str(child, "state")); assertEquals(2, num(store.get("agentDefinition", "agent-research"), "version", 0));

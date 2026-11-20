@@ -22,7 +22,11 @@
 
 核心先原子保存操作 DISPATCHED、租约 ACTIVE 与 AgentRun 来源，再交接原领取。私有领取固定 workerId、epoch、operationKind/operationId、taskId、agentRunId、节点/仓库/授权版本、workingDirectory、realWorkingDirectory、operationType、subjectId 和领取摘要。每次实际调用还有原 callId 与递增 callSequence；同一领取按顺序完成多次依赖整合与副本创建，不能并发或重放。
 
-Worker 核对原随机领取凭据、操作允许的方法、任务/副任务编号与原目录解析目标。执行前必须向核心 CHECK_CURRENT；核心核对原领取、根停止、当前授权与未知效果。回执带原 callId、租约、Worker/epoch、实际 PID 与出生时间，核心核验后才保存结果。私有调用不对外暴露领取/回执 API。
+Worker 核对原随机领取凭据、操作允许的方法、任务/副任务编号与原目录解析目标。执行前必须向核心 CHECK_CURRENT；核心核对原领取、根停止、当前授权与未知效果。正常结果回执带原 callId、租约、Worker/epoch、实际 PID 与出生时间，核心核验后才保存结果。私有调用不对外暴露领取/回执 API。
+
+异常回执只携带原 RPC sequence、受限分类、状态及有界安全文案，不含正常结果的完整 callId/租约/PID envelope。收到合规错误只证明原私有请求取得错误响应，不能据此确认效果已经回执，或推断异常发生前没有文件写入。
+
+alpha.23 保留 VALIDATION、CANCELLED 和 API 小于 500 的原异常映射；其余合规远端错误使用 `WORKER_REMOTE_ERROR_<CATEGORY>_<STATUS>`，公开异常只显示受验证分类与状态，不解析原 message 或附加 cause。真正缺少结果仍沿用 `WORKER_RESULT_MISSING` 或先前已保存的进程/通道失联原因。两者均保留原操作及缺失请求的 UNKNOWN、已承诺预算和零重放，停止原 Worker 并核对实际进程树后再释放资源。心跳观察等路径若先保存失效，保留原首因，不由后到错误覆盖；首因记录不等同于已经确定故障根因。本机 `ProcessWorkspaceRuntimeTest` 第三轮 10/10 已通过，覆盖两项原错误分类及真实 PID 丢失；该轮综合回归共 79 项，另有 2 项 Team 等待失败。第四轮阶段同步后的 Team 14 项有 1 项准备失联收尾失败；随后原注入诊断 2 项全过，受控中断实验 2 项有 1 项失败，确认 `AssertionFailedError`/`InterruptedException` 测试旁路可达，但第四轮实际 cause 未知。测试钩子调整后的 Team 14 项与 Process 10 项共 24 项/package 尚待最终回执。修复前反例、原始回执及完整边界见[错误回执研究](./research/worker-error-receipts-2026-11-19.md)。
 
 ## 模型与工具来源
 

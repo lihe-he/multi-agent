@@ -56,6 +56,7 @@ class ProcessWorkspaceRuntimeTest {
         final byte[] sourceIndex, sourceConfig;
         volatile BiFunction<Integer, Map<String, Object>, Map<String, Object>> response = (round, request) -> obj("role", "assistant", "content", "actual HTTP response");
         volatile Consumer<Map<String, Object>> afterObservation = ignored -> {};
+        volatile Runnable beforeWorkerCheck = () -> {};
 
         Fixture() throws Exception { this(null); }
 
@@ -100,6 +101,7 @@ class ProcessWorkspaceRuntimeTest {
             String runId = str(store.queueAgentRun("root", obj("id", "implement", "kind", "IMPLEMENT", "role", "developer"), workspace, runtime.fingerprint(workspace), false), "id");
             String operation = str(store.beginOperation("root", "implement", "MODEL", workspace, runId), "id"); worker.dispatch(operation, workspace, obj());
             AgentToolSession tools = new AgentToolSession() {
+                @Override public void checkCurrent() { beforeWorkerCheck.run(); }
                 @Override public List<Map<String, Object>> definitions() { return List.of(); }
                 @Override public Map<String, Object> permissions() { return obj("capabilities", List.of("read", "write", "search"), "readScopeLayers", List.of(List.of("**")), "writeScopeLayers", List.of(List.of("**"))); }
                 @Override public AutoCloseable acquireModel() {
@@ -201,12 +203,73 @@ class ProcessWorkspaceRuntimeTest {
     }
 
     @Test
+    void receivedUnknownWorkerErrorPreservesOriginalOutcomeAndReasonAfterReopen() throws Exception {
+        String operationId, originalReason;
+        try (var fixture = new Fixture()) {
+            operationId = str(fixture.store.beginOperation("root", "review-copy", "REVIEW_SNAPSHOT", fixture.workspace), "id");
+            fixture.worker.dispatch(operationId, fixture.workspace, obj());
+            IllegalStateException failure = assertThrows(IllegalStateException.class, () -> fixture.runtime.reviewCopy(fixture.workspace, "root", "deliberately-stale-version"));
+            assertEquals("独立 Worker 返回错误回执（UNKNOWN/500）；原调用结果未知且不自动重试", failure.getMessage()); assertNull(failure.getCause());
+            Map<String, Object> operation = fixture.store.get("operation", operationId), worker = fixture.store.list("worker").getFirst();
+            originalReason = str(worker, "reason");
+            // 心跳观察可先保存失效，后到的分类不能覆盖原首因。
+            assertTrue(originalReason.contains("WORKER_REMOTE_ERROR_UNKNOWN_500") || originalReason.contains("WORKER_HEARTBEAT_EXPIRED"), originalReason);
+            assertFalse(originalReason.contains("WORKER_RESULT_MISSING"));
+            assertEquals("UNKNOWN", operation.get("state")); assertEquals("UNKNOWN", fixture.store.get("workerLease", str(operation, "workerLeaseId")).get("state"));
+            assertEquals("UNKNOWN", fixture.store.get("task", "root").get("state"));
+            assertTrue(fixture.store.list("modelRequest").isEmpty()); assertEquals(0, fixture.httpCalls.get());
+            assertEquals(0, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", -1));
+            assertTrue(Boolean.TRUE.equals(fixture.runtime.stopFacts().get("treeStopped"))); assertFalse(fixture.runtime.available());
+            assertEquals(0, fixture.resources.activeModels()); assertTrue(fixture.resources.snapshot().values().stream().allMatch(value -> value == 0));
+            assertEquals("base\n", Files.readString(Path.of(fixture.workspace).resolve("app.txt"))); assertEquals("base\n", Files.readString(fixture.source.resolve("app.txt")));
+            assertEquals(409, assertThrows(ApiException.class, () -> fixture.runtime.startWorker(fixture.store, fixture.catalog.nodes())).status());
+            assertTrue(fixture.errors.isEmpty(), fixture.errors.toString());
+        }
+        try (var reopened = new ExecutionStore(mapper, directory.resolve("core-data").toString())) {
+            Map<String, Object> operation = reopened.get("operation", operationId);
+            assertEquals("UNKNOWN", operation.get("state")); assertEquals("UNKNOWN", reopened.get("workerLease", str(operation, "workerLeaseId")).get("state"));
+            assertEquals("UNKNOWN", reopened.get("task", "root").get("state"));
+            assertEquals(originalReason, str(reopened.list("worker").getFirst(), "reason"));
+            assertTrue(reopened.list("modelRequest").isEmpty()); assertEquals(2, reopened.list("operation").size()); assertEquals(1, reopened.list("worker").size());
+            assertEquals(0, num(map(reopened.get("task", "root"), "budget"), "usedCalls", -1));
+        }
+    }
+
+    @Test
+    void receivedWorkerApiErrorKeepsServerCategoryWithoutPersistingPrivateMessage() throws Exception {
+        try (var fixture = new Fixture()) {
+            String secret = "private-worker-check-fault-message";
+            fixture.beforeWorkerCheck = () -> { throw new ApiException(503, secret); };
+            IllegalStateException failure = assertThrows(IllegalStateException.class, fixture::run);
+            assertEquals("独立 Worker 返回错误回执（API/503）；原调用结果未知且不自动重试", failure.getMessage()); assertNull(failure.getCause());
+            Map<String, Object> worker = fixture.store.list("worker").getFirst();
+            String originalReason = str(worker, "reason");
+            assertTrue(originalReason.contains("WORKER_REMOTE_ERROR_API_503") || originalReason.contains("WORKER_HEARTBEAT_EXPIRED"), originalReason);
+            assertFalse(originalReason.contains("WORKER_RESULT_MISSING"));
+            Map<String, Object> operation = fixture.store.list("operation").stream().filter(value -> "MODEL".equals(str(value, "kind"))).findFirst().orElseThrow();
+            assertEquals("UNKNOWN", operation.get("state")); assertEquals("UNKNOWN", fixture.store.get("workerLease", str(operation, "workerLeaseId")).get("state"));
+            assertEquals("UNKNOWN", fixture.store.get("task", "root").get("state")); assertTrue(fixture.store.list("modelRequest").isEmpty());
+            assertEquals(0, fixture.httpCalls.get()); assertEquals(0, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", -1));
+            String recorded = failure + " " + fixture.store.list("worker") + fixture.store.list("workerLease") + fixture.store.list("operation")
+                + fixture.store.get("task", "root") + fixture.store.events("root", 0, 1000);
+            assertFalse(recorded.contains(secret)); assertFalse(recorded.contains(fixture.key));
+            assertTrue(Boolean.TRUE.equals(fixture.runtime.stopFacts().get("treeStopped"))); assertFalse(fixture.runtime.available());
+            assertEquals(0, fixture.resources.activeModels()); assertTrue(fixture.resources.snapshot().values().stream().allMatch(value -> value == 0));
+            assertEquals("base\n", Files.readString(Path.of(fixture.workspace).resolve("app.txt"))); assertEquals("base\n", Files.readString(fixture.source.resolve("app.txt")));
+            assertEquals(409, assertThrows(ApiException.class, () -> fixture.runtime.startWorker(fixture.store, fixture.catalog.nodes())).status());
+            assertTrue(fixture.errors.isEmpty(), fixture.errors.toString());
+        }
+    }
+
+    @Test
     void processLossKeepsTheOriginalInFlightRequestUnknownAndNeverStartsAnotherWorker() throws Exception {
         try (var fixture = new Fixture()) {
             fixture.expectDisconnect.set(true); fixture.response = (round, request) -> { try { fixture.released.await(15, TimeUnit.SECONDS); } catch (InterruptedException exception) { Thread.currentThread().interrupt(); } return obj("role", "assistant", "content", "late external response"); };
             var result = fixture.threads.submit(fixture::run); assertTrue(fixture.entered.await(10, TimeUnit.SECONDS)); long workerPid = ((Number) fixture.worker.identity().get("pid")).longValue();
             assertEquals(1, fixture.resources.activeModels()); ProcessHandle original = ProcessHandle.of(workerPid).orElseThrow(); original.destroyForcibly();
             assertThrows(ExecutionException.class, () -> result.get(10, TimeUnit.SECONDS)); assertFalse(original.isAlive());
+            String lossReason = str(fixture.store.list("worker").getFirst(), "reason");
+            assertFalse(lossReason.contains("WORKER_REMOTE_ERROR_"), lossReason);
             assertEquals("UNKNOWN", fixture.store.get("task", "root").get("state")); assertEquals("UNKNOWN", fixture.store.list("modelRequest").getFirst().get("state"));
             assertEquals(1, fixture.httpCalls.get()); assertEquals(1, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", 0)); assertEquals(0, fixture.resources.activeModels());
             assertEquals(1, fixture.store.workerLeases("", "root", "UNKNOWN").size()); assertEquals(1, fixture.store.list("worker").size());

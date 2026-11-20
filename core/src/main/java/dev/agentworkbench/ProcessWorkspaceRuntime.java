@@ -235,6 +235,8 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
                     if ("RESTORE_CHECKPOINT".equals(method)) throw new dev.agentworkbench.runtime.CheckpointRestoreRejected(remote.status(), remote.getMessage());
                     throw new ApiException(remote.status(), remote.getMessage());
                 }
+                process.fence("WORKER_REMOTE_ERROR_" + remote.category() + "_" + remote.status());
+                throw new IllegalStateException("独立 Worker 返回错误回执（" + remote.category() + "/" + remote.status() + "）；原调用结果未知且不自动重试");
             }
             process.fence("WORKER_RESULT_MISSING"); throw new IllegalStateException("独立 Worker 未取得原调用的完整回执，结果未知且不自动重试");
         } finally {
