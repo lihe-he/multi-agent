@@ -47,6 +47,15 @@ class NativePtySessionTest {
         assertEquals("2026-11-18T02:44:31.482Z", births.get(41L));
     }
 
+    @Test
+    void missingBirthForAnAlreadyExitedDescendantDoesNotInvalidateACompleteStopReceipt() {
+        Map<Long, String> births = new java.util.concurrent.ConcurrentHashMap<>();
+        assertFalse(NativePtySession.identityUnavailableForLiveChild(87077, "", false, births));
+        assertTrue(NativePtySession.identityUnavailableForLiveChild(87078, "", true, births));
+        assertFalse(NativePtySession.identityUnavailableForLiveChild(87079, "2026-11-21T05:23:47.310Z", true, births));
+        assertFalse(NativePtySession.identityUnavailableForLiveChild(87079, "", true, births));
+    }
+
     /**
      * 原生库属于整个测试 JVM，退出前复制全部原字节，保留拥有目录供独立核对。
      */

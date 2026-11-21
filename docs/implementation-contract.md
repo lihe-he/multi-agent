@@ -65,4 +65,6 @@ List<Map<String,Object>> search(String projectPath, String query, int limit);
 
 运行器可接收实现 BooleanSupplier 的 `ModelCallObserver`，实际请求前以 begin(metadata) 承诺预算与身份，结束以 end(observation) 保存回执；普通预算回调继续兼容。核心在保存前脱敏输入输出，具体字段与 UNKNOWN 口径见模型请求协议。
 
+原生运行结果及对应模型请求可附 `nativeReceipt`，白名单保存协议终态、原进程状态、退出码、最终执行状态、流完整性、解析原因与已解码 stdout 的 UTF-8 摘要。解析只读取独立 stdout，stderr 不提供终态；结构化成功不能覆盖原进程 UNKNOWN、未完整管道或非零退出冲突。无有效回执不能发布成功请求来源，短预览仍保留原截断事实。CLI 内部用量与 `remoteOutcome` 继续未知，已承诺会话预算不回退；详细状态映射见[原生终态研究](./research/native-cli-receipts-2026-11-21.md)。
+
 调用/验证返回值只提供事实，最终状态与不可变证据由核心持久化。主 Agent 负责 Runtime 与 Electron、启动构建脚本；backend Agent 负责其余 core 与测试；frontend Agent 负责 web；audit Agent 负责端到端检查及实际完成度矩阵。互不覆盖文件。

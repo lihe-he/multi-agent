@@ -1,13 +1,13 @@
 {
-  "startedAt": "2026-11-20T01:54:57.797Z",
-  "recordedAt": "2026-11-20T02:00:48.828Z",
+  "startedAt": "2026-11-21T07:31:45.587Z",
+  "recordedAt": "2026-11-21T07:37:36.983Z",
   "status": "passed",
   "exitCode": 0,
   "signal": null,
-  "version": "0.2.0-alpha.24",
+  "version": "0.2.0-alpha.27",
   "platform": "win32",
-  "baseCommit": "14a65c585b614b31f3e3c9f8e8cf7a07e7f443f7",
-  "baseUrl": "http://127.0.0.1:64596",
+  "baseCommit": "b93542fd57338a373bde02ae0fab948ee8249f4d",
+  "baseUrl": "http://127.0.0.1:49688",
   "productionDist": "D:\\Projects\\多Agent研发工作台\\web\\dist",
   "serverOwnedByRunner": true,
   "reusedServer": false,
@@ -23,12 +23,12 @@
     {
       "file": "web/package-lock.json",
       "bytes": 31557,
-      "sha256": "ed78f5349dfb36fe3c583eb82ca7fabd85b8947fad21775d192f2adaf8a8db08"
+      "sha256": "64e5d725f1256cabc3ec6d95ab1bf557cd7d5610c067c8d027e43ddd80134da2"
     },
     {
       "file": "web/package.json",
       "bytes": 685,
-      "sha256": "4ae6373338a5244fcab5849fbe49a3707a6870ab2642a29fed3895ea7282de3d"
+      "sha256": "3f57c36ff1ad23f4eeaa63261143d36a0a74968df73ccdd15413371b8de76f20"
     },
     {
       "file": "web/playwright.config.ts",
@@ -267,8 +267,8 @@
     },
     {
       "file": "web/src/dialogs.tsx",
-      "bytes": 30469,
-      "sha256": "0495a7c487cb064ea9e5449866f44789c37746334271c1effa29795185c2ef16"
+      "bytes": 31820,
+      "sha256": "3b6b229ebf2f3312eae220a92cfa86f457451dcfbd71aa7a6ae7f09f91600702"
     },
     {
       "file": "web/src/diff-view-contract.ts",
@@ -357,8 +357,8 @@
     },
     {
       "file": "web/src/types.ts",
-      "bytes": 17451,
-      "sha256": "173bbd0c2af511d1aa26ae0a6c0a64e616d8ceb0ccb5f7abbeab953a28d0a083"
+      "bytes": 17519,
+      "sha256": "6c22085152b7a868bebeeaacd4009e991e3131a5741d4908bafd5f049d2086a3"
     },
     {
       "file": "web/src/ui.tsx",
@@ -424,6 +424,11 @@
       "file": "web/tests/process-recovery.spec.ts",
       "bytes": 9993,
       "sha256": "f0ceec211223af0d31902575c4ec57a49d9fe376a15c06c16046bf13f90423e8"
+    },
+    {
+      "file": "web/tests/routes.spec.ts",
+      "bytes": 2267,
+      "sha256": "c172194e200d1fe5032fd26242581c98efbc42a241738b78f38e1f8bafdcc1f1"
     },
     {
       "file": "web/tests/session-preview.spec.ts",
@@ -492,7 +497,7 @@
     }
   ],
   "sourcesUnchanged": true,
-  "buildReceiptPath": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha22-web-build-BsR56K\\receipt.json",
+  "buildReceiptPath": null,
   "buildSourcesUnchanged": true,
   "dependencies": [
     {
@@ -552,9 +557,9 @@
       "sha256": "bb47140566033a24713f2da58881a30e47808fcab790d7be53ec89d248f7ab17"
     },
     {
-      "file": "assets/index-C4Q0108M.js",
-      "bytes": 474899,
-      "sha256": "2f8e51f5681e72f3a852b51c5d73b57832d0a5057b336dea6ab7addc83aaa7c2"
+      "file": "assets/index-QJZwWIgX.js",
+      "bytes": 475911,
+      "sha256": "a05342ebf9fc3a7bf44b3b7e786299414cea5dcf705c46730943ba82182b7fe7"
     },
     {
       "file": "assets/TaskTerminals-BbT8zRoT.css",
@@ -562,14 +567,14 @@
       "sha256": "cbbcf611656957e8adacaefc7849df70e70db93aa2a6832b5ed771534dddabe5"
     },
     {
-      "file": "assets/TaskTerminals-Lr3Q8SSE.js",
+      "file": "assets/TaskTerminals-Dpale1Bo.js",
       "bytes": 360406,
-      "sha256": "a9a2c9ac25dbaba7e3dcd731e0ca91fc4219c7013f094614ee342b5dea8dadcb"
+      "sha256": "ed3d8c7411e1f7b07aeb8466dc759558c80a7d0ccfec58ab8f13b263abb681dd"
     },
     {
       "file": "index.html",
       "bytes": 791,
-      "sha256": "3ff5df397c1566b550d648f2285a4e5ca747aa5900705c78c1fb0c03505c903e"
+      "sha256": "299d96097f3961f684257f3dfd62384808ebe692691f3c332d969100553d5e3e"
     },
     {
       "file": "theme-init.js",
@@ -649,9 +654,9 @@
   ],
   "assetsUnchanged": true,
   "stats": {
-    "startTime": "2026-11-20T01:54:58.326Z",
-    "duration": 349948.853,
-    "expected": 272,
+    "startTime": "2026-11-21T07:31:46.128Z",
+    "duration": 350330.922,
+    "expected": 273,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0
@@ -659,6 +664,6 @@
   "selection": [],
   "originalHistoricalImagesPreserved": 44,
   "runnerSha256": "d8feeca172d310355382a895bd52497a3a6365be0941614a756ede00053b7fb9",
-  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\ui-production-zKm3IZ",
+  "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\ui-production-9VwH32",
   "scope": "COMPLETE_ACTUAL_PRODUCTION_WEB_UI_CORPUS_WITH_BROWSER_PROTOCOL_FIXTURES; REAL_NATIVE_AND_RELEASE_ACCEPTANCE_SEPARATE"
 }

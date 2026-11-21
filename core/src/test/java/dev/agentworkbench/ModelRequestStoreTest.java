@@ -15,13 +15,99 @@ class ModelRequestStoreTest {
     @TempDir Path directory;
 
     private String running(ExecutionStore store, String taskId) {
+        return running(store, taskId, "API");
+    }
+
+    private String running(ExecutionStore store, String taskId, String engine) {
         store.put("project", obj("id", "project"));
         store.createTask(obj("id", taskId, "projectId", "project", "evidence", new ArrayList<>(),
-            "routeSnapshot", obj("engine", "API", "model", "fixture", "apiKey", "never-copy-key"),
+            "routeSnapshot", obj("engine", engine, "model", "fixture", "apiKey", "never-copy-key"),
             "budget", obj("maxCalls", 3, "reserveCalls", 1, "usedCalls", 0, "usedDevelopmentCalls", 0, "usedReservedCalls", 0)));
         var run = store.queueAgentRun(taskId, obj("id", "implement", "role", "developer"), "workspace", "version", false);
         store.beginOperation(taskId, "implement", "MODEL", "workspace", str(run, "id"));
         return str(run, "id");
+    }
+
+    @Test
+    void nativeTerminalMetadataAndSessionBudgetSurviveReopenWithoutRawPayloadsOrSecrets() throws Exception {
+        String requestId, routeCredential = "route-only-private-key", sessionIdentity = "bd9e4a36-5c41-43ec-b9d2-1ee9cf733054";
+        var mapper = new ObjectMapper();
+        try (var store = new ExecutionStore(mapper, directory.toString())) {
+            String runId = running(store, "native-task", "CLAUDE");
+            var runtime = new dev.agentworkbench.runtime.WorkspaceRuntime(mapper, directory.toString());
+            var catalog = new WorkbenchCatalog(store, runtime, new PlanValidator());
+            catalog.saveRoute(obj("name", "native receipt redaction", "engine", "API", "baseUrl", "http://127.0.0.1:19000/v1", "apiKey", routeCredential));
+            var observer = new RequestObservation(store, catalog, "native-task", runId, false, () -> false, new java.util.concurrent.atomic.AtomicBoolean(), () -> {}, null, 0);
+            assertTrue(observer.begin(Map.of()));
+            String stdout = mapper.writeValueAsString(obj("type", "result", "subtype", "success", "is_error", false, "session_id", sessionIdentity, "result", "done"));
+            var parsed = new dev.agentworkbench.runtime.NativeCliReceipt(mapper).parse("CLAUDE", stdout, false);
+            Map<String, Object> metadata = new java.util.LinkedHashMap<>(parsed.metadata());
+            metadata.put("processState", "SUCCEEDED"); metadata.put("processExitCode", 0); metadata.put("outputComplete", true); metadata.put("executionState", "SUCCEEDED");
+            metadata.put("stdout", stdout); metadata.put("errors", obj("message", routeCredential));
+            observer.end(obj("state", "SUCCEEDED", "remoteOutcome", "UNKNOWN", "nativeReceipt", metadata, "outputPreview", "done " + routeCredential,
+                "usage", obj("unit", "CLI_SESSION", "softBudget", true, "modelRequests", "UNKNOWN", "cost", "UNKNOWN")));
+            requestId = observer.lastRequestId(); assertFalse(requestId.isBlank());
+            var request = store.get("modelRequest", requestId);
+            assertEquals("SUCCEEDED", request.get("state"));
+            assertEquals("CLI_SESSION", request.get("unit"));
+            assertEquals("UNKNOWN", request.get("remoteOutcome"));
+            assertEquals("RESULT_SUCCESS", map(request, "nativeReceipt").get("reason"));
+            assertEquals(parsed.metadata().get("stdoutSha256"), map(request, "nativeReceipt").get("stdoutSha256"));
+            assertEquals(parsed.metadata().get("sessionIdSha256"), map(request, "nativeReceipt").get("sessionIdSha256"));
+            assertFalse(map(request, "nativeReceipt").containsKey("sessionId"));
+            assertFalse(map(request, "nativeReceipt").containsKey("stdout")); assertFalse(map(request, "nativeReceipt").containsKey("errors"));
+            assertTrue(str(request, "outputPreview").contains("[REDACTED]")); assertFalse(request.toString().contains(routeCredential));
+            assertFalse(request.toString().contains(sessionIdentity));
+            assertEquals(1, num(map(store.get("task", "native-task"), "budget"), "usedCalls", -1));
+        }
+        try (var reopened = new ExecutionStore(mapper, directory.toString())) {
+            var request = reopened.get("modelRequest", requestId);
+            assertEquals("SUCCEEDED", map(request, "nativeReceipt").get("executionState"));
+            assertEquals("UNKNOWN", request.get("remoteOutcome"));
+            assertEquals("UNKNOWN", map(request, "usage").get("modelRequests"));
+            assertFalse(request.toString().contains(routeCredential)); assertFalse(request.toString().contains(sessionIdentity));
+            assertEquals(409, assertThrows(ApiException.class, () -> reopened.finishModelRequest(requestId, obj("state", "UNKNOWN"))).status());
+        }
+    }
+
+    @Test
+    void nativeSuccessWithoutAValidTerminalReceiptRemainsUnknownAndKeepsTheCommittedBudget() throws Exception {
+        String requestId;
+        var mapper = new ObjectMapper();
+        try (var store = new ExecutionStore(mapper, directory.toString())) {
+            String runId = running(store, "missing-native-terminal", "CODEX");
+            var runtime = new dev.agentworkbench.runtime.WorkspaceRuntime(mapper, directory.toString());
+            var catalog = new WorkbenchCatalog(store, runtime, new PlanValidator());
+            var observer = new RequestObservation(store, catalog, "missing-native-terminal", runId, false, () -> false, new java.util.concurrent.atomic.AtomicBoolean(), () -> {}, null, 0);
+            assertTrue(observer.begin(Map.of()));
+            requestId = str(store.list("modelRequest").getFirst(), "id");
+            observer.end(obj("state", "SUCCEEDED", "nativeReceipt", obj("state", "SUCCEEDED", "reason", "private error text", "stdout", "private output"), "outputPreview", "partial answer"));
+            assertEquals("", observer.lastRequestId());
+            var request = store.get("modelRequest", requestId);
+            assertEquals("UNKNOWN", request.get("state")); assertEquals("UNKNOWN", request.get("remoteOutcome"));
+            assertEquals("CLI_RECEIPT_INVALID", request.get("errorType")); assertEquals("", request.get("outputPreview"));
+            assertEquals("INVALID_RECEIPT_METADATA", map(request, "nativeReceipt").get("reason"));
+            assertFalse(request.toString().contains("private error text")); assertFalse(request.toString().contains("private output"));
+            assertEquals(1, num(map(store.get("task", "missing-native-terminal"), "budget"), "usedCalls", -1));
+        }
+        try (var reopened = new ExecutionStore(mapper, directory.toString())) {
+            assertEquals("UNKNOWN", reopened.get("modelRequest", requestId).get("state"));
+            assertEquals(409, assertThrows(ApiException.class, () -> reopened.finishModelRequest(requestId, obj("state", "SUCCEEDED"))).status());
+            assertEquals(1, reopened.list("modelRequest").size());
+        }
+    }
+
+    @Test
+    void declaredTruncationDoesNotDisappearWhenTheStoredPreviewFits() throws Exception {
+        try (var store = new ExecutionStore(new ObjectMapper(), directory.toString())) {
+            String runId = running(store, "truncated-preview");
+            var runtime = new dev.agentworkbench.runtime.WorkspaceRuntime(new ObjectMapper(), directory.toString());
+            var catalog = new WorkbenchCatalog(store, runtime, new PlanValidator());
+            var observer = new RequestObservation(store, catalog, "truncated-preview", runId, false, () -> false, new java.util.concurrent.atomic.AtomicBoolean(), () -> {}, null, 0);
+            assertTrue(observer.begin(Map.of()));
+            observer.end(obj("state", "UNKNOWN", "outputPreview", "short captured prefix", "outputTruncated", true));
+            assertEquals(Boolean.TRUE, store.list("modelRequest").getFirst().get("outputTruncated"));
+        }
     }
 
     @Test

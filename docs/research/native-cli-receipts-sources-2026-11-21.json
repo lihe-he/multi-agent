@@ -1,0 +1,33 @@
+{
+  "recordedAt": "2026-11-21T05:40:03.159Z",
+  "sources": [
+    {
+      "file": "src-exec_events.rs",
+      "repository": "openai/codex",
+      "commit": "29eb79e9866b3262a777fdf8195c1b9e63684c91",
+      "path": "codex-rs/exec/src/exec_events.rs",
+      "bytes": 10713,
+      "sha256": "dafa872d7e86a099e56e28a329dcb9c03db90ed768c3b88cca8c91d46dc1d0e5",
+      "url": "https://github.com/openai/codex/blob/29eb79e9866b3262a777fdf8195c1b9e63684c91/codex-rs/exec/src/exec_events.rs"
+    },
+    {
+      "file": "src-event_processor_with_jsonl_output.rs",
+      "repository": "openai/codex",
+      "commit": "29eb79e9866b3262a777fdf8195c1b9e63684c91",
+      "path": "codex-rs/exec/src/event_processor_with_jsonl_output.rs",
+      "bytes": 27544,
+      "sha256": "9ac53417fa88c7d36a833bc558a3f54bc32b8a688e43011bc47efc84b499404c",
+      "url": "https://github.com/openai/codex/blob/29eb79e9866b3262a777fdf8195c1b9e63684c91/codex-rs/exec/src/event_processor_with_jsonl_output.rs"
+    },
+    {
+      "file": "claude-sdk-types.py",
+      "repository": "anthropics/claude-agent-sdk-python",
+      "commit": "3184360393a92ca8a6ec7bbbdee571afd1ce1c56",
+      "path": "src/claude_agent_sdk/types.py",
+      "bytes": 114156,
+      "sha256": "dab3138aec01d85723b51864bab77c973755fa2c9af652bcd238c426bc747a9c",
+      "url": "https://github.com/anthropics/claude-agent-sdk-python/blob/3184360393a92ca8a6ec7bbbdee571afd1ce1c56/src/claude_agent_sdk/types.py"
+    }
+  ],
+  "scope": "Fixed public protocol definitions read for parser design; no official CLI or provider compatibility acceptance"
+}

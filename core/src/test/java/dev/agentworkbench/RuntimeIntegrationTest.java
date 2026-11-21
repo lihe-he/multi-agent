@@ -35,6 +35,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @ExtendWith(CheckpointFailureEvidence.class)
 class RuntimeIntegrationTest {
+    private static final String NATIVE_TEST_IDENTITY = "019ac0d5-486f-7aa2-9434-3c9f7b9ae0b2";
+
     @TempDir
     Path temporary;
 
@@ -399,10 +401,10 @@ class RuntimeIntegrationTest {
         if (windows) {
             Files.writeString(script, "if ($args -contains 'help') { [System.IO.File]::WriteAllText('" + helpMarker.toString().replace("'", "''") + "', 'ran'); Write-Output '--ignore-user-config --ignore-rules'; exit 0 }\n"
                 + "[System.IO.File]::WriteAllText('" + modelMarker.toString().replace("'", "''") + "', [Console]::In.ReadToEnd())\n"
-                + "Write-Output '{\"result\":\"fixture done\"}'\n");
+                + "Write-Output '" + nativeProtocolOutput("CODEX", "SUCCEEDED", "fixture done").replace("'", "''") + "'\n");
         } else {
             Files.writeString(script, "#!/bin/sh\nif [ \"$1\" = 'help' ]; then printf ran > '" + helpMarker.toString().replace("'", "'\\''") + "'; printf '%s\\n' '--ignore-user-config --ignore-rules'; exit 0; fi\n"
-                + "cat > '" + modelMarker.toString().replace("'", "'\\''") + "'\nprintf '%s\\n' '{\"result\":\"fixture done\"}'\n");
+                + "cat > '" + modelMarker.toString().replace("'", "'\\''") + "'\nprintf '%s\\n' '" + nativeProtocolOutput("CODEX", "SUCCEEDED", "fixture done").replace("'", "'\\''") + "'\n");
             Files.setPosixFilePermissions(script, PosixFilePermissions.fromString("rwx------"));
         }
         return script;
@@ -447,10 +449,109 @@ class RuntimeIntegrationTest {
         if (windows) {
             Files.writeString(script, "if ($args -contains '--help') { Write-Output '" + help + "'; exit 0 }\n"
                     + "[System.IO.File]::WriteAllText('" + captured.toString().replace("'", "''") + "', ($args | ConvertTo-Json -Compress))\n"
-                    + "$null = [Console]::In.ReadToEnd()\nWrite-Output '{\"result\":\"fixture done\"}'\n");
+                    + "$null = [Console]::In.ReadToEnd()\nif ($args -contains '-p') { Write-Output '" + nativeProtocolOutput("CLAUDE", "SUCCEEDED", "fixture done").replace("'", "''")
+                    + "' } else { Write-Output '" + nativeProtocolOutput("CODEX", "SUCCEEDED", "fixture done").replace("'", "''") + "' }\n");
         } else {
             Files.writeString(script, "#!/bin/sh\nfor arg in \"$@\"; do if [ \"$arg\" = '--help' ]; then printf '%s\\n' '" + help + "'; exit 0; fi; done\n"
-                    + "printf '%s\\n' \"$@\" > '" + captured.toString().replace("'", "'\\''") + "'\ncat >/dev/null\nprintf '%s\\n' '{\"result\":\"fixture done\"}'\n");
+                    + "printf '%s\\n' \"$@\" > '" + captured.toString().replace("'", "'\\''") + "'\ncat >/dev/null\nclaude=false\nfor arg in \"$@\"; do if [ \"$arg\" = '-p' ]; then claude=true; fi; done\n"
+                    + "if [ \"$claude\" = true ]; then printf '%s\\n' '" + nativeProtocolOutput("CLAUDE", "SUCCEEDED", "fixture done").replace("'", "'\\''")
+                    + "'; else printf '%s\\n' '" + nativeProtocolOutput("CODEX", "SUCCEEDED", "fixture done").replace("'", "'\\''") + "'; fi\n");
+            Files.setPosixFilePermissions(script, PosixFilePermissions.fromString("rwx------"));
+        }
+        return script;
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "CODEX,SUCCEEDED,0,SUCCEEDED", "CLAUDE,SUCCEEDED,0,SUCCEEDED", "CODEX,FAILED,0,FAILED", "CLAUDE,FAILED,0,FAILED",
+        "CODEX,MISSING,0,UNKNOWN", "CLAUDE,MISSING,0,UNKNOWN", "CODEX,SUCCEEDED,1,UNKNOWN", "CLAUDE,SUCCEEDED,1,UNKNOWN",
+        "CODEX,FAILED,1,FAILED", "CLAUDE,FAILED,1,FAILED" })
+    void nativeTerminalAndOriginalProcessFactsDetermineTheResult(String engine, String protocolState, int exitCode, String expectedState) throws Exception {
+        Path project = Files.createDirectories(temporary.resolve("native-terminal project"));
+        String stdout = nativeProtocolOutput(engine, protocolState, "final 中文");
+        String stderr = "diagnostic only\n" + nativeProtocolOutput(engine, "SUCCEEDED", "stderr must not become the answer");
+        Path cli = nativeOutputFixture(stdout, stderr, exitCode);
+        ObservedCalls observer = new ObservedCalls();
+        Path eventData = temporary.resolve("native-cli-event-store");
+        try (ExecutionStore eventStore = new ExecutionStore(json, eventData.toString())) {
+            Map<String, Object> result = runtime().run(Map.of("engine", engine, "executable", cli.toString()), "", project.toString(), "fixture request", true,
+                List.of("**"), () -> false, message -> eventStore.event("native-task", "LOG", message), observer);
+
+            assertEquals(expectedState, result.get("status"), result.toString());
+            assertEquals(exitCode, result.get("exitCode"));
+            assertEquals(Boolean.TRUE, result.get("outputComplete"));
+            assertEquals(stdout, result.get("stdout"), "stderr is not part of the structured protocol");
+            Map<String, Object> terminal = dev.agentworkbench.Json.map(result, "nativeReceipt");
+            assertEquals(exitCode == 0 ? "SUCCEEDED" : "FAILED", terminal.get("processState"));
+            assertEquals(expectedState, terminal.get("executionState"));
+            assertEquals("MISSING".equals(protocolState) ? "UNKNOWN" : protocolState, terminal.get("state"));
+            assertEquals(java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(stdout.getBytes(StandardCharsets.UTF_8))), terminal.get("stdoutSha256"));
+            assertEquals("UNKNOWN".equals(expectedState) ? "" : "final 中文", result.get("output"));
+            assertFalse(result.get("output").toString().contains("stderr must not"));
+            assertEquals(1, observer.inputs.size()); assertEquals(1, observer.outputs.size());
+            assertEquals(expectedState, observer.outputs.getFirst().get("state"));
+            assertEquals(terminal, observer.outputs.getFirst().get("nativeReceipt"));
+            assertEquals("UNKNOWN", observer.outputs.getFirst().get("remoteOutcome"));
+            assertEquals("CLI_SESSION", dev.agentworkbench.Json.map(result, "usage").get("unit"));
+            assertEquals("UNKNOWN", dev.agentworkbench.Json.map(result, "usage").get("modelRequests"));
+            List<String> storedLogs = dev.agentworkbench.Json.objects(eventStore.events("native-task", 0, 200).get("events")).stream()
+                .map(event -> dev.agentworkbench.Json.str(event, "message")).toList();
+            assertTrue(storedLogs.stream().anyMatch(message -> message.contains("原生 CLI 结构化回执")));
+            assertFalse(storedLogs.toString().contains(NATIVE_TEST_IDENTITY));
+            assertFalse(storedLogs.toString().contains("final 中文"));
+            assertFalse(storedLogs.toString().contains("stderr must not"));
+        }
+        try (ExecutionStore reopened = new ExecutionStore(json, eventData.toString())) {
+            String storedLogs = reopened.events("native-task", 0, 200).toString();
+            assertFalse(storedLogs.contains(NATIVE_TEST_IDENTITY));
+            assertFalse(storedLogs.contains("final 中文"));
+            assertFalse(storedLogs.contains("stderr must not"));
+        }
+    }
+
+    @Test
+    void stderrTruncationDoesNotInvalidateACompleteNativeStdoutReceipt() throws Exception {
+        Path project = Files.createDirectories(temporary.resolve("native stderr truncation"));
+        String stdout = nativeProtocolOutput("CODEX", "SUCCEEDED", "complete stdout");
+        Path cli = nativeOutputFixture(stdout, "e".repeat(512_001), 0);
+        ObservedCalls observer = new ObservedCalls();
+
+        Map<String, Object> result = runtime().run(Map.of("engine", "CODEX", "executable", cli.toString()), "", project.toString(), "fixture request", true,
+            List.of("**"), () -> false, ignored -> {}, observer);
+
+        Map<String, Object> terminal = dev.agentworkbench.Json.map(result, "nativeReceipt");
+        assertEquals("SUCCEEDED", result.get("status"));
+        assertEquals(Boolean.FALSE, result.get("stdoutTruncated")); assertEquals(Boolean.TRUE, result.get("stderrTruncated"));
+        assertEquals(Boolean.TRUE, result.get("truncated")); assertEquals(Boolean.TRUE, result.get("outputComplete"));
+        assertEquals("SUCCEEDED", terminal.get("executionState")); assertEquals(Boolean.TRUE, terminal.get("stderrTruncated"));
+        assertEquals("complete stdout", result.get("output"));
+        assertEquals(Boolean.FALSE, observer.outputs.getFirst().get("outputTruncated"));
+    }
+
+    private String nativeProtocolOutput(String engine, String state, String text) throws Exception {
+        String identity = NATIVE_TEST_IDENTITY;
+        if ("CLAUDE".equals(engine)) {
+            if ("MISSING".equals(state)) return json.writeValueAsString(Map.of("type", "assistant", "text", text));
+            return json.writeValueAsString(Map.of("type", "result", "subtype", "success", "is_error", "FAILED".equals(state), "session_id", identity, "result", text));
+        }
+        String prefix = json.writeValueAsString(Map.of("type", "thread.started", "thread_id", identity)) + "\n{\"type\":\"turn.started\"}\n"
+            + json.writeValueAsString(Map.of("type", "item.completed", "item", Map.of("id", "message-1", "type", "agent_message", "text", text)));
+        if ("MISSING".equals(state)) return prefix;
+        return prefix + "\n" + ("FAILED".equals(state) ? "{\"type\":\"turn.failed\",\"error\":{\"message\":\"fixture failure\"}}"
+            : "{\"type\":\"turn.completed\",\"usage\":{\"input_tokens\":7,\"cached_input_tokens\":0,\"output_tokens\":3}}");
+    }
+
+    private Path nativeOutputFixture(String stdout, String stderr, int exitCode) throws Exception {
+        boolean windows = System.getProperty("os.name").toLowerCase().contains("win");
+        Path script = temporary.resolve("native-output" + (windows ? ".ps1" : ".sh"));
+        if (windows) {
+            String out = java.util.Base64.getEncoder().encodeToString(stdout.getBytes(StandardCharsets.UTF_8));
+            String error = java.util.Base64.getEncoder().encodeToString(stderr.getBytes(StandardCharsets.UTF_8));
+            Files.writeString(script, "if ($args -contains '--help') { Write-Output '--ignore-user-config --ignore-rules --safe-mode'; exit 0 }\n"
+                + "$null = [Console]::In.ReadToEnd()\n$out = [Convert]::FromBase64String('" + out + "'); [Console]::OpenStandardOutput().Write($out, 0, $out.Length)\n"
+                + "$err = [Convert]::FromBase64String('" + error + "'); [Console]::OpenStandardError().Write($err, 0, $err.Length)\nexit " + exitCode + "\n");
+        } else {
+            Files.writeString(script, "#!/bin/sh\nfor arg in \"$@\"; do if [ \"$arg\" = '--help' ]; then printf '%s\\n' '--ignore-user-config --ignore-rules --safe-mode'; exit 0; fi; done\n"
+                + "cat >/dev/null\nprintf '%s' '" + stdout.replace("'", "'\\''") + "'\nprintf '%s' '" + stderr.replace("'", "'\\''") + "' >&2\nexit " + exitCode + "\n");
             Files.setPosixFilePermissions(script, PosixFilePermissions.fromString("rwx------"));
         }
         return script;

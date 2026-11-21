@@ -370,12 +370,20 @@ public final class NativePtySession {
             for (ProcessHandle child : ManagedProcessLedger.originalDescendants(original, birth)) {
                 String start = child.info().startInstant().map(Object::toString).orElse("");
                 Map<String, Object> facts = obj("pid", child.pid(), "processStartedAt", start, "observedFromPid", original.pid(), "observedFromStartedAt", birth);
+                if (identityUnavailableForLiveChild(child.pid(), start, child.isAlive(), childBirths)) enumerationFailed = true;
                 if (ignoreUnverifiableDuplicate(child.pid(), start, childBirths)) continue;
                 if (!start.isBlank()) children.remove(child.pid() + ":");
                 if (children.putIfAbsent(child.pid() + ":" + start, facts) == null) observations.accept(new LinkedHashMap<>(facts));
-                if (start.isBlank()) enumerationFailed = true;
             }
         } catch (RuntimeException exception) { enumerationFailed = true; }
+    }
+
+    /**
+     * 已退出的短命后代即使缺少出生时间也可确认停止；仍存活且身份未知时保持 UNKNOWN。
+     */
+    static boolean identityUnavailableForLiveChild(long pid, String birth, boolean alive, Map<Long, String> observedBirths) {
+        if (!birth.isBlank()) observedBirths.put(pid, birth);
+        return birth.isBlank() && alive && !observedBirths.containsKey(pid);
     }
 
     /**

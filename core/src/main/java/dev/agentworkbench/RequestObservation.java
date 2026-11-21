@@ -2,6 +2,7 @@ package dev.agentworkbench;
 
 import dev.agentworkbench.runtime.AgentToolSession;
 import dev.agentworkbench.runtime.ModelCallObserver;
+import dev.agentworkbench.runtime.NativeCliReceipt;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,17 @@ final class RequestObservation implements ModelCallObserver {
         Map<String, Object> safe = new LinkedHashMap<>(observation);
         for (String field : List.of("providerRequestId", "responseId", "responseModel", "finishReason", "outputPreview", "reason", "errorType", "errorChain")) if (safe.containsKey(field)) {
             String redacted = catalog.redact(str(safe, field)); safe.put(field, redacted.substring(0, Math.min(6000, redacted.length())));
-            if (field.equals("outputPreview")) safe.put("outputTruncated", redacted.length() > 6000);
+            if (field.equals("outputPreview")) safe.put("outputTruncated", Boolean.TRUE.equals(safe.get("outputTruncated")) || redacted.length() > 6000);
+        }
+        if (java.util.Set.of("CODEX", "CLAUDE").contains(str(store.get("agentRun", runId), "engine")) || safe.containsKey("nativeReceipt")) {
+            Map<String, Object> terminal = new LinkedHashMap<>(NativeCliReceipt.metadata(safe.get("nativeReceipt")));
+            terminal.replaceAll((field, value) -> value instanceof String text ? catalog.redact(text) : value);
+            terminal = NativeCliReceipt.metadata(terminal);
+            safe.put("nativeReceipt", terminal);
+            if (java.util.Set.of("SUCCEEDED", "FAILED").contains(str(safe, "state")) && !str(safe, "state").equals(str(terminal, "executionState"))) {
+                safe.put("state", "UNKNOWN"); safe.put("remoteOutcome", "UNKNOWN"); safe.put("outputPreview", "");
+                safe.put("errorType", "CLI_RECEIPT_INVALID");
+            }
         }
         store.finishModelRequest(requestId, safe); receiptId = "SUCCEEDED".equals(str(safe, "state")) ? requestId : ""; requestId = "";
     }

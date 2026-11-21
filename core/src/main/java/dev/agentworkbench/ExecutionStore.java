@@ -2,6 +2,7 @@ package dev.agentworkbench;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.agentworkbench.runtime.NativeCliReceipt;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -837,6 +838,7 @@ public class ExecutionStore implements AutoCloseable {
         for (String key : List.of("state", "httpStatus", "providerRequestId", "responseId", "responseModel", "finishReason", "outputPreview", "outputTruncated", "errorType", "errorChain", "reason", "usage", "remoteOutcome")) {
             if (observation.containsKey(key)) request.put(key, observation.get(key));
         }
+        if (observation.containsKey("nativeReceipt")) request.put("nativeReceipt", NativeCliReceipt.metadata(observation.get("nativeReceipt")));
         request.put("endedAt", now());
         request.put("elapsedMs", Math.max(0, java.time.Duration.between(java.time.Instant.parse(str(request, "createdAt")), java.time.Instant.parse(str(request, "endedAt"))).toMillis()));
         write("modelRequest", request);

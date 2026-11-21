@@ -44,6 +44,7 @@ public class WorkspaceRuntime {
     private final ObjectMapper json;
     private final Path data;
     private final NativeSandboxPolicy nativeSandboxPolicy;
+    private final NativeCliReceipt nativeCliReceipt;
     private final GitWorkspaces workspaces;
     private final WorkspaceWriteGuard workspaceWrites;
     private final GitDiffView diffViews;
@@ -62,6 +63,7 @@ public class WorkspaceRuntime {
         this.json = json;
         this.data = Path.of(dataDir).toAbsolutePath().normalize();
         this.nativeSandboxPolicy = Objects.requireNonNull(nativeSandboxPolicy);
+        this.nativeCliReceipt = new NativeCliReceipt(json);
         this.workspaces = new GitWorkspaces(this, json, this.data);
         this.workspaceWrites = new WorkspaceWriteGuard(json, this.data, this::writeMetadataAtomic);
         this.diffViews = new GitDiffView(this, this.data);
@@ -697,12 +699,25 @@ public class WorkspaceRuntime {
         Map<String, Object> observation = object("state", "UNKNOWN", "errorType", "CLI_INTERRUPTED", "remoteOutcome", "UNKNOWN");
         try {
             Path workingDirectory = sandboxRequest == null ? Path.of(workspace) : sandboxRequest.workspace();
-            Map<String, Object> run = execute(sandboxDecision == null ? command : sandboxDecision.command(), workingDirectory, prompt, cancelled, log, Duration.ofMinutes(15), true);
+            log.accept("原生 CLI 已启动；进程输出不会写入任务日志。");
+            Map<String, Object> run = execute(sandboxDecision == null ? command : sandboxDecision.command(), workingDirectory, prompt, cancelled, ignored -> {}, Duration.ofMinutes(15), true);
             if (sandboxDecision != null) run.put("osSandbox", sandboxReceipt(sandboxRequest, sandboxDecision));
-            run.put("output", finalNativeOutput(engine, run.get("output").toString()));
+            String processState = run.get("status").toString();
+            NativeCliReceipt.Receipt terminal = nativeCliReceipt.parse(engine, Objects.toString(run.get("stdout"), ""),
+                Boolean.TRUE.equals(run.get("stdoutTruncated")), Boolean.TRUE.equals(run.get("outputComplete")));
+            String executionState = NativeCliReceipt.executionStatus(processState, terminal.state());
+            Map<String, Object> terminalFacts = new LinkedHashMap<>(terminal.metadata());
+            terminalFacts.put("processState", processState); terminalFacts.put("processExitCode", run.get("exitCode"));
+            terminalFacts.put("stderrTruncated", run.get("stderrTruncated"));
+            terminalFacts.put("outputComplete", run.get("outputComplete")); terminalFacts.put("executionState", executionState);
+            run.put("nativeReceipt", NativeCliReceipt.metadata(terminalFacts));
+            run.put("status", executionState);
+            run.put("output", Set.of("SUCCEEDED", "FAILED").contains(executionState) ? cap(terminal.output()) : "");
+            log.accept("原生 CLI 结构化回执：" + executionState + " · " + terminal.metadata().get("reason"));
             run.put("usage", object("softBudget", true, "unit", "CLI_SESSION", "modelRequests", "UNKNOWN", "inputTokens", "UNKNOWN", "outputTokens", "UNKNOWN", "cost", "UNKNOWN"));
             observation = object("state", run.get("status"), "usage", run.get("usage"), "remoteOutcome", "UNKNOWN",
-                "outputPreview", run.get("output").toString(), "outputTruncated", run.get("output").toString().length() > 6000);
+                "outputPreview", run.get("output").toString(), "outputTruncated", Boolean.TRUE.equals(run.get("stdoutTruncated")) || run.get("output").toString().length() > 6000,
+                "nativeReceipt", run.get("nativeReceipt"), "finishReason", terminal.metadata().get("reason"));
             if (!"SUCCEEDED".equals(run.get("status"))) observation.put("errorType", "CLI_" + run.get("status"));
             return run;
         } finally { endCall(acquireCall, observation); }
@@ -1535,6 +1550,8 @@ public class WorkspaceRuntime {
         StringBuilder errors = new StringBuilder();
         String processFacts = "";
         AtomicBoolean truncated = new AtomicBoolean(false);
+        AtomicBoolean stdoutTruncated = new AtomicBoolean(false);
+        AtomicBoolean stderrTruncated = new AtomicBoolean(false);
         AtomicReference<IOException> streamFailure = new AtomicReference<>();
         Set<ObservedChild> observedChildren = ConcurrentHashMap.newKeySet();
         try {
@@ -1562,7 +1579,7 @@ public class WorkspaceRuntime {
                         byte[] buffer = new byte[4096]; int count;
                         while ((count = stream.read(buffer)) != -1) {
                             int remaining = maximumBytes - binaryOutput.size();
-                            if (count > remaining) truncated.set(true);
+                            if (count > remaining) { truncated.set(true); stdoutTruncated.set(true); }
                             if (remaining > 0) binaryOutput.write(buffer, 0, Math.min(remaining, count));
                         }
                     } catch (IOException exception) { streamFailure.compareAndSet(null, exception); }
@@ -1573,7 +1590,7 @@ public class WorkspaceRuntime {
                     while ((count = stream.read(buffer)) != -1) {
                         String chunk = new String(buffer, 0, count);
                         synchronized (output) {
-                            if (output.length() + chunk.length() > MAX_OUTPUT) truncated.set(true);
+                            if (output.length() + chunk.length() > MAX_OUTPUT) { truncated.set(true); stdoutTruncated.set(true); }
                             if (output.length() < MAX_OUTPUT) output.append(chunk, 0, Math.min(chunk.length(), MAX_OUTPUT - output.length()));
                         }
                         log.accept(chunk.length() > 4000 ? chunk.substring(0, 4000) : chunk);
@@ -1586,7 +1603,7 @@ public class WorkspaceRuntime {
                     while ((count = stream.read(buffer)) != -1) {
                         String chunk = new String(buffer, 0, count);
                         synchronized (errors) {
-                            if (errors.length() + chunk.length() > MAX_OUTPUT) truncated.set(true);
+                            if (errors.length() + chunk.length() > MAX_OUTPUT) { truncated.set(true); stderrTruncated.set(true); }
                             if (errors.length() < MAX_OUTPUT) errors.append(chunk, 0, Math.min(chunk.length(), MAX_OUTPUT - errors.length()));
                         }
                         log.accept(chunk);
@@ -1619,7 +1636,7 @@ public class WorkspaceRuntime {
             }
             int exit = process.isAlive() ? -1 : process.exitValue();
             List<ObservedChild> unconfirmed = unconfirmedChildren(observedChildren);
-            if (state.equals("SUCCEEDED") && outputComplete && !truncated.get() && !unconfirmed.isEmpty()) {
+            if (state.equals("SUCCEEDED") && outputComplete && !unconfirmed.isEmpty()) {
                 long settleDeadline = Math.min(deadline, System.nanoTime() + Duration.ofSeconds(3).toNanos());
                 // 父进程返回与原后代退出可能不同步；只等待同一身份收尾，不重启进程或重放命令。
                 while (!unconfirmed.isEmpty() && !cancelled.getAsBoolean() && System.nanoTime() < settleDeadline) {
@@ -1632,7 +1649,7 @@ public class WorkspaceRuntime {
                 synchronized (errors) {
                     int remaining = MAX_OUTPUT - errors.length();
                     String diagnostic = "\n" + processFacts;
-                    if (diagnostic.length() > remaining) truncated.set(true);
+                    if (diagnostic.length() > remaining) { truncated.set(true); stderrTruncated.set(true); }
                     if (remaining > 0) errors.append(diagnostic, 0, Math.min(diagnostic.length(), remaining));
                 }
                 unconfirmed.stream().filter(child -> originalProcess(child.handle(), child.startedAt())).forEach(child -> child.handle().destroyForcibly());
@@ -1648,6 +1665,8 @@ public class WorkspaceRuntime {
                 Map<String, Object> outcome = result(exit, output + (errors.isEmpty() ? "" : "\n" + errors), state);
                 outcome.put("stdout", output.toString());
                 outcome.put("truncated", truncated.get());
+                outcome.put("stdoutTruncated", stdoutTruncated.get());
+                outcome.put("stderrTruncated", stderrTruncated.get());
                 outcome.put("outputComplete", outputComplete);
                 if (!outputComplete) outcome.put("output", outcome.get("output") + "\n" + processFacts);
                 if (truncated.get()) outcome.put("output", output + "\n[输出超过上限，已截断]" + (processFacts.isBlank() ? "" : "\n" + processFacts));
@@ -1709,23 +1728,6 @@ public class WorkspaceRuntime {
         if (process.isAlive()) process.destroyForcibly();
         try { process.waitFor(2, TimeUnit.SECONDS); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         return observed && !process.isAlive() && ManagedProcessLedger.inspectProcesses(() -> children.stream().allMatch(child -> ManagedProcessLedger.observedProcessStopped(child.pid(), starts.get(child.pid()))));
-    }
-
-    private String finalNativeOutput(String engine, String raw) {
-        String answer = raw;
-        try {
-            if (engine.equals("CLAUDE")) {
-                Map<?, ?> body = json.readValue(raw, Map.class);
-                return Objects.toString(body.get("result"), raw);
-            }
-            for (String line : raw.lines().toList()) {
-                try {
-                    Map<?, ?> event = json.readValue(line, Map.class);
-                    if (event.get("item") instanceof Map<?, ?> item && "agent_message".equals(item.get("type"))) answer = Objects.toString(item.get("text"), answer);
-                } catch (Exception ignored) { }
-            }
-        } catch (Exception ignored) { }
-        return cap(answer);
     }
 
     private Path dataDirectory() { try { Files.createDirectories(data); return data; } catch (IOException e) { throw failure(e); } }

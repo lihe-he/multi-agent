@@ -115,7 +115,8 @@ class WorkbenchEngineTest {
         assertTrue(requests.stream().allMatch(request -> "[REDACTED]".equals(str(request, "providerRequestId"))));
         assertTrue(requests.stream().allMatch(request -> str(request, "outputPreview").length() == 6000 && !str(request, "outputPreview").contains("trace-secret")));
         assertTrue(requests.stream().allMatch(request -> str(request, "inputPreview").length() == 6000 && !str(request, "inputPreview").contains("trace-secret")));
-        assertTrue(requests.stream().allMatch(request -> !bool(request, "inputTruncated", true) && !bool(request, "outputTruncated", true)));
+        assertTrue(requests.stream().allMatch(request -> !bool(request, "inputTruncated", true)));
+        assertTrue(requests.stream().allMatch(request -> bool(request, "outputTruncated", false)));
         String runId = str(store.queueAgentRun(taskId, obj("id", "restart", "role", "lead"), "workspace", "version", false), "id");
         store.beginOperation(taskId, "restart", "MODEL", "workspace", runId);
         String pending = store.beginModelRequest(taskId, runId, false, Map.of());
