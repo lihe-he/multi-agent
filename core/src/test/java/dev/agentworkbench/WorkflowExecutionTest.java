@@ -367,6 +367,14 @@ class WorkflowExecutionTest {
             assertTrue(prepared, "The second node must reach resource waiting without an HTTP model request"); engine.action(taskId, "pause", obj());
             Map<String, Object> paused = awaitTask(taskId, Set.of("PAUSED")); assertEquals(1, firstCalls.get());
             assertEquals(1, num(map(paused, "budget"), "usedCalls", 0)); assertEquals(1, store.list("modelRequest").size());
+            Map<String, Object> writer = store.list("workflowNodeAttempt").stream().filter(attempt -> "writer".equals(str(attempt, "nodeId"))).findFirst().orElseThrow();
+            Map<String, Object> run = store.get("agentRun", str(writer, "agentRunId"));
+            Map<String, Object> operation = store.get("operation", str(run, "operationId"));
+            assertEquals("CANCELLED", str(operation, "state"));
+            assertEquals("RELEASED", str(store.get("workerLease", str(operation, "workerLeaseId")), "state"));
+            Map<String, Object> writeLease = store.get("workspaceWriteLease", str(paused, "workspaceWriteLeaseId"));
+            assertEquals("RELEASED", str(writeLease, "state")); assertTrue(bool(writeLease, "protectionReleased", false));
+            assertEquals("PAUSED", str(store.get("taskExecution", str(paused, "taskExecutionId")), "state"));
         }
         Map<String, Object> original = store.list("workflowNodeAttempt").stream().filter(attempt -> "first".equals(str(attempt, "nodeId"))).findFirst().orElseThrow();
         String workflowId = str(store.get("task", taskId), "workflowRunId"); engine.action(taskId, "resume", obj()); Map<String, Object> finished = awaitTask(taskId, Set.of("AWAITING_ACCEPTANCE"));

@@ -217,6 +217,9 @@ final class WorkflowCoordinator {
                 !AgentPermissions.has(permissions, "write"), List.of("**"), active::stopped,
                 text -> store.event(taskId, "WORKFLOW_LOG", str(node, "title") + " · " + catalog.redact(text)), observer, bindings,
                 teams.fixedTools(taskId, runId, "IMPLEMENT".equals(str(node, "kind")) ? "IMPLEMENT" : str(node, "kind"), active::stopped));
+            if ("CANCELLED".equals(str(result, "status")) && cancelUnrequestedOperation(taskId, runId, operationId, rootStopped)) {
+                throw new CancellationException("根任务已在首次模型请求前停止");
+            }
             String version = runtime.fingerprint(workspace);
             List<String> changes = runtime.delegationChanges(str(inputs, "baseWorkspace"), workspace, permissions);
             Map<String, Object> evidence = obj("id", id(), "stage", store.get("agentRun", runId).get("stage"), "kind", "WORKFLOW_NODE", "role", node.get("role"),
@@ -238,12 +241,10 @@ final class WorkflowCoordinator {
             if (store.healthy()) {
                 Map<String, Object> run = store.get("agentRun", runId);
                 Map<String, Object> operation = store.find("operation", str(run, "operationId"));
-                if (operation != null && "DISPATCHED".equals(str(operation, "state")) && exception instanceof CancellationException
-                        && rootStopped.getAsBoolean() && num(run, "calls", 0) == 0
-                        && store.list("modelRequest").stream().noneMatch(request -> runId.equals(str(request, "agentRunId"))) && !store.hasUnknownEffects(taskId)) {
-                    try { worker.finish(str(operation, "id"), "CANCELLED", obj("reason", "根停止已确认；原 Worker 已返回，且没有模型请求或未确认效果")); }
-                    catch (RuntimeException ignored) { }
-                    operation = store.get("operation", str(operation, "id"));
+                if (operation != null && exception instanceof CancellationException) {
+                    try {
+                        if (cancelUnrequestedOperation(taskId, runId, str(operation, "id"), rootStopped)) operation = store.get("operation", str(operation, "id"));
+                    } catch (RuntimeException ignored) { }
                 }
                 if (operation != null && Set.of("PREPARED", "DISPATCHED", "UNKNOWN").contains(str(operation, "state"))) {
                     finishFailedOperation(str(operation, "id"), exception);
@@ -274,6 +275,20 @@ final class WorkflowCoordinator {
             }
         }
         return store.healthy() ? store.get("workflowNodeAttempt", attemptId) : obj("id", attemptId, "state", "UNKNOWN", "reason", "节点持久存储失效");
+    }
+
+    /**
+     * 仅在原操作仍处于派发状态且不存在模型请求或未知效果时确认取消。
+     */
+    private boolean cancelUnrequestedOperation(String taskId, String runId, String operationId, BooleanSupplier rootStopped) {
+        if (!store.healthy() || !rootStopped.getAsBoolean()) return false;
+        Map<String, Object> run = store.get("agentRun", runId), operation = store.find("operation", operationId);
+        if (operation == null || !runId.equals(str(operation, "agentRunId")) || !"DISPATCHED".equals(str(operation, "state"))
+                || num(run, "calls", 0) != 0
+                || store.list("modelRequest").stream().anyMatch(request -> runId.equals(str(request, "agentRunId")))
+                || store.hasUnknownEffects(taskId)) return false;
+        worker.finish(operationId, "CANCELLED", obj("reason", "根停止已确认；原 Worker 已返回，且没有模型请求或未确认效果"));
+        return true;
     }
 
     private Map<String, Object> handoffs(Map<String, Object> task, Map<String, Object> node, List<Map<String, Object>> sources) {

@@ -4,7 +4,7 @@
 
 平台使用 Java 21、Spring Boot、SQLite、React、TypeScript 和 Electron。任务在独立工作目录中执行，验证和审查记录绑定代码版本，最终由用户验收。验收操作记录用户决定，不会自动提交、推送或改写原项目。
 
-当前开发版本为 **0.2.0-alpha.27**。原生 CLI 使用结构化终态、独立 stdout 和原进程收尾事实判断结果；中间输出、非零退出冲突、截断或缺少终态保持 `UNKNOWN`，解析结果随原模型会话持久保存，预算不回退。协议与固定开源依据见[原生终态研究](./docs/research/native-cli-receipts-2026-11-21.md)。显式操作系统沙箱请求继续沿用 `NativeSandboxPolicy` 门禁；当前默认策略为 `UNAVAILABLE`，真实平台强制器和官方 CLI 混合阶段仍继续实施。
+当前开发版本为 **0.2.0-alpha.28**。Workflow 在首次模型请求前收到暂停时，按原 Worker 的取消回执结束节点，不制造未知操作；已有模型请求或未确认副作用时仍保留 `UNKNOWN`。原生 CLI 使用结构化终态、独立 stdout 和原进程收尾事实判断结果；中间输出、非零退出冲突、截断或缺少终态保持 `UNKNOWN`，解析结果随原模型会话持久保存，预算不回退。协议与固定开源依据见[原生终态研究](./docs/research/native-cli-receipts-2026-11-21.md)。显式操作系统沙箱请求继续沿用 `NativeSandboxPolicy` 门禁；当前默认策略为 `UNAVAILABLE`，真实平台强制器和官方 CLI 混合阶段仍继续实施。
 
 alpha.25 的内部只读 `stage_input` MCP 桥继续限定在原 Workflow Worker 调用，握手和调用重验任务、流程代次、节点尝试、AgentRun、输入准备回执、固定输入、权限、写入归属与原领取；取消、失联、撤销、过期、输入变化或核心重启后旧令牌失效。桥仍只作为私有 Worker 参数传递，真实 Codex/Claude CLI 消费与混合阶段尚未启用。
 

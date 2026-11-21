@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "version": "0.2.0-alpha.27",
-  "recordedAt": "2026-11-21T20:11:45+08:00",
+  "recordedAt": "2026-11-21T22:56:54+08:00",
   "baseCommit": "b93542fd57338a373bde02ae0fab948ee8249f4d",
-  "status": "LOCAL_TARGETED_CORE_UI_JAR_AND_CLEAN_CORE_PASSED; EXACT_COMMIT_CI_PENDING; OFFICIAL_CLI_AND_OS_SANDBOX_ACCEPTANCE_PENDING",
+  "status": "LOCAL_TARGETED_CORE_UI_JAR_AND_CLEAN_CORE_PASSED; EXACT_COMMIT_CI_FAILED_ON_MACOS_AFTER_TWO_ATTEMPTS; OFFICIAL_CLI_AND_OS_SANDBOX_ACCEPTANCE_PENDING",
   "implementationScope": "Structured Codex JSONL and Claude result parsing, redacted persistent native receipt, conservative process and stream status reconciliation, reserved session budget retention, and preservation of output truncation facts",
   "localCleanCore": {
     "status": "passed",
@@ -79,5 +79,46 @@
     "Exact pushed commit CI on Windows, macOS, and Ubuntu",
     "Compatibility with real official Codex and Claude CLI output samples",
     "Platform-enforced OS file and network sandbox implementations and boundary tests"
-  ]
+  ],
+  "exactCommitCi": {
+    "status": "failed",
+    "workflowRun": 44903427895,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/44903427895",
+    "commit": "9f3a2484f970ecfc86416a40f9bf54fdcfb2cebd",
+    "firstAttempt": {
+      "macos": "failure",
+      "windows": "success",
+      "ubuntu": "success",
+      "failedTest": "dev.agentworkbench.WorkflowExecutionTest.pauseBeforeTheNextModelRequestReusesOnlyTheCompletedNodeAndKeepsTheRootBudget",
+      "result": "752 tests, 1 failure, 10 skipped",
+      "symptom": "UNKNOWN / WORKER_RELEASE_RECEIPT_MISSING",
+      "jobLog": ".runtime/alpha27-macos-job-44903427895.log",
+      "jobLogSha256": "D190B03993B9BC27BB750EDDF31D68539981CA37588EB98E2A6C30F0043EEF3"
+    },
+    "retryAttempt": {
+      "macos": "failure",
+      "failedTest": "dev.agentworkbench.WorkflowExecutionTest.pauseBeforeTheNextModelRequestReusesOnlyTheCompletedNodeAndKeepsTheRootBudget",
+      "result": "752 tests, 1 failure, 11 skipped",
+      "symptom": "UNKNOWN during requested pause; workspace write protection and root execution cleanup remained unresolved",
+      "jobLog": ".runtime/alpha27-macos-job-44903427895-attempt2.log",
+      "jobLogSha256": "184689EC28C5633D5E863BD15343601406B58B7F6CFC196C97E2B196E7B1D86D",
+      "artifact": ".runtime/alpha27-macos-evidence-44903427895-attempt2-verified.zip",
+      "artifactBytes": 10749868,
+      "artifactSha256": "D3B500C123CD10F9B7EC922AA92FB97B5F9C02C68C8FEBDF6683E6D5A1818051",
+      "artifactEntries": 1619,
+      "zipCrc": "passed"
+    },
+    "rootCause": "Unconfirmed; the two macOS attempts failed through different cleanup symptoms, so the first release-receipt error is not established as the root cause.",
+    "localWindowsTargetedReproduction": {
+      "status": "passed",
+      "jdk": "21.0.13",
+      "tests": 1,
+      "passed": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "receipt": ".runtime/alpha27-workflow-test-repro-c5e04ff431ab499085ccd7b497f5380b.log",
+      "limits": "One local pass does not establish the macOS cause or supersede either CI failure."
+    }
+  }
 }

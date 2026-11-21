@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "version": "0.2.0-alpha.28",
+  "recordedAt": "2026-11-21T23:33:55+08:00",
+  "baseCommit": "9f3a2484f970ecfc86416a40f9bf54fdcfb2cebd",
+  "status": "TARGETED_PAUSE_AND_FOCUSED_WORKFLOW_WORKER_REGRESSION_PASSED; EXACT_COMMIT_CI_PENDING",
+  "implementationScope": "Treat a confirmed pre-request Workflow cancellation as a normal Worker cancellation receipt only when the root is stopped, the run has no calls, no model request record exists, and the task has no unknown effects; preserve UNKNOWN for every other path.",
+  "scopeLimitations": "The request ledger proves that no model request was recorded; it does not prove that no child process ever ran because a native CLI isolation --help probe can precede model-request accounting.",
+  "environment": {
+    "os": "Windows",
+    "jdk": "21.0.13",
+    "jdkHome": ".runtime/jdk-21.0.13+9",
+    "maven": "3.9.11"
+  },
+  "targetedRegression": {
+    "status": "passed",
+    "command": "mvn -B -ntp -f core/pom.xml '-Dtest=WorkflowExecutionTest#pauseBeforeTheNextModelRequestReusesOnlyTheCompletedNodeAndKeepsTheRootBudget' test",
+    "tests": 1,
+    "passed": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "receipt": ".runtime/alpha27-workflow-test-repro-c5e04ff431ab499085ccd7b497f5380b.log",
+    "assertions": [
+      "Writer operation ends CANCELLED before any model request",
+      "Worker lease is RELEASED",
+      "Root workspace write protection is released",
+      "Task execution settles as PAUSED"
+    ],
+    "limitations": "One Windows execution does not establish the macOS failure root cause or supersede the two failed alpha.27 macOS CI attempts."
+  },
+  "focusedRegression": {
+    "status": "passed",
+    "command": "mvn -B -ntp -f core/pom.xml \"-Dtest=WorkflowExecutionTest,WorkerProcessTest,ProcessWorkspaceRuntimeTest,WorkflowLedgerTest,WorkerLeaseTest\" test",
+    "tests": 43,
+    "passed": 43,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "classes": {
+      "WorkflowExecutionTest": 8,
+      "WorkerProcessTest": 8,
+      "ProcessWorkspaceRuntimeTest": 10,
+      "WorkflowLedgerTest": 8,
+      "WorkerLeaseTest": 9
+    },
+    "jdk": "21.0.13",
+    "maven": "3.9.11",
+    "execution": "Serial Maven run after confirming no other build process used core/target",
+    "elapsed": "11m35s",
+    "codeState": "Passed before consolidating the returned-cancellation and exception-cancellation paths into one helper.",
+    "limitations": "A Windows regression does not replace exact-commit macOS, Ubuntu, and Windows CI or establish the prior macOS failure's root cause."
+  },
+  "finalCodeTargetedRegression": {
+    "status": "passed",
+    "command": "mvn -B -ntp -f core/pom.xml \"-Dtest=WorkflowExecutionTest#pauseBeforeTheNextModelRequestReusesOnlyTheCompletedNodeAndKeepsTheRootBudget\" test",
+    "tests": 1,
+    "passed": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "jdk": "21.0.13",
+    "maven": "3.9.11",
+    "completedAt": "2026-11-21T23:33:55+08:00",
+    "scope": "Rerun after consolidating both cancellation paths through the shared operation-state predicate and Worker cancellation receipt helper."
+  },
+  "supersededRegressionAttempt": {
+    "status": "failed_then_replaced_by_serial_pass",
+    "command": "mvn -B -ntp -f core/pom.xml \"-Dtest=WorkflowExecutionTest,WorkerProcessTest,ProcessWorkspaceRuntimeTest,WorkflowLedgerTest,WorkerLeaseTest\" test",
+    "tests": 29,
+    "failures": 0,
+    "errors": 11,
+    "symptoms": [
+      "Nine Worker fixtures failed during isolated Worker startup",
+      "WorkflowExecutionTest and WorkflowLedgerTest reported NoClassDefFoundError for compiled project classes"
+    ],
+    "triage": "Possible core/target overlap with another Maven invocation; the original worker startup error was intentionally sanitized, so this attribution remains unconfirmed.",
+    "resolutionEvidence": "After confirming no Maven process was using core/target, the same five-class selection completed serially with 43/43 passing and no failures, errors, or skips."
+  },
+  "pending": [
+    "Exact alpha.28 commit CI on Windows, macOS and Ubuntu",
+    "Compatibility with real official Codex and Claude CLI output samples",
+    "Platform-enforced OS file and network sandbox implementations and boundary tests"
+  ]
+}
