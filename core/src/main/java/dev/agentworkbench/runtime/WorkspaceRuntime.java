@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.agentworkbench.AgentPermissions;
 import dev.agentworkbench.ApiException;
 import dev.agentworkbench.ManagedProcessLedger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +43,7 @@ public class WorkspaceRuntime {
     private static final Set<String> EXCLUDED = Set.of(".git", "node_modules", "target", "dist", "build", ".idea", ".vscode", ".runtime", ".workbench", "__pycache__", ".gradle", "vendor");
     private final ObjectMapper json;
     private final Path data;
+    private final NativeSandboxPolicy nativeSandboxPolicy;
     private final GitWorkspaces workspaces;
     private final WorkspaceWriteGuard workspaceWrites;
     private final GitDiffView diffViews;
@@ -51,9 +53,15 @@ public class WorkspaceRuntime {
     private final ConcurrentMap<Long, String> processWorkspaces = new ConcurrentHashMap<>();
     private volatile Consumer<Map<String, Object>> processObserver = ignored -> {};
 
+    @Autowired
     public WorkspaceRuntime(ObjectMapper json, @Value("${workbench.data-dir:./data}") String dataDir) {
+        this(json, dataDir, NativeSandboxPolicy.unavailable());
+    }
+
+    public WorkspaceRuntime(ObjectMapper json, String dataDir, NativeSandboxPolicy nativeSandboxPolicy) {
         this.json = json;
         this.data = Path.of(dataDir).toAbsolutePath().normalize();
+        this.nativeSandboxPolicy = Objects.requireNonNull(nativeSandboxPolicy);
         this.workspaces = new GitWorkspaces(this, json, this.data);
         this.workspaceWrites = new WorkspaceWriteGuard(json, this.data, this::writeMetadataAtomic);
         this.diffViews = new GitDiffView(this, this.data);
@@ -612,23 +620,33 @@ public class WorkspaceRuntime {
     }
 
     public Map<String, Object> probe(Map<String, Object> route) {
+        if (route.containsKey("requireOsSandbox") && !(route.get("requireOsSandbox") instanceof Boolean)) {
+            throw new IllegalArgumentException("requireOsSandbox 必须是布尔值");
+        }
         String engine = str(route, "engine", "API");
         List<String> capabilities = new ArrayList<>();
+        if (engine.equals("API") && Boolean.TRUE.equals(route.get("requireOsSandbox"))) {
+            throw new IllegalArgumentException("操作系统沙箱选项仅适用于原生 CLI 运行器");
+        }
         if (engine.equals("API")) {
             URI endpoint = endpoint(str(route, "baseUrl", ""));
             capabilities.addAll(List.of("file.read", "file.write.scoped", "search.keyword", "command.allowlist", "usage.when_provided", "cancel.local"));
             return object("available", true, "version", "chat-completions", "capabilities", capabilities,
                     "message", "接口地址有效，尚未发起付费请求；工具调用兼容性需通过真实任务验证。", "endpoint", endpoint.toString(), "verified", false);
         }
+        if (Boolean.TRUE.equals(route.get("requireOsSandbox"))) {
+            return object("available", false, "version", "", "capabilities", capabilities,
+                    "message", "原生 CLI 沙箱需在实际任务工作目录上评估；设置探测不会在该边界外启动 CLI。", "verified", false);
+        }
         String executable = executable(route, engine);
         try {
             Map<String, Object> result = execute(nativeCommand(executable, List.of("--version")), dataDirectory(), "", () -> false, x -> {}, Duration.ofSeconds(15), false);
             requireNativeIsolation(engine, executable, () -> false);
-            capabilities.addAll(List.of("process.stop", "process-tree.observe", "session.soft-budget", "workspace.isolation"));
-            if (engine.equals("CODEX")) capabilities.add("sandbox.read-only/workspace-write");
-            else capabilities.add("tool.allowlist");
+            capabilities.addAll(List.of("process.stop", "process-tree.observe", "session.soft-budget", "cli.workspace-access-restriction"));
+            if (engine.equals("CODEX")) capabilities.add("cli.sandbox.read-only/workspace-write");
+            else capabilities.add("cli.tool.allowlist");
             return object("available", ((Number) result.get("exitCode")).intValue() == 0, "version", result.get("output"), "capabilities", capabilities,
-                    "message", "版本探测不验证登录及模型访问；不支持逐请求用量、进程挂起或细粒度路径权限。", "verified", false);
+                    "message", "版本探测不验证登录及模型访问；CLI 权限参数不能证明操作系统隔离，不支持逐请求用量、进程挂起或细粒度路径权限。", "verified", false);
         } catch (Exception e) {
             return object("available", false, "version", "", "capabilities", capabilities, "message", e.getMessage(), "verified", false);
         }
@@ -646,7 +664,13 @@ public class WorkspaceRuntime {
                                           List<Map<String, Object>> mcpBindings, FixedToolInvoker mcpInvoker) {
         if (cancelled.getAsBoolean()) return result(-1, "执行已取消", "CANCELLED");
         String engine = str(route, "engine", "API");
+        if (route.containsKey("requireOsSandbox") && !(route.get("requireOsSandbox") instanceof Boolean)) {
+            throw new IllegalArgumentException("requireOsSandbox 必须是布尔值");
+        }
         AgentToolSession session = acquireCall instanceof ModelCallObserver observer ? observer.tools() : null;
+        if (engine.equals("API") && Boolean.TRUE.equals(route.get("requireOsSandbox"))) {
+            throw new IllegalArgumentException("操作系统沙箱选项仅适用于原生 CLI 运行器");
+        }
         if (engine.equals("API")) return apiRun(route, apiKey, Path.of(workspace), prompt, readOnly, scope, cancelled, log, acquireCall, mcpBindings, mcpInvoker, session);
         if (session != null) throw new IllegalArgumentException("动态委派不能挂起原生 CLI，请使用逐请求 API 运行器");
         if (!mcpBindings.isEmpty()) throw new IllegalArgumentException("MCP 固定动作仅支持 API 运行器");
@@ -655,7 +679,6 @@ public class WorkspaceRuntime {
             throw new IllegalArgumentException("原生运行器无法强制细粒度文件范围；请选择 API 运行器或明确授权整个隔离项目。");
         }
         String executable = executable(route, engine);
-        requireNativeIsolation(engine, executable, cancelled);
         List<String> args = new ArrayList<>();
         String model = str(route, "model", "");
         if (engine.equals("CODEX")) {
@@ -666,10 +689,16 @@ public class WorkspaceRuntime {
             args.addAll(List.of("-p", "--output-format", "json", "--permission-mode", "acceptEdits", "--safe-mode", "--tools", readOnly ? "Read,Glob,Grep" : "Read,Glob,Grep,Edit,Write", "--disallowedTools", "Bash"));
             if (!model.isBlank()) args.addAll(List.of("--model", model));
         }
+        NativeSandboxPolicy.Request sandboxRequest = requestedSandbox(route, workspace, readOnly);
+        List<String> command = nativeCommand(executable, args);
+        NativeSandboxPolicy.Decision sandboxDecision = sandboxRequest == null ? null : requireSandboxDecision(sandboxRequest, command);
+        requireNativeIsolation(engine, executable, cancelled, sandboxRequest);
         if (!beginCall(acquireCall, inputMetadata(prompt, 1, 1, 0))) return result(-1, "根任务可用模型额度不足", "FAILED");
         Map<String, Object> observation = object("state", "UNKNOWN", "errorType", "CLI_INTERRUPTED", "remoteOutcome", "UNKNOWN");
         try {
-            Map<String, Object> run = execute(nativeCommand(executable, args), Path.of(workspace), prompt, cancelled, log, Duration.ofMinutes(15), true);
+            Path workingDirectory = sandboxRequest == null ? Path.of(workspace) : sandboxRequest.workspace();
+            Map<String, Object> run = execute(sandboxDecision == null ? command : sandboxDecision.command(), workingDirectory, prompt, cancelled, log, Duration.ofMinutes(15), true);
+            if (sandboxDecision != null) run.put("osSandbox", sandboxReceipt(sandboxRequest, sandboxDecision));
             run.put("output", finalNativeOutput(engine, run.get("output").toString()));
             run.put("usage", object("softBudget", true, "unit", "CLI_SESSION", "modelRequests", "UNKNOWN", "inputTokens", "UNKNOWN", "outputTokens", "UNKNOWN", "cost", "UNKNOWN"));
             observation = object("state", run.get("status"), "usage", run.get("usage"), "remoteOutcome", "UNKNOWN",
@@ -683,12 +712,59 @@ public class WorkspaceRuntime {
      * 旧 CLI 缺少配置隔离选项时在读取任务提示和消耗调用额度之前拒绝执行。
      */
     private void requireNativeIsolation(String engine, String executable, BooleanSupplier cancelled) {
+        requireNativeIsolation(engine, executable, cancelled, null);
+    }
+
+    private void requireNativeIsolation(String engine, String executable, BooleanSupplier cancelled,
+                                        NativeSandboxPolicy.Request sandboxRequest) {
         if (!Set.of("CODEX", "CLAUDE").contains(engine)) throw new IllegalArgumentException("未知运行器：" + engine);
-        Map<String, Object> help = execute(nativeCommand(executable, engine.equals("CODEX") ? List.of("exec", "--help") : List.of("--help")), dataDirectory(), "", cancelled, ignored -> {}, Duration.ofSeconds(15), false);
+        List<String> command = nativeCommand(executable, engine.equals("CODEX") ? List.of("exec", "--help") : List.of("--help"));
+        Path cwd = dataDirectory();
+        if (sandboxRequest != null) {
+            NativeSandboxPolicy.Request probeRequest = new NativeSandboxPolicy.Request(sandboxRequest.workspace(), NativeSandboxPolicy.FileAccess.READ_ONLY, sandboxRequest.networkAccess());
+            NativeSandboxPolicy.Decision probeDecision = requireSandboxDecision(probeRequest, command);
+            command = probeDecision.command();
+            cwd = sandboxRequest.workspace();
+        }
+        Map<String, Object> help = execute(command, cwd, "", cancelled, ignored -> {}, Duration.ofSeconds(15), false);
         List<String> flags = engine.equals("CODEX") ? List.of("--ignore-user-config", "--ignore-rules") : List.of("--safe-mode");
         if (!"SUCCEEDED".equals(help.get("status")) || flags.stream().anyMatch(flag -> !help.get("output").toString().contains(flag))) {
             throw new IllegalArgumentException("运行器缺少必要配置隔离能力，请升级 CLI 或使用 API 运行器：" + String.join(", ", flags));
         }
+    }
+
+    private NativeSandboxPolicy.Request requestedSandbox(Map<String, Object> route, String workspace, boolean readOnly) {
+        Object requested = route.get("requireOsSandbox");
+        if (requested == null || Boolean.FALSE.equals(requested)) return null;
+        if (!Boolean.TRUE.equals(requested)) throw new IllegalArgumentException("requireOsSandbox 必须是布尔值");
+        NativeSandboxPolicy.NetworkAccess networkAccess;
+        try {
+            networkAccess = NativeSandboxPolicy.NetworkAccess.valueOf(str(route, "osSandboxNetwork", "DENY").toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("osSandboxNetwork 仅支持 ALLOW 或 DENY");
+        }
+        Path root;
+        try { root = Path.of(workspace).toRealPath(); }
+        catch (IOException exception) { throw new IllegalArgumentException("原生沙箱工作目录无法解析", exception); }
+        return new NativeSandboxPolicy.Request(root,
+            readOnly ? NativeSandboxPolicy.FileAccess.READ_ONLY : NativeSandboxPolicy.FileAccess.WORKSPACE_WRITE, networkAccess);
+    }
+
+    private NativeSandboxPolicy.Decision requireSandboxDecision(NativeSandboxPolicy.Request request, List<String> command) {
+        NativeSandboxPolicy.Decision decision = nativeSandboxPolicy.prepare(request, command);
+        if (decision == null || decision.status() != NativeSandboxPolicy.Status.ENFORCED || decision.command().equals(command)) {
+            String reason = decision == null || decision.reason().isBlank() ? "平台无法提供已验证的操作系统沙箱" : decision.reason();
+            if (decision != null && decision.status() == NativeSandboxPolicy.Status.ENFORCED && decision.command().equals(command)) {
+                reason = "沙箱策略没有返回包装后的启动命令";
+            }
+            throw new IllegalArgumentException("已请求原生 CLI 操作系统沙箱，但策略不可用：" + reason);
+        }
+        return decision;
+    }
+
+    private Map<String, Object> sandboxReceipt(NativeSandboxPolicy.Request request, NativeSandboxPolicy.Decision decision) {
+        return object("state", "ENFORCED", "policyId", decision.policyId(), "workspace", request.workspace().toString(),
+            "fileAccess", request.fileAccess().name(), "networkAccess", request.networkAccess().name());
     }
 
     private Map<String, Object> apiRun(Map<String, Object> route, String key, Path root, String prompt, boolean readOnly,

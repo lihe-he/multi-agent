@@ -243,7 +243,8 @@ final class WorkflowCatalog {
 
     private Map<String, Object> routeIdentity(Map<String, Object> route) {
         return obj("id", str(route, "id"), "version", num(route, "version", 1), "name", str(route, "name"), "engine", str(route, "engine"),
-            "provider", str(route, "provider"), "model", str(route, "model"), "baseUrl", "API".equals(str(route, "engine")) ? str(route, "baseUrl") : "");
+            "provider", str(route, "provider"), "model", str(route, "model"), "baseUrl", "API".equals(str(route, "engine")) ? str(route, "baseUrl") : "",
+            "requireOsSandbox", bool(route, "requireOsSandbox", false), "osSandboxNetwork", route.get("osSandboxNetwork") == null ? "DENY" : str(route, "osSandboxNetwork"));
     }
 
     private Map<String, Integer> confirmedRoutes(Map<String, Object> selection) {

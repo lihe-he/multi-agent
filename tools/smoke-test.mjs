@@ -486,7 +486,8 @@ try {
       const serialized = JSON.stringify(value);
       assert.ok(!serialized.includes('test-only-not-a-secret')); assert.ok(!serialized.includes(token));
       const rootRoute = { id: route.id, version: route.version, name: route.name, engine: route.engine,
-        provider: route.provider, model: route.model, baseUrl: route.baseUrl };
+        provider: route.provider, model: route.model, baseUrl: route.baseUrl,
+        requireOsSandbox: false, osSandboxNetwork: 'DENY' };
       assert.ok(Number.isInteger(value.rootRoute.version) && value.rootRoute.version > 0);
       assert.deepEqual(value, { rootRoute, blockers: [], extraRoutes: [], nodes: first.version.dsl.nodes.map(node => ({
         id: node.id, title: node.title, inputs: node.inputs, rootInputs: node.inputs.filter(input => first.version.dsl.inputs.includes(input)), blockers: [], route: rootRoute,

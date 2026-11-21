@@ -3,6 +3,7 @@ package dev.agentworkbench;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpServer;
+import dev.agentworkbench.runtime.NativeSandboxPolicy;
 import dev.agentworkbench.runtime.WorkspaceRuntime;
 import dev.agentworkbench.runtime.ModelCallObserver;
 import org.junit.jupiter.api.Assumptions;
@@ -199,6 +200,7 @@ class RuntimeIntegrationTest {
             Map<String, Object> outcome = runtime().run(Map.of("engine", engine, "executable", cli.toString()), "", project.toString(), "fixture prompt", true,
                     List.of("**"), () -> false, ignored -> {}, calls);
             assertEquals("SUCCEEDED", outcome.get("status"), outcome.toString());
+            assertFalse(outcome.containsKey("osSandbox"), "ordinary native routes retain existing behavior unless OS isolation is explicitly requested");
             String args = Files.readString(captured);
             if (engine.equals("CODEX")) {
                 assertTrue(args.contains("--ignore-user-config")); assertTrue(args.contains("--ignore-rules")); assertTrue(args.contains("read-only"));
@@ -210,6 +212,219 @@ class RuntimeIntegrationTest {
             assertEquals("SUCCEEDED", calls.outputs.getFirst().get("state"));
             assertEquals("UNKNOWN", ((Map<?, ?>) calls.outputs.getFirst().get("usage")).get("modelRequests"));
         }
+    }
+
+    @Test
+    void unavailableNativeSandboxFailsBeforeCliPromptOrBudgetAndCarriesTheRequestedBoundary() throws Exception {
+        Path project = Files.createDirectories(temporary.resolve("sandbox-unavailable project"));
+        Path marker = temporary.resolve("sandbox-cli-started.txt");
+        Path cli = nativeMarkerFixture(marker);
+        AtomicInteger calls = new AtomicInteger(), policyCalls = new AtomicInteger();
+        AtomicReference<NativeSandboxPolicy.Request> request = new AtomicReference<>();
+        NativeSandboxPolicy unavailable = (sandboxRequest, command) -> {
+            policyCalls.incrementAndGet(); request.set(sandboxRequest);
+            return NativeSandboxPolicy.Decision.unavailable("fixture platform has no verified sandbox");
+        };
+        WorkspaceRuntime runtime = new WorkspaceRuntime(json, temporary.resolve("sandbox-unavailable-state").toString(), unavailable);
+
+        IllegalArgumentException failure = assertThrows(IllegalArgumentException.class, () -> runtime.run(
+            Map.of("engine", "CODEX", "executable", cli.toString(), "requireOsSandbox", true), "", project.toString(), "must not reach native CLI",
+            true, List.of("**"), () -> false, ignored -> {}, () -> { calls.incrementAndGet(); return true; }));
+
+        assertTrue(failure.getMessage().contains("fixture platform has no verified sandbox"), failure.getMessage());
+        assertEquals(1, policyCalls.get(), "unavailable full-command policy fails before the help probe");
+        assertEquals(project.toRealPath(), request.get().workspace());
+        assertEquals(NativeSandboxPolicy.FileAccess.READ_ONLY, request.get().fileAccess());
+        assertEquals(NativeSandboxPolicy.NetworkAccess.DENY, request.get().networkAccess(), "network is denied by default for a strict sandbox request");
+        assertEquals(0, calls.get(), "the root model budget is not charged");
+        assertFalse(Files.exists(marker), "no CLI process receives the prompt or executes before an unavailable policy is rejected");
+    }
+
+    @Test
+    void strictNativeSandboxRouteProbeDoesNotLaunchCliOutsideAWorkspace() throws Exception {
+        Path marker = temporary.resolve("strict-probe-cli-started.txt");
+        Path cli = nativeMarkerFixture(marker);
+
+        Map<String, Object> result = runtime().probe(Map.of("engine", "CODEX", "executable", cli.toString(), "requireOsSandbox", true));
+
+        assertEquals(Boolean.FALSE, result.get("available"));
+        assertTrue(result.get("message").toString().contains("实际任务"));
+        assertFalse(Files.exists(marker), "strict settings probes have no task workspace and must not start the CLI");
+    }
+
+    @Test
+    void invalidNativeSandboxRequirementIsRejectedBeforeProbeLaunch() throws Exception {
+        Path marker = temporary.resolve("invalid-sandbox-probe-cli-started.txt");
+        Path cli = nativeMarkerFixture(marker);
+
+        IllegalArgumentException failure = assertThrows(IllegalArgumentException.class, () -> runtime().probe(
+            Map.of("engine", "CODEX", "executable", cli.toString(), "requireOsSandbox", "true")));
+
+        assertTrue(failure.getMessage().contains("requireOsSandbox 必须是布尔值"), failure.getMessage());
+        assertFalse(Files.exists(marker), "an invalid sandbox requirement must not launch a native CLI probe");
+    }
+
+    @Test
+    void apiProbeRejectsAnOsSandboxRequirementBeforeReportingApiAvailability() {
+        IllegalArgumentException failure = assertThrows(IllegalArgumentException.class, () -> runtime().probe(
+            Map.of("engine", "API", "requireOsSandbox", true)));
+
+        assertTrue(failure.getMessage().contains("仅适用于原生 CLI"), failure.getMessage());
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "true,READ_ONLY,read-only", "false,WORKSPACE_WRITE,workspace-write" })
+    void nativeSandboxPolicyWrapsHelpAndModelLaunchAndPublishesItsEnforcementReceipt(boolean readOnly, String fileAccess, String sandboxMode) throws Exception {
+        Path project = Files.createDirectories(temporary.resolve("sandbox-enforced project"));
+        Path realProject = project.toRealPath();
+        Path captured = temporary.resolve("sandbox-enforced-args.json");
+        Path cli = nativeFixture("sandbox-enforced", captured, true);
+        Path policyHelp = temporary.resolve("sandbox-policy-help.ran"), policyModel = temporary.resolve("sandbox-policy-model.ran");
+        Path wrapper = nativeSandboxWrapper(policyHelp, policyModel);
+        List<NativeSandboxPolicy.Request> requests = new CopyOnWriteArrayList<>();
+        List<List<String>> commands = new CopyOnWriteArrayList<>();
+        NativeSandboxPolicy fixturePolicy = (request, command) -> {
+            requests.add(request); commands.add(List.copyOf(command));
+            boolean help = commandContainsCliArgument(command, "--help");
+            return NativeSandboxPolicy.Decision.enforced(sandboxWrappedLaunch(wrapper, help ? "help" : "run"), "fixture-policy");
+        };
+        WorkspaceRuntime runtime = new WorkspaceRuntime(json, temporary.resolve("sandbox-enforced-state").toString(), fixturePolicy);
+        Map<String, Object> route = Map.of("engine", "CODEX", "executable", cli.toString(), "requireOsSandbox", true, "osSandboxNetwork", "ALLOW");
+
+        Map<String, Object> outcome = runtime.run(route, "", project.toString(), "fixture prompt", readOnly, List.of("**"), () -> false, ignored -> {}, () -> true);
+
+        assertEquals("SUCCEEDED", outcome.get("status"), outcome.toString());
+        assertEquals(2, requests.size(), "policy is evaluated for both CLI capability probing and the actual model command");
+        assertEquals(2, commands.size());
+        assertFalse(commandContainsCliArgument(commands.get(0), "--help"), "the model invocation is prepared separately");
+        assertTrue(commandContainsCliArgument(commands.get(1), "--help"), "the help probe is also passed through the sandbox policy");
+        assertTrue(requests.stream().allMatch(request -> realProject.equals(request.workspace())));
+        assertEquals(NativeSandboxPolicy.FileAccess.valueOf(fileAccess), requests.getFirst().fileAccess(), "the model command uses the requested file access");
+        assertEquals(NativeSandboxPolicy.FileAccess.READ_ONLY, requests.getLast().fileAccess(), "the help command stays read-only even for workspace-write model runs");
+        assertTrue(requests.stream().allMatch(request -> request.networkAccess() == NativeSandboxPolicy.NetworkAccess.ALLOW));
+        assertEquals(Map.of("state", "ENFORCED", "policyId", "fixture-policy", "workspace", realProject.toString(),
+            "fileAccess", fileAccess, "networkAccess", "ALLOW"), outcome.get("osSandbox"));
+        assertTrue(Files.exists(policyHelp), "the executed capability probe must use the policy-produced launch command");
+        assertTrue(Files.exists(policyModel), "the actual model invocation must use the policy-produced launch command");
+        assertFalse(Files.exists(captured), "the unwrapped CLI executable must not be launched when the policy supplies a wrapper");
+        assertTrue(commandContainsCliArgument(commands.getFirst(), "--sandbox") && commandContainsCliArgument(commands.getFirst(), sandboxMode), commands.getFirst().toString());
+    }
+
+    @Test
+    void unavailableNativeSandboxHelpPolicyFailsBeforeAnyCommandOrBudget() throws Exception {
+        Path project = Files.createDirectories(temporary.resolve("sandbox-help-unavailable project"));
+        Path cliMarker = temporary.resolve("sandbox-help-unavailable-cli.ran");
+        Path cli = nativeMarkerFixture(cliMarker);
+        Path helpMarker = temporary.resolve("sandbox-help-unavailable-wrapper-help.ran"), modelMarker = temporary.resolve("sandbox-help-unavailable-wrapper-model.ran");
+        Path wrapper = nativeSandboxWrapper(helpMarker, modelMarker);
+        AtomicInteger calls = new AtomicInteger();
+        List<NativeSandboxPolicy.Request> requests = new CopyOnWriteArrayList<>();
+        NativeSandboxPolicy policy = (request, command) -> {
+            requests.add(request);
+            if (commandContainsCliArgument(command, "--help")) return NativeSandboxPolicy.Decision.unavailable("fixture help policy unavailable");
+            return NativeSandboxPolicy.Decision.enforced(sandboxWrappedLaunch(wrapper, "run"), "fixture-model-policy");
+        };
+        WorkspaceRuntime runtime = new WorkspaceRuntime(json, temporary.resolve("sandbox-help-unavailable-state").toString(), policy);
+
+        IllegalArgumentException failure = assertThrows(IllegalArgumentException.class, () -> runtime.run(
+            Map.of("engine", "CODEX", "executable", cli.toString(), "requireOsSandbox", true), "", project.toString(), "must not reach a command",
+            false, List.of("**"), () -> false, ignored -> {}, () -> { calls.incrementAndGet(); return true; }));
+
+        assertTrue(failure.getMessage().contains("fixture help policy unavailable"), failure.getMessage());
+        assertEquals(2, requests.size(), "the full command policy succeeds before the help policy is rejected");
+        assertEquals(NativeSandboxPolicy.FileAccess.WORKSPACE_WRITE, requests.getFirst().fileAccess());
+        assertEquals(NativeSandboxPolicy.FileAccess.READ_ONLY, requests.getLast().fileAccess());
+        assertEquals(0, calls.get(), "an unavailable help policy must fail before charging model budget");
+        assertFalse(Files.exists(cliMarker), "neither CLI help nor the model executable may start");
+        assertFalse(Files.exists(helpMarker), "the rejected help wrapper must not start");
+        assertFalse(Files.exists(modelMarker), "preparing a model wrapper must not execute it before the help policy passes");
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "NULL_DECISION", "EMPTY_COMMAND", "EMPTY_POLICY_ID" })
+    void incompleteNativeSandboxDecisionsFailBeforeAnyCommandOrBudget(String invalidReceipt) throws Exception {
+        Path project = Files.createDirectories(temporary.resolve("sandbox-incomplete project"));
+        Path cliMarker = temporary.resolve("sandbox-incomplete-cli.ran");
+        Path cli = nativeMarkerFixture(cliMarker);
+        Path helpMarker = temporary.resolve("sandbox-incomplete-wrapper-help.ran"), modelMarker = temporary.resolve("sandbox-incomplete-wrapper-model.ran");
+        Path wrapper = nativeSandboxWrapper(helpMarker, modelMarker);
+        AtomicInteger calls = new AtomicInteger(), policyCalls = new AtomicInteger();
+        NativeSandboxPolicy policy = (request, command) -> {
+            policyCalls.incrementAndGet();
+            return switch (invalidReceipt) {
+                case "NULL_DECISION" -> null;
+                case "EMPTY_COMMAND" -> NativeSandboxPolicy.Decision.enforced(List.of(), "fixture-policy");
+                case "EMPTY_POLICY_ID" -> NativeSandboxPolicy.Decision.enforced(sandboxWrappedLaunch(wrapper, "run"), "");
+                default -> throw new AssertionError("Unknown invalid receipt fixture: " + invalidReceipt);
+            };
+        };
+        WorkspaceRuntime runtime = new WorkspaceRuntime(json, temporary.resolve("sandbox-incomplete-state").toString(), policy);
+
+        IllegalArgumentException failure = assertThrows(IllegalArgumentException.class, () -> runtime.run(
+            Map.of("engine", "CODEX", "executable", cli.toString(), "requireOsSandbox", true), "", project.toString(), "must not reach a command",
+            true, List.of("**"), () -> false, ignored -> {}, () -> { calls.incrementAndGet(); return true; }));
+
+        assertTrue(failure.getMessage().contains("NULL_DECISION".equals(invalidReceipt) ? "策略不可用" : "必须包含命令和策略编号"), failure.getMessage());
+        assertEquals(1, policyCalls.get(), "an incomplete model decision must fail before preparing a help command");
+        assertEquals(0, calls.get(), "an incomplete sandbox decision must fail before charging model budget");
+        assertFalse(Files.exists(cliMarker), "an incomplete sandbox decision must not launch the native CLI");
+        assertFalse(Files.exists(helpMarker), "an incomplete sandbox decision must not launch a help wrapper");
+        assertFalse(Files.exists(modelMarker), "an incomplete sandbox decision must not launch a model wrapper");
+    }
+
+    @Test
+    void nativeSandboxPolicyMustReturnAWrappedCommand() throws Exception {
+        Path project = Files.createDirectories(temporary.resolve("sandbox-unwrapped project"));
+        Path marker = temporary.resolve("sandbox-unwrapped-cli-started.txt");
+        Path cli = nativeMarkerFixture(marker);
+        AtomicInteger calls = new AtomicInteger();
+        NativeSandboxPolicy unwrappedPolicy = (request, command) -> NativeSandboxPolicy.Decision.enforced(command, "lying-fixture-policy");
+
+        IllegalArgumentException failure = assertThrows(IllegalArgumentException.class, () -> new WorkspaceRuntime(
+            json, temporary.resolve("sandbox-unwrapped-state").toString(), unwrappedPolicy).run(
+                Map.of("engine", "CODEX", "executable", cli.toString(), "requireOsSandbox", true), "", project.toString(),
+                "must not be sent", true, List.of("**"), () -> false, ignored -> {}, () -> {
+                    calls.incrementAndGet();
+                    return true;
+                }));
+
+        assertTrue(failure.getMessage().contains("没有返回包装后的启动命令"), failure.getMessage());
+        assertEquals(0, calls.get(), "an unwrapped policy result must fail before charging model budget");
+        assertFalse(Files.exists(marker), "an unwrapped policy result must not launch the native CLI");
+    }
+
+    private Path nativeSandboxWrapper(Path helpMarker, Path modelMarker) throws Exception {
+        boolean windows = System.getProperty("os.name").toLowerCase().contains("win");
+        Path script = temporary.resolve("sandbox-policy-wrapper" + (windows ? ".ps1" : ".sh"));
+        if (windows) {
+            Files.writeString(script, "if ($args -contains 'help') { [System.IO.File]::WriteAllText('" + helpMarker.toString().replace("'", "''") + "', 'ran'); Write-Output '--ignore-user-config --ignore-rules'; exit 0 }\n"
+                + "[System.IO.File]::WriteAllText('" + modelMarker.toString().replace("'", "''") + "', [Console]::In.ReadToEnd())\n"
+                + "Write-Output '{\"result\":\"fixture done\"}'\n");
+        } else {
+            Files.writeString(script, "#!/bin/sh\nif [ \"$1\" = 'help' ]; then printf ran > '" + helpMarker.toString().replace("'", "'\\''") + "'; printf '%s\\n' '--ignore-user-config --ignore-rules'; exit 0; fi\n"
+                + "cat > '" + modelMarker.toString().replace("'", "'\\''") + "'\nprintf '%s\\n' '{\"result\":\"fixture done\"}'\n");
+            Files.setPosixFilePermissions(script, PosixFilePermissions.fromString("rwx------"));
+        }
+        return script;
+    }
+
+    private List<String> sandboxWrappedLaunch(Path wrapper, String mode) {
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            return List.of("powershell.exe", "-NoLogo", "-NoProfile", "-NonInteractive", "-File", wrapper.toString(), mode);
+        }
+        return List.of(wrapper.toString(), mode);
+    }
+
+    private boolean commandContainsCliArgument(List<String> command, String argument) {
+        String contents = String.join(" ", command);
+        if (contents.contains(argument)) return true;
+        if (command.size() >= 1 && command.getLast().length() > 100) {
+            try {
+                String decoded = new String(java.util.Base64.getDecoder().decode(command.getLast()), java.nio.charset.StandardCharsets.UTF_16LE);
+                return decoded.contains(argument);
+            } catch (IllegalArgumentException ignored) { return false; }
+        }
+        return false;
     }
 
     @Test
@@ -236,6 +451,22 @@ class RuntimeIntegrationTest {
         } else {
             Files.writeString(script, "#!/bin/sh\nfor arg in \"$@\"; do if [ \"$arg\" = '--help' ]; then printf '%s\\n' '" + help + "'; exit 0; fi; done\n"
                     + "printf '%s\\n' \"$@\" > '" + captured.toString().replace("'", "'\\''") + "'\ncat >/dev/null\nprintf '%s\\n' '{\"result\":\"fixture done\"}'\n");
+            Files.setPosixFilePermissions(script, PosixFilePermissions.fromString("rwx------"));
+        }
+        return script;
+    }
+
+    private Path nativeMarkerFixture(Path marker) throws Exception {
+        boolean windows = System.getProperty("os.name").toLowerCase().contains("win");
+        Path script = temporary.resolve("sandbox-marker" + (windows ? ".ps1" : ".sh"));
+        if (windows) {
+            Files.writeString(script, "[System.IO.File]::AppendAllText('" + marker.toString().replace("'", "''") + "', 'started')\n"
+                + "if ($args -contains '--help') { Write-Output '--ignore-user-config --ignore-rules'; exit 0 }\n"
+                + "$null = [Console]::In.ReadToEnd()\nWrite-Output '{\"result\":\"fixture done\"}'\n");
+        } else {
+            Files.writeString(script, "#!/bin/sh\nprintf '%s' started >> '" + marker.toString().replace("'", "'\\''") + "'\n"
+                + "for arg in \"$@\"; do if [ \"$arg\" = '--help' ]; then printf '%s\\n' '--ignore-user-config --ignore-rules'; exit 0; fi; done\n"
+                + "cat >/dev/null\nprintf '%s\\n' '{\"result\":\"fixture done\"}'\n");
             Files.setPosixFilePermissions(script, PosixFilePermissions.fromString("rwx------"));
         }
         return script;

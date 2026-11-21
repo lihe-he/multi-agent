@@ -1,0 +1,375 @@
+{
+  "schemaVersion": 1,
+  "version": "0.2.0-alpha.26",
+  "recordedAt": "2026-11-21T04:59:17.073Z",
+  "baseCommit": "f4d50ed841d22069621ee7bd70200f9ec310dece",
+  "status": "LOCAL_TARGETED_UI_AND_PROTOCOL_PASSED; ORIGINAL_FULL_CORE_FAILED; EXACT_COMMIT_CI_PENDING",
+  "implementationScope": "Explicit native OS-sandbox request and fail-closed trusted-policy interface; default policy unavailable; no OS enforcer or official CLI compatibility acceptance",
+  "localCore": {
+    "status": "failed",
+    "command": "npm run verify:core",
+    "startedAt": "2026-11-21T08:33:47.3549235+08:00",
+    "completedAt": "2026-11-21T09:52:48.1696419+08:00",
+    "totals": {
+      "tests": 685,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 10,
+      "passed": 674
+    },
+    "sourceFiles": 154,
+    "sourcesUnchanged": true,
+    "currentSourcesMatchOriginalRun": true,
+    "receipt": ".runtime/alpha26-core-clean-03177bd24f9d47d1ad996155b66c682b/receipt.json",
+    "receiptSha256": "58d0cd6e9931fd0162439eb5d284cb6951e7ceb62b92be3043725543e3f5bd74",
+    "failure": {
+      "test": "TeamExecutionTest.actualRecursiveDelegationStopsAtDepthAndCumulativeLimits",
+      "condition": "Original 60-second root execution settlement deadline",
+      "fixture": "core/target/checkpoint-evidence-test-6e3b4b6b-e8e9-4926-b34f-25e3482d5254",
+      "copiedFiles": 232,
+      "copyGaps": [
+        "data/.core.lock was locked"
+      ],
+      "completeFixtureCopy": false
+    },
+    "rechecks": {
+      "status": "Original single case passed separately; does not replace the failed full run",
+      "logs": [
+        ".runtime/alpha26-recursive-profile-39fdb220036b44309ef96c14d78d9fbf/maven.log",
+        ".runtime/alpha26-recursive-jfr-attached.log"
+      ],
+      "testDeadlineSecondsUnchanged": 60
+    }
+  },
+  "focused": {
+    "status": "passed",
+    "directory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha26-focused-abe6175cd27b4d76a2bbb4fddfe41f6e",
+    "command": "mvn.cmd -B -ntp clean test -Dtest=RuntimeIntegrationTest,WorkbenchCatalogTest,WorkflowCatalogTest",
+    "workingDirectory": "D:\\Projects\\多Agent研发工作台\\.runtime\\alpha26-focused-abe6175cd27b4d76a2bbb4fddfe41f6e\\core",
+    "startedAt": "2026-11-21T08:41:46.7089036+08:00",
+    "completedAt": "2026-11-21T08:44:04.1799457+08:00",
+    "exitCode": 0,
+    "javaHome": "D:\\Projects\\多Agent研发工作台\\.runtime\\jdk-21.0.13+9",
+    "maven": "D:\\JAVA\\Apahce-Maven\\apache-maven-3.9.11\\bin\\mvn.cmd",
+    "snapshotMatchesOriginal": true,
+    "originalSourcesUnchanged": true,
+    "snapshotSourcesUnchanged": true,
+    "sourceFiles": 147,
+    "totals": {
+      "suites": 3,
+      "tests": 65,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "suites": [
+      {
+        "name": "dev.agentworkbench.RuntimeIntegrationTest",
+        "tests": 46,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1,
+        "seconds": 90.21,
+        "reportSha256": "c1e0d5eb26dd39cb3ab9ef80ce62353d4d927e04284c05a7760dee2b9fbb8023",
+        "skippedTests": [
+          {
+            "name": "fingerprintIncludesPosixExecutablePermissionChangesWithoutStaging",
+            "reason": null
+          }
+        ]
+      },
+      {
+        "name": "dev.agentworkbench.WorkbenchCatalogTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 0.227,
+        "reportSha256": "6b15efd1d41401a1608194d86ead1515ce35b515db5bb3c009bdec9019f79615",
+        "skippedTests": []
+      },
+      {
+        "name": "dev.agentworkbench.WorkflowCatalogTest",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 2.505,
+        "reportSha256": "e64b83fb9038377d7537a5405cded6aaedb93f6847c6fb7d14c4ce41fa9d8937",
+        "skippedTests": []
+      }
+    ],
+    "logSha256": "01b6790b083622dab19b82c14bffce7d4d6d2f90e74f48e09854b261edf173ea",
+    "scope": "ISOLATED_SOURCE_SNAPSHOT_CLEAN_FOCUSED_LOCAL_WINDOWS_TESTS_ONLY; MAIN_CORE_TARGET_UNTOUCHED",
+    "receipt": ".runtime/alpha26-focused-abe6175cd27b4d76a2bbb4fddfe41f6e/receipt.json"
+  },
+  "web": {
+    "status": "passed",
+    "stats": {
+      "startTime": "2026-11-21T00:33:08.721Z",
+      "duration": 325335.67100000003,
+      "expected": 273,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "sourceFiles": 96,
+    "assetFiles": 20,
+    "currentSourceAndAssetDigestsMatch": true,
+    "sourcesUnchanged": true,
+    "buildSourcesUnchanged": true,
+    "assetsUnchanged": true,
+    "historicalImagesPreserved": 44,
+    "receipt": ".runtime/ui-production-jbA0ko/receipt.json",
+    "receiptSha256": "57bacd0bb35a43670a92598ec60efc5d928283528be9c31a9261eec1bd7e25ec"
+  },
+  "jar": {
+    "path": "core/target/agent-workbench-core-0.2.0-alpha.26.jar",
+    "bytes": 44472032,
+    "sha256": "3ff33f2efbd0a7f718c9efe0424b825acc373bff2080ade6481e1841da1ec34c",
+    "packageCommand": "mvn -B -ntp -f core/pom.xml -DskipTests package",
+    "packageTestsSkipped": true,
+    "fullCoreAcceptanceSeparate": true
+  },
+  "protocol": {
+    "status": "passed",
+    "checks": [
+      {
+        "name": "API rejects missing access token",
+        "status": "passed",
+        "durationMs": 25
+      },
+      {
+        "name": "Core returns persisted state",
+        "status": "passed",
+        "durationMs": 24
+      },
+      {
+        "name": "Import real Git repository with Chinese and spaced path",
+        "status": "passed",
+        "durationMs": 1121
+      },
+      {
+        "name": "Internal stage input rejects unrelated credentials and exposes no management mint endpoint",
+        "status": "passed",
+        "durationMs": 186
+      },
+      {
+        "name": "Local execution node and repository binding are authoritative and versioned",
+        "status": "passed",
+        "durationMs": 132
+      },
+      {
+        "name": "Search reports source locations and coverage",
+        "status": "passed",
+        "durationMs": 241
+      },
+      {
+        "name": "Session routes require authentication and preserve server-owned message identity",
+        "status": "passed",
+        "durationMs": 260
+      },
+      {
+        "name": "Save project knowledge with an explicit source",
+        "status": "passed",
+        "durationMs": 15
+      },
+      {
+        "name": "Reject unsupported permission in an imported role template",
+        "status": "passed",
+        "durationMs": 10
+      },
+      {
+        "name": "Reject cyclic execution plan before dispatch",
+        "status": "passed",
+        "durationMs": 17
+      },
+      {
+        "name": "Configure local protocol test route",
+        "status": "passed",
+        "durationMs": 11
+      },
+      {
+        "name": "Create task with fixed contract and route locks",
+        "status": "passed",
+        "durationMs": 62
+      },
+      {
+        "name": "One session carries multiple tasks with source goals and scoped activity",
+        "status": "passed",
+        "durationMs": 102
+      },
+      {
+        "name": "Reject route that does not match the hard model lock",
+        "status": "passed",
+        "durationMs": 13
+      },
+      {
+        "name": "Reject acceptance before required execution and evidence",
+        "status": "passed",
+        "durationMs": 24
+      },
+      {
+        "name": "Execute actual Java API tool loop, verification and independent review",
+        "status": "passed",
+        "durationMs": 47899
+      },
+      {
+        "name": "Agent runs persist real calls, scoped pages and evidence identity",
+        "status": "passed",
+        "durationMs": 73
+      },
+      {
+        "name": "Durable root attempt keeps its original action, owner and execution receipt",
+        "status": "passed",
+        "durationMs": 129
+      },
+      {
+        "name": "Model request trace binds each API round to budget, usage and provider receipt",
+        "status": "passed",
+        "durationMs": 101
+      },
+      {
+        "name": "Preserve source Git worktree and staged state",
+        "status": "passed",
+        "durationMs": 230
+      },
+      {
+        "name": "Diff and evidence are bound to the delivered version",
+        "status": "passed",
+        "durationMs": 1630
+      },
+      {
+        "name": "Persistent events can be replayed with a cursor",
+        "status": "passed",
+        "durationMs": 32
+      },
+      {
+        "name": "Reject acceptance and export when content changes after review",
+        "status": "passed",
+        "durationMs": 377
+      },
+      {
+        "name": "Manual acceptance records completion without writing source",
+        "status": "passed",
+        "durationMs": 263
+      },
+      {
+        "name": "Export portable delivery archive",
+        "status": "passed",
+        "durationMs": 3783
+      },
+      {
+        "name": "Workflow readiness exposes exact routes and declared inputs without credentials or execution",
+        "status": "passed",
+        "durationMs": 65
+      },
+      {
+        "name": "Task Workflow readiness preserves the pinned route and digest without task or model request changes",
+        "status": "passed",
+        "durationMs": 72
+      },
+      {
+        "name": "Execute the published Workflow with separate root verification and review",
+        "status": "passed",
+        "durationMs": 35884
+      },
+      {
+        "name": "Generate and publish a read-only Workflow candidate with its original request",
+        "status": "passed",
+        "durationMs": 45772
+      },
+      {
+        "name": "Disable knowledge while preserving its revision",
+        "status": "passed",
+        "durationMs": 18
+      },
+      {
+        "name": "Complete LEAD stages under the same root budget",
+        "status": "passed",
+        "durationMs": 35925
+      },
+      {
+        "name": "Complete ROUNDTABLE stages under the same root budget",
+        "status": "passed",
+        "durationMs": 66355
+      },
+      {
+        "name": "Actual dynamic team shares the root budget, adopts dependencies and preserves MCP source in the ZIP",
+        "status": "passed",
+        "durationMs": 62981
+      },
+      {
+        "name": "Cancel an in-flight task and keep source intact",
+        "status": "passed",
+        "durationMs": 11453
+      }
+    ],
+    "receipt": ".runtime/ci-Jhm6Na/report.json",
+    "receiptSha256": "24ba458e5c6dd50301abc49bf0882755d142d7c1135219169d6bd111ac596eb9",
+    "initialFailure": {
+      "receipt": ".runtime/ci-pmXbG1/report.json",
+      "condition": "Workflow readiness expected DTO omitted requireOsSandbox=false and osSandboxNetwork=DENY",
+      "preserved": true
+    },
+    "fixtureChange": "Added explicit expected sandbox defaults; full DTO equality and all original lifecycle checks retained"
+  },
+  "javaComments": {
+    "recordedAt": "2026-11-21T04:56:34.951849+00:00",
+    "status": "passed",
+    "baseCommit": "f4d50ed841d22069621ee7bd70200f9ec310dece",
+    "files": [
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkbenchCatalog.java",
+        "originalCommentsPreserved": 3,
+        "addedJavadocs": 0,
+        "addedComments": 0
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/WorkflowCatalog.java",
+        "originalCommentsPreserved": 7,
+        "addedJavadocs": 0,
+        "addedComments": 0
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/NativeSandboxPolicy.java",
+        "originalCommentsPreserved": 0,
+        "addedJavadocs": 2,
+        "addedComments": 2
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+        "originalCommentsPreserved": 68,
+        "addedJavadocs": 0,
+        "addedComments": 0
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/RuntimeIntegrationTest.java",
+        "originalCommentsPreserved": 5,
+        "addedJavadocs": 0,
+        "addedComments": 0
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkbenchCatalogTest.java",
+        "originalCommentsPreserved": 0,
+        "addedJavadocs": 0,
+        "addedComments": 0
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/WorkflowCatalogTest.java",
+        "originalCommentsPreserved": 0,
+        "addedJavadocs": 0,
+        "addedComments": 0
+      }
+    ],
+    "totalOriginalCommentsPreserved": 83,
+    "totalAddedJavadocs": 2,
+    "scope": "COMMENT_TEXT_INDENTATION_AND_ORDER_PRESERVED_WITH_LINE_ENDINGS_NORMALIZED; NEW_JAVADOCS_MULTILINE"
+  },
+  "remaining": [
+    "Exact-commit three-platform CI",
+    "Actual OS filesystem/network enforcement and descendant-tree acceptance",
+    "Official native CLI stage consumption and compatibility",
+    "Complete M0-M3 milestone exit acceptance"
+  ]
+}

@@ -150,6 +150,14 @@ public class WorkbenchCatalog {
         Map<String, Object> prior = store.find("route", routeId);
         String engine = required(body, "engine", 32).toUpperCase();
         if (!Set.of("CODEX", "CLAUDE", "API").contains(engine)) { throw new ApiException(400, "未知运行器类型"); }
+        Object rawRequireOsSandbox = body.containsKey("requireOsSandbox") ? body.get("requireOsSandbox") : prior == null ? Boolean.FALSE : prior.getOrDefault("requireOsSandbox", Boolean.FALSE);
+        if (!(rawRequireOsSandbox instanceof Boolean requireOsSandbox)) { throw new ApiException(400, "requireOsSandbox 必须是布尔值"); }
+        if (requireOsSandbox && "API".equals(engine)) { throw new ApiException(400, "操作系统沙箱选项仅适用于原生 CLI 运行器"); }
+        Object rawSandboxNetwork = body.containsKey("osSandboxNetwork") ? body.get("osSandboxNetwork")
+            : prior == null ? "DENY" : prior.getOrDefault("osSandboxNetwork", "DENY");
+        if (!(rawSandboxNetwork instanceof String)) { throw new ApiException(400, "osSandboxNetwork 仅支持 ALLOW 或 DENY"); }
+        String sandboxNetwork = ((String) rawSandboxNetwork).toUpperCase();
+        if (!Set.of("ALLOW", "DENY").contains(sandboxNetwork)) { throw new ApiException(400, "osSandboxNetwork 仅支持 ALLOW 或 DENY"); }
         String baseUrl = str(body, "baseUrl").trim();
         if ("API".equals(engine)) {
             try {
@@ -161,6 +169,7 @@ public class WorkbenchCatalog {
         Map<String, Object> route = obj("id", routeId, "name", required(body, "name", 160), "engine", engine,
             "model", str(body, "model").trim(), "provider", str(body, "provider").trim(), "baseUrl", baseUrl,
             "executable", str(body, "executable").trim(), "enabled", bool(body, "enabled", true),
+            "requireOsSandbox", requireOsSandbox, "osSandboxNetwork", sandboxNetwork,
             "version", prior == null ? 1 : num(prior, "version", 0) + 1, "updatedAt", now(),
             "budgetType", "API".equals(engine) ? "REQUEST_COUNT" : "SOFT_SESSION_COUNT",
             "capabilityNote", "API".equals(engine) ? "平台工具边界；费用与实际模型行为须通过端点验证" : "可信项目中的原生 CLI；请求数、费用与进程外副作用不可完全观测");

@@ -18,6 +18,26 @@ class WorkbenchCatalogTest {
     @TempDir Path directory;
 
     @Test
+    void nativeSandboxRequestFieldsSurviveRouteParsingAndEdits() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        try (var store = new ExecutionStore(mapper, directory.resolve("sandbox-routes").toString())) {
+            WorkbenchCatalog catalog = new WorkbenchCatalog(store, new WorkspaceRuntime(mapper, directory.resolve("sandbox-runtime").toString()), new PlanValidator());
+            Map<String, Object> first = catalog.saveRoute(obj("name", "strict CLI", "engine", "CODEX", "requireOsSandbox", true, "osSandboxNetwork", "allow"));
+
+            assertEquals(Boolean.TRUE, first.get("requireOsSandbox"));
+            assertEquals("ALLOW", first.get("osSandboxNetwork"));
+            Map<String, Object> edited = catalog.saveRoute(obj("id", first.get("id"), "name", "strict CLI renamed", "engine", "CODEX"));
+            assertEquals(Boolean.TRUE, edited.get("requireOsSandbox"), "omitting a field during ordinary route editing preserves the strict request");
+            assertEquals("ALLOW", edited.get("osSandboxNetwork"));
+            assertEquals(Boolean.TRUE, store.get("route", str(first, "id")).get("requireOsSandbox"));
+            assertThrows(ApiException.class, () -> catalog.saveRoute(obj("name", "invalid strict API", "engine", "API", "requireOsSandbox", true,
+                "baseUrl", "http://127.0.0.1:19000/v1")));
+            ApiException nullNetwork = assertThrows(ApiException.class, () -> catalog.saveRoute(obj("name", "null network", "engine", "CODEX", "osSandboxNetwork", null)));
+            assertEquals(400, nullNetwork.status());
+        }
+    }
+
+    @Test
     void lateProbeCannotReplaceConcurrentRouteEditOrRestoreItsPriorRevision() throws Exception {
         CountDownLatch probing = new CountDownLatch(1), release = new CountDownLatch(1);
         AtomicInteger probes = new AtomicInteger();

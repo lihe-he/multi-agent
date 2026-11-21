@@ -8,6 +8,7 @@ export interface Project {
 export interface Route {
   id: string; name: string; engine: 'CODEX' | 'CLAUDE' | 'API'; model?: string;
   provider?: string; baseUrl?: string; executable?: string; enabled?: boolean;
+  requireOsSandbox?: boolean; osSandboxNetwork?: 'ALLOW' | 'DENY';
   hasKey?: boolean; hasApiKey?: boolean; available?: boolean; health?: string; version?: number;
 }
 export interface Memory {

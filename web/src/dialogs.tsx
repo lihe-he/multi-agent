@@ -149,16 +149,24 @@ export function RouteDialog({ route, onClose, onSaved }: DialogProps & { route?:
   const [model, setModel] = useState(route?.model || ''); const [provider, setProvider] = useState(route?.provider || '');
   const [baseUrl, setBaseUrl] = useState(route?.baseUrl || 'https://api.openai.com/v1');
   const [executable, setExecutable] = useState(route?.executable || ''); const [apiKey, setApiKey] = useState('');
+  const [requireOsSandbox, setRequireOsSandbox] = useState(route?.requireOsSandbox === true);
+  const [osSandboxNetwork, setOsSandboxNetwork] = useState<Route['osSandboxNetwork']>(route?.osSandboxNetwork === 'ALLOW' ? 'ALLOW' : 'DENY');
   const [enabled, setEnabled] = useState(route?.enabled !== false); const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
+  function changeEngine(value: Route['engine']) {
+    setEngine(value);
+    if (value === 'API') { setRequireOsSandbox(false); setOsSandboxNetwork('DENY'); }
+  }
   async function submit(e: FormEvent) {
     e.preventDefault(); setBusy(true); setError('');
-    try { await post('/routes', { ...(route ? { id: route.id } : {}), name, engine, model, provider, baseUrl: engine === 'API' ? baseUrl : '', executable: engine === 'API' ? '' : executable || (engine === 'CODEX' ? 'codex' : 'claude'), enabled, ...(apiKey ? { apiKey } : {}) }); onSaved(); onClose(); }
+    try { await post('/routes', { ...(route ? { id: route.id } : {}), name, engine, model, provider, baseUrl: engine === 'API' ? baseUrl : '', executable: engine === 'API' ? '' : executable || (engine === 'CODEX' ? 'codex' : 'claude'), enabled, requireOsSandbox: engine !== 'API' && requireOsSandbox, osSandboxNetwork: engine === 'API' ? 'DENY' : osSandboxNetwork, ...(apiKey ? { apiKey } : {}) }); onSaved(); onClose(); }
     catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   }
   return <Modal title={route ? '编辑运行路由' : '连接一个运行器'} description="配置已授权的模型 API 或本地编程工具。" onClose={onClose}><form onSubmit={submit}><div className="form-body">
-    <div className="form-grid"><Field label="显示名称"><input required value={name} onChange={e => setName(e.target.value)} placeholder="例如：本地 Codex" /></Field><Field label="运行引擎"><select value={engine} onChange={e => setEngine(e.target.value as Route['engine'])}><option value="API">自研 Agent · API</option><option value="CODEX">Codex CLI</option><option value="CLAUDE">Claude Code</option></select></Field></div>
+    <div className="form-grid"><Field label="显示名称"><input required value={name} onChange={e => setName(e.target.value)} placeholder="例如：本地 Codex" /></Field><Field label="运行引擎"><select value={engine} onChange={e => changeEngine(e.target.value as Route['engine'])}><option value="API">自研 Agent · API</option><option value="CODEX">Codex CLI</option><option value="CLAUDE">Claude Code</option></select></Field></div>
     <div className="form-grid"><Field label="模型" hint={engine === 'API' ? '填写端点支持的准确模型 ID。' : '留空使用工具自身配置。'}><input required={engine === 'API'} value={model} onChange={e => setModel(e.target.value)} placeholder="模型 ID" /></Field><Field label="供应商 / 资源组"><input value={provider} onChange={e => setProvider(e.target.value)} placeholder="例如：OpenAI / 本地账户" /></Field></div>
     {engine === 'API' ? <><Field label="API 地址"><input required type="url" value={baseUrl} onChange={e => setBaseUrl(e.target.value)} className="mono" /></Field><Field label="API 密钥" hint={route ? '留空保留本次会话已有密钥；重启后需重新提供。' : '仅在核心本次会话内保存，不写入普通配置。'}><input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} autoComplete="new-password" placeholder="sk-…" /></Field></> : <><Field label="工具可执行文件" hint="可填系统命令或绝对路径；需要事先安装并完成工具登录。"><input value={executable} onChange={e => setExecutable(e.target.value)} placeholder={engine === 'CODEX' ? 'codex' : 'claude'} className="mono" /></Field><div className="info-box"><ShieldCheck size={18} /><div><b>使用现有本地登录</b><p>连接探测会报告可观察能力。CLI 内部的模型次数与费用可能无法精确核算。</p></div></div></>}
+    <label className="checkbox-card"><input type="checkbox" checked={engine !== 'API' && requireOsSandbox} disabled={engine === 'API' || busy} onChange={e => setRequireOsSandbox(e.target.checked)} /><span><b>要求操作系统沙箱</b><small>{engine === 'API' ? '此设置仅适用于 Codex CLI 和 Claude Code。' : '平台必须验证并启用操作系统沙箱；不可用时会拒绝启动，不会无沙箱运行。'}</small></span></label>
+    <Field label="沙箱网络访问" hint="仅在要求操作系统沙箱时生效。"><select value={osSandboxNetwork} disabled={engine === 'API' || !requireOsSandbox || busy} onChange={e => setOsSandboxNetwork(e.target.value as Route['osSandboxNetwork'])}><option value="DENY">拒绝网络访问</option><option value="ALLOW">允许网络访问</option></select></Field>
     <label className="checkbox-row"><input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} />启用此路由</label><ErrorMessage error={error} />
   </div><footer><button type="button" className="button secondary" onClick={onClose}>取消</button><SaveButton busy={busy}>保存运行器</SaveButton></footer></form></Modal>;
 }

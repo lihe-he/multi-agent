@@ -204,7 +204,9 @@ class WorkflowCatalogTest {
 
     @Test
     void readinessShowsDeclaredInputsAndRoutesWithoutWritingOrExposingTaskContent() {
-        otherRoute("alternate-actor");
+        Map<String, Object> alternate = otherRoute("alternate-actor");
+        alternate.putAll(obj("requireOsSandbox", true, "osSandboxNetwork", "DENY"));
+        store.put("route", alternate);
         Map<String, Object> source = WorkflowDslTest.node("source", List.of());
         source.put("inputs", List.of("goal", "context"));
         Map<String, Object> consumer = WorkflowDslTest.node("consumer", List.of("source"));
@@ -227,6 +229,8 @@ class WorkflowCatalogTest {
         assertEquals("other", str(map(nodes.get("consumer"), "route"), "id"));
         assertEquals(List.of(map(nodes.get("consumer"), "route")), objects(preview.get("extraRoutes")));
         assertEquals("other-provider", str(objects(preview.get("extraRoutes")).getFirst(), "provider"));
+        assertEquals(Boolean.TRUE, objects(preview.get("extraRoutes")).getFirst().get("requireOsSandbox"));
+        assertEquals("DENY", str(objects(preview.get("extraRoutes")).getFirst(), "osSandboxNetwork"));
         assertFalse(preview.toString().contains("private goal fixture"));
         assertFalse(preview.toString().contains("private memory fixture"));
         Map<String, Object> otherProject = obj("projectId", "two", "routeSnapshot", task.get("routeSnapshot"));

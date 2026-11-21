@@ -4,7 +4,9 @@
 
 平台使用 Java 21、Spring Boot、SQLite、React、TypeScript 和 Electron。任务在独立工作目录中执行，验证和审查记录绑定代码版本，最终由用户验收。验收操作记录用户决定，不会自动提交、推送或改写原项目。
 
-当前开发版本为 **0.2.0-alpha.25**，在 Workflow 原调用生命周期内增加了任务、流程代次、节点尝试、AgentRun、输入准备回执和 Worker 领取限定的内部只读 `stage_input` MCP 输入桥。桥接令牌为独立短期 Bearer，握手和调用都会重新核验原领取、固定输入、权限、写入归属和存活状态；撤销、取消、失联、过期、输入变化或进程重启后旧令牌均不可继续读取。省略 `arguments` 与显式空对象都符合固定 MCP schema，其他参数、路径和管理令牌不会获得该授权。它目前只作为私有 Worker 参数传递，未启用真实 Codex/Claude CLI 消费，也不提供数据隔离沙箱或外部模型兼容性证明。
+当前开发版本为 **0.2.0-alpha.26**，为原生 CLI 路由增加显式操作系统沙箱请求与 `NativeSandboxPolicy` 策略接口。严格路由必须取得包装后的策略命令才能执行帮助探测或模型命令；策略缺失时在提示交付和预算承诺前拒绝。当前默认策略为 `UNAVAILABLE`，尚未接入三端真实 OS 强制器，不能据此宣称已具备文件或网络隔离。
+
+alpha.25 的内部只读 `stage_input` MCP 桥继续限定在原 Workflow Worker 调用，握手和调用重验任务、流程代次、节点尝试、AgentRun、输入准备回执、固定输入、权限、写入归属与原领取；取消、失联、撤销、过期、输入变化或核心重启后旧令牌失效。桥仍只作为私有 Worker 参数传递，真实 Codex/Claude CLI 消费与混合阶段尚未启用。
 
 alpha.25 本机 Windows 清洁核心回归 **673 项（663 通过、10 项条件跳过）**、生产 UI **272/272**、最终 Jar 本机确定性 HTTP 协议检查 **34/34** 均通过；最终 Jar SHA-256 为 `4e75501991b345ce0073a29c447f843b514d5cb99e494481ba1cfb3cad635724`。详细范围、首次失败和剩余原生阶段边界见[实施与验收记录](./docs/implementation-status.md)、[Workflow 协议](./docs/workflow-contract.md)及[alpha.25 本机验收回执](./docs/qa/alpha25-stage-input-win32.json)。真实 Codex/Claude 混合阶段、任务/领取限定桥的原生消费者、跨平台 CI 和完整 M2 仍继续实施。
 

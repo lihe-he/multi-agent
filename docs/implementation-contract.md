@@ -25,7 +25,7 @@
 - `GET /api/tasks/{id}/export` → 可下载 zip
 - `GET /api/tasks/{id}/events?after=0&limit=200` → `{events:[{id,taskId,type,message,createdAt}],cursor,hasMore}`
 - `GET /api/events?after=0` SSE，可选供桌面使用；前端可用有界事件轮询。
-- `POST /api/routes` `{id?,name,engine:'CODEX'|'CLAUDE'|'API',model,provider,baseUrl,executable,enabled:true,apiKey?}` → Route；apiKey 仅会话内。
+- `POST /api/routes` `{id?,name,engine:'CODEX'|'CLAUDE'|'API',model,provider,baseUrl,executable,enabled:true,requireOsSandbox?:boolean,osSandboxNetwork?:'ALLOW'|'DENY',apiKey?}` → Route；apiKey 仅会话内。原生 CLI 的 `requireOsSandbox:true` 请求需要真实平台策略；当前默认策略返回 `UNAVAILABLE`，因此在帮助探测、提示交付和预算扣除前失败。请求网络默认拒绝；策略可用时必须同时包装 CLI 帮助探测和实际模型命令，并返回 `osSandbox` 强制策略回执。CLI 自带的权限参数不计作操作系统隔离。字段省略时，已保存路由更新保留既有策略选择。
 - `POST /api/routes/{id}/probe` → `{available,version,capabilities,message}`
 - `POST /api/memories` `{projectId,kind:'FACT'|'DECISION'|'EXPERIENCE'|'RULE',content,source}` → Memory
 - `PATCH /api/memories/{id}` `{content?,status:'ACTIVE'|'DISABLED'|'NEEDS_REVIEW'}`，`DELETE /api/memories/{id}`
@@ -60,6 +60,8 @@ List<Map<String,Object>> search(String projectPath, String query, int limit);
 ```
 
 `prepare` 返回 `{workspace,baseline,version,sourceDirty}`；run 返回 `{exitCode,output,status:'SUCCEEDED'|'FAILED'|'CANCELLED'|'UNKNOWN',usage:{...}}`。每次真实模型请求前调用 acquireCall；返回 false 必须不发送。CLI 调用保守视为一个不可观测会话预算单位，usage 明确 softBudget。验证命令不消耗模型次数。API agent 的每一轮请求独立申请预算。readOnly 必须实际使用适配器只读权限或隔离目录，API工具层强制只读；不支持强边界的CLI显示能力限制，不宣称OS隔离。
+
+原生 CLI 的操作系统沙箱由 `NativeSandboxPolicy` 接口提供；策略实现本身必须可信，并且必须真正约束完整的后代进程树，而不是只给启动器增加一个声明性参数。实现必须返回约束整个进程树的包装命令与策略编号，`UNAVAILABLE`、不完整的 `ENFORCED` 结果或未改变原命令的 `ENFORCED` 结果都会在发送提示和申请预算前拒绝。该策略同时接受真实工作目录、只读/工作区写入模式和网络 ALLOW/DENY 请求。默认策略明确不可用，不代表任何平台具备文件系统或网络隔离。启用严格路由时，执行前的 CLI 帮助探测也必须通过只读策略命令；成功结果附 `osSandbox` 回执。`osSandbox` 仅是启动器采用该策略的声明性回执，不等同于已经完成平台级隔离验证。设置探测没有任务工作目录，因此严格路由不启动 CLI，而报告需要在实际任务中判断。
 
 运行器可接收实现 BooleanSupplier 的 `ModelCallObserver`，实际请求前以 begin(metadata) 承诺预算与身份，结束以 end(observation) 保存回执；普通预算回调继续兼容。核心在保存前脱敏输入输出，具体字段与 UNKNOWN 口径见模型请求协议。
 
