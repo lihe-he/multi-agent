@@ -4,7 +4,7 @@
 
 Workflow 节点在根暂停时，如果 Worker 已返回 `CANCELLED` 且确认尚无模型请求、请求记录或其他未知效果，直接保存原 Worker 取消回执并结束节点。已开始请求或存在未确认效果时继续采用未知状态保护。
 
-针对 macOS alpha.27 CI 中的暂停用例增加节点操作、Worker 租约、根写入保护和根执行终态断言；共享取消收尾 helper 重构前，本机 Workflow、Worker、账本和租约定向回归 43 项通过；重构后的目标暂停用例再次通过。CI 失败的两个 macOS attempt 记录了不同收尾表现，原根因仍未确认，alpha.28 三端 CI 待验收。
+针对 macOS alpha.27 CI 中的暂停用例增加节点操作、Worker 租约、根写入保护和根执行终态断言；共享取消收尾 helper 重构前，本机 Workflow、Worker、账本和租约定向回归 43 项通过；重构后的目标暂停用例再次通过。准确提交 `e3a6b2832a06880185953520418fc8ba306035a9` 的 CI Run `44920453954` 在 Windows、macOS、Ubuntu 三端成功。该结果不反推 alpha.27 两次失败的原始根因；真实官方 CLI 与 OS 强制沙箱仍待验收。
 
 ## 0.2.0-alpha.27 — 原生 CLI 结构化终态
 

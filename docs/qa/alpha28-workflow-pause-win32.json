@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "version": "0.2.0-alpha.28",
-  "recordedAt": "2026-11-21T23:33:55+08:00",
+  "recordedAt": "2026-11-22T10:37:35+08:00",
   "baseCommit": "9f3a2484f970ecfc86416a40f9bf54fdcfb2cebd",
-  "status": "TARGETED_PAUSE_AND_FOCUSED_WORKFLOW_WORKER_REGRESSION_PASSED; EXACT_COMMIT_CI_PENDING",
+  "status": "TARGETED_PAUSE_AND_FOCUSED_WORKFLOW_WORKER_REGRESSION_PASSED; EXACT_COMMIT_THREE_PLATFORM_CI_PASSED; OFFICIAL_CLI_AND_OS_SANDBOX_ACCEPTANCE_PENDING",
   "implementationScope": "Treat a confirmed pre-request Workflow cancellation as a normal Worker cancellation receipt only when the root is stopped, the run has no calls, no model request record exists, and the task has no unknown effects; preserve UNKNOWN for every other path.",
   "scopeLimitations": "The request ledger proves that no model request was recorded; it does not prove that no child process ever ran because a native CLI isolation --help probe can precede model-request accounting.",
   "environment": {
@@ -78,8 +78,104 @@
     "resolutionEvidence": "After confirming no Maven process was using core/target, the same five-class selection completed serially with 43/43 passing and no failures, errors, or skips."
   },
   "pending": [
-    "Exact alpha.28 commit CI on Windows, macOS and Ubuntu",
     "Compatibility with real official Codex and Claude CLI output samples",
     "Platform-enforced OS file and network sandbox implementations and boundary tests"
-  ]
+  ],
+  "exactCommitCi": {
+    "status": "passed",
+    "workflowRun": 44920453954,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/44920453954",
+    "commit": "e3a6b2832a06880185953520418fc8ba306035a9",
+    "attempt": 1,
+    "completedAt": "2026-11-21T16:45:57Z",
+    "jobs": [
+      {
+        "id": 136895125405,
+        "name": "verify (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "completedAt": "2026-11-21T16:00:19Z",
+        "successfulSteps": 40,
+        "skippedSteps": [
+          "Actual desktop session previews and persistent login",
+          "Standalone browser and attached desktop lifecycle",
+          "Actual packaged session previews without external Java or Node"
+        ]
+      },
+      {
+        "id": 136895125555,
+        "name": "verify (windows-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "completedAt": "2026-11-21T16:45:57Z",
+        "successfulSteps": 40,
+        "skippedSteps": [
+          "Actual desktop session previews with virtual display",
+          "Standalone lifecycle with virtual display",
+          "Actual packaged session previews with virtual display"
+        ]
+      },
+      {
+        "id": 136895125663,
+        "name": "verify (macos-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "completedAt": "2026-11-21T16:10:55Z",
+        "successfulSteps": 40,
+        "skippedSteps": [
+          "Actual desktop session previews with virtual display",
+          "Standalone lifecycle with virtual display",
+          "Actual packaged session previews with virtual display"
+        ]
+      }
+    ],
+    "scope": "All applicable core tests/package, production Web/UI, Jar lifecycle, crash recovery, desktop distribution, and packaged-application workflow steps passed. Each platform skipped only three mutually exclusive virtual-display/native-display steps whose applicable counterparts passed.",
+    "testCounts": "Surefire XML was not extracted from CI artifacts in this receipt; workflow step success does not imply zero test-level conditional skips.",
+    "artifactVerification": "GitHub API metadata only; complete ZIP downloads, local digest, CRC and unpacked-byte verification were not performed.",
+    "artifacts": [
+      {
+        "id": 14716230434,
+        "name": "desktop-windows-latest",
+        "bytes": 157875112,
+        "githubDigest": "sha256:f7327c1f5533bfdfd7b2b0c2e94718327f8701856f3175c83c43d75b1e4b6ac8",
+        "expired": false
+      },
+      {
+        "id": 14716170573,
+        "name": "evidence-windows-latest",
+        "bytes": 313822768,
+        "githubDigest": "sha256:2ed2e0a1b04e0fa5bcb5143d63b824cfd9576277aa552f982434bcb184f73474",
+        "expired": false
+      },
+      {
+        "id": 14714765636,
+        "name": "evidence-macos-latest",
+        "bytes": 305194370,
+        "githubDigest": "sha256:194bff6ddb91ab5204bf56ba42b0294f3e8913be18c5bf43fce8ece1d2bbec56",
+        "expired": false
+      },
+      {
+        "id": 14714074147,
+        "name": "desktop-macos-latest",
+        "bytes": 180703228,
+        "githubDigest": "sha256:e1315baf710f56d104c8f98c5fc88d3d0c5a8e929104b4c6b9f60f7779335b24",
+        "expired": false
+      },
+      {
+        "id": 14713644924,
+        "name": "evidence-ubuntu-latest",
+        "bytes": 318181067,
+        "githubDigest": "sha256:53f3140a3358018600c703b1435049e8147140ba2f8e5b83845ea275bbe5451d",
+        "expired": false
+      },
+      {
+        "id": 14713169883,
+        "name": "desktop-ubuntu-latest",
+        "bytes": 190101553,
+        "githubDigest": "sha256:7fac87a9c7ca5880f7e8a18075b246e7764a1e507f4784f7b0fdb8a51cafe0ef",
+        "expired": false
+      }
+    ],
+    "priorFailureLimitation": "This successful alpha.28 run does not establish the root cause of either failed alpha.27 macOS attempt."
+  }
 }
