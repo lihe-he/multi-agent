@@ -376,6 +376,56 @@ try {
     assert.equal((await request(`${endpoint}?q=${encodeURIComponent(page.requests[0].responseId)}`)).data.requests.length, 1);
     assert.equal((await request(`${endpoint}?state=FAILED`)).data.requests.length, 0);
   });
+  await check('Usage trends derive UTC totals from the original persisted requests without extra model calls', async () => {
+    const beforeCalls = calls.length;
+    const records = (await request(`/tasks/${task.id}/model-requests?limit=100`)).data.requests;
+    const endpoint = `/projects/${project.id}/usage-trends?days=7&taskId=${encodeURIComponent(task.id)}`;
+    const trend = (await request(endpoint)).data;
+    assert.equal(trend.schemaVersion, 1); assert.equal(trend.source, 'MODEL_REQUEST'); assert.equal(trend.timeZone, 'UTC'); assert.equal(trend.bucket, 'DAY');
+    assert.deepEqual(trend.scope, { projectId: project.id, sessionId: '', taskId: task.id });
+    assert.equal(trend.days, 7); assert.equal(trend.buckets.length, 7); assert.equal(trend.summary.recordCount, records.length); assert.equal(trend.summary.hasRecords, true);
+    assert.equal(trend.cost, 'UNKNOWN'); assert.equal(trend.cliInternalRequests, 'UNKNOWN');
+    const observed = trend.summary.units.API_REQUEST;
+    assert.equal(observed.recordCount, records.length); assert.equal(observed.states.SUCCEEDED, records.length); assert.equal(observed.states.DISPATCHING, 0);
+    for (const [field, perRequest] of [['inputTokens', 40], ['outputTokens', 20]]) {
+      assert.deepEqual(observed.tokens[field], { observedSum: perRequest * records.length, knownCount: records.length, unknownCount: 0, total: perRequest * records.length, overflow: false });
+    }
+    for (const field of ['cachedInputTokens', 'reasoningTokens']) {
+      assert.deepEqual(observed.tokens[field], { observedSum: 0, knownCount: 0, unknownCount: records.length, total: 'UNKNOWN', overflow: false });
+    }
+    for (const unit of ['CLI_SESSION', 'UNKNOWN']) {
+      assert.equal(trend.summary.units[unit].recordCount, 0); assert.equal(trend.summary.units[unit].hasRecords, false);
+      assert.equal(trend.summary.units[unit].tokens.inputTokens.total, 'UNKNOWN');
+    }
+    let bucketRecords = 0;
+    for (const [index, bucket] of trend.buckets.entries()) {
+      const from = Date.parse(`${bucket.date}T00:00:00Z`), next = from + 86_400_000;
+      assert.equal(from, Date.parse(trend.from) + index * 86_400_000);
+      const expected = records.filter(record => Date.parse(record.createdAt) >= from && Date.parse(record.createdAt) < next).length;
+      assert.equal(bucket.recordCount, expected); assert.equal(bucket.hasRecords, expected > 0); bucketRecords += bucket.recordCount;
+      assert.equal(bucket.units.API_REQUEST.tokens.inputTokens.total, expected ? expected * 40 : 'UNKNOWN');
+    }
+    assert.equal(bucketRecords, records.length); assert.equal(Date.parse(trend.toExclusive) - Date.parse(trend.from), 7 * 86_400_000);
+    assert.ok(!JSON.stringify(trend).includes('inputPreview')); assert.ok(!JSON.stringify(trend).includes('test-only-not-a-secret'));
+    assert.equal(calls.length, beforeCalls); assert.equal((await request(`/tasks/${task.id}`)).data.budget.usedCalls, finished.budget.usedCalls);
+  });
+  await check('Usage trend filters reject invalid scope and keep an empty session distinct from reported zero', async () => {
+    const endpoint = `/projects/${project.id}/usage-trends`;
+    await request(endpoint, undefined, { expected: 401, authorized: false });
+    for (const days of ['0', '8', '91', '-7', '7.0', 'invalid']) await request(`${endpoint}?days=${days}`, undefined, { expected: 400 });
+    await request(`${endpoint}?sessionId=missing`, undefined, { expected: 404 });
+    await request(`${endpoint}?taskId=missing`, undefined, { expected: 404 });
+    const session = (await request(`/projects/${project.id}/sessions`, { title: 'Empty usage trend fixture' })).data;
+    await request(`${endpoint}?sessionId=${encodeURIComponent(session.id)}&taskId=${encodeURIComponent(task.id)}`, undefined, { expected: 404 });
+    for (const days of [7, 30, 90]) {
+      const empty = (await request(`${endpoint}?days=${days}&sessionId=${encodeURIComponent(session.id)}`)).data;
+      assert.equal(empty.days, days); assert.equal(empty.buckets.length, days); assert.equal(empty.summary.recordCount, 0); assert.equal(empty.summary.hasRecords, false);
+      for (const unit of ['API_REQUEST', 'CLI_SESSION', 'UNKNOWN']) {
+        assert.deepEqual(empty.summary.units[unit].tokens.inputTokens, { observedSum: 0, knownCount: 0, unknownCount: 0, total: 'UNKNOWN', overflow: false });
+      }
+      assert.ok(empty.buckets.every(bucket => !bucket.hasRecords && bucket.recordCount === 0));
+    }
+  });
   await check('Preserve source Git worktree and staged state', async () => {
     assert.equal(await readFile(path.join(projectPath, 'src/greeting.txt'), 'utf8'), 'hello\n');
     assert.equal(git('status', '--porcelain'), '');

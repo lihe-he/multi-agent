@@ -1,0 +1,45 @@
+{
+  "release": "0.2.0-alpha.30",
+  "recordedAt": "2026-11-26",
+  "scope": "持久 ModelRequest 项目用量趋势子集；不代表完整 F21 或 M0-M3",
+  "implementation": {
+    "endpoint": "GET /api/projects/{id}/usage-trends?days=7|30|90&sessionId=&taskId=",
+    "source": "MODEL_REQUEST",
+    "timeZone": "UTC",
+    "units": ["API_REQUEST", "CLI_SESSION", "UNKNOWN"],
+    "unknownAndOverflowDistinct": true,
+    "costAndCliInternalRequests": "UNKNOWN"
+  },
+  "localEvidence": {
+    "controllerAndStoreTargeted": {"passed": 26, "failed": 0, "errors": 0},
+    "jarProtocolLifecycle": {"passed": 36, "failed": 0, "errors": 0},
+    "usageTrendBrowser": {"passed": 11, "failed": 0, "errors": 0},
+    "webBuild": "passed",
+    "versionVerification": "passed",
+    "diffCheck": "passed",
+    "linuxCurrentSourceCleanVerify": {"passed": 795, "failed": 0, "errors": 0, "conditionalSkipped": 12},
+    "linuxPtyPromptBoundaryRegression": {"passed": 2, "failed": 0},
+    "linuxSourceManifestSha256": "42cd68aec8e7f4c04830a042c8c5e0bed15dff5268b84f57f68b973d51aebca8",
+    "fullWebUiCurrent": {"passed": 275, "failed": 9, "total": 284, "failureSuites": ["connection-recovery", "page-recovery", "workflow readiness"]},
+    "windowsLocalLimitation": [
+      "旧 core/target 中的只读 Git 对象阻止 Maven clean 删除",
+      "当前系统 javac 为 17，项目编译要求 Java 21"
+    ]
+  },
+  "previousCommitCi": {
+    "commit": "e3a4508b2d256fda4778110fe81d350380d79a64",
+    "run": 45748046957,
+    "ubuntu": "success",
+    "macos": "success",
+    "windows": "failure",
+    "windowsFailure": "TeamExecutionTest.actualDelegationSharesRootBudgetAndDependencySnapshotBeforeGuardedAdoption: WORKER_REMOTE_ERROR_UNKNOWN_500",
+    "reproduction": "Linux isolated probe passed; Windows root cause remains unconfirmed",
+    "evidenceLimits": ["失联快照缺少锁文件", "WAL 复制存在变化窗口", "不能从副本断言原子状态根因"]
+  },
+  "remainingScope": [
+    "持久调度与独立会话",
+    "IANA 时区、漏跑处理与并发去重",
+    "供应商价格和账单核对",
+    "真实官方 CLI、远程 Worker、长期负载及其余计划退出条件"
+  ]
+}

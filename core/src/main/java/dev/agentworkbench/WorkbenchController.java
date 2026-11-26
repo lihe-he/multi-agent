@@ -202,6 +202,12 @@ public class WorkbenchController {
         return store.modelRequestPage(id, runId, before, limit, state, q);
     }
 
+    @GetMapping("/projects/{id}/usage-trends")
+    public Map<String, Object> usageTrends(@PathVariable String id, @RequestParam(defaultValue = "7") int days,
+            @RequestParam(defaultValue = "") String sessionId, @RequestParam(defaultValue = "") String taskId) {
+        return store.usageTrends(id, days, sessionId, taskId);
+    }
+
     @GetMapping("/agent-definitions")
     public List<Map<String, Object>> agentDefinitions(@RequestParam(defaultValue = "") String projectId) {
         if (!projectId.isBlank()) store.get("project", projectId);

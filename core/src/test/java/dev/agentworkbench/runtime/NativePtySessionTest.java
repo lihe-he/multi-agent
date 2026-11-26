@@ -163,6 +163,15 @@ class NativePtySessionTest {
             return new String(outputBytes(), StandardCharsets.UTF_8).replaceAll("\\u001B\\[[0-?]*[ -/]*[@-~]", "")
                 .replaceAll("\\u001B\\][^\\u0007]*(?:\\u0007|\\u001B\\\\)", "");
         }
+        void awaitUnixPrompt() throws Exception {
+            assertFalse(WINDOWS);
+            await(() -> {
+                try {
+                    String text = plainText();
+                    return text.endsWith("# ") || text.endsWith("$ ");
+                } catch (Exception exception) { throw new IllegalStateException(exception); }
+            }, 10);
+        }
         /**
          * 按终端 LF 分行，仅忽略行尾回车；完整编号及全部内容仍须逐行匹配，原字节保持。
          */
@@ -249,6 +258,7 @@ class NativePtySessionTest {
     @Test
     void delayedOriginalTailPublicationStillDrainsBeforeImmediateExit() throws Exception {
         try (var fixture = new Fixture(false, 500, true)) {
+            if (!WINDOWS) fixture.awaitUnixPrompt();
             if (WINDOWS) fixture.input("for /L %i in (1,1,200) do @echo TAIL_" + fixture.marker + "_%i\rexit 7\r");
             else fixture.input("i=1; while test \"$i\" -le 200; do printf 'TAIL_" + fixture.marker + "_%s\\n' \"$i\"; i=$((i+1)); done; exit 7\n");
             assertTrue(fixture.firstPublicationEntered.await(10, TimeUnit.SECONDS));
@@ -266,6 +276,7 @@ class NativePtySessionTest {
     @Test
     void delayedFinalTailPublicationStillConfirmsImmediateExitAndCompleteOutput() throws Exception {
         try (var fixture = new Fixture(false, 500, "_200")) {
+            if (!WINDOWS) fixture.awaitUnixPrompt();
             if (WINDOWS) fixture.input("for /L %i in (1,1,200) do @echo TAIL_" + fixture.marker + "_%i\rexit 7\r");
             else fixture.input("i=1; while test \"$i\" -le 200; do printf 'TAIL_" + fixture.marker + "_%s\\n' \"$i\"; i=$((i+1)); done; exit 7\n");
             assertTrue(fixture.firstPublicationEntered.await(10, TimeUnit.SECONDS));

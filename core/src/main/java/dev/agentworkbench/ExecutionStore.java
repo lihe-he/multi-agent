@@ -68,6 +68,7 @@ public class ExecutionStore implements AutoCloseable {
                 @Override
                 protected void xFunc() throws SQLException { result(foldSearch(value_text(0))); }
             }, 1, Function.FLAG_DETERMINISTIC);
+            UsageTrends.install(opened);
             try (var statement = opened.createStatement()) {
                 int schemaVersion;
                 try (var version = statement.executeQuery("PRAGMA user_version")) {
@@ -87,6 +88,7 @@ public class ExecutionStore implements AutoCloseable {
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_agent_run_task ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.stage')) WHERE kind='agentRun'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_model_request_run ON entities(json_extract(body,'$.agentRunId'),json_extract(body,'$.state')) WHERE kind='modelRequest'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_model_request_task ON entities(json_extract(body,'$.taskId')) WHERE kind='modelRequest'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_model_request_project_created ON entities(json_extract(body,'$.projectId'),json_extract(body,'$.createdAt')) WHERE kind='modelRequest'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_subtask_root ON entities(json_extract(body,'$.taskId'),json_extract(body,'$.parentRunId'),json_extract(body,'$.state')) WHERE kind='subtask'");
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_subtask_dispatch ON entities(json_extract(body,'$.parentRunId'),json_extract(body,'$.requestId'),json_extract(body,'$.toolCallId')) WHERE kind='subtask'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_team_message ON entities(json_extract(body,'$.teamId'),json_extract(body,'$.sequence')) WHERE kind='teamMessage'");
@@ -898,6 +900,27 @@ public class ExecutionStore implements AutoCloseable {
             }
             return obj("requests", requests, "cursor", cursor, "hasMore", false);
         } catch (Exception exception) { throw failure(exception); }
+    }
+
+    /**
+     * 项目范围的持久请求趋势不推测缺失用量，也不累计 AgentRun 的重复汇总。
+     */
+    public synchronized Map<String, Object> usageTrends(String projectId, int days, String sessionId, String taskId) {
+        return usageTrends(projectId, days, sessionId, taskId, java.time.Instant.now());
+    }
+
+    synchronized Map<String, Object> usageTrends(String projectId, int days, String sessionId, String taskId, java.time.Instant asOf) {
+        UsageTrends.requireDays(days);
+        get("project", projectId);
+        if (!sessionId.isEmpty()) session(projectId, sessionId);
+        if (!taskId.isEmpty()) {
+            Map<String, Object> task = get("task", taskId);
+            if (!projectId.equals(str(task, "projectId")) || !sessionId.isEmpty() && !sessionId.equals(str(task, "sessionId"))) {
+                throw new ApiException(404, "当前范围没有此任务");
+            }
+        }
+        try { return UsageTrends.query(connection, projectId, days, sessionId, taskId, asOf); }
+        catch (Exception exception) { throw failure(exception); }
     }
 
     public synchronized Map<String, Object> agentRunPage(String projectId, String sessionId, String taskId, long before, int requestedLimit, String state) {

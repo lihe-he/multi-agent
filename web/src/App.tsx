@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Activity, ArrowDownToLine, ArrowRight, ArrowUpRight, Bell, BookOpen, Bot, Boxes, Check, CheckCheck, ChevronDown, ChevronRight, CircleHelp, Clock3, Code2, Command, Database, FileCode2, FolderGit2, FolderOpen, GitBranch, Layers3, LayoutDashboard, Link2, ListTodo, LoaderCircle, Network, Pencil, Play, Plus, Power, RefreshCw, Search, Settings2, ShieldCheck, SlidersHorizontal, Sparkles, Terminal, Trash2, TriangleAlert, Upload, UsersRound, X } from 'lucide-react';
+import { Activity, ArrowDownToLine, ArrowRight, ArrowUpRight, Bell, BookOpen, Bot, Boxes, ChartNoAxesCombined, Check, CheckCheck, ChevronDown, ChevronRight, CircleHelp, Clock3, Code2, Command, Database, FileCode2, FolderGit2, FolderOpen, GitBranch, Layers3, LayoutDashboard, Link2, ListTodo, LoaderCircle, Network, Pencil, Play, Plus, Power, RefreshCw, Search, Settings2, ShieldCheck, SlidersHorizontal, Sparkles, Terminal, Trash2, TriangleAlert, Upload, UsersRound, X } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { api, currentConnection, initializeConnection, post } from './api';
 import type { Memory, Profile, Project, Route, Task, WorkbenchState } from './types';
@@ -16,9 +16,10 @@ import Appearance from './Appearance';
 import { SidebarLayout, SidebarToggle } from './SidebarLayout';
 import { readBrowserValue, writeBrowserValue } from './browser-storage';
 import { startPagePolling } from './page-polling';
+import { UsageTrends } from './UsageTrends';
 import { version as clientVersion } from '../package.json';
 
-type Page = 'home' | 'sessions' | 'tasks' | 'inbox' | 'knowledge' | 'settings';
+type Page = 'home' | 'sessions' | 'tasks' | 'usage' | 'inbox' | 'knowledge' | 'settings';
 type Dialog = { type: 'project' | 'connection' } | { type: 'task'; sessionId?: string } | { type: 'memory'; memory?: Memory } | { type: 'route'; route?: Route } | { type: 'profile'; profile?: Profile } | null;
 type Notice = { message: string; error?: boolean; id: number };
 const initialState: WorkbenchState = { projects: [], tasks: [], routes: [], memories: [], profiles: [], system: {} };
@@ -97,6 +98,7 @@ export default function App() {
   }, [notify]);
   const navigation: { id: Page; title: string; icon: LucideIcon; count?: number }[] = [
     { id: 'home', title: '项目总览', icon: LayoutDashboard }, { id: 'sessions', title: '协作会话', icon: Network }, { id: 'tasks', title: '研发任务', icon: Layers3 },
+    { id: 'usage', title: '用量趋势', icon: ChartNoAxesCombined },
     { id: 'inbox', title: '需要我处理', icon: ListTodo, count: inbox.length }, { id: 'knowledge', title: '上下文与记忆', icon: BookOpen },
   ];
   const connectionLabel = connecting ? '正在连接核心…' : connected ? '本地核心已连接' : '本地核心未连接';
@@ -116,6 +118,7 @@ export default function App() {
       {page === 'inbox' && <><PageTitle eyebrow="YOUR ATTENTION" title="需要我处理" description="关键决定集中在这里，普通进度留在任务时间线。" /><div className="inbox-summary"><div className="inbox-summary-icon"><ListTodo size={23} /></div><div><b>{inbox.length} 个事项需要你的关注</b><p>确认计划、处理阻塞，以及验收已完成的成果。</p></div></div>{inbox.length ? <div className="inbox-list">{inbox.map(task => <button className="inbox-card" key={task.id} onClick={() => openTask(task)}><div className={`inbox-icon ${task.state === 'AWAITING_ACCEPTANCE' ? 'green' : ''}`}>{task.state === 'AWAITING_ACCEPTANCE' ? <CheckCheck size={22} /> : task.state === 'DRAFT' ? <GitBranch size={22} /> : <TriangleAlert size={22} />}</div><div><div className="inline-meta"><Badge state={task.state} /><span>{state.projects.find(p => p.id === task.projectId)?.name}</span></div><h3>{task.title}</h3><p>{task.error || (task.state === 'DRAFT' ? '协作计划已准备，请检查完成约定与预算后确认执行。' : task.state === 'AWAITING_ACCEPTANCE' ? '查看最终差异、验证证据和独立审查，确认是否接受交付。' : '查看执行记录与恢复条件，再决定后续处理。')}</p></div><ArrowUpRight size={20} /></button>)}</div> : <section className="card"><Empty icon={<CheckCheck size={30} />} title="当前没有待处理事项" description="任务需要你做决定时，会出现在这里。" /></section>}</>}
       {page === 'knowledge' && <Knowledge project={selectedProject} memories={state.memories.filter(m => m.projectId === projectId)} onAdd={() => setDialog({ type: 'memory' })} onEdit={memory => setDialog({ type: 'memory', memory })} onRefresh={refresh} onNotice={notify} connected={connected} />}
       {page === 'settings' && <Settings state={state} connected={connected} onRoute={route => setDialog({ type: 'route', route })} onProfile={profile => setDialog({ type: 'profile', profile })} onNotice={notify} onRefresh={refresh} onConnection={() => setDialog({ type: 'connection' })} />}
+      {page === 'usage' && (selectedProject ? <UsageTrends projectId={selectedProject.id} tasks={projectTasks} connected={connected} /> : <section className="card"><Empty icon={<ChartNoAxesCombined size={28} />} title="请先选择一个项目" description="用量趋势按项目统计，导入或选择项目后可查看。" /></section>)}
       <div className="page-footer"><span>AGENT STUDIO</span><span>让协作有序，让结果可信。</span><span>本地研发预览版 · {state.system.version || clientVersion}</span></div>
     </main></div>
     {notice && <div className={`toast ${notice.error ? 'error' : ''}`} role={notice.error ? 'alert' : 'status'}>{notice.error ? <TriangleAlert size={18} /> : <Check size={18} />}<span>{notice.message}</span><button className="icon-button" aria-label="关闭提示" onClick={() => setNotice(null)}><X size={15} /></button></div>}
