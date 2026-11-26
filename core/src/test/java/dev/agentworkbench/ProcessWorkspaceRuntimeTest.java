@@ -15,6 +15,7 @@ import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -56,6 +57,7 @@ class ProcessWorkspaceRuntimeTest {
         final byte[] sourceIndex, sourceConfig;
         volatile BiFunction<Integer, Map<String, Object>, Map<String, Object>> response = (round, request) -> obj("role", "assistant", "content", "actual HTTP response");
         volatile Consumer<Map<String, Object>> afterObservation = ignored -> {};
+        volatile Consumer<Map<String, Object>> beforeStageInput = ignored -> {};
         volatile Runnable beforeWorkerCheck = () -> {};
 
         Fixture() throws Exception { this(null); }
@@ -98,8 +100,26 @@ class ProcessWorkspaceRuntimeTest {
         }
 
         Map<String, Object> run() throws Exception {
+            String runId = beginRun();
+            String operation = str(operation(runId), "id");
+            try {
+                Map<String, Object> result = invokeRun(runId, cancelled::get);
+                worker.evidence("root", operation, obj("id", id(), "stage", "implement", "kind", "AGENT", "status", "SUCCEEDED".equals(str(result, "status")) ? "PASSED" : str(result, "status"), "output", catalog.redact(str(result, "output"))));
+                store.finishAgentRun(runId, "SUCCEEDED".equals(str(result, "status")) ? "SUCCEEDED" : "UNKNOWN", "actual returned result"); return result;
+            } finally { worker.settleRun(runId); }
+        }
+
+        String beginRun() throws Exception {
             String runId = str(store.queueAgentRun("root", obj("id", "implement", "kind", "IMPLEMENT", "role", "developer"), workspace, runtime.fingerprint(workspace), false), "id");
             String operation = str(store.beginOperation("root", "implement", "MODEL", workspace, runId), "id"); worker.dispatch(operation, workspace, obj());
+            return runId;
+        }
+
+        Map<String, Object> operation(String runId) {
+            return store.list("operation").stream().filter(operation -> runId.equals(str(operation, "agentRunId"))).findFirst().orElseThrow();
+        }
+
+        Map<String, Object> invokeRun(String runId, BooleanSupplier callCancelled) {
             AgentToolSession tools = new AgentToolSession() {
                 @Override public void checkCurrent() { beforeWorkerCheck.run(); }
                 @Override public List<Map<String, Object>> definitions() { return List.of(); }
@@ -116,14 +136,88 @@ class ProcessWorkspaceRuntimeTest {
                 @Override public void end(Map<String, Object> observation) { trace.end(observation); afterObservation.accept(observation); }
                 @Override public AgentToolSession tools() { return tools; }
                 @Override public String lastRequestId() { return trace.lastRequestId(); }
+                @Override public Map<String, Object> stageInput(Map<String, Object> lease) { beforeStageInput.accept(lease); return Map.of(); }
             };
-            try {
-                Map<String, Object> result = runtime.run(route, key, workspace, "private prompt " + key, false, List.of("**"), cancelled::get, ignored -> {}, observer);
-                worker.evidence("root", operation, obj("id", id(), "stage", "implement", "kind", "AGENT", "status", "SUCCEEDED".equals(str(result, "status")) ? "PASSED" : str(result, "status"), "output", catalog.redact(str(result, "output"))));
-                store.finishAgentRun(runId, "SUCCEEDED".equals(str(result, "status")) ? "SUCCEEDED" : "UNKNOWN", "actual returned result"); return result;
-            } finally { worker.settleRun(runId); }
+            return runtime.run(route, key, workspace, "private prompt " + key, false, List.of("**"), callCancelled, ignored -> {}, observer);
         }
         @Override public void close() throws Exception { released.countDown(); worker.close(); server.stop(0); threads.shutdownNow(); store.close(); }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void localPreDispatchFailureDoesNotReleaseAnUnsentClaimOrFenceItsWorker(boolean stageInputFailure) throws Exception {
+        try (var fixture = new Fixture()) {
+            String runId = fixture.beginRun(), operationId = str(fixture.operation(runId), "id");
+            Map<String, Object> originalWorker = fixture.worker.identity();
+            long requestsBefore = workerRequestSequence(fixture.runtime);
+            AtomicInteger checks = new AtomicInteger();
+            if (stageInputFailure) fixture.beforeStageInput = lease -> { throw new IllegalStateException("fixture stage input failed before dispatch"); };
+            BooleanSupplier cancellation = () -> checks.incrementAndGet() == 2 && !stageInputFailure;
+            if (stageInputFailure) assertThrows(IllegalStateException.class, () -> fixture.invokeRun(runId, cancellation));
+            else assertThrows(CancellationException.class, () -> fixture.invokeRun(runId, cancellation));
+            assertEquals(2, checks.get()); assertEquals(requestsBefore, workerRequestSequence(fixture.runtime));
+            fixture.worker.finish(operationId, "CANCELLED", obj("reason", "local pre-dispatch failure"));
+            fixture.store.finishAgentRun(runId, "CANCELLED", "local pre-dispatch failure");
+            assertEquals(requestsBefore, workerRequestSequence(fixture.runtime), "No INVOKE was sent, so RELEASE must not be sent either");
+            Map<String, Object> operation = fixture.operation(runId), lease = fixture.store.get("workerLease", str(operation, "workerLeaseId"));
+            assertEquals("CANCELLED", operation.get("state")); assertEquals("RELEASED", lease.get("state"));
+            assertTrue(fixture.store.list("modelRequest").isEmpty()); assertEquals(0, fixture.httpCalls.get());
+            assertEquals(0, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", -1));
+            fixture.beforeStageInput = ignored -> {};
+            assertEquals("SUCCEEDED", fixture.run().get("status")); assertTrue(fixture.runtime.available());
+            assertEquals(originalWorker, fixture.worker.identity()); assertEquals(1, fixture.store.list("worker").size());
+            assertEquals(1, fixture.httpCalls.get()); assertEquals(1, fixture.store.list("modelRequest").size());
+            assertEquals(1, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", -1));
+            assertTrue(fixture.errors.isEmpty(), fixture.errors.toString());
+        }
+    }
+
+    @Test
+    void aPreviouslyDispatchedClaimStillReleasesAfterItsNextInvocationCancelsLocally() throws Exception {
+        try (var fixture = new Fixture()) {
+            String runId = fixture.beginRun(), operationId = str(fixture.operation(runId), "id");
+            long requestsBefore = workerRequestSequence(fixture.runtime);
+            assertEquals("SUCCEEDED", fixture.invokeRun(runId, () -> false).get("status"));
+            assertEquals(requestsBefore + 1, workerRequestSequence(fixture.runtime));
+            AtomicInteger checks = new AtomicInteger();
+            assertThrows(CancellationException.class, () -> fixture.invokeRun(runId, () -> checks.incrementAndGet() == 2));
+            assertEquals(2, checks.get()); assertEquals(requestsBefore + 1, workerRequestSequence(fixture.runtime));
+            fixture.worker.finish(operationId, "CANCELLED", obj("reason", "second invocation cancelled before dispatch"));
+            fixture.store.finishAgentRun(runId, "CANCELLED", "second invocation cancelled before dispatch");
+            assertEquals(requestsBefore + 2, workerRequestSequence(fixture.runtime), "The claim registered by the first INVOKE still needs its RELEASE");
+            assertEquals("RELEASED", fixture.store.get("workerLease", str(fixture.operation(runId), "workerLeaseId")).get("state"));
+            assertEquals(1, fixture.httpCalls.get()); assertEquals(1, fixture.store.list("modelRequest").size());
+            assertEquals("SUCCEEDED", fixture.run().get("status")); assertTrue(fixture.runtime.available());
+            assertEquals(2, fixture.httpCalls.get()); assertEquals(2, fixture.store.list("modelRequest").size());
+            assertEquals(2, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", -1));
+            assertTrue(fixture.errors.isEmpty(), fixture.errors.toString());
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void remotelyRejectedInvocationStillReleasesItsClaimWithoutCommittingAModelRequest(boolean cancelled) throws Exception {
+        try (var fixture = new Fixture()) {
+            String runId = fixture.beginRun(), operationId = str(fixture.operation(runId), "id");
+            long requestsBefore = workerRequestSequence(fixture.runtime);
+            fixture.beforeWorkerCheck = () -> {
+                if (cancelled) throw new CancellationException("fixture cancelled after Worker registered the claim");
+                throw new IllegalArgumentException("fixture validation failed after Worker registered the claim");
+            };
+            if (cancelled) assertThrows(CancellationException.class, () -> fixture.invokeRun(runId, () -> false));
+            else assertThrows(IllegalArgumentException.class, () -> fixture.invokeRun(runId, () -> false));
+            assertEquals(requestsBefore + 1, workerRequestSequence(fixture.runtime));
+            fixture.worker.finish(operationId, "CANCELLED", obj("reason", "remote pre-model rejection"));
+            fixture.store.finishAgentRun(runId, "CANCELLED", "remote pre-model rejection");
+            assertEquals(requestsBefore + 2, workerRequestSequence(fixture.runtime), "A remote rejection registered the claim even when no model request began");
+            assertTrue(fixture.store.list("modelRequest").isEmpty()); assertEquals(0, fixture.httpCalls.get());
+            assertEquals(0, num(map(fixture.store.get("task", "root"), "budget"), "usedCalls", -1));
+            assertEquals("RELEASED", fixture.store.get("workerLease", str(fixture.operation(runId), "workerLeaseId")).get("state"));
+            fixture.beforeWorkerCheck = () -> {};
+            assertEquals("SUCCEEDED", fixture.run().get("status")); assertTrue(fixture.runtime.available());
+            assertEquals(1, fixture.httpCalls.get()); assertEquals(1, fixture.store.list("modelRequest").size());
+            assertTrue(fixture.errors.isEmpty(), fixture.errors.toString());
+        }
     }
 
     @ParameterizedTest
@@ -319,6 +413,19 @@ class ProcessWorkspaceRuntimeTest {
     private static void git(Path workspace, String... arguments) throws Exception {
         List<String> command = new ArrayList<>(List.of("git")); command.addAll(List.of(arguments)); Process process = new ProcessBuilder(command).directory(workspace.toFile()).redirectErrorStream(true).start();
         String output = new String(process.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8); assertEquals(0, process.waitFor(), output);
+    }
+
+    /**
+     * 读取真实私有管道的发送序号，取消窗口不靠异步失联回调或等待时长判断。
+     */
+    private static long workerRequestSequence(ProcessWorkspaceRuntime runtime) throws Exception {
+        var processField = ProcessWorkspaceRuntime.class.getDeclaredField("process"); processField.setAccessible(true);
+        var rpcField = WorkerProcess.class.getDeclaredField("rpc"); rpcField.setAccessible(true);
+        WorkerRpc rpc = (WorkerRpc) rpcField.get(processField.get(runtime));
+        var writesField = WorkerRpc.class.getDeclaredField("writes"); writesField.setAccessible(true);
+        var sequenceField = WorkerRpc.class.getDeclaredField("sentSequence"); sequenceField.setAccessible(true);
+        var writes = (java.util.concurrent.locks.ReentrantLock) writesField.get(rpc);
+        writes.lock(); try { return sequenceField.getLong(rpc); } finally { writes.unlock(); }
     }
     private static void await(BooleanSupplier condition, int seconds) throws Exception {
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(seconds); while (!condition.getAsBoolean() && System.nanoTime() < deadline) Thread.sleep(50); assertTrue(condition.getAsBoolean());

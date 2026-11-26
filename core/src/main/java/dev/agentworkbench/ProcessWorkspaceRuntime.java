@@ -91,7 +91,7 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         requireReturned(operationId);
         if (!claims.remove(operationId, claim)) return;
         if (current.get() == claim) current.remove();
-        if (claim.sequence > 0 && available()) process.release(claim.lease, claim.token).whenComplete((ignored, error) -> { if (error != null) process.fence("WORKER_RELEASE_RECEIPT_MISSING"); });
+        if (claim.dispatchAttempted && available()) process.release(claim.lease, claim.token).whenComplete((ignored, error) -> { if (error != null) process.fence("WORKER_RELEASE_RECEIPT_MISSING"); });
     }
 
     void requireTaskStopped(String taskId) {
@@ -221,6 +221,7 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         boolean interrupted = false;
         try {
             call.openStageInput(parameters);
+            claim.dispatchAttempted = true;
             var result = process.invoke(call.id, claim.lease, claim.token, sequence, method, parameters);
             long deadline = "TERMINAL".equals(method) ? Long.MAX_VALUE : System.nanoTime() + Duration.ofMinutes(16).toNanos();
             Map<String, Object> response;
@@ -306,6 +307,10 @@ public class ProcessWorkspaceRuntime extends WorkspaceRuntime {
         final Map<String, Object> lease;
         final String token;
         final AtomicBoolean active = new AtomicBoolean();
+        /**
+         * 本地预检也会消耗序号；首次派发尝试后保持标记，确保远端原领取仍须释放。
+         */
+        volatile boolean dispatchAttempted;
         long sequence;
         Claim(Map<String, Object> lease, String token) { this.lease = lease; this.token = token; }
     }

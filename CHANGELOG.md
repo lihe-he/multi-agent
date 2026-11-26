@@ -10,6 +10,8 @@ Linux 严格路由接入 bubblewrap、独立命名空间与 seccomp；帮助探�
 
 Ubuntu CI 发现标准 systemd-resolved DNS 数据由服务账号拥有，初始 root-only 检查使 ALLOW 启动被拒绝。新增仅限两个固定 resolver 路径、专用服务账号及不可组/其他用户写入的兼容规则；其他系统配置与可执行文件保持 root 所有要求。原始失败与修复后验收分别记录。
 
+修正 Worker 首次派发前的取消竞态：本地准备已消耗序号但尚未发送调用时，不再向未登记该领取的 Worker 发送 RELEASE。同一领取一旦尝试派发，后续本地取消仍保留正常释放和失联保护。旧生产红对照复现额外释放导致 `WORKER_RELEASE_RECEIPT_MISSING`；修复后 Linux Worker/Workflow 五组 **44/44**、沙箱必验 **25/25**、Windows Worker 四组 **36/36** 与原暂停单项 **1/1** 通过。原 Windows/macOS CI 失败、完整证据及准确提交后续 CI 分别保留，见[竞态研究](./docs/research/worker-pre-dispatch-cancellation-2026-11-26.md)。
+
 ## 0.2.0-alpha.28 — Workflow 首次请求前暂停收尾
 
 Workflow 节点在根暂停时，如果 Worker 已返回 `CANCELLED` 且确认尚无模型请求、请求记录或其他未知效果，直接保存原 Worker 取消回执并结束节点。已开始请求或存在未确认效果时继续采用未知状态保护。

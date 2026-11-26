@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "version": "0.2.0-alpha.29",
-  "recordedAt": "2026-11-26T10:26:53+08:00",
+  "recordedAt": "2026-11-26T11:17:50+08:00",
   "baseCommit": "af5ac1eedd66ad53db619cbdc68b2db2ab67bbc5",
-  "status": "FINAL_RESOLVER_LINUX25_AND_PERMISSION20_PASSED; PRODUCTION_WEB273_PASSED; EARLIER_WINDOWS_FULL_PASSED; FINAL_EXACT_COMMIT_CI_PENDING",
+  "status": "FINAL_COMMON_RUNTIME_LINUX44_AND_SANDBOX25_PASSED; WINDOWS36_AND_PAUSE1_PASSED; PRODUCTION_WEB273_PASSED; EXACT_COMMIT_CI_PENDING",
   "implementationScope": "Linux strict native CLI policy linux-bwrap-workspace-v1: namespace/mount/seccomp isolation, explicit environment, read-only help probe, same policy in direct runtime and original independent Worker, pre-prompt and pre-budget failure closure.",
   "linuxMandatory": {
     "status": "passed",
@@ -110,7 +110,7 @@
     },
     "sourceFileCount": 152,
     "sourceTreeSha256": "fa7050cb90706a820b9991a09d04f3c1c41e22c179e7689c9563e695c88900ec",
-    "allSourceBytesEqualToCurrentCheckout": true,
+    "allSourceBytesEqualToCurrentCheckout": false,
     "log": {
       "path": ".runtime/alpha29-20261126/linux-resolver-final/maven.log",
       "bytes": 5838,
@@ -126,7 +126,8 @@
       "Original independent Worker: four file/network combinations, read-only help and model command have fresh HOME and explicit environment",
       "One CLI_SESSION budget and durable request receipt; missing terminal stays UNKNOWN; unavailable launch commits no model budget and delivers no prompt",
       "Actual cancellation stops original PID/birth-identified descendant with no delayed write; original request UNKNOWN/CLI_INTERRUPTED, MODEL lease UNKNOWN, budget remains one"
-    ]
+    ],
+    "sourceComparisonScope": "Historical resolver/stream-filter source snapshot; common ProcessWorkspaceRuntime and its regression tests changed afterwards. Final all-source Linux proof is claimPreDispatchCancellation.linuxMandatory."
   },
   "datagramNegativeControl": {
     "status": "expected_failure",
@@ -380,7 +381,7 @@
     },
     "sourceFileCount": 152,
     "sourceTreeSha256": "16ea2b1df4fe9166f58229c479f21f72c668cd6abe8854e0dea2325aff271808",
-    "allSourceBytesEqualToCurrentCheckout": true,
+    "allSourceBytesEqualToCurrentCheckout": false,
     "log": {
       "path": ".runtime/alpha29-20261126/linux-worker-stream-final/maven.log",
       "bytes": 5920,
@@ -397,7 +398,8 @@
       "One CLI_SESSION budget and durable request receipt; missing terminal stays UNKNOWN; unavailable launch commits no model budget and delivers no prompt",
       "Actual cancellation stops original PID/birth-identified descendant with no delayed write; original request UNKNOWN/CLI_INTERRUPTED, MODEL lease UNKNOWN, budget remains one"
     ],
-    "scope": "Passed before the systemd-resolved ownership compatibility fix; retained as historical evidence."
+    "scope": "Passed before the systemd-resolved ownership compatibility fix; retained as historical evidence.",
+    "sourceComparisonScope": "Historical resolver/stream-filter source snapshot; common ProcessWorkspaceRuntime and its regression tests changed afterwards. Final all-source Linux proof is claimPreDispatchCancellation.linuxMandatory."
   },
   "resolverPermissionRegression": {
     "status": "passed",
@@ -459,7 +461,7 @@
     }
   },
   "resolverDiagnosticCi": {
-    "status": "ubuntu_and_macos_failed; windows_running_before_resolver_fix_push",
+    "status": "completed_cancelled; ubuntu_and_macos_failed; windows_cancelled",
     "workflowRun": 45738852507,
     "commit": "3497b2a41ea1dec5f0ea7014bf85557a57c64fe2",
     "url": "https://github.com/lihe-he/multi-agent/actions/runs/45738852507",
@@ -489,7 +491,7 @@
       "errors": 0,
       "skipped": 29,
       "failure": "WorkflowExecutionTest.pauseBeforeTheNextModelRequestReusesOnlyTheCompletedNodeAndKeepsTheRootBudget",
-      "observed": "First node SUCCEEDED, writer node PAUSED; root became UNKNOWN because workspace write protection and dispatch settlement remained unconfirmed. Root cause is under investigation; Linux resolver compatibility does not claim to fix this failure.",
+      "observed": "Original saved database/WAL/SHM copy confirms writer WORKFLOW_MODEL operation CANCELLED with zero writer requests and root budget one; Worker LOST and workspace write lease UNKNOWN both retain WORKER_RELEASE_RECEIPT_MISSING. Claim sequence was advanced by local preparation before any INVOKE, then the old releaseClaim sent RELEASE for the unregistered claim. Old-production deterministic red control reproduces the same release/fence chain.",
       "rawLog": {
         "path": ".runtime/alpha29-20261126/ci-3497b2a/20261126T021842Z-macos-job139638811086.log",
         "bytes": 64854,
@@ -499,8 +501,24 @@
         "id": 15081425543,
         "bytes": 10752193,
         "sha256": "007eec2ff477c0ff05f8be42b8025adbb216d552fecbc9d7a0c98f10ac364d97",
-        "downloadedAndHashVerified": false
+        "downloadedAndHashVerified": true,
+        "regularFixtureFilesVerified": 280,
+        "fixtureHashVerification": {
+          "path": ".runtime/alpha29-20261126/ci-3497b2a/macos-original-fixture-archive-sha256-verification.json",
+          "bytes": 98170,
+          "sha256": "c0aebfcc5b120fefefa297e9d010f532942ef84e560badaf71f1f3cd1cb865ab"
+        }
+      },
+      "databaseSummary": {
+        "path": ".runtime/alpha29-20261126/ci-3497b2a/macos-workflow-db-summary.json",
+        "bytes": 24435,
+        "sha256": "3b3f9aad0124dee73f7fb1ab25893c3d78219f82106f8a87d5c53345cbf1db3b"
       }
+    },
+    "terminalSummary": {
+      "path": ".runtime/alpha29-20261126/ci-3497b2a/diagnostic-run-terminal-summary.json",
+      "bytes": 2025,
+      "sha256": "b18fd7ee2c1e5d8f390249c13c063e789780b33fab881a1f1565fce99929ab25"
     }
   },
   "postCommitCommentAudit": {
@@ -514,7 +532,470 @@
     }
   },
   "exactCommitCi": {
-    "status": "pending_after_resolver_fix",
-    "scope": "Final production source compiles and all applicable acceptance steps must complete on Ubuntu, Windows, macOS."
+    "status": "pending_push",
+    "scope": "Final common-runtime fix still requires its precise commit three-platform CI. Earlier c0346ed Ubuntu/macOS success and Windows failure are preserved separately."
+  },
+  "resolverFixCommitCi": {
+    "status": "completed_failure",
+    "commit": "c0346eddd485db0e94826445528500cac7890e85",
+    "workflowRun": 45742561840,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/45742561840",
+    "ubuntu": "completed_success",
+    "macos": "completed_success",
+    "windows": {
+      "status": "completed_failure",
+      "job": 139650941512,
+      "step": "Core tests and package",
+      "tests": 770,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 26,
+      "failure": "WorkflowExecutionTest.pauseBeforeTheNextModelRequestReusesOnlyTheCompletedNodeAndKeepsTheRootBudget",
+      "observed": "First node SUCCEEDED, writer PAUSED, root UNKNOWN with WORKER_RELEASE_RECEIPT_MISSING; this run precedes the dispatch-attempt marker fix.",
+      "rawLog": {
+        "path": ".runtime/alpha29-20261126/ci-c0346ed/windows-job139650941512.log",
+        "bytes": 66332,
+        "sha256": "fbb73ee1ac1d64f3f041f1807357cb7f4647bab24cf6feb12b6245b518f45816"
+      }
+    }
+  },
+  "claimPreDispatchCancellation": {
+    "status": "LOCAL_RED_GREEN_PASSED; EXACT_COMMIT_CI_PENDING",
+    "semantics": "Claim-scoped sticky dispatchAttempted is set immediately before WorkerProcess.invoke, after local stage-input preparation. Sequence remains monotonic. A never-dispatched first invocation sends no RELEASE; every previously attempted dispatch preserves existing release/fail-closed handling.",
+    "linuxWorkerWorkflow": {
+      "command": "setpriv --bounding-set=-sys_admin mvn -B -ntp -o -f /alpha29-claim-release-green2/pom.xml -Dtest=ProcessWorkspaceRuntimeTest,WorkflowExecutionTest,WorkerProcessTest,WorkerRpcTest,WorkerLeaseTest clean test",
+      "results": {
+        "tests": 44,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "suites": [
+        {
+          "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/green2/target/surefire-reports/TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+            "bytes": 19665,
+            "sha256": "ccc8e8939b00dfa98c5359a27e7e611cc3ce1cd0749a74d7c6c35e921bb67c53"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.WorkerLeaseTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/green2/target/surefire-reports/TEST-dev.agentworkbench.WorkerLeaseTest.xml",
+            "bytes": 18350,
+            "sha256": "e6b5f4c4ee43a3aab0e3a61aa29bf06c9e10fa8e9dcb45e450df539122a3f8ec"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.WorkerProcessTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/green2/target/surefire-reports/TEST-dev.agentworkbench.WorkerProcessTest.xml",
+            "bytes": 18293,
+            "sha256": "2bf13f9a0dcf496c3500363b47ea9db563b671d583a346e652abe69d6c41502c"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.WorkerRpcTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/green2/target/surefire-reports/TEST-dev.agentworkbench.WorkerRpcTest.xml",
+            "bytes": 17690,
+            "sha256": "7bfadc5a57527fc0a653251f3ddc1305e6f1e34902ca23f6100a3bb38cf82cbe"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.WorkflowExecutionTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/green2/target/surefire-reports/TEST-dev.agentworkbench.WorkflowExecutionTest.xml",
+            "bytes": 18368,
+            "sha256": "d8e20a7c4281b30bb482b496fb0801256075d731dff15228ad6e18966c8b9081"
+          }
+        }
+      ],
+      "sourceFileCount": 152,
+      "sourceTreeSha256": "9a0a8fc70319dab20432466cab9b8327031bfb502bb63bc6c63e344c571338ae",
+      "sourceSnapshot": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/green2/source-snapshot.json",
+        "bytes": 30000,
+        "sha256": "b1acc238bf5d62bf71298e842f2775905f2dfebe434165411062b4aa0ea44491"
+      },
+      "sourceMismatches": [],
+      "allSourceBytesEqualToCurrentCheckout": true,
+      "environment": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/green2/environment.json",
+        "bytes": 3202,
+        "sha256": "0fe3744bac9a2cdf887cc7e8a285f57fde5404c8a4ce7e7716873efc088a643d"
+      },
+      "log": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/green2/maven-worker-workflow.log",
+        "bytes": 3637,
+        "sha256": "f52e6403a321a628859dd3764e88f7fb7703be33b83f1caf2995ab2edb5b18be"
+      },
+      "manifest": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/green2/sha256-manifest.json",
+        "bytes": 104432,
+        "sha256": "2b99f9754d5715c5c2343f24fe9f443e56f901ffb8ec8a6baf3e5fc4a87a416e"
+      }
+    },
+    "linuxMandatory": {
+      "command": "setpriv --bounding-set=-sys_admin mvn -B -ntp -o -f /alpha29-claim-release-linux25/pom.xml -Dworkbench.require-linux-sandbox=true -Dtest=LinuxBubblewrapSandboxPolicyTest,LinuxNativeSandboxWorkerTest clean test",
+      "results": {
+        "tests": 25,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "suites": [
+        {
+          "name": "dev.agentworkbench.LinuxNativeSandboxWorkerTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/linux25/target/surefire-reports/TEST-dev.agentworkbench.LinuxNativeSandboxWorkerTest.xml",
+            "bytes": 18353,
+            "sha256": "c3c470999d64b029adda92b24c8feeb9498d33087c5e713a41944fd9b274ec45"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.runtime.LinuxBubblewrapSandboxPolicyTest",
+          "tests": 18,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/linux25/target/surefire-reports/TEST-dev.agentworkbench.runtime.LinuxBubblewrapSandboxPolicyTest.xml",
+            "bytes": 23178,
+            "sha256": "0dfc7051636e8481312e6a0160f6d5e19a2e4ababfd80ddec1505ae46034bdbd"
+          }
+        }
+      ],
+      "sourceFileCount": 152,
+      "sourceTreeSha256": "9a0a8fc70319dab20432466cab9b8327031bfb502bb63bc6c63e344c571338ae",
+      "sourceSnapshot": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/linux25/source-snapshot.json",
+        "bytes": 30004,
+        "sha256": "0266822fc55a2d769e3880063e779876924e9c37228a7c5d68cb11f6d9c4534b"
+      },
+      "sourceMismatches": [],
+      "allSourceBytesEqualToCurrentCheckout": true,
+      "environment": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/linux25/environment.json",
+        "bytes": 3202,
+        "sha256": "406ff34209490cf1e8471df1dc7e3c617419e2a34de30c074b3beddbf5cadd63"
+      },
+      "log": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/linux25/maven-linux-sandbox.log",
+        "bytes": 5826,
+        "sha256": "c36f365014589c6d044856ab5d4f6f99eca95409308065ee6b7cb53f38688e45"
+      },
+      "manifest": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/linux25/sha256-manifest.json",
+        "bytes": 103339,
+        "sha256": "4553df1b358eb70813761d3ba1c303565db9a12926cbf2a2252d3a394eca8b62"
+      }
+    },
+    "oldProductionRedControl": {
+      "command": "setpriv --bounding-set=-sys_admin mvn -B -ntp -o -f /alpha29-claim-release-red/pom.xml -Dtest=ProcessWorkspaceRuntimeTest#localPreDispatchFailureDoesNotReleaseAnUnsentClaimOrFenceItsWorker+aPreviouslyDispatchedClaimStillReleasesAfterItsNextInvocationCancelsLocally clean test",
+      "results": {
+        "tests": 3,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      "suites": [
+        {
+          "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+          "tests": 3,
+          "failures": 2,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/red/target/surefire-reports/TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+            "bytes": 25467,
+            "sha256": "7a16a2d717d098cf763e032654c4fd3f855bb0f9303e669502f9945141f439c9"
+          }
+        }
+      ],
+      "sourceFileCount": 152,
+      "sourceTreeSha256": "eb7b3c979943acc7e014a8e82ee6190136a8e8fce540a21d2d257972f9056df9",
+      "sourceSnapshot": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/red/source-snapshot.json",
+        "bytes": 30207,
+        "sha256": "1fd11183d8ce91f5a2b1fc0553ce34bc10cec0d4c878ba529410108106d25311"
+      },
+      "sourceMismatches": [
+        "src/main/java/dev/agentworkbench/ProcessWorkspaceRuntime.java",
+        "src/test/java/dev/agentworkbench/ProcessWorkspaceRuntimeTest.java"
+      ],
+      "allSourceBytesEqualToCurrentCheckout": false,
+      "environment": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/red/environment.json",
+        "bytes": 3202,
+        "sha256": "b5faa5d463ab9dba22c37ac1e42ab6c9bcda2cb304c3f2c8084da7f84f7bc696"
+      },
+      "log": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/red/maven.log",
+        "bytes": 11846,
+        "sha256": "dc567b6d49dd0bf2f17c0fa4ca158b4e453a8aca1ea6471f4cb9b9366fdc2403"
+      },
+      "manifest": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/red/sha256-manifest.json",
+        "bytes": 102898,
+        "sha256": "679c5932831d014585b5c99803f4773ceea6944ebf9ab61e6c67448146e5a04b"
+      }
+    },
+    "redFenceDiagnostic": {
+      "evidence": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/red-fence-diagnostic/evidence/actual-red-fence.json",
+        "bytes": 6587,
+        "sha256": "90ff4fc34ae95eecb90f987f5c0fce2a87faf1cf1cb24322f02eca94bef4d825"
+      },
+      "cancelChecks": 2,
+      "invokeFrames": 0,
+      "extraReleaseFrames": 1,
+      "modelRequests": 0,
+      "httpCalls": 0,
+      "reason": "WORKER_RELEASE_RECEIPT_MISSING",
+      "scope": "Ignored diagnostic uses preserved old red compiled production classes, not the fixed implementation; original Worker and its state were retained."
+    },
+    "windowsWorkerRegression": {
+      "status": "passed",
+      "platform": "Windows",
+      "java": "Temurin 21.0.13+9",
+      "maven": "3.9.11",
+      "command": "mvn -B -ntp -f core/pom.xml -Dtest=ProcessWorkspaceRuntimeTest,WorkerProcessTest,WorkerRpcTest,WorkerLeaseTest test",
+      "completedAt": "2026-11-26T10:57:58+08:00",
+      "totalSeconds": 273,
+      "results": {
+        "tests": 36,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "suites": [
+        {
+          "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/windows-claim-runtime-regression/TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+            "bytes": 25115,
+            "sha256": "72ac272f30e9764b903437319b6b8842f7c11ba2b219a0b1f17cc292cd1c58a2"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.WorkerProcessTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/windows-claim-runtime-regression/TEST-dev.agentworkbench.WorkerProcessTest.xml",
+            "bytes": 23726,
+            "sha256": "963d86463844834cca9435cb006bf5156bef439b52db25f87447b5f5bca55713"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.WorkerRpcTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/windows-claim-runtime-regression/TEST-dev.agentworkbench.WorkerRpcTest.xml",
+            "bytes": 23124,
+            "sha256": "04718bd155e38a699f232c213fdd889db64547d4d1dacff228e8f4434173fccd"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.WorkerLeaseTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/windows-claim-runtime-regression/TEST-dev.agentworkbench.WorkerLeaseTest.xml",
+            "bytes": 23787,
+            "sha256": "a3f8b86336c9d009e953b194bc27322ea0822868eacf3806b0bf40d07634970e"
+          }
+        }
+      ],
+      "sourceSnapshot": {
+        "path": ".runtime/alpha29-20261126/windows-claim-runtime-regression/source-snapshot.json",
+        "bytes": 29453,
+        "sha256": "2c31402a64fcb96b2de8bd7f89b4a542214437fc01537600b06fe62eddedea7a"
+      },
+      "sourceFileCount": 152,
+      "classes": [
+        {
+          "path": ".runtime/alpha29-20261126/windows-claim-runtime-regression/ProcessWorkspaceRuntime.class",
+          "bytes": 36602,
+          "sha256": "f9889b3f56e6bf377a071adbb819d91191e20a9c64d58049cecab68365beeafb"
+        },
+        {
+          "path": ".runtime/alpha29-20261126/windows-claim-runtime-regression/ProcessWorkspaceRuntime$Claim.class",
+          "bytes": 1047,
+          "sha256": "373a42f479bdd3d39f8fcac4e987ac8b9c7694d45e407ac2f42ab640d92dcad5"
+        },
+        {
+          "path": ".runtime/alpha29-20261126/windows-claim-runtime-regression/ProcessWorkspaceRuntime$Invocation.class",
+          "bytes": 14789,
+          "sha256": "20d4f034aa6caa6e0f2af0a3aae102ecdd8eeed5a0e199bb3a9a6eff073c62fd"
+        }
+      ],
+      "log": {
+        "path": ".runtime/alpha29-20261126/windows-claim-runtime-regression.log",
+        "bytes": 3776,
+        "sha256": "b1cc1f17daace253fd8904f95ccc2f03987810a3bd5e2fad1dd3362e2a783544"
+      },
+      "scope": "Final common-runtime fix and final regression source. Existing production classes from the preceding compile were reused; tests recompiled all 60 test sources. Full clean Linux and exact commit CI are separate evidence."
+    },
+    "windowsOriginalPauseRegression": {
+      "results": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "command": "mvn -B -ntp -f core/pom.xml -Dtest=WorkflowExecutionTest#pauseBeforeTheNextModelRequestReusesOnlyTheCompletedNodeAndKeepsTheRootBudget test",
+      "completedAt": "2026-11-26T10:46:02+08:00",
+      "report": {
+        "path": ".runtime/alpha29-20261126/windows-pause-dispatch-fix/TEST-dev.agentworkbench.WorkflowExecutionTest.xml",
+        "bytes": 22739,
+        "sha256": "ce66383b0ddaa99df4cd0db9c2b1673697df7525fa6c1fe6b1abdf34887c3140"
+      },
+      "log": {
+        "path": ".runtime/alpha29-20261126/windows-pause-dispatch-fix/windows-pause-dispatch-fix.log",
+        "bytes": 3602,
+        "sha256": "c7bddf01e4faba94b56c75fadffbcffad5c207380da31d2f19f11a556b794f4a"
+      },
+      "scope": "Fixed production; before the five new regression cases were finally added. Not the final full-source Windows CI."
+    },
+    "firstExpandedLinuxAttempt": {
+      "command": "setpriv --bounding-set=-sys_admin mvn -B -ntp -o -f /alpha29-claim-release-green/pom.xml -Dtest=ProcessWorkspaceRuntimeTest,WorkflowExecutionTest,WorkerProcessTest,WorkerRpcTest,WorkerLedgerTest clean test",
+      "results": {
+        "tests": 35,
+        "failures": 7,
+        "errors": 0,
+        "skipped": 0
+      },
+      "suites": [
+        {
+          "name": "dev.agentworkbench.ProcessWorkspaceRuntimeTest",
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/green-first-no-node/target/surefire-reports/TEST-dev.agentworkbench.ProcessWorkspaceRuntimeTest.xml",
+            "bytes": 19654,
+            "sha256": "512fd64bbe2d7295331a74e6a766e0781e0616eddde51523604d4754753b52a6"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.WorkerProcessTest",
+          "tests": 8,
+          "failures": 2,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/green-first-no-node/target/surefire-reports/TEST-dev.agentworkbench.WorkerProcessTest.xml",
+            "bytes": 20428,
+            "sha256": "c5cec3c1a8264ddbebf85405b332058004ba8382edb8b46249f438fd0e894f50"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.WorkerRpcTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/green-first-no-node/target/surefire-reports/TEST-dev.agentworkbench.WorkerRpcTest.xml",
+            "bytes": 17680,
+            "sha256": "0845f2a1be15cacdc5a1ab4043364eac8088367519d55b4c567a917b29039069"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.WorkflowExecutionTest",
+          "tests": 8,
+          "failures": 5,
+          "errors": 0,
+          "skipped": 0,
+          "report": {
+            "path": ".runtime/alpha29-20261126/claim-release-regression/green-first-no-node/target/surefire-reports/TEST-dev.agentworkbench.WorkflowExecutionTest.xml",
+            "bytes": 83375,
+            "sha256": "7551098d6539453ea5a8af7807d58e04a6a057d1f6ab21d6b1ad065ef3127b53"
+          }
+        }
+      ],
+      "sourceFileCount": 152,
+      "sourceTreeSha256": "9a0a8fc70319dab20432466cab9b8327031bfb502bb63bc6c63e344c571338ae",
+      "sourceSnapshot": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/green-first-no-node/source-snapshot.json",
+        "bytes": 30007,
+        "sha256": "6785ec75b5affcdda63c6acae37087fcb5cb36b9c31d4c3de973a93b04fff7d0"
+      },
+      "sourceMismatches": [],
+      "allSourceBytesEqualToCurrentCheckout": true,
+      "environment": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/green-first-no-node/environment.json",
+        "bytes": 3202,
+        "sha256": "3139387d310a4548afbb3c34d9b2270c6cfa7105f272a966ab4506d1b99b0cdb"
+      },
+      "log": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/green-first-no-node/maven-worker-workflow.log",
+        "bytes": 72535,
+        "sha256": "67c44b201276af84f451effca6bc4e71f58e3009273fd63df435da6490365e8c"
+      },
+      "manifest": {
+        "path": ".runtime/alpha29-20261126/claim-release-regression/green-first-no-node/sha256-manifest.json",
+        "bytes": 621153,
+        "sha256": "fbd0211829ce7810d93eee063cf506d1137c6d30ab3e65593f9e37a7ca64260c"
+      },
+      "scope": "Preserved 35-case run with seven failures in actual Node command paths before Node was installed. ProcessWorkspaceRuntimeTest 15 cases passed. Final clean green2 uses official Linux Node 22.14.0."
+    },
+    "regressionAssertions": [
+      "First local cancellation and stage-input exception send neither INVOKE nor RELEASE; zero HTTP, request records and budget; original Worker remains reusable",
+      "Earlier actual dispatch under the same Claim still requires RELEASE when its next invocation cancels locally",
+      "Remote CHECK_CURRENT CANCELLED and VALIDATION each require RELEASE despite zero HTTP, request records and budget",
+      "Existing missing-response, active-call, original Worker identity, release and UNKNOWN gates remain in the five-suite regression"
+    ],
+    "research": "docs/research/worker-pre-dispatch-cancellation-2026-11-26.md"
+  },
+  "finalJavaCommentAudit": {
+    "status": "passed",
+    "baseCommit": "af5ac1eedd66ad53db619cbdc68b2db2ab67bbc5",
+    "originalComments": 79,
+    "newMultilineJavadoc": 17,
+    "receipt": {
+      "path": ".runtime/alpha29-20261126/java-comment-audit-claim-final.json",
+      "bytes": 2525,
+      "sha256": "bb5d584b8f6fe952fe041a0958d9c032f786eaa37c0b77055d53e4b6c30b4632"
+    }
   }
 }

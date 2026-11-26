@@ -16,6 +16,14 @@ Ubuntu 初始与诊断 CI 确认 `/etc/resolv.conf` 指向由专用 `systemd-res
 
 生产 Web 构建及 **273/273** UI 用例通过，源码/资产摘要稳定，44 张历史截图保持原字节。Java 注释审计保留全部 70 条原注释，15 条新增 Javadoc 均为标准多行。Windows 完整本机运行启动时的源码快照早于最终 Linux 补充，结果与准确提交的三端 CI 分别保存，不相互替代。原始失败尝试、负对照、摘要和后续 CI 终态见[alpha.29 验收回执](./qa/alpha29-linux-native-sandbox.json)。
 
+### Worker 派发前取消的原领取收尾
+
+诊断提交 `3497b2a` 的 macOS 原现场显示，写入节点在首次模型请求前暂停、根预算仍为 1，却因 `WORKER_RELEASE_RECEIPT_MISSING` 封闭 Worker 并保留根写入归属 `UNKNOWN`。完整 artifact 摘要与 280 份夹具文件逐一核对，数据库仅从原 SQLite/WAL/SHM 的副本读取。resolver 修复提交 `c0346ed` 的 [CI Run 45742561840](https://github.com/lihe-he/multi-agent/actions/runs/45742561840) 中 Ubuntu/macOS 整条成功，Windows 核心 **770 项、1 失败、0 错误、26 条件跳过**，仍是同一暂停用例与释放缺失原因。
+
+确定性红对照在旧生产实现复现两项失败：首次本地取消与输入准备异常均未发送 INVOKE，却多发一次 RELEASE；独立诊断实际记录同一 Worker 随后以原缺失释放原因失效。现将派发尝试保存为每个 Claim 的单调标记，输入准备成功后、派发前置位。序号继续单调递增；已尝试派发的领取即使后续本地取消，或远端在模型请求前拒绝，仍必须释放。真实丢回执、活动调用与失联继续保留既有保护。
+
+最终共同源码在独立 Linux 目录分别清洁编译：Worker/Workflow/进程/RPC/租约 **44/44**，沙箱必验 **25/25**，全部零失败、错误和跳过；两轮的 152 份源码均与当前工作区逐字节一致。Windows Worker 四组 **36/36**，此前固定生产实现的原暂停单项 **1/1** 通过。首次扩展 Linux 运行因缺少 Node 出现的七项失败及旧生产两项红对照原报告保留，补齐官方 Node 后以新目录重新清洁验证。alpha.29 全部受改 Java 共保留 **79** 条原注释，**17** 条新增 Javadoc 均为多行。准确提交的三端完整 CI 另行记录；这些定向结果不替代该 CI。[研究与边界](./research/worker-pre-dispatch-cancellation-2026-11-26.md) · [完整回执](./qa/alpha29-linux-native-sandbox.json)。
+
 ## 0.2.0-alpha.28 Workflow 首次请求前暂停收尾
 
 Workflow 节点等待模型资源期间收到根暂停后，原生 Worker 可能返回 `CANCELLED` 结果，而不是抛出取消异常。现于发布节点证据前识别该零请求边界：必须同时满足根已停止、AgentRun 调用数为零、没有该运行的模型请求记录且根无未知效果，才将原操作保存为 `CANCELLED` 并执行正常收尾。其余路径继续保留原有 `UNKNOWN` 保护。回归还核对节点操作、Worker 租约、根写入保护与任务执行的终态。
