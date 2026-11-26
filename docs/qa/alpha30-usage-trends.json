@@ -36,6 +36,20 @@
     "reproduction": "Linux isolated probe passed; Windows root cause remains unconfirmed",
     "evidenceLimits": ["失联快照缺少锁文件", "WAL 复制存在变化窗口", "不能从副本断言原子状态根因"]
   },
+  "currentCommitCi": {
+    "commit": "24737aa1b64bc4e3be203bf948727cdb0c2ab14e",
+    "run": 45774928226,
+    "status": "completed",
+    "conclusion": "failure",
+    "platforms": {
+      "ubuntu": {"conclusion": "failure", "failedStep": "UI interaction tests"},
+      "macos": {"conclusion": "failure", "failedStep": "UI interaction tests"},
+      "windows": {"conclusion": "failure", "failedStep": "UI interaction tests"}
+    },
+    "passedBeforeFailure": ["Release version declarations", "Linux native sandbox boundaries where applicable", "Core tests and package", "Web build", "Full local protocol lifecycle", "Usage trends browser cases"],
+    "knownUiFailures": {"passed": 275, "failed": 9, "total": 284, "suites": ["connection-recovery", "page-recovery", "workflow readiness"]},
+    "runUrl": "https://github.com/lihe-he/multi-agent/actions/runs/45774928226"
+  },
   "remainingScope": [
     "持久调度与独立会话",
     "IANA 时区、漏跑处理与并发去重",
