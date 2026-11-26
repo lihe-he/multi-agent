@@ -56,7 +56,7 @@ public class WorkspaceRuntime {
 
     @Autowired
     public WorkspaceRuntime(ObjectMapper json, @Value("${workbench.data-dir:./data}") String dataDir) {
-        this(json, dataDir, NativeSandboxPolicy.unavailable());
+        this(json, dataDir, NativeSandboxPolicy.platform(Path.of(dataDir)));
     }
 
     public WorkspaceRuntime(ObjectMapper json, String dataDir, NativeSandboxPolicy nativeSandboxPolicy) {
@@ -700,7 +700,7 @@ public class WorkspaceRuntime {
         try {
             Path workingDirectory = sandboxRequest == null ? Path.of(workspace) : sandboxRequest.workspace();
             log.accept("原生 CLI 已启动；进程输出不会写入任务日志。");
-            Map<String, Object> run = execute(sandboxDecision == null ? command : sandboxDecision.command(), workingDirectory, prompt, cancelled, ignored -> {}, Duration.ofMinutes(15), true);
+            Map<String, Object> run = executeNative(sandboxDecision, command, workingDirectory, prompt, cancelled, Duration.ofMinutes(15), true);
             if (sandboxDecision != null) run.put("osSandbox", sandboxReceipt(sandboxRequest, sandboxDecision));
             String processState = run.get("status").toString();
             NativeCliReceipt.Receipt terminal = nativeCliReceipt.parse(engine, Objects.toString(run.get("stdout"), ""),
@@ -735,13 +735,13 @@ public class WorkspaceRuntime {
         if (!Set.of("CODEX", "CLAUDE").contains(engine)) throw new IllegalArgumentException("未知运行器：" + engine);
         List<String> command = nativeCommand(executable, engine.equals("CODEX") ? List.of("exec", "--help") : List.of("--help"));
         Path cwd = dataDirectory();
+        NativeSandboxPolicy.Decision probeDecision = null;
         if (sandboxRequest != null) {
             NativeSandboxPolicy.Request probeRequest = new NativeSandboxPolicy.Request(sandboxRequest.workspace(), NativeSandboxPolicy.FileAccess.READ_ONLY, sandboxRequest.networkAccess());
-            NativeSandboxPolicy.Decision probeDecision = requireSandboxDecision(probeRequest, command);
-            command = probeDecision.command();
+            probeDecision = requireSandboxDecision(probeRequest, command);
             cwd = sandboxRequest.workspace();
         }
-        Map<String, Object> help = execute(command, cwd, "", cancelled, ignored -> {}, Duration.ofSeconds(15), false);
+        Map<String, Object> help = executeNative(probeDecision, command, cwd, "", cancelled, Duration.ofSeconds(15), false);
         List<String> flags = engine.equals("CODEX") ? List.of("--ignore-user-config", "--ignore-rules") : List.of("--safe-mode");
         if (!"SUCCEEDED".equals(help.get("status")) || flags.stream().anyMatch(flag -> !help.get("output").toString().contains(flag))) {
             throw new IllegalArgumentException("运行器缺少必要配置隔离能力，请升级 CLI 或使用 API 运行器：" + String.join(", ", flags));
@@ -780,6 +780,15 @@ public class WorkspaceRuntime {
     private Map<String, Object> sandboxReceipt(NativeSandboxPolicy.Request request, NativeSandboxPolicy.Decision decision) {
         return object("state", "ENFORCED", "policyId", decision.policyId(), "workspace", request.workspace().toString(),
             "fileAccess", request.fileAccess().name(), "networkAccess", request.networkAccess().name());
+    }
+
+    /**
+     * 帮助预检和任务进程都应用同一策略环境，不继承宿主凭据或运行时注入参数。
+     */
+    private Map<String, Object> executeNative(NativeSandboxPolicy.Decision decision, List<String> command, Path workspace,
+                                              String input, BooleanSupplier cancelled, Duration timeout, boolean receipt) {
+        return execute(decision == null ? command : decision.command(), workspace, input, cancelled, ignored -> {}, timeout, receipt,
+            null, 0, null, decision == null ? Map.of() : decision.environment(), decision == null || decision.inheritEnvironment());
     }
 
     private Map<String, Object> apiRun(Map<String, Object> route, String key, Path root, String prompt, boolean readOnly,
@@ -1544,6 +1553,11 @@ public class WorkspaceRuntime {
 
     private Map<String, Object> execute(List<String> argv, Path cwd, String input, BooleanSupplier cancelled,
                                          Consumer<String> log, Duration timeout, boolean receipt, ByteArrayOutputStream binaryOutput, int maximumBytes, byte[] binaryInput, Map<String, String> environmentOverrides) {
+        return execute(argv, cwd, input, cancelled, log, timeout, receipt, binaryOutput, maximumBytes, binaryInput, environmentOverrides, true);
+    }
+
+    private Map<String, Object> execute(List<String> argv, Path cwd, String input, BooleanSupplier cancelled,
+                                          Consumer<String> log, Duration timeout, boolean receipt, ByteArrayOutputStream binaryOutput, int maximumBytes, byte[] binaryInput, Map<String, String> environmentOverrides, boolean inheritEnvironment) {
         Process process = null;
         Path receiptFile = null;
         StringBuilder output = new StringBuilder();
@@ -1557,6 +1571,7 @@ public class WorkspaceRuntime {
         try {
             Files.createDirectories(cwd);
             ProcessBuilder builder = new ProcessBuilder(argv).directory(cwd.toFile());
+            if (!inheritEnvironment) builder.environment().clear();
             // 子执行者不能继承桌面控制令牌，否则可绕过任务权限调用核心接口。
             builder.environment().keySet().removeIf(key -> key.toUpperCase(Locale.ROOT).startsWith("WORKBENCH_"));
             builder.environment().put("GIT_TERMINAL_PROMPT", "0");

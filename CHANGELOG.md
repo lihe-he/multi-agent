@@ -1,5 +1,13 @@
 # 版本记录
 
+## 0.2.0-alpha.29 — Linux 原生 CLI 文件与网络沙箱
+
+Linux 严格路由接入 bubblewrap、独立命名空间与 seccomp；帮助探测和原模型会话均使用清空后的固定环境、新 HOME/tmp 与实际工作区挂载。只读/工作区写入分别强制执行，普通 socket 按网络策略拒绝或只允许 IPv4/IPv6，保留私有 Unix 流式 socketpair；数据报和顺序包 socketpair、宿主抽象 Unix socket、VSOCK、TIPC、io_uring 与嵌套 user namespace 不获得访问能力。
+
+启动前拒绝核心/系统目录重叠、特殊文件、共享硬链接及工作区外的 Git 管理目录或对象依赖。实际能力预检失败时，在提示交付和模型预算承诺前拒绝。独立 clone 是当前工作台集成范围，Windows/macOS 严格策略、真实官方 CLI 登录与混合阶段仍待完成。来源、协议及准确验证范围见[Linux 沙箱研究](./docs/research/linux-native-sandbox-2026-11-26.md)、[运行协议](./docs/native-sandbox-contract.md)与[实施记录](./docs/implementation-status.md)。
+
+最终源码的真实 Linux 必验 **25/25**、生产 Web UI **273/273** 通过。数据报 pair 的旧过滤器负对照 **2/2 按预期失败**，ALLOW 下宿主实际收到四条消息；修复后两种网络模式都拒绝数据报/顺序包创建，流式私有通信保持可用。Windows 本机完整回归和准确提交的三平台 CI 单独记录于[本轮回执](./docs/qa/alpha29-linux-native-sandbox.json)。
+
 ## 0.2.0-alpha.28 — Workflow 首次请求前暂停收尾
 
 Workflow 节点在根暂停时，如果 Worker 已返回 `CANCELLED` 且确认尚无模型请求、请求记录或其他未知效果，直接保存原 Worker 取消回执并结束节点。已开始请求或存在未确认效果时继续采用未知状态保护。

@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "version": "0.2.0-alpha.29",
+  "recordedAt": "2026-11-26T09:24:55+08:00",
+  "baseCommit": "af5ac1eedd66ad53db619cbdc68b2db2ab67bbc5",
+  "status": "FINAL_LINUX_AND_PRODUCTION_WEB_PASSED; WINDOWS_FULL_REGRESSION_RUNNING; EXACT_COMMIT_CI_PENDING",
+  "implementationScope": "Linux strict native CLI policy linux-bwrap-workspace-v1: namespace/mount/seccomp isolation, explicit environment, read-only help probe, same policy in direct runtime and original independent Worker, pre-prompt and pre-budget failure closure.",
+  "linuxMandatory": {
+    "status": "passed",
+    "command": "mvn -B -ntp -Dworkbench.require-linux-sandbox=true -Dtest=LinuxBubblewrapSandboxPolicyTest,LinuxNativeSandboxWorkerTest clean test",
+    "workingDirectory": "/alpha29-worker-stream-final",
+    "completedAt": "2026-11-26T09:19:43+08:00",
+    "totalSeconds": 20.989,
+    "environment": {
+      "container": "agentworkbench-alpha29-linux-verified",
+      "image": "agentworkbench-alpha29-linux-toolchain:20261126",
+      "imageId": "sha256:ccdc76a0dce928e40a6dc5a3e0ac95336239bdb509786bc5443f05c025dac237",
+      "kernel": "6.6.87.2-microsoft-standard-WSL2",
+      "architecture": "x86_64",
+      "java": "Temurin 21.0.9",
+      "maven": "3.9.11",
+      "bubblewrap": "0.9.0",
+      "python": "3.12.3",
+      "dockerSecurityOptions": [
+        "seccomp=unconfined",
+        "systempaths=unconfined"
+      ],
+      "privileged": false,
+      "repositoryBind": "/src (read-only)",
+      "scope": "Outer container permits namespace creation and /proc/sys setup; the application-generated cBPF, namespace and mount boundaries are exercised by the tests."
+    },
+    "results": {
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": [
+        {
+          "name": "dev.agentworkbench.LinuxNativeSandboxWorkerTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "seconds": 10.597,
+          "report": {
+            "path": ".runtime/alpha29-20261126/linux-worker-stream-final/TEST-dev.agentworkbench.LinuxNativeSandboxWorkerTest.xml",
+            "bytes": 18333,
+            "sha256": "5767738b847bbf402c13ea93428ebf64efce6be0373d129c56d98a9b45dcbdad"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.runtime.LinuxBubblewrapSandboxPolicyTest",
+          "tests": 18,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "seconds": 1.392,
+          "report": {
+            "path": ".runtime/alpha29-20261126/linux-worker-stream-final/TEST-dev.agentworkbench.runtime.LinuxBubblewrapSandboxPolicyTest.xml",
+            "bytes": 23155,
+            "sha256": "8762ebf774d763612d594ee397c6e74507ea241d278ad5ac4fd57ff2a5ef2ff7"
+          }
+        }
+      ]
+    },
+    "sourceSnapshot": {
+      "path": ".runtime/alpha29-20261126/linux-worker-stream-final/source-snapshot.json",
+      "bytes": 20206,
+      "sha256": "dad2a083ae0bb1d9339be3f258d3845f11a25956b137e8e3348f477a36c1c016"
+    },
+    "sourceFileCount": 152,
+    "sourceTreeSha256": "16ea2b1df4fe9166f58229c479f21f72c668cd6abe8854e0dea2325aff271808",
+    "allSourceBytesEqualToCurrentCheckout": true,
+    "log": {
+      "path": ".runtime/alpha29-20261126/linux-worker-stream-final/maven.log",
+      "bytes": 5920,
+      "sha256": "5678abeed25c3871e5208052fb4622eabc2fbbde9f8a50697fbb7639ad3c03d1"
+    },
+    "assertions": [
+      "Actual read-only and writable workspace files plus original host bytes; absolute, relative, symlink and descendant attempts",
+      "Actual host IPv4 loopback: DENY blocked, ALLOW succeeds; ALLOW includes host loopback and has no endpoint whitelist",
+      "Raw socket family/type low-word checks; Unix/VSOCK/TIPC/other families and io_uring blocked",
+      "Actual host abstract stream listener and datagram listener with successful host control message",
+      "Only AF_UNIX SOCK_STREAM socketpair, with NONBLOCK/CLOEXEC and high-word variants, retains private communication; DGRAM/SEQPACKET rejected",
+      "New user namespaces, inherited secrets, host HOME, special files, hardlinks and external Git metadata/object dependencies rejected or hidden",
+      "Original independent Worker: four file/network combinations, read-only help and model command have fresh HOME and explicit environment",
+      "One CLI_SESSION budget and durable request receipt; missing terminal stays UNKNOWN; unavailable launch commits no model budget and delivers no prompt",
+      "Actual cancellation stops original PID/birth-identified descendant with no delayed write; original request UNKNOWN/CLI_INTERRUPTED, MODEL lease UNKNOWN, budget remains one"
+    ]
+  },
+  "datagramNegativeControl": {
+    "status": "expected_failure",
+    "command": "mvn -B -ntp -Dworkbench.require-linux-sandbox=true -Dtest=LinuxBubblewrapSandboxPolicyTest#datagramPairsCannotReachHostAbstractListenersAndOnlyPrivateStreamsRemainAvailable test",
+    "mavenExitCode": 1,
+    "results": {
+      "tests": 2,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0
+    },
+    "oldFilterSourceAndClassUnchanged": true,
+    "oldFilterSourceSha256": "34affb7830974c2d84eea3db968d76ce2f739f6eec9b965b7e023d523bc855a3",
+    "oldFilterClassSha256": "ced74f07d84d3f253861d331413cd84954aa27bdc221a408e182a9e3be2b3ce4",
+    "observedAllowHostMessages": 4,
+    "observedDenyHostMessages": 0,
+    "explanation": "Old AF_UNIX-wide socketpair policy allowed DGRAM/SEQPACKET creation in both modes. In ALLOW, four sandbox sendto messages reached the real host abstract listener. In DENY the network namespace prevented host delivery, but creation itself still violated the final stream-only contract.",
+    "observations": {
+      "path": ".runtime/alpha29-20261126/pair-type-red-previous-context/pair-red-observations.json",
+      "bytes": 7235,
+      "sha256": "4ba49df5a1219e434d4ff6c29fafbb2df154fb6c18742fe2fcbe04242c6df6ac"
+    },
+    "log": {
+      "path": ".runtime/alpha29-20261126/pair-type-red-previous-context/pair-red.log",
+      "bytes": 18326,
+      "sha256": "1cf357ace8e55355b13be787029033482adb8f2762bfada2786c486b132266cc"
+    },
+    "report": {
+      "path": ".runtime/alpha29-20261126/pair-type-red-previous-context/TEST-dev.agentworkbench.runtime.LinuxBubblewrapSandboxPolicyTest.xml",
+      "bytes": 33044,
+      "sha256": "3ee8a43d278c0691691d394770fcd5827d0a249c4fb762001294ca8c05bac475"
+    }
+  },
+  "productionWeb": {
+    "status": "passed",
+    "command": "WORKBENCH_PRESERVE_QA=1 node tools/web-ui-smoke.mjs",
+    "buildCommand": "npm run build --prefix web",
+    "tests": 273,
+    "failures": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "browser": "msedge",
+    "completedAt": "2026-11-26T00:55:41.725Z",
+    "sourcesAndAssetsStillMatch": true,
+    "originalHistoricalImagesPreserved": 44,
+    "receipt": {
+      "path": ".runtime/ui-production-B90Sk9/receipt.json",
+      "bytes": 21617,
+      "sha256": "18e956ffdb25c8310ad447504fef92bb6401a9accab8a08f7fc2b785fe7fc182"
+    },
+    "buildLog": {
+      "path": ".runtime/alpha29-20261126/web-build.log",
+      "bytes": 815,
+      "sha256": "02c06ba142efa64d44a86c663cfbe4a406e3f4ae0c43237f61331eaf40ce3b90"
+    },
+    "log": {
+      "path": ".runtime/alpha29-20261126/web-ui.log",
+      "bytes": 33608,
+      "sha256": "c107b469c52c0decf5afc96dbabef6d506c5b4703676003c169b1af2d8c2a90b"
+    },
+    "scope": "COMPLETE_ACTUAL_PRODUCTION_WEB_UI_CORPUS_WITH_BROWSER_PROTOCOL_FIXTURES; REAL_NATIVE_AND_RELEASE_ACCEPTANCE_SEPARATE"
+  },
+  "windowsFullRegression": {
+    "status": "running",
+    "command": "node tools/manage.mjs verify:core",
+    "java": "21.0.13",
+    "maven": "3.9.11",
+    "log": ".runtime/alpha29-20261126/windows-clean-verify-attempt3.log",
+    "scope": "Compiled before the final Linux root remount/filter refinements and Linux-only test expansions. This local run is not final-source regression proof; exact-commit CI must compile all final sources."
+  },
+  "javaCommentAudit": {
+    "status": "passed",
+    "originalComments": 70,
+    "newMultilineJavadoc": 14,
+    "files": [
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/NativeSandboxPolicy.java",
+        "originalComments": 2,
+        "originalCommentsPreserved": true,
+        "newJavadoc": 2,
+        "sha256": "096a52762c37420de6d80c5eb832231ea1fd898523f18fdce479a21afe645cdf"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/WorkspaceRuntime.java",
+        "originalComments": 68,
+        "originalCommentsPreserved": true,
+        "newJavadoc": 1,
+        "sha256": "e1bd28df2613943837b5cfe4813d9514fcae38885d3a3171f9ca3c71c4821249"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/LinuxBubblewrapSandboxPolicy.java",
+        "originalComments": 0,
+        "originalCommentsPreserved": true,
+        "newJavadoc": 4,
+        "sha256": "958f4b3dcfd7746fd760c761d5aec437363f057dfe01126eba43dc1a3bcd46bd"
+      },
+      {
+        "file": "core/src/main/java/dev/agentworkbench/runtime/LinuxSeccompFilter.java",
+        "originalComments": 0,
+        "originalCommentsPreserved": true,
+        "newJavadoc": 3,
+        "sha256": "314f36c822be6b2da8820098575e7e7dec3eb1e3d7ae5083bbdd6a51efb72e24"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/runtime/LinuxBubblewrapSandboxPolicyTest.java",
+        "originalComments": 0,
+        "originalCommentsPreserved": true,
+        "newJavadoc": 2,
+        "sha256": "ffa9ff6cc949f512d8c705166f9eab8827395fb80e006a8f4c07977f2f5aa01c"
+      },
+      {
+        "file": "core/src/test/java/dev/agentworkbench/LinuxNativeSandboxWorkerTest.java",
+        "originalComments": 0,
+        "originalCommentsPreserved": true,
+        "newJavadoc": 2,
+        "sha256": "94bf41c4bfbe228dc634eefd57443a2255d470df9dfedf5e7fd522b62bd338bb"
+      }
+    ],
+    "receipt": {
+      "path": ".runtime/alpha29-20261126/java-comment-audit.json",
+      "bytes": 1832,
+      "sha256": "5a0469424e87c6eec92b5d74d209835b6bcbbddd26a3e7d7f28008d5aa90bd54"
+    }
+  },
+  "versionVerification": {
+    "status": "passed",
+    "command": "node tools/verify-version.mjs",
+    "expectedVersion": "0.2.0-alpha.29"
+  },
+  "diffVerification": {
+    "status": "passed",
+    "command": "git diff --check"
+  },
+  "earlierAttempts": [
+    {
+      "log": ".runtime/alpha29-20261126/windows-clean-verify.log",
+      "result": "Clean failed on prior long/read-only Git fixture output; remaining target was moved within this workspace to previous-target and retained."
+    },
+    {
+      "log": ".runtime/alpha29-20261126/windows-clean-verify-attempt2.log",
+      "result": "New Worker fixture test compilation failed because ExecutionStore.close requires checked Exception; Fixture.close declaration corrected."
+    },
+    {
+      "log": ".runtime/alpha29-20261126/linux-mandatory.log",
+      "result": "Same test compilation issue; corrected before successful mandatory execution."
+    },
+    {
+      "log": ".runtime/alpha29-20261126/linux-mandatory-attempt2.log",
+      "result": "Outer Docker protected /proc/sys prevented bwrap --disable-userns preflight. Retested in a separate container with systempaths=unconfined; no strict-policy fallback added."
+    },
+    {
+      "log": ".runtime/alpha29-20261126/linux-mandatory-attempt3.log",
+      "result": "Direct policy passed; Worker setup rejected a tracked symlink through existing workspace fingerprint rules. Removed the incompatible Worker fixture symlink; direct policy continues testing symlink boundaries."
+    },
+    {
+      "directory": ".runtime/alpha29-20261126/linux-worker-final",
+      "tests": 23,
+      "result": "Passed with the earlier AF_UNIX-wide pair filter, then superseded by the captured DGRAM bypass, negative control and final 25-test run. This is not final security proof."
+    }
+  ],
+  "exactCommitCi": {
+    "status": "pending",
+    "scope": "Must monitor the implementation commit on ubuntu-latest, windows-latest, macos-latest through terminal result."
+  },
+  "remaining": [
+    "Real official Codex/Claude login and authentication in fresh HOME, task-scoped MCP consumption and mixed Workflow stages",
+    "Windows and macOS strict sandbox implementations remain UNAVAILABLE",
+    "No endpoint/domain/management-port whitelist in ALLOW; host IP loopback is reachable",
+    "Trusted single-user workbench-created independent clone scope; hostile concurrent same-UID path replacement, arbitrary Git layouts and resource quotas are not covered",
+    "aarch64 and big-endian instruction simulation is not real hardware acceptance; executed Linux environment is x86_64",
+    "Local ignored raw evidence is retained on this host; CI test reports and packaging artifacts have separate upload/verification scope"
+  ]
+}

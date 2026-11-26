@@ -33,6 +33,14 @@ jobs:
             web/package-lock.json
       - name: Release version declarations
         run: npm run verify:version
+      - name: Linux native sandbox dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bubblewrap python3
+      - name: Mandatory Linux native sandbox boundaries
+        if: runner.os == 'Linux'
+        run: mvn -B -ntp -f core/pom.xml -Dworkbench.require-linux-sandbox=true -Dtest=LinuxBubblewrapSandboxPolicyTest,LinuxNativeSandboxWorkerTest test
       - name: Core tests and package
         run: mvn -B -ntp -f core/pom.xml verify
       - name: Web dependency install
