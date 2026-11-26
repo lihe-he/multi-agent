@@ -38,6 +38,29 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y bubblewrap python3
+          python3 - <<'PY'
+          import json, os, pathlib, stat
+          results = []
+          for name in ('/etc/resolv.conf', '/etc/hosts', '/etc/nsswitch.conf'):
+              path = pathlib.Path(name)
+              record = {'requested': name}
+              try:
+                  resolved = path.resolve(strict=True)
+                  record['resolved'] = str(resolved)
+                  record['chain'] = []
+                  for entry in (resolved, *resolved.parents):
+                      info = entry.stat()
+                      record['chain'].append({'path': str(entry), 'uid': info.st_uid, 'gid': info.st_gid,
+                          'mode': oct(stat.S_IMODE(info.st_mode)),
+                          'rejectedBySystemPathPolicy': info.st_uid != 0 or bool(info.st_mode & 0o22)})
+              except OSError as error:
+                  record['error'] = type(error).__name__
+              results.append(record)
+          report = pathlib.Path('.runtime/linux-sandbox-system-paths.json')
+          report.parent.mkdir(parents=True, exist_ok=True)
+          report.write_text(json.dumps(results, indent=2) + '\n')
+          print(report.read_text())
+          PY
       - name: Mandatory Linux native sandbox boundaries
         if: runner.os == 'Linux'
         run: mvn -B -ntp -f core/pom.xml -Dworkbench.require-linux-sandbox=true -Dtest=LinuxBubblewrapSandboxPolicyTest,LinuxNativeSandboxWorkerTest test
@@ -248,6 +271,7 @@ jobs:
             .runtime/checkpoints-*/data/checkpoints/
             .runtime/checkpoints-*/中文 checkpoint source/
             .runtime/desktop-deps-*.log
+            .runtime/linux-sandbox-system-paths.json
             .runtime/desktop-deps-verified.json
             .runtime/desktop-package-*.log
             .runtime/desktop-package-verified.json

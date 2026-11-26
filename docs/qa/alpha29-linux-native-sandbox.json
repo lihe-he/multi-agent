@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "version": "0.2.0-alpha.29",
-  "recordedAt": "2026-11-26T09:24:55+08:00",
+  "recordedAt": "2026-11-26T09:54:12+08:00",
   "baseCommit": "af5ac1eedd66ad53db619cbdc68b2db2ab67bbc5",
-  "status": "FINAL_LINUX_AND_PRODUCTION_WEB_PASSED; WINDOWS_FULL_REGRESSION_RUNNING; EXACT_COMMIT_CI_PENDING",
+  "status": "FINAL_LINUX_AND_PRODUCTION_WEB_PASSED; EARLIER_WINDOWS_FULL_PASSED; INITIAL_UBUNTU_CI_ALLOW_GATE_FAILED; DIAGNOSTIC_CI_PENDING",
   "implementationScope": "Linux strict native CLI policy linux-bwrap-workspace-v1: namespace/mount/seccomp isolation, explicit environment, read-only help probe, same policy in direct runtime and original independent Worker, pre-prompt and pre-budget failure closure.",
   "linuxMandatory": {
     "status": "passed",
@@ -150,12 +150,22 @@
     "scope": "COMPLETE_ACTUAL_PRODUCTION_WEB_UI_CORPUS_WITH_BROWSER_PROTOCOL_FIXTURES; REAL_NATIVE_AND_RELEASE_ACCEPTANCE_SEPARATE"
   },
   "windowsFullRegression": {
-    "status": "running",
+    "status": "passed_on_earlier_compilation",
     "command": "node tools/manage.mjs verify:core",
     "java": "21.0.13",
     "maven": "3.9.11",
-    "log": ".runtime/alpha29-20261126/windows-clean-verify-attempt3.log",
-    "scope": "Compiled before the final Linux root remount/filter refinements and Linux-only test expansions. This local run is not final-source regression proof; exact-commit CI must compile all final sources."
+    "log": ".runtime/alpha29-20261126/windows-full-initial-snapshot/maven.log",
+    "scope": "Compiled before the final Linux root remount/filter refinements and Linux-only test expansions. This local run is not final-source regression proof; exact-commit CI must compile all final sources.",
+    "tests": 768,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 26,
+    "suites": 59,
+    "passed": 742,
+    "completedAt": "2026-11-26T09:48:22+08:00",
+    "minutes": "57:14",
+    "summary": ".runtime/alpha29-20261126/windows-full-initial-snapshot/summary.json",
+    "jarSha256": "797a03283d75fec542d28b7ab40067757711fb51aa340954d80b2f7da5f49cc5"
   },
   "javaCommentAudit": {
     "status": "passed",
@@ -248,8 +258,28 @@
     }
   ],
   "exactCommitCi": {
-    "status": "pending",
-    "scope": "Must monitor the implementation commit on ubuntu-latest, windows-latest, macos-latest through terminal result."
+    "status": "initial_ubuntu_failure_preserved; diagnostic_followup_pending",
+    "commit": "a76aaab35d154e4995a981aab007b3f840726d6c",
+    "workflowRun": 45735665068,
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/45735665068",
+    "ubuntu": {
+      "job": 139628151036,
+      "status": "failed",
+      "step": "Mandatory Linux native sandbox boundaries",
+      "tests": 25,
+      "failures": 4,
+      "errors": 2,
+      "skipped": 0,
+      "reason": "ALLOW-only IOException while preparing system path mounts; exact path/ownership not exposed by the sanitized exception. DENY assertions passed. A read-only metadata diagnostic is being added; no product trust check or userns setting was weakened.",
+      "rawLog": ".runtime/alpha29-20261126/ci-a76aaab/20261126T012937Z-ubuntu-job139628151036.log",
+      "artifact": {
+        "id": 15078697447,
+        "bytes": 6211321,
+        "sha256": "d5209fa15c38450ee04e6a1c0464a1d3907dd2d88aa424411f7c0148698deb39",
+        "downloadedAndHashVerified": true
+      }
+    },
+    "otherPlatforms": "Windows and macOS had passed Core tests and package and were progressing through later steps before the diagnostic follow-up push; their final statuses will be recorded separately."
   },
   "remaining": [
     "Real official Codex/Claude login and authentication in fresh HOME, task-scoped MCP consumption and mixed Workflow stages",
@@ -258,5 +288,14 @@
     "Trusted single-user workbench-created independent clone scope; hostile concurrent same-UID path replacement, arbitrary Git layouts and resource quotas are not covered",
     "aarch64 and big-endian instruction simulation is not real hardware acceptance; executed Linux environment is x86_64",
     "Local ignored raw evidence is retained on this host; CI test reports and packaging artifacts have separate upload/verification scope"
-  ]
+  ],
+  "independentReview": {
+    "status": "passed",
+    "bpfSimulationCases": 4640,
+    "datagramExperimentCases": 9,
+    "streamStateExperimentCases": 5,
+    "manifest": ".runtime/alpha29-20261126/review-stream-pair/manifest.json",
+    "manifestSha256": "f96c8e8545331ad32fa04ab7ea562bf5fb7b472a57ea9907bfb42b03400cd31c",
+    "scope": "Local BPF block simulation and same-network-namespace socket experiments; not aarch64 hardware acceptance."
+  }
 }
