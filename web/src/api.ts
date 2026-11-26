@@ -5,20 +5,35 @@ let connection: Connection = {
   baseUrl: import.meta.env.VITE_API_BASE || '',
   token: readBrowserValue('sessionStorage', 'workbench-token') || '',
 };
+let runtimeConfigRead: Promise<Connection> | null = null;
+
+function abortable<T>(operation: Promise<T>, signal?: AbortSignal) {
+  if (!signal) return operation;
+  if (signal.aborted) return Promise.reject(signal.reason || new DOMException('The operation was aborted.', 'AbortError'));
+  return new Promise<T>((resolve, reject) => {
+    const cancel = () => reject(signal.reason || new DOMException('The operation was aborted.', 'AbortError'));
+    signal.addEventListener('abort', cancel, { once: true });
+    operation.then(resolve, reject).finally(() => signal.removeEventListener('abort', cancel)).catch(() => {});
+  });
+}
 
 export async function initializeConnection(signal?: AbortSignal) {
   const original = connection;
   let next: Connection;
   if (window.workbench) next = await window.workbench.getConnection();
   else {
-    const timeout = AbortSignal.timeout(5000);
-    const response = await fetch('./workbench-config.json', { cache: 'no-store', signal: signal ? AbortSignal.any([signal, timeout]) : timeout });
-    if (!response.ok) throw new Error('无法读取工作台运行时配置，请检查 workbench-config.json。');
-    const config: unknown = await response.json();
-    if (!config || typeof config !== 'object' || Array.isArray(config) || Object.keys(config).some(key => key !== 'apiBaseUrl')) throw new Error('运行时配置仅允许 apiBaseUrl，不能包含令牌或凭据。');
-    const baseUrl = (config as { apiBaseUrl?: unknown }).apiBaseUrl;
-    if (baseUrl !== undefined && typeof baseUrl !== 'string') throw new Error('apiBaseUrl 必须为字符串。');
-    next = { ...original, baseUrl: validateApiBase(baseUrl as string | undefined ?? original.baseUrl) };
+    if (!runtimeConfigRead) {
+      const timeout = AbortSignal.timeout(5000);
+      runtimeConfigRead = fetch('./workbench-config.json', { cache: 'no-store', signal: timeout }).then(async response => {
+        if (!response.ok) throw new Error('无法读取工作台运行时配置，请检查 workbench-config.json。');
+        const config: unknown = await response.json();
+        if (!config || typeof config !== 'object' || Array.isArray(config) || Object.keys(config).some(key => key !== 'apiBaseUrl')) throw new Error('运行时配置仅允许 apiBaseUrl，不能包含令牌或凭据。');
+        const baseUrl = (config as { apiBaseUrl?: unknown }).apiBaseUrl;
+        if (baseUrl !== undefined && typeof baseUrl !== 'string') throw new Error('apiBaseUrl 必须为字符串。');
+        return { ...connection, baseUrl: validateApiBase(baseUrl as string | undefined ?? connection.baseUrl) };
+      }).finally(() => { runtimeConfigRead = null; });
+    }
+    next = await abortable(runtimeConfigRead, signal);
   }
   signal?.throwIfAborted();
   if (connection === original) connection = next;

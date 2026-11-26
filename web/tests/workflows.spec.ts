@@ -21,7 +21,7 @@ const snapshot = (v: WorkflowVersion) => ({ ...v, protocolVersion: 1, snapshotDi
 // The browser runs the production bundle. The API fixture records the exact user writes.
 async function fixture(page: Page, scenario: 'create' | 'publish' | 'restart' | 'retry') {
   const routes = [{ ...rootRoute }, { ...extraRoute }];
-  const readinessRequests: { path: string; body: any }[] = [];
+  const readinessRequests: { path: string; body: any }[] = [], readinessConnections: string[] = [];
   const readinessState = { blockers: [] as string[], nodeBlockers: [] as string[], holdVersion: 0, release: null as (() => void) | null, obsoleteFinished: false, publishRoutes: true,
     holdDefinitionVersion: 0, releaseDefinition: null as (() => void) | null };
   const definitions = [{ id: v2.definitionId, name: v2.name, version: 2, projectId: project.id, enabled: true, createdAt, updatedAt: createdAt }];
@@ -43,6 +43,7 @@ async function fixture(page: Page, scenario: 'create' | 'publish' | 'restart' | 
       const body = request.postDataJSON();
       if (path === '/api/workflows/readiness' || path.endsWith('/workflow-readiness')) {
         readinessRequests.push({ path, body });
+        readinessConnections.push(request.headers().authorization || '');
         const choice = path === '/api/workflows/readiness' ? body.selection : body;
         const chosen = choice.version === 1 ? v1 : v2;
         const selectedRoute = routeIdentity(routes[1]);
@@ -104,7 +105,7 @@ async function fixture(page: Page, scenario: 'create' | 'publish' | 'restart' | 
     if (path.endsWith('/mcp-operations')) return send([]);
     return send({});
   });
-  return { original, writes, errors, reads, generations, readinessRequests, readinessState, routes };
+  return { original, writes, errors, reads, generations, readinessRequests, readinessConnections, readinessState, routes };
 }
 
 async function openOriginal(page: Page) {
@@ -364,3 +365,35 @@ for (const width of [1440, 430]) {
     });
   });
 }
+
+test('连接切换重新读取流程检查，旧连接迟到响应不覆盖新路由', async ({ page }) => {
+  const { readinessRequests, readinessConnections, readinessState, routes, errors } = await fixture(page, 'restart');
+  readinessState.holdVersion = 2;
+  await openOriginal(page);
+  async function prepareRestart() {
+    await page.getByRole('button', { name: '选择版本并重新开始' }).click();
+    const dialog = page.getByRole('dialog', { name: '用当前现场开始新流程' });
+    await dialog.getByLabel('流程定义').selectOption(v2.definitionId);
+    return dialog;
+  }
+  let dialog = await prepareRestart();
+  await expect.poll(() => readinessState.release !== null).toBe(true);
+  await dialog.getByRole('button', { name: '取消', exact: true }).click();
+  await expect(dialog).toHaveCount(0);
+  readinessState.holdVersion = 0;
+  routes[1] = { ...routes[1], version: 2, provider: '更新供应商', model: 'fixture-two', baseUrl: 'https://new.example/v2' };
+  await page.getByRole('button', { name: '本地核心已连接', exact: true }).click();
+  await page.getByLabel('访问令牌', { exact: true }).fill('new-workflow-token');
+  await page.getByRole('button', { name: '连接并验证', exact: true }).click();
+  await expect(page.getByRole('dialog')).toBeHidden();
+  dialog = await prepareRestart();
+  const updatedRequest = () => readinessRequests.findIndex((request, index) => request.body.version === 2 && readinessConnections[index] === 'Bearer new-workflow-token');
+  await expect.poll(updatedRequest).toBeGreaterThanOrEqual(0);
+  const updatedConsent = page.getByRole('checkbox', { name: '确认 另一个 API 路由 v2', exact: true });
+  await expect(updatedConsent).toBeVisible();
+  readinessState.release!();
+  await expect.poll(() => readinessState.obsoleteFinished).toBe(true);
+  await expect(updatedConsent).toBeVisible();
+  expect(readinessConnections[updatedRequest()]).toBe('Bearer new-workflow-token');
+  expect(errors).toEqual([]);
+});

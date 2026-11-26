@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { api } from './api';
-import type { Route } from './types';
+import { api, currentConnection } from './api';
+import type { Connection, Route } from './types';
 import { Field } from './ui';
 import type { WorkflowDefinition, WorkflowDsl, WorkflowPage, WorkflowReadiness, WorkflowRevision, WorkflowRouteIdentity, WorkflowSelection, WorkflowVersion, WorkflowVersionSelection } from './workflow-types';
 import './workflow.css';
@@ -9,6 +9,21 @@ export const workflowPath = (id: string) => `/workflows/${encodeURIComponent(id)
 export const workflowVersionPath = (id: string, version: number) => `${workflowPath(id)}/versions/${version}`;
 const kinds: Record<string, string> = { INVESTIGATE: '调查', DESIGN: '方案', PROPOSAL: '独立提案', CRITIQUE: '交叉质疑', SYNTHESIS: '汇总', IMPLEMENT: '实现' };
 const rootInputs: Record<string, string> = { goal: '任务目标', contract: '完成约定', context: '项目上下文', baseline: '基线版本' };
+const pendingReadiness = new WeakMap<Connection, Map<string, Promise<WorkflowReadiness>>>();
+
+function readWorkflowReadiness(connection: Connection, path: string, body: string) {
+  const key = `${path}\u0000${body}`;
+  let pending = pendingReadiness.get(connection);
+  if (!pending) { pending = new Map(); pendingReadiness.set(connection, pending); }
+  const existing = pending.get(key);
+  if (existing) return existing;
+  const operation = api<WorkflowReadiness>(path, { method: 'POST', body });
+  pending.set(key, operation);
+  operation.finally(() => {
+    if (pending?.get(key) === operation) pending.delete(key);
+  }).catch(() => {});
+  return operation;
+}
 
 export interface WorkflowReadinessContext {
   projectId: string;
@@ -133,6 +148,7 @@ function WorkflowReadinessReview({ context, selection, source, disabled, onChang
   const [result, setResult] = useState<WorkflowReadiness | null>(null);
   const [error, setError] = useState('');
   const [confirmed, setConfirmed] = useState<Map<string, number>>(() => new Map());
+  const connection = currentConnection();
   const path = context.taskId ? `/tasks/${encodeURIComponent(context.taskId)}/workflow-readiness` : '/workflows/readiness';
   const body = JSON.stringify(context.taskId ? selection : {
     projectId: context.projectId, routeId: context.rootRoute.id, locks: context.locks, selection,
@@ -142,12 +158,12 @@ function WorkflowReadinessReview({ context, selection, source, disabled, onChang
   const { definitionId, version, digest } = selection;
 
   useEffect(() => {
-    const controller = new AbortController();
-    api<WorkflowReadiness>(path, { method: 'POST', body, signal: controller.signal }).then(value => {
-      if (!controller.signal.aborted) setResult(value);
-    }).catch(error => { if (!controller.signal.aborted) setError((error as Error).message); });
-    return () => controller.abort();
-  }, [path, body]);
+    let active = true;
+    readWorkflowReadiness(connection, path, body).then(value => {
+      if (active) setResult(value);
+    }).catch(error => { if (active) setError((error as Error).message); });
+    return () => { active = false; };
+  }, [connection, path, body]);
 
   useEffect(() => {
     if (!result || blocked || !result.extraRoutes.every(route => confirmed.get(route.id) === route.version)) {

@@ -120,15 +120,16 @@ test('会话分页包含关闭历史，仅列当前会话任务且切换会话�
 });
 
 test('GET失败可重读且不触发执行，成功后继续自动更新原日期派发状态', async ({ page }) => {
-  let reads = 0;
+  let failUsageRead = true, recoveredReads = 0;
   const data = await fixture(page, { usage: async (route, url) => {
-    if (++reads <= 2) return route.fulfill({ status: 503, json: { message: '持久统计暂时不可用' } });
+    if (failUsageRead) return route.fulfill({ status: 503, json: { message: '持久统计暂时不可用' } });
+    const read = ++recoveredReads;
     const next = response(url);
-    if (reads >= 4) for (const value of [next.summary.units.API_REQUEST, next.buckets[next.buckets.length - 1].units.API_REQUEST]) { value.states.DISPATCHING = 0; value.states.SUCCEEDED = 3; }
+    if (read >= 2) for (const value of [next.summary.units.API_REQUEST, next.buckets[next.buckets.length - 1].units.API_REQUEST]) { value.states.DISPATCHING = 0; value.states.SUCCEEDED = 3; }
     return route.fulfill({ json: next });
   } });
   await expect(page.getByRole('alert')).toContainText('持久统计暂时不可用');
-  await page.getByRole('button', { name: '重新读取用量', exact: true }).click();
+  failUsageRead = false; await page.getByRole('button', { name: '重新读取用量', exact: true }).click();
   await expect(card(page).locator('footer')).toContainText('派发中 1'); await expect(page.getByRole('alert')).toHaveCount(0);
   await expect(card(page).locator('footer')).toContainText('派发中 0', { timeout: 10000 });
   await expect(card(page).locator('footer')).toContainText('成功 3');
@@ -138,14 +139,14 @@ test('GET失败可重读且不触发执行，成功后继续自动更新原日�
 });
 
 test('会话首读失败可单独恢复，筛选名按纯文本呈现', async ({ page }) => {
-  let sessionReads = 0;
+  let failSessionRead = true;
   const text = '<img src=x onerror="window.__usageInjected=true">关闭会话';
   const data = await fixture(page, { session: async route => {
-    if (++sessionReads <= 2) return route.fulfill({ status: 500, json: { message: '会话页读取失败' } });
+    if (failSessionRead) return route.fulfill({ status: 500, json: { message: '会话页读取失败' } });
     return route.fulfill({ json: { sessions: [{ ...closedSession, title: text }], cursor: 0, hasMore: false } });
   } });
   await expect(card(page)).toBeVisible(); await expect(page.getByRole('alert')).toContainText('会话页读取失败');
-  await page.getByRole('button', { name: '重新读取会话', exact: true }).click();
+  failSessionRead = false; await page.getByRole('button', { name: '重新读取会话', exact: true }).click();
   await expect(page.getByLabel('会话范围', { exact: true }).locator('option[value="s-closed"]')).toHaveText(`${text}（已关闭）`);
   await page.getByLabel('会话范围', { exact: true }).selectOption('s-closed');
   await expect(page.getByRole('alert')).toHaveCount(0);

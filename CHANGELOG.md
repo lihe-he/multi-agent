@@ -4,7 +4,7 @@
 
 增加项目级 UTC 用量趋势，按 7、30 或 90 天与项目会话、任务范围读取已经保存的 ModelRequest。不同请求单位分别汇总，明确零、未知覆盖、空范围和超出安全精度的累积数值各自保留；输入/输出已含的缓存/推理明细不会重复计算，费用与 CLI 内部请求数继续显示未知。新增数据库时间索引、受限访问接口、响应白名单、图表/日表和可访问的表格筛选。
 
-Windows 后端控制器/存储 **26/26**、实际 Jar 本机协议流程 **36/36**、生产 Web 构建及用量趋势 UI **11/11** 通过。Linux 当前源码 `clean verify` 为 **795 项通过、0 失败、0 错误、12 条件跳过**；两项 PTY 夹具现在先观察原交互 shell 提示符再发送首行，定向回归 **2/2**，原 200 行完整断言保持。全量 Web UI 为 **275/284**，9 项配置/页面恢复及工作流就绪用例仍失败；不计为通过。前一准确提交的 Windows CI 有一项动态委派 Worker UNKNOWN 500；Linux 隔离探针未复现该 Windows 失败，根因仍未知，原 fixture、缺失锁文件与 WAL 复制变化边界已保留。新提交的三端 CI 终态与本机证据见[用量趋势 QA 回执](./docs/qa/alpha30-usage-trends.json)。本版只实现 F21 用量趋势子集；完整定时调度、IANA 时区、价格/CLI 内部计费及其余计划退出条件仍未完成。
+Windows 后端控制器/存储 **26/26**、实际 Jar 本机协议流程 **36/36**、生产 Web 构建及用量趋势 UI **11/11** 通过。Linux 当前源码 `clean verify` 为 **795 项通过、0 失败、0 错误、12 条件跳过**；两项 PTY 夹具先观察原交互 shell 提示符再发送首行，定向回归 **2/2**，原 200 行完整断言保持。后续修复 StrictMode 重复初始读取及其连接恢复、工作流和用量趋势测试夹具，本机完整 Web UI **284/284** 通过，最终相关 Workflow/用量趋势回归 **32/32**。准确推送 `ffa2d492` 的 CI Run `45781853930` 在 Ubuntu“Mandatory Linux native sandbox boundaries”以及 macOS/Windows“UI interaction tests”失败；详细失败记录待新提交 CI 获取。前一准确提交的 Windows CI 动态委派仍有 Worker UNKNOWN 500，Linux 隔离探针未复现，根因未知；原 fixture、缺失锁文件与 WAL 复制变化边界保留。详见[用量趋势 QA 回执](./docs/qa/alpha30-usage-trends.json)。本版只实现 F21 用量趋势子集；完整定时调度、IANA 时区、价格/CLI 内部计费及其余计划退出条件仍未完成。
 
 ## 0.2.0-alpha.29 — Linux 原生 CLI 文件与网络沙箱
 

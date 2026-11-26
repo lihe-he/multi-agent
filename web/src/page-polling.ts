@@ -34,7 +34,10 @@ export function startPagePolling(read: (signal: AbortSignal) => Promise<void | b
   window.addEventListener('pagehide', hide); window.addEventListener('pageshow', show);
   window.addEventListener('offline', disconnect); window.addEventListener('online', reconnect);
   document.addEventListener('visibilitychange', foreground);
-  void poll();
+  // React StrictMode mounts effects once for a probe and immediately disposes that
+  // instance. Deferring the first read lets the probe finish without issuing a
+  // duplicate request while preserving normal startup timing for the live instance.
+  queueMicrotask(() => { if (!disposed) void poll(); });
   return () => {
     disposed = true; stopRead();
     window.removeEventListener('pagehide', hide); window.removeEventListener('pageshow', show);
