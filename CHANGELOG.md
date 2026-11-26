@@ -8,6 +8,8 @@ Linux 严格路由接入 bubblewrap、独立命名空间与 seccomp；帮助探�
 
 最终源码的真实 Linux 必验 **25/25**、生产 Web UI **273/273** 通过。数据报 pair 的旧过滤器负对照 **2/2 按预期失败**，ALLOW 下宿主实际收到四条消息；修复后两种网络模式都拒绝数据报/顺序包创建，流式私有通信保持可用。Windows 本机完整回归和准确提交的三平台 CI 单独记录于[本轮回执](./docs/qa/alpha29-linux-native-sandbox.json)。
 
+Ubuntu CI 发现标准 systemd-resolved DNS 数据由服务账号拥有，初始 root-only 检查使 ALLOW 启动被拒绝。新增仅限两个固定 resolver 路径、专用服务账号及不可组/其他用户写入的兼容规则；其他系统配置与可执行文件保持 root 所有要求。原始失败与修复后验收分别记录。
+
 ## 0.2.0-alpha.28 — Workflow 首次请求前暂停收尾
 
 Workflow 节点在根暂停时，如果 Worker 已返回 `CANCELLED` 且确认尚无模型请求、请求记录或其他未知效果，直接保存原 Worker 取消回执并结束节点。已开始请求或存在未确认效果时继续采用未知状态保护。

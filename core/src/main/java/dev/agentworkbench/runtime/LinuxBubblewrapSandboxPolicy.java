@@ -220,9 +220,32 @@ public final class LinuxBubblewrapSandboxPolicy implements NativeSandboxPolicy {
     private static void addSystemFile(List<String> command, String name, Path data) throws IOException {
         Path path = Path.of(name);
         if (!Files.exists(path)) return;
-        Path real = path.toRealPath(); requireSystemPermissions(real);
+        Path real = path.toRealPath();
+        if (name.equals("/etc/resolv.conf")) requireResolverPermissions(real);
+        else requireSystemPermissions(real);
         if (data.startsWith(real) || real.startsWith(data)) throw new IOException("Core data overlaps exposed system configuration");
         command.addAll(List.of("--ro-bind", real.toString(), name));
+    }
+
+    /**
+     * systemd-resolved 的固定 DNS 数据可由专用服务账号维护，不能由当前工作台账号或其他用户改写。
+     */
+    private static void requireResolverPermissions(Path file) throws IOException {
+        try { requireSystemPermissions(file); return; }
+        catch (IOException exception) {
+            Path directory = Path.of("/run/systemd/resolve");
+            if (!Set.of(directory.resolve("resolv.conf"), directory.resolve("stub-resolv.conf")).contains(file)
+                    || !Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS)) throw exception;
+            var service = file.getFileSystem().getUserPrincipalLookupService().lookupPrincipalByName("systemd-resolve");
+            if (service.equals(Files.getOwner(Path.of("/proc/self")))) throw new IOException("Resolver service cannot be the workbench account");
+            for (Path entry = file; entry != null; entry = entry.getParent()) {
+                int mode = ((Number) Files.getAttribute(entry, "unix:mode")).intValue();
+                boolean rootOwned = ((Number) Files.getAttribute(entry, "unix:uid")).longValue() == 0;
+                if ((mode & 0022) != 0 || !rootOwned && !(entry.startsWith(directory) && service.equals(Files.getOwner(entry)))) {
+                    throw new IOException("Resolver path is writable outside its dedicated system service");
+                }
+            }
+        }
     }
 
     private static boolean preflight(List<String> command, Path workspace) throws IOException {

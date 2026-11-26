@@ -14,6 +14,8 @@ Linux 直接运行时与独立 Worker 共用 `NativeSandboxPolicy.platform`。�
 
 当前适用于单用户、可信本地仓库下，由工作台创建的自包含独立 clone。内核、工作台、管理员维护的 `/usr/bin/bwrap`、shell、系统程序和运行库属于信任根。系统执行器及检查路径要求 root 所有且不可由非管理员写入；挂载的系统目录整体可读，不能把该范围描述为只允许读取项目文件。
 
+DNS 配置另支持 systemd-resolved 的标准布局：仅 `/etc/resolv.conf` 的真实目标等于 `/run/systemd/resolve/resolv.conf` 或 `stub-resolv.conf` 时，文件和该目录可由专用 `systemd-resolve` 账号维护；该账号必须不同于工作台进程账号，祖先目录仍要求 root 所有，全部路径均禁止组和其他用户写入。其他系统配置和执行文件继续要求 root 所有。DNS 文件只读挂载，不向沙箱授予服务账号身份。
+
 工作区不得覆盖核心控制目录或保留系统挂载点。策略有界遍历工作区，拒绝设备、FIFO、Unix socket 等特殊文件与共享硬链接。发现 `.git` 标记时解析真实 `gitdir`、`commondir` 和递归 `objects/info/alternates`，依赖必须位于同一工作区；不支持或无法解析的元数据拒绝。依赖外部管理目录的 worktree、外部对象库和 shared clone 返回 `UNAVAILABLE`。
 
 保证范围不扩展到任意 bare 仓库、自定义 `core.worktree` 或所有 Git 布局。当前尚无文件描述符固定挂载身份，规范路径检查与实际启动之间仍存在时间差；不可信宿主进程并发写入、目录替换和恶意同 UID 对手不属于当前威胁范围。OS 的 CPU、内存、磁盘等资源配额及抗资源耗尽不属于本策略目标。

@@ -12,7 +12,9 @@
 
 最终 Linux 清洁必验 **25/25 通过**：直接策略 18 项、实际独立 Worker 7 项，0 失败、错误或跳过。容器内 152 份 `core/src` 文件与本地逐项一致。真实宿主抽象数据报监听器的控制消息可达，最终 ALLOW/DENY 沙箱均未发送宿主消息；流式 socketpair 的 NONBLOCK/CLOEXEC 与参数高位组合保持私有通信，数据报和顺序包被拒绝。旧过滤器负对照保留 **2 项预期失败**，其中 ALLOW 宿主实际收到四条沙箱消息。Worker 另覆盖帮助/执行两次环境隔离、四种文件/网络组合、缺终态 UNKNOWN、零预算拒绝与实际取消后的原后代停止。
 
-生产 Web 构建及 **273/273** UI 用例通过，源码/资产摘要稳定，44 张历史截图保持原字节。Java 注释审计保留全部 70 条原注释，14 条新增 Javadoc 均为标准多行。Windows 完整本机运行启动时的源码快照早于最终 Linux 补充，结果与准确提交的三端 CI 分别保存，不相互替代。原始失败尝试、负对照、摘要和后续 CI 终态见[alpha.29 验收回执](./qa/alpha29-linux-native-sandbox.json)。
+Ubuntu 初始与诊断 CI 确认 `/etc/resolv.conf` 指向由专用 `systemd-resolve` 账号维护的标准 DNS 文件；root-only 检查因此拒绝全部 ALLOW 场景。根据固定 systemd 源码，只为 `/run/systemd/resolve/resolv.conf` 与 `stub-resolv.conf` 接受 root 或该专用账号所有权，路径链继续禁止 group/other 写入，其他祖先与系统文件仍要求 root，工作台与服务同账号时拒绝。未改变 runner 的 DNS 权限或 sysctl。服务所有权布局下，最终源码重新完成上述 **25/25** 清洁必验；独立真实权限夹具 **20/20** 通过，涵盖实际 DNS 字节挂载、错误 owner、可写目录、路径外逃、相邻文件和同账号拒绝。夹具仅在准备 resolver 布局时使用外层 SYS_ADMIN，每次 Java/Maven 启动前均移除该能力，实际沙箱 CapEff/CapPrm 为零。
+
+生产 Web 构建及 **273/273** UI 用例通过，源码/资产摘要稳定，44 张历史截图保持原字节。Java 注释审计保留全部 70 条原注释，15 条新增 Javadoc 均为标准多行。Windows 完整本机运行启动时的源码快照早于最终 Linux 补充，结果与准确提交的三端 CI 分别保存，不相互替代。原始失败尝试、负对照、摘要和后续 CI 终态见[alpha.29 验收回执](./qa/alpha29-linux-native-sandbox.json)。
 
 ## 0.2.0-alpha.28 Workflow 首次请求前暂停收尾
 

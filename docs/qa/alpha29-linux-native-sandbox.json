@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
   "version": "0.2.0-alpha.29",
-  "recordedAt": "2026-11-26T09:54:12+08:00",
+  "recordedAt": "2026-11-26T10:26:53+08:00",
   "baseCommit": "af5ac1eedd66ad53db619cbdc68b2db2ab67bbc5",
-  "status": "FINAL_LINUX_AND_PRODUCTION_WEB_PASSED; EARLIER_WINDOWS_FULL_PASSED; INITIAL_UBUNTU_CI_ALLOW_GATE_FAILED; DIAGNOSTIC_CI_PENDING",
+  "status": "FINAL_RESOLVER_LINUX25_AND_PERMISSION20_PASSED; PRODUCTION_WEB273_PASSED; EARLIER_WINDOWS_FULL_PASSED; FINAL_EXACT_COMMIT_CI_PENDING",
   "implementationScope": "Linux strict native CLI policy linux-bwrap-workspace-v1: namespace/mount/seccomp isolation, explicit environment, read-only help probe, same policy in direct runtime and original independent Worker, pre-prompt and pre-budget failure closure.",
   "linuxMandatory": {
     "status": "passed",
-    "command": "mvn -B -ntp -Dworkbench.require-linux-sandbox=true -Dtest=LinuxBubblewrapSandboxPolicyTest,LinuxNativeSandboxWorkerTest clean test",
-    "workingDirectory": "/alpha29-worker-stream-final",
-    "completedAt": "2026-11-26T09:19:43+08:00",
-    "totalSeconds": 20.989,
+    "command": "setpriv --bounding-set=-sys_admin mvn -B -ntp -o -f /alpha29-resolved-final/pom.xml -Dworkbench.require-linux-sandbox=true -Dtest=LinuxBubblewrapSandboxPolicyTest,LinuxNativeSandboxWorkerTest clean test",
+    "workingDirectory": "/alpha29-resolved-final",
+    "completedAt": "2026-11-26T10:06:37+08:00",
+    "totalSeconds": 17.497,
     "environment": {
-      "container": "agentworkbench-alpha29-linux-verified",
+      "container": "agentworkbench-alpha29-resolved-fixture",
       "image": "agentworkbench-alpha29-linux-toolchain:20261126",
       "imageId": "sha256:ccdc76a0dce928e40a6dc5a3e0ac95336239bdb509786bc5443f05c025dac237",
       "kernel": "6.6.87.2-microsoft-standard-WSL2",
@@ -27,7 +27,47 @@
       ],
       "privileged": false,
       "repositoryBind": "/src (read-only)",
-      "scope": "Outer container permits namespace creation and /proc/sys setup; the application-generated cBPF, namespace and mount boundaries are exercised by the tests."
+      "scope": "Outer container permits namespace creation and /proc/sys setup; the application-generated cBPF, namespace and mount boundaries are exercised by the tests.",
+      "outerFixtureCapability": "SYS_ADMIN only to unmount Docker-generated resolver bind; removed with setpriv --bounding-set=-sys_admin for every Java/Maven launch",
+      "resolverLayout": [
+        {
+          "canonical": "/",
+          "gid": 0,
+          "mode": "0o755",
+          "path": "/",
+          "uid": 0
+        },
+        {
+          "canonical": "/run",
+          "gid": 0,
+          "mode": "0o755",
+          "path": "/run",
+          "uid": 0
+        },
+        {
+          "canonical": "/run/systemd",
+          "gid": 0,
+          "mode": "0o755",
+          "path": "/run/systemd",
+          "uid": 0
+        },
+        {
+          "canonical": "/run/systemd/resolve",
+          "gid": 989,
+          "mode": "0o755",
+          "path": "/run/systemd/resolve",
+          "uid": 989
+        },
+        {
+          "canonical": "/run/systemd/resolve/stub-resolv.conf",
+          "gid": 989,
+          "mode": "0o644",
+          "path": "/run/systemd/resolve/stub-resolv.conf",
+          "uid": 989
+        }
+      ],
+      "resolverSymlink": "/run/systemd/resolve/stub-resolv.conf",
+      "sourceTreeOrdering": "lexicographic pathlib path components"
     },
     "results": {
       "tests": 25,
@@ -41,11 +81,11 @@
           "failures": 0,
           "errors": 0,
           "skipped": 0,
-          "seconds": 10.597,
+          "seconds": 8.782,
           "report": {
-            "path": ".runtime/alpha29-20261126/linux-worker-stream-final/TEST-dev.agentworkbench.LinuxNativeSandboxWorkerTest.xml",
-            "bytes": 18333,
-            "sha256": "5767738b847bbf402c13ea93428ebf64efce6be0373d129c56d98a9b45dcbdad"
+            "path": ".runtime/alpha29-20261126/linux-resolver-final/surefire-reports/TEST-dev.agentworkbench.LinuxNativeSandboxWorkerTest.xml",
+            "bytes": 18282,
+            "sha256": "41bb82b117fa229b0130b173c1052b40dac48624554a7ae914af45573b48d14c"
           }
         },
         {
@@ -54,27 +94,27 @@
           "failures": 0,
           "errors": 0,
           "skipped": 0,
-          "seconds": 1.392,
+          "seconds": 1.1,
           "report": {
-            "path": ".runtime/alpha29-20261126/linux-worker-stream-final/TEST-dev.agentworkbench.runtime.LinuxBubblewrapSandboxPolicyTest.xml",
-            "bytes": 23155,
-            "sha256": "8762ebf774d763612d594ee397c6e74507ea241d278ad5ac4fd57ff2a5ef2ff7"
+            "path": ".runtime/alpha29-20261126/linux-resolver-final/surefire-reports/TEST-dev.agentworkbench.runtime.LinuxBubblewrapSandboxPolicyTest.xml",
+            "bytes": 23107,
+            "sha256": "41954dfc69fab03140d5ca3505fde0cbeeabe8bbe9afc9784388293571daf114"
           }
         }
       ]
     },
     "sourceSnapshot": {
-      "path": ".runtime/alpha29-20261126/linux-worker-stream-final/source-snapshot.json",
-      "bytes": 20206,
-      "sha256": "dad2a083ae0bb1d9339be3f258d3845f11a25956b137e8e3348f477a36c1c016"
+      "path": ".runtime/alpha29-20261126/linux-resolver-final/source-snapshot.json",
+      "bytes": 22978,
+      "sha256": "1f095c86ea590ba58f82b63ea6ea450b3989c2834536fe70366a37bd29506875"
     },
     "sourceFileCount": 152,
-    "sourceTreeSha256": "16ea2b1df4fe9166f58229c479f21f72c668cd6abe8854e0dea2325aff271808",
+    "sourceTreeSha256": "fa7050cb90706a820b9991a09d04f3c1c41e22c179e7689c9563e695c88900ec",
     "allSourceBytesEqualToCurrentCheckout": true,
     "log": {
-      "path": ".runtime/alpha29-20261126/linux-worker-stream-final/maven.log",
-      "bytes": 5920,
-      "sha256": "5678abeed25c3871e5208052fb4622eabc2fbbde9f8a50697fbb7639ad3c03d1"
+      "path": ".runtime/alpha29-20261126/linux-resolver-final/maven.log",
+      "bytes": 5838,
+      "sha256": "f0279c2b73f095f5bd0b6bb2426a0e54dab3e678787c9b61bfac044a305dffca"
     },
     "assertions": [
       "Actual read-only and writable workspace files plus original host bytes; absolute, relative, symlink and descendant attempts",
@@ -169,8 +209,9 @@
   },
   "javaCommentAudit": {
     "status": "passed",
+    "baseCommit": "af5ac1eedd66ad53db619cbdc68b2db2ab67bbc5",
     "originalComments": 70,
-    "newMultilineJavadoc": 14,
+    "newMultilineJavadoc": 15,
     "files": [
       {
         "file": "core/src/main/java/dev/agentworkbench/runtime/NativeSandboxPolicy.java",
@@ -190,8 +231,8 @@
         "file": "core/src/main/java/dev/agentworkbench/runtime/LinuxBubblewrapSandboxPolicy.java",
         "originalComments": 0,
         "originalCommentsPreserved": true,
-        "newJavadoc": 4,
-        "sha256": "958f4b3dcfd7746fd760c761d5aec437363f057dfe01126eba43dc1a3bcd46bd"
+        "newJavadoc": 5,
+        "sha256": "39ddf8e0752b1fa4235c0f47c6f9a1e239cd8cb285b59fcdaf29b97c7e4fee96"
       },
       {
         "file": "core/src/main/java/dev/agentworkbench/runtime/LinuxSeccompFilter.java",
@@ -216,9 +257,9 @@
       }
     ],
     "receipt": {
-      "path": ".runtime/alpha29-20261126/java-comment-audit.json",
+      "path": ".runtime/alpha29-20261126/java-comment-audit-final.json",
       "bytes": 1832,
-      "sha256": "5a0469424e87c6eec92b5d74d209835b6bcbbddd26a3e7d7f28008d5aa90bd54"
+      "sha256": "7bde0c02fcd7543d6fb9ec4dbdb0bf16cdb417ae7f853933775fcae6adcc7776"
     }
   },
   "versionVerification": {
@@ -257,8 +298,139 @@
       "result": "Passed with the earlier AF_UNIX-wide pair filter, then superseded by the captured DGRAM bypass, negative control and final 25-test run. This is not final security proof."
     }
   ],
-  "exactCommitCi": {
-    "status": "initial_ubuntu_failure_preserved; diagnostic_followup_pending",
+  "remaining": [
+    "Real official Codex/Claude login and authentication in fresh HOME, task-scoped MCP consumption and mixed Workflow stages",
+    "Windows and macOS strict sandbox implementations remain UNAVAILABLE",
+    "No endpoint/domain/management-port whitelist in ALLOW; host IP loopback is reachable",
+    "Trusted single-user workbench-created independent clone scope; hostile concurrent same-UID path replacement, arbitrary Git layouts and resource quotas are not covered",
+    "aarch64 and big-endian instruction simulation is not real hardware acceptance; executed Linux environment is x86_64",
+    "Local ignored raw evidence is retained on this host; CI test reports and packaging artifacts have separate upload/verification scope"
+  ],
+  "independentReview": {
+    "status": "passed",
+    "bpfSimulationCases": 4640,
+    "datagramExperimentCases": 9,
+    "streamStateExperimentCases": 5,
+    "manifest": ".runtime/alpha29-20261126/review-stream-pair/manifest.json",
+    "manifestSha256": "f96c8e8545331ad32fa04ab7ea562bf5fb7b472a57ea9907bfb42b03400cd31c",
+    "scope": "Local BPF block simulation and same-network-namespace socket experiments; not aarch64 hardware acceptance."
+  },
+  "earlierStreamFilterMandatory": {
+    "status": "passed",
+    "command": "mvn -B -ntp -Dworkbench.require-linux-sandbox=true -Dtest=LinuxBubblewrapSandboxPolicyTest,LinuxNativeSandboxWorkerTest clean test",
+    "workingDirectory": "/alpha29-worker-stream-final",
+    "completedAt": "2026-11-26T09:19:43+08:00",
+    "totalSeconds": 20.989,
+    "environment": {
+      "container": "agentworkbench-alpha29-linux-verified",
+      "image": "agentworkbench-alpha29-linux-toolchain:20261126",
+      "imageId": "sha256:ccdc76a0dce928e40a6dc5a3e0ac95336239bdb509786bc5443f05c025dac237",
+      "kernel": "6.6.87.2-microsoft-standard-WSL2",
+      "architecture": "x86_64",
+      "java": "Temurin 21.0.9",
+      "maven": "3.9.11",
+      "bubblewrap": "0.9.0",
+      "python": "3.12.3",
+      "dockerSecurityOptions": [
+        "seccomp=unconfined",
+        "systempaths=unconfined"
+      ],
+      "privileged": false,
+      "repositoryBind": "/src (read-only)",
+      "scope": "Outer container permits namespace creation and /proc/sys setup; the application-generated cBPF, namespace and mount boundaries are exercised by the tests."
+    },
+    "results": {
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": [
+        {
+          "name": "dev.agentworkbench.LinuxNativeSandboxWorkerTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "seconds": 10.597,
+          "report": {
+            "path": ".runtime/alpha29-20261126/linux-worker-stream-final/TEST-dev.agentworkbench.LinuxNativeSandboxWorkerTest.xml",
+            "bytes": 18333,
+            "sha256": "5767738b847bbf402c13ea93428ebf64efce6be0373d129c56d98a9b45dcbdad"
+          }
+        },
+        {
+          "name": "dev.agentworkbench.runtime.LinuxBubblewrapSandboxPolicyTest",
+          "tests": 18,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "seconds": 1.392,
+          "report": {
+            "path": ".runtime/alpha29-20261126/linux-worker-stream-final/TEST-dev.agentworkbench.runtime.LinuxBubblewrapSandboxPolicyTest.xml",
+            "bytes": 23155,
+            "sha256": "8762ebf774d763612d594ee397c6e74507ea241d278ad5ac4fd57ff2a5ef2ff7"
+          }
+        }
+      ]
+    },
+    "sourceSnapshot": {
+      "path": ".runtime/alpha29-20261126/linux-worker-stream-final/source-snapshot.json",
+      "bytes": 20206,
+      "sha256": "dad2a083ae0bb1d9339be3f258d3845f11a25956b137e8e3348f477a36c1c016"
+    },
+    "sourceFileCount": 152,
+    "sourceTreeSha256": "16ea2b1df4fe9166f58229c479f21f72c668cd6abe8854e0dea2325aff271808",
+    "allSourceBytesEqualToCurrentCheckout": true,
+    "log": {
+      "path": ".runtime/alpha29-20261126/linux-worker-stream-final/maven.log",
+      "bytes": 5920,
+      "sha256": "5678abeed25c3871e5208052fb4622eabc2fbbde9f8a50697fbb7639ad3c03d1"
+    },
+    "assertions": [
+      "Actual read-only and writable workspace files plus original host bytes; absolute, relative, symlink and descendant attempts",
+      "Actual host IPv4 loopback: DENY blocked, ALLOW succeeds; ALLOW includes host loopback and has no endpoint whitelist",
+      "Raw socket family/type low-word checks; Unix/VSOCK/TIPC/other families and io_uring blocked",
+      "Actual host abstract stream listener and datagram listener with successful host control message",
+      "Only AF_UNIX SOCK_STREAM socketpair, with NONBLOCK/CLOEXEC and high-word variants, retains private communication; DGRAM/SEQPACKET rejected",
+      "New user namespaces, inherited secrets, host HOME, special files, hardlinks and external Git metadata/object dependencies rejected or hidden",
+      "Original independent Worker: four file/network combinations, read-only help and model command have fresh HOME and explicit environment",
+      "One CLI_SESSION budget and durable request receipt; missing terminal stays UNKNOWN; unavailable launch commits no model budget and delivers no prompt",
+      "Actual cancellation stops original PID/birth-identified descendant with no delayed write; original request UNKNOWN/CLI_INTERRUPTED, MODEL lease UNKNOWN, budget remains one"
+    ],
+    "scope": "Passed before the systemd-resolved ownership compatibility fix; retained as historical evidence."
+  },
+  "resolverPermissionRegression": {
+    "status": "passed",
+    "cases": 20,
+    "failures": 0,
+    "serviceUid": 989,
+    "sourceSha256": "39ddf8e0752b1fa4235c0f47c6f9a1e239cd8cb285b59fcdaf29b97c7e4fee96",
+    "summary": {
+      "path": ".runtime/alpha29-20261126/linux-resolver-final/resolver-fixture/summary.json",
+      "bytes": 342,
+      "sha256": "dd5f074822e101683545b314d0a90bf6f26b171e071b4bb77190c91db0773cee"
+    },
+    "results": {
+      "path": ".runtime/alpha29-20261126/linux-resolver-final/resolver-fixture/results.json",
+      "bytes": 17833,
+      "sha256": "05e5aab83b4a9a4a22d18e0ad0622dd4a3a4e0364351168d83fef92e081f62d2"
+    },
+    "rawOutput": {
+      "path": ".runtime/alpha29-20261126/linux-resolver-final/resolver-fixture/fixture.log",
+      "bytes": 14988,
+      "sha256": "244aac90564785bb37bef5fc6c72a36e5e8d8359373496ce513495ffad6a0e7f"
+    },
+    "assertions": [
+      "Root-owned and dedicated systemd-resolve owned fixed DNS targets both launch and expose actual resolver bytes read-only",
+      "Sandbox CapEff and CapPrm are zero; host passwd file is absent",
+      "Untrusted file/directory owner, group/world write, service-owned ancestor outside the fixed resolver directory, off-path/neighbor file and canonical symlink escape all reject before launch",
+      "Workbench UID equal to systemd-resolve rejects ALLOW; DENY remains usable without resolver mount",
+      "Other system configuration files still reject service ownership"
+    ],
+    "scope": "Independent Docker container needed SYS_ADMIN only to unmount its own Docker-generated /etc/resolv.conf bind; all fixture Java and mandatory Maven launches used setpriv --bounding-set=-sys_admin; actual sandbox CapEff and CapPrm verified zero"
+  },
+  "initialCommitCi": {
+    "status": "completed; ubuntu_failure; windows_and_macos_cancelled_by_diagnostic_followup",
     "commit": "a76aaab35d154e4995a981aab007b3f840726d6c",
     "workflowRun": 45735665068,
     "url": "https://github.com/lihe-he/multi-agent/actions/runs/45735665068",
@@ -279,23 +451,70 @@
         "downloadedAndHashVerified": true
       }
     },
-    "otherPlatforms": "Windows and macOS had passed Core tests and package and were progressing through later steps before the diagnostic follow-up push; their final statuses will be recorded separately."
+    "otherPlatforms": "Windows cancelled at UI interaction tests; macOS cancelled at workspace writers recovery; both core/package passed. See first-run-terminal-summary.json.",
+    "terminalSummary": {
+      "path": ".runtime/alpha29-20261126/ci-a76aaab/first-run-terminal-summary.json",
+      "bytes": 3558,
+      "sha256": "ea7839d2f7c7ece2d60e7c9317a0f6bedfc174f0fbe9bdd86b58f8073487c413"
+    }
   },
-  "remaining": [
-    "Real official Codex/Claude login and authentication in fresh HOME, task-scoped MCP consumption and mixed Workflow stages",
-    "Windows and macOS strict sandbox implementations remain UNAVAILABLE",
-    "No endpoint/domain/management-port whitelist in ALLOW; host IP loopback is reachable",
-    "Trusted single-user workbench-created independent clone scope; hostile concurrent same-UID path replacement, arbitrary Git layouts and resource quotas are not covered",
-    "aarch64 and big-endian instruction simulation is not real hardware acceptance; executed Linux environment is x86_64",
-    "Local ignored raw evidence is retained on this host; CI test reports and packaging artifacts have separate upload/verification scope"
-  ],
-  "independentReview": {
+  "resolverDiagnosticCi": {
+    "status": "ubuntu_and_macos_failed; windows_running_before_resolver_fix_push",
+    "workflowRun": 45738852507,
+    "commit": "3497b2a41ea1dec5f0ea7014bf85557a57c64fe2",
+    "url": "https://github.com/lihe-he/multi-agent/actions/runs/45738852507",
+    "summary": {
+      "path": ".runtime/alpha29-20261126/ci-3497b2a/diagnostic-evidence-summary.json",
+      "bytes": 3008,
+      "sha256": "4d97a8f8a4c36bf041106fdb16b70e034e3efce002d0d0010655f42c2e7e6393"
+    },
+    "metadata": {
+      "path": ".runtime/alpha29-20261126/ci-3497b2a/ubuntu-evidence15080516143/.runtime/linux-sandbox-system-paths.json",
+      "bytes": 2002,
+      "sha256": "0a1dedc4efd9af12d9b3239f1b964745359c1b1d3fb07748bdd68a42ef9c11f1"
+    },
+    "findings": "Ubuntu 26.04.1 runner image 20261116.202.1: resolver symlink targets service-owned stub-resolv.conf, UID/GID989:989 file0644 and directory0755; all other checked parents root0755. This confirmed the preflight failure without changing runner DNS ownership or sysctl.",
+    "artifact": {
+      "id": 15080516143,
+      "bytes": 6211740,
+      "sha256": "075f8fac190b5086916d371fb7d22b0c9e816790e03b6fb51e27b1b375ac7896",
+      "downloadedAndHashVerified": true
+    },
+    "macos": {
+      "job": 139638811086,
+      "status": "failed",
+      "step": "Core tests and package",
+      "tests": 770,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 29,
+      "failure": "WorkflowExecutionTest.pauseBeforeTheNextModelRequestReusesOnlyTheCompletedNodeAndKeepsTheRootBudget",
+      "observed": "First node SUCCEEDED, writer node PAUSED; root became UNKNOWN because workspace write protection and dispatch settlement remained unconfirmed. Root cause is under investigation; Linux resolver compatibility does not claim to fix this failure.",
+      "rawLog": {
+        "path": ".runtime/alpha29-20261126/ci-3497b2a/20261126T021842Z-macos-job139638811086.log",
+        "bytes": 64854,
+        "sha256": "654424f0e086ced3e63efc2d0003de5f93d6ea0daf50720d367886bbac8b2bd9"
+      },
+      "artifact": {
+        "id": 15081425543,
+        "bytes": 10752193,
+        "sha256": "007eec2ff477c0ff05f8be42b8025adbb216d552fecbc9d7a0c98f10ac364d97",
+        "downloadedAndHashVerified": false
+      }
+    }
+  },
+  "postCommitCommentAudit": {
     "status": "passed",
-    "bpfSimulationCases": 4640,
-    "datagramExperimentCases": 9,
-    "streamStateExperimentCases": 5,
-    "manifest": ".runtime/alpha29-20261126/review-stream-pair/manifest.json",
-    "manifestSha256": "f96c8e8545331ad32fa04ab7ea562bf5fb7b472a57ea9907bfb42b03400cd31c",
-    "scope": "Local BPF block simulation and same-network-namespace socket experiments; not aarch64 hardware acceptance."
+    "originalCommentsPreserved": 89,
+    "newMultilineJavadoc": 1,
+    "receipt": {
+      "path": ".runtime/alpha29-20261126/java-comment-audit-resolver.json",
+      "bytes": 1832,
+      "sha256": "6a475ae19be866b62a2bade8d8ac55b399f436586aa14cd811f54710b0595bdf"
+    }
+  },
+  "exactCommitCi": {
+    "status": "pending_after_resolver_fix",
+    "scope": "Final production source compiles and all applicable acceptance steps must complete on Ubuntu, Windows, macOS."
   }
 }

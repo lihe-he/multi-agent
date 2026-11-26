@@ -39,7 +39,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y bubblewrap python3
           python3 - <<'PY'
-          import json, os, pathlib, stat
+          import json, os, pathlib, pwd, stat
           results = []
           for name in ('/etc/resolv.conf', '/etc/hosts', '/etc/nsswitch.conf'):
               path = pathlib.Path(name)
@@ -52,7 +52,8 @@ jobs:
                       info = entry.stat()
                       record['chain'].append({'path': str(entry), 'uid': info.st_uid, 'gid': info.st_gid,
                           'mode': oct(stat.S_IMODE(info.st_mode)),
-                          'rejectedBySystemPathPolicy': info.st_uid != 0 or bool(info.st_mode & 0o22)})
+                          'owner': pwd.getpwuid(info.st_uid).pw_name,
+                          'failsRootOnlyPathCheck': info.st_uid != 0 or bool(info.st_mode & 0o22)})
               except OSError as error:
                   record['error'] = type(error).__name__
               results.append(record)

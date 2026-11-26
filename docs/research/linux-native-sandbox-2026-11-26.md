@@ -11,6 +11,7 @@
 | anthropic-experimental/sandbox-runtime | 包版本 `0.0.83`，提交 `0bbebed0aa9a8e628dc4df8bc30293550a1988eb`；[namespace 说明](https://github.com/anthropic-experimental/sandbox-runtime/blob/0bbebed0aa9a8e628dc4df8bc30293550a1988eb/src/sandbox/linux-sandbox-utils.ts#L1666)、[socket 过滤](https://github.com/anthropic-experimental/sandbox-runtime/blob/0bbebed0aa9a8e628dc4df8bc30293550a1988eb/vendor/seccomp-src/seccomp-unix-block.c#L205) | 关闭嵌套 user namespace；按 socket family 参数的低 32 位判断，避免寄存器高位影响过滤；封闭 VSOCK 与 io_uring 的旁路。这里采纳规则，没有引入整个 SRT 运行时。 |
 | openai/codex | `rust-v0.170.0`，提交 `29eb79e9866b3262a777fdf8195c1b9e63684c91`；[Linux README](https://github.com/openai/codex/blob/29eb79e9866b3262a777fdf8195c1b9e63684c91/codex-rs/linux-sandbox/README.md)、[seccomp](https://github.com/openai/codex/blob/29eb79e9866b3262a777fdf8195c1b9e63684c91/codex-rs/linux-sandbox/src/seccomp.rs#L190) | 文件视图与 syscall 约束组合；完整后代继承约束；网络规则不能只处理普通 `socket()` 而保留 io_uring 旁路。当前 Java 过滤器按自身较窄的策略生成 cBPF。 |
 | git/git | `v2.47.3`，提交 `a52a24e03c8c711f1d5e252fba78f9276908129b`；[gitdir 布局](https://github.com/git/git/blob/a52a24e03c8c711f1d5e252fba78f9276908129b/Documentation/gitrepository-layout.txt#L25)、[alternates](https://github.com/git/git/blob/a52a24e03c8c711f1d5e252fba78f9276908129b/Documentation/gitrepository-layout.txt#L80)、[commondir](https://github.com/git/git/blob/a52a24e03c8c711f1d5e252fba78f9276908129b/Documentation/gitrepository-layout.txt#L261) | `.git` 可以是指针文件，worktree 还可依赖外部公共目录；对象 alternates 的相对路径以对象目录为基准。必须在 prepare 时检查这些实际依赖，不能仅检查工作树文件。 |
+| systemd/systemd | `v259`，提交 `9ca433482f2281d71718718705ca8cd3bf562ad6`；[服务账号](https://github.com/systemd/systemd/blob/9ca433482f2281d71718718705ca8cd3bf562ad6/units/systemd-resolved.service.in#L46)、[运行目录所有权](https://github.com/systemd/systemd/blob/9ca433482f2281d71718718705ca8cd3bf562ad6/src/resolve/resolved.c#L46)、[DNS 文件写入](https://github.com/systemd/systemd/blob/9ca433482f2281d71718718705ca8cd3bf562ad6/src/resolve/resolved-resolv-conf.c#L347)、[标准链接](https://github.com/systemd/systemd/blob/9ca433482f2281d71718718705ca8cd3bf562ad6/tmpfiles.d/systemd-resolve.conf#L10) | 标准 resolver 文件和运行目录由 `systemd-resolve` 服务账号维护；仅针对两个固定 DNS 路径定义专用账号信任，不扩大执行文件信任范围。 |
 
 ## 当前策略与审查修正
 
@@ -27,6 +28,8 @@ SRT 的[受控网络实现](https://github.com/anthropic-experimental/sandbox-ru
 ## 信任范围与保留缺口
 
 保证范围是单用户、可信本地仓库下，由工作台创建的自包含独立 clone。内核、管理员维护的 bwrap/shell/系统运行目录和工作台自身属于信任根；挂入的系统目录整体属于允许读取视图。宿主管理员或同 UID 的不可信进程并发改写目录不在当前保证范围内。
+
+首次 Ubuntu 26.04 CI 的 DENY 通过、ALLOW 在准备时拒绝。后续只读 runner 元数据确认 `/etc/resolv.conf` 指向 `/run/systemd/resolve/stub-resolv.conf`，文件与 `resolve` 目录由专用服务账号拥有。实现因此为这两个固定 resolver 文件允许专用 `systemd-resolve` 所有权，同时保持祖先 root、禁止组/其他用户写入及工作台账号不可等于服务账号；可执行路径与其他系统配置没有放宽。首次失败、诊断和修复复验分别保留于 QA 回执，未修改 runner 的 DNS 所有权或 user namespace 设置。
 
 准备阶段拒绝特殊文件、共享硬链接，以及 `.git`、`gitdir`、`commondir` 和递归 `objects/info/alternates` 的外部依赖。真正依赖外部管理目录的 Git worktree 和 shared clone 会被拒绝；不能保证任意 bare 仓库或自定义 `core.worktree` 配置具有完整 Git 可用性。quoted alternates 等未支持元数据形式也会拒绝，不能静默绕过检查。
 
