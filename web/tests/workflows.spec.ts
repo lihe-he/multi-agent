@@ -366,6 +366,30 @@ for (const width of [1440, 430]) {
   });
 }
 
+test('取消后重新打开流程检查不复用旧请求的迟到响应', async ({ page }) => {
+  const { readinessRequests, readinessState, errors } = await fixture(page, 'restart');
+  readinessState.holdVersion = 2;
+  await openOriginal(page);
+  async function prepareRestart() {
+    await page.getByRole('button', { name: '选择版本并重新开始' }).click();
+    const dialog = page.getByRole('dialog', { name: '用当前现场开始新流程' });
+    await dialog.getByLabel('流程定义').selectOption(v2.definitionId);
+    return dialog;
+  }
+  let dialog = await prepareRestart();
+  await expect.poll(() => readinessState.release !== null).toBe(true);
+  await dialog.getByRole('button', { name: '取消', exact: true }).click();
+  await expect(dialog).toHaveCount(0);
+  readinessState.holdVersion = 0;
+  dialog = await prepareRestart();
+  await expect.poll(() => readinessRequests.length).toBe(2);
+  await expect(dialog.getByRole('checkbox', { name: '确认 另一个 API 路由 v1', exact: true })).toBeVisible();
+  readinessState.release!();
+  await expect.poll(() => readinessState.obsoleteFinished).toBe(true);
+  await expect(dialog.getByRole('checkbox', { name: '确认 另一个 API 路由 v1', exact: true })).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
 test('连接切换重新读取流程检查，旧连接迟到响应不覆盖新路由', async ({ page }) => {
   const { readinessRequests, readinessConnections, readinessState, routes, errors } = await fixture(page, 'restart');
   readinessState.holdVersion = 2;

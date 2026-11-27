@@ -83,7 +83,7 @@ async function startCore() {
   for (const stream of [child.stdout, child.stderr]) stream.on('data', bytes => core.logs += bytes.toString()); child.once('error', error => core.error = error);
   core.identity = probe('identity', child.pid, '-'); remember(core.identity);
   await until('Original ordinary Jar startup', () => { if (core.error) throw core.error; if (child.exitCode !== null || child.signalCode !== null) throw new Error('Original core exited during startup'); const port = core.logs.match(/Tomcat started on port (\d+)/)?.[1]; if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; } });
-  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.checkpointProtocolVersion, 1); assert.equal(health.schemaVersion, 11); assert.equal(health.apiVersion, 1); assert.equal(health.fileToolProtocolVersion, 2);
+  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.checkpointProtocolVersion, 1); assert.equal(health.schemaVersion, 12); assert.equal(health.apiVersion, 1); assert.equal(health.fileToolProtocolVersion, 2);
   core.worker = (await api('/workers')).find(value => value.state === 'RUNNING'); assert.ok(core.worker); remember(core.worker); assert.notEqual(core.worker.pid, core.identity.pid); assert.equal(core.worker.deployment, 'LOCAL_PROCESS');
   assert.equal(probe('inspect', core.worker.pid, core.worker.processStartedAt).matchesOriginal, true); save(`core-${number}-started.json`, { health, identity: core.identity, worker: core.worker }); return core;
 }
@@ -171,7 +171,7 @@ try {
   writeFileSync(join(source, 'verify.mjs'), "import assert from 'node:assert/strict';import{readFileSync}from'node:fs';assert.equal(process.env.WORKBENCH_TOKEN,undefined);assert.ok(['用户原始内容\\n第二行\\n','实现后的内容\\n第二行\\n'].includes(readFileSync('app.txt','utf8')));console.log('ORIGINAL_CHECKPOINT_VERIFIED '+process.pid);\n");
   git(source, 'init', '--initial-branch=main'); git(source, 'config', 'user.name', 'Checkpoint fixture'); git(source, 'config', 'user.email', 'checkpoint@example.invalid'); git(source, 'add', '.'); git(source, 'commit', '-m', 'original checkpoint fixture');
   const sourceBefore = treeFacts(source); save('original-source.json', sourceBefore); await new Promise(done => model.listen(0, '127.0.0.1', done)); await startCore();
-  pass('Ordinary final Jar exposed checkpoint protocol 1 with original independent Worker and schema 11');
+  pass('Ordinary final Jar exposed checkpoint protocol 1 with original independent Worker and schema 12');
   const project = await api('/projects', { path: source }); let route = await api('/routes', { name: 'Actual checkpoint fixture', engine: 'API', model: 'checkpoint-fixture', baseUrl: `http://127.0.0.1:${model.address().port}/v1`, apiKey: credential });
   async function completedTask(marker, strategy) {
     const task = await api('/tasks', { projectId: project.id, routeId: route.id, title: `真实检查点 ${marker}`, goal: marker, mode: 'LEAD', workspaceSelection: { strategy, ref: 'HEAD' }, contract: { scope: ['**'], acceptance: ['Original byte and checkpoint receipts remain reviewable'], commands: ['node verify.mjs'] }, budget: { maxCalls: 24, reserveCalls: 4 } });

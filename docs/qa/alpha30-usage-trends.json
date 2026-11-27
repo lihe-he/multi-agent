@@ -20,13 +20,13 @@
     "linuxCurrentSourceCleanVerify": {"passed": 795, "failed": 0, "errors": 0, "conditionalSkipped": 12},
     "linuxPtyPromptBoundaryRegression": {"passed": 2, "failed": 0},
     "linuxSourceManifestSha256": "42cd68aec8e7f4c04830a042c8c5e0bed15dff5268b84f57f68b973d51aebca8",
-    "fullWebUiCurrent": {"passed": 284, "failed": 0, "total": 284, "command": "npx playwright test --workers=1"},
+    "fullWebUiCurrent": {"passed": 286, "failed": 0, "total": 286, "command": "npx playwright test --workers=1", "scope": "includes the cancellation-and-reopen readiness regression and preserves the prior connection-switch regression"},
     "strictModeRecoveryFollowup": {
       "webBuild": "passed",
       "workflowBrowser": {"passed": 21, "failed": 0},
       "usageTrendBrowser": {"passed": 11, "failed": 0},
       "connectionSwitchReadiness": "passed",
-      "scope": "Full 284-case UI run preceded the connection-scoped readiness follow-up; the affected workflow and usage suites were rerun against final working-tree sources."
+      "scope": "The 284-case run and this targeted follow-up preceded the cancellation-and-reopen regression; the later 286-case full UI run covers the final working-tree sources and preserves the prior connection-switch case."
     },
     "windowsLocalLimitation": [
       "旧 core/target 中的只读 Git 对象阻止 Maven clean 删除",

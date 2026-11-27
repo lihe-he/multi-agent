@@ -6,6 +6,8 @@ core/target/
 .runtime/
 .workbench/
 data/
+test-results/
+playwright-report/
 *.log
 .npm-cache/
 *.tsbuildinfo

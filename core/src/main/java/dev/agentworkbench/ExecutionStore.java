@@ -36,7 +36,7 @@ public class ExecutionStore implements AutoCloseable {
     /**
      * 结构化状态版本包含终端会话、原动作与字节游标索引。
      */
-    public static final int SCHEMA_VERSION = 11;
+    public static final int SCHEMA_VERSION = 12;
     private final Connection connection;
     private final ObjectMapper mapper;
     private final Path directory;
@@ -121,6 +121,11 @@ public class ExecutionStore implements AutoCloseable {
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_workflow_node_active ON entities(json_extract(body,'$.workflowRunId'),json_extract(body,'$.nodeId')) WHERE kind='workflowNodeAttempt' AND json_extract(body,'$.endedAt') IS NULL");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_workflow_nodes_run ON entities(json_extract(body,'$.workflowRunId'),json_extract(body,'$.nodeId')) WHERE kind='workflowNodeAttempt'");
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_workflow_proposal_source ON entities(json_extract(body,'$.agentRunId'),json_extract(body,'$.modelRequestId'),json_extract(body,'$.toolCallId')) WHERE kind='workflowProposal'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_schedule_occurrence ON entities(json_extract(body,'$.scheduleId'),json_extract(body,'$.occurrenceKey')) WHERE kind='scheduleOccurrence'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_schedule_occurrence_history ON entities(json_extract(body,'$.scheduleId'),json_extract(body,'$.state')) WHERE kind='scheduleOccurrence'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_schedule_revision_order ON entities(json_extract(body,'$.scheduleId'),json_extract(body,'$.version')) WHERE kind='scheduleRevision'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_schedule_revision_version ON entities(json_extract(body,'$.scheduleId'),json_extract(body,'$.version')) WHERE kind='scheduleRevision'");
+                statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_task_schedule_occurrence ON entities(json_extract(body,'$.scheduleOccurrenceId')) WHERE kind='task' AND json_extract(body,'$.scheduleOccurrenceId') IS NOT NULL");
                 boolean rebuildSearch;
                 try (var tables = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_search'")) { rebuildSearch = schemaVersion < 3 || !tables.next(); }
                 statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS session_search USING fts5(project_id UNINDEXED,session_id UNINDEXED,message_id UNINDEXED,sequence UNINDEXED,content,tokenize='trigram case_sensitive 1')");
@@ -176,6 +181,82 @@ public class ExecutionStore implements AutoCloseable {
     public synchronized Map<String, Object> put(String kind, Map<String, Object> entity) {
         transaction(() -> write(kind, entity));
         return entity;
+    }
+
+    synchronized boolean createScheduleOccurrenceIfAbsent(Map<String, Object> occurrence) {
+        int[] inserted = {0};
+        transaction(() -> {
+            try (var statement = connection.prepareStatement("INSERT OR IGNORE INTO entities(kind,id,body) VALUES('scheduleOccurrence',?,?)")) {
+                statement.setString(1, str(occurrence, "id")); statement.setString(2, mapper.writeValueAsString(occurrence)); inserted[0] = statement.executeUpdate();
+            }
+        });
+        return inserted[0] == 1;
+    }
+
+    synchronized Map<String, Object> scheduleOccurrence(String scheduleId, String occurrenceKey) {
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='scheduleOccurrence' AND json_extract(body,'$.scheduleId')=? AND json_extract(body,'$.occurrenceKey')=?")) {
+            query.setString(1, scheduleId); query.setString(2, occurrenceKey);
+            try (var rows = query.executeQuery()) { return rows.next() ? decode(rows.getString(1)) : null; }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    synchronized Map<String, Object> scheduledTask(String occurrenceId) {
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='task' AND json_extract(body,'$.scheduleOccurrenceId')=?")) {
+            query.setString(1, occurrenceId);
+            try (var rows = query.executeQuery()) { return rows.next() ? decode(rows.getString(1)) : null; }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    synchronized List<Map<String, Object>> pendingScheduleOccurrences(int requestedLimit) {
+        int limit = Math.max(1, Math.min(500, requestedLimit));
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='scheduleOccurrence' AND json_extract(body,'$.state')='PENDING' ORDER BY rowid LIMIT ?")) {
+            query.setInt(1, limit);
+            try (var rows = query.executeQuery()) {
+                List<Map<String, Object>> result = new ArrayList<>();
+                while (rows.next()) result.add(decode(rows.getString(1)));
+                return result;
+            }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    synchronized List<Map<String, Object>> scheduleRevisions(String scheduleId) {
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='scheduleRevision' AND json_extract(body,'$.scheduleId')=? ORDER BY json_extract(body,'$.version')")) {
+            query.setString(1, scheduleId);
+            try (var rows = query.executeQuery()) {
+                List<Map<String, Object>> result = new ArrayList<>();
+                while (rows.next()) result.add(decode(rows.getString(1)));
+                return result;
+            }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    synchronized List<Map<String, Object>> scheduleOccurrences(String scheduleId, int requestedLimit) {
+        int limit = Math.max(1, Math.min(100, requestedLimit));
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='scheduleOccurrence' AND json_extract(body,'$.scheduleId')=? ORDER BY rowid DESC LIMIT ?")) {
+            query.setString(1, scheduleId); query.setInt(2, limit);
+            try (var rows = query.executeQuery()) {
+                List<Map<String, Object>> result = new ArrayList<>();
+                while (rows.next()) result.add(decode(rows.getString(1)));
+                return result;
+            }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    synchronized void createSchedule(Map<String, Object> schedule, Map<String, Object> revision) {
+        transaction(() -> { write("schedule", schedule); write("scheduleRevision", revision); });
+    }
+
+    synchronized boolean updateScheduleVersion(String scheduleId, int expectedVersion, Map<String, Object> schedule,
+                                                Map<String, Object> closedRevision, Map<String, Object> newRevision) {
+        boolean[] changed = {false};
+        transaction(() -> {
+            try (var update = connection.prepareStatement("UPDATE entities SET body=? WHERE kind='schedule' AND id=? AND json_extract(body,'$.version')=?")) {
+                update.setString(1, mapper.writeValueAsString(schedule)); update.setString(2, scheduleId); update.setInt(3, expectedVersion);
+                if (update.executeUpdate() != 1) return;
+            }
+            write("scheduleRevision", closedRevision); write("scheduleRevision", newRevision); changed[0] = true;
+        });
+        return changed[0];
     }
 
     /**

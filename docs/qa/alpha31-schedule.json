@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "release": "0.2.0-alpha.31",
+  "recordedAt": "2026-11-27",
+  "status": "LOCAL_CORE_VALIDATION_PASSED; FINAL_JAR_WEB_AND_EXACT_COMMIT_CI_PENDING",
+  "scope": "F21 本机持久每日调度子集；不代表完整 F21 或 M0-M3",
+  "implementation": {
+    "endpoints": [
+      "GET /api/schedules",
+      "POST /api/schedules",
+      "PATCH /api/schedules/{id}",
+      "DELETE /api/schedules/{id}",
+      "GET /api/schedules/{id}/occurrences"
+    ],
+    "timeRules": ["IANA zone", "strict HH:mm", "DST gap audit", "first fall-back offset"],
+    "misfirePolicy": "超过五分钟记为 MISSED，不补跑",
+    "persistence": ["revision effective intervals", "per-revision local-date cursor", "SQLite same-day unique occurrence", "PENDING recovery", "independent task/session"]
+  },
+  "localEvidence": {
+    "dailyScheduleTimeTargeted": {"tests": 2, "failures": 0, "errors": 0},
+    "persistentScheduleTargeted": {"tests": 12, "failures": 0, "errors": 0},
+    "scheduleControllerTargeted": {"tests": 3, "failures": 0, "errors": 0},
+    "previousFullCoreBeforeControllerValidation": {"tests": 802, "failures": 0, "errors": 0, "skipped": 28},
+    "supersededFullCoreAttempt": {"tests": 805, "failures": 1, "errors": 0, "skipped": 28, "failure": "TeamExecutionTest.twoParentsWaitingForChildrenMakeProgressAtCapacityTwo exceeded its 60-second wait"},
+    "supersededFailureReplay": {"tests": 1, "failures": 0, "errors": 0, "durationSeconds": 60.10},
+    "finalCleanVerify": {"tests": 806, "failures": 0, "errors": 0, "skipped": 28, "command": "npm run verify:core", "durationMinutes": 50.5},
+    "scheduleAdversarialReview": "No confirmed blocking defect; recovery/API and cross-core/remote limits remain documented",
+    "finalJarIntegration": {"checks": 36, "failures": 0, "command": "WORKBENCH_PRESERVE_QA=1 npm run test:integration", "scope": "local deterministic protocol fixture", "jar": "core/target/agent-workbench-core-0.2.0-alpha.31.jar", "sha256": "F0291B4D19146A49DC5DD1B10AC8ECE2F6F473E64B1AC34580CFB36B88DE2D1D"},
+    "webBuild": "passed",
+    "fullWebUi": {"tests": 286, "failures": 0, "command": "npx playwright test --workers=1", "scope": "final working-tree UI run; cancellation-and-reopen and connection-switch readiness regressions included"},
+    "versionVerification": "passed",
+    "diffCheck": "passed",
+    "javaCommentAudit": "passed; new Javadocs use standard multiline format"
+  },
+  "limitations": [
+    "调度模板编辑 UI 尚未实现",
+    "NEEDS_ATTENTION occurrence 当前没有 API 修复或重试操作，需后续补充可运维恢复能力",
+    "计划使用项目默认执行节点和仓库绑定；不支持 per-task repositoryBindingId、bindingVersion 或 nodeVersion",
+    "workflow 与 workspaceSelection 保存时只做结构检查，occurrence 触发时才解析实际版本/现场；届时失效会进入 NEEDS_ATTENTION",
+    "跨核心 owner/远程协调、分布式锁、完整备份恢复和长期负载尚未验收",
+    "准确提交的三平台 CI 尚待推送后记录",
+    "完整 F01-F21 与 M0-M3 退出条件仍未完成"
+  ]
+}

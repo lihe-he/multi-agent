@@ -264,6 +264,17 @@ public class WorkbenchCatalog {
     }
 
     public synchronized Map<String, Object> createTask(Map<String, Object> body) {
+        return createTask(body, "", false);
+    }
+
+    synchronized Map<String, Object> createScheduledTask(Map<String, Object> body, String occurrenceId, String occurrenceLabel) {
+        Map<String, Object> scheduled = new java.util.LinkedHashMap<>(body);
+        String title = required(scheduled, "title", 180);
+        scheduled.put("title", title + " · " + occurrenceLabel);
+        return createTask(scheduled, occurrenceId, true);
+    }
+
+    private synchronized Map<String, Object> createTask(Map<String, Object> body, String occurrenceId, boolean scheduled) {
         if (body.containsKey("collaboration") && !(body.get("collaboration") instanceof Map<?, ?>)) throw new ApiException(400, "collaboration 必须为对象");
         if (body.containsKey("workflow") && !(body.get("workflow") instanceof Map<?, ?>)) throw new ApiException(400, "workflow 必须为流程选择对象");
         Map<String, Object> project = store.get("project", required(body, "projectId", 100));
@@ -271,7 +282,7 @@ public class WorkbenchCatalog {
         Map<String, Object> selection = body.containsKey("workspaceSelection") ? workspaceSelection(str(execution, "sourcePath"), body, bool(body, "includeChanges", false), 1) : Map.of();
         String goal = required(body, "goal", 40000), title = required(body, "title", 200);
         for (Map<String, Object> task : store.list("task")) {
-            if (str(task, "projectId").equals(str(project, "id")) && goal.equals(str(task, "goal")) && !Set.of("CANCELLED", "FAILED").contains(str(task, "state"))) {
+            if (!scheduled && str(task, "projectId").equals(str(project, "id")) && goal.equals(str(task, "goal")) && !Set.of("CANCELLED", "FAILED").contains(str(task, "state"))) {
                 throw new ApiException(409, "已有相同目标任务，可直接复用：" + str(task, "title") + " (" + str(task, "id") + ")");
             }
         }
@@ -329,6 +340,7 @@ public class WorkbenchCatalog {
             task.put("teamId", id());
         }
         if (bool(map(task, "collaboration"), "enabled", false)) task.put("teamId", id());
+        if (!occurrenceId.isBlank()) task.put("scheduleOccurrenceId", occurrenceId);
         String sessionId = str(body, "sessionId");
         if (!sessionId.isBlank()) { store.session(str(project, "id"), sessionId); task.put("sessionId", sessionId); }
         return store.createTask(task);

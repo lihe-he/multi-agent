@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.agentworkbench.runtime.WorkspaceRuntime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -13,9 +15,44 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import static dev.agentworkbench.Json.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class WorkbenchCatalogTest {
     @TempDir Path directory;
+
+    @Test
+    void scheduledTasksKeepOccurrenceIdentityAndCreateIndependentSessions() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        WorkspaceRuntime runtime = mock(WorkspaceRuntime.class);
+        Path source = Files.createDirectories(directory.resolve("scheduled-project"));
+        when(runtime.inspect(anyString())).thenReturn(obj("path", source.toString(), "head", "fixture-head", "branch", "main", "dirty", false,
+            "fileCount", 1, "files", List.of("README.md"), "modules", List.of()));
+
+        try (var store = new ExecutionStore(mapper, directory.resolve("scheduled-store").toString())) {
+            WorkbenchCatalog catalog = new WorkbenchCatalog(store, runtime, new PlanValidator());
+            catalog.defaults();
+            Map<String, Object> project = catalog.importProject(obj("name", "scheduled project", "path", source.toString()));
+            Map<String, Object> route = catalog.saveRoute(obj("name", "scheduled route", "engine", "API", "model", "fixture",
+                "provider", "fixture", "baseUrl", "http://127.0.0.1:18901/v1", "enabled", true));
+            Map<String, Object> template = obj("projectId", project.get("id"), "routeId", route.get("id"), "title", "Daily review", "goal", "Review current changes",
+                "mode", "LEAD", "contract", obj("acceptance", List.of("review evidence"), "commands", List.of("node verify.mjs")),
+                "budget", obj("maxCalls", 12, "reserveCalls", 4), "locks", obj());
+
+            Map<String, Object> first = catalog.createScheduledTask(template, "occurrence-2026-06-03", "2026-06-03");
+            Map<String, Object> second = catalog.createScheduledTask(template, "occurrence-2026-06-04", "2026-06-04");
+
+            assertEquals("Daily review · 2026-06-03", str(first, "title"));
+            assertEquals("Daily review · 2026-06-04", str(second, "title"));
+            assertEquals("occurrence-2026-06-03", str(first, "scheduleOccurrenceId"));
+            assertEquals("occurrence-2026-06-04", str(second, "scheduleOccurrenceId"));
+            assertNotEquals(first.get("id"), second.get("id"));
+            assertNotEquals(first.get("sessionId"), second.get("sessionId"));
+            assertEquals(2, store.list("task").size());
+            assertEquals(2, store.list("session").size());
+        }
+    }
 
     @Test
     void nativeSandboxRequestFieldsSurviveRouteParsingAndEdits() throws Exception {

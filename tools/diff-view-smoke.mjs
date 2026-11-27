@@ -140,7 +140,7 @@ try {
   for (const stream of [core.stdout, core.stderr]) stream.on('data', bytes => logs += bytes.toString()); core.once('error', error => { processError = error; });
   coreIdentity = probe('identity', core.pid, '-'); remember(coreIdentity);
   await until('Original Jar startup', () => { if (processError) throw processError; if (core.exitCode !== null || core.signalCode !== null) throw new Error('Original core exited during startup'); const port = logs.match(/Tomcat started on port (\d+)/)?.[1]; if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; } });
-  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.diffViewProtocolVersion, 1); assert.equal(health.apiVersion, 1); assert.equal(health.schemaVersion, 11); assert.equal(health.fileToolProtocolVersion, 2); save('health.json', health);
+  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.diffViewProtocolVersion, 1); assert.equal(health.apiVersion, 1); assert.equal(health.schemaVersion, 12); assert.equal(health.fileToolProtocolVersion, 2); save('health.json', health);
   worker = (await api('/workers')).find(value => value.state === 'RUNNING'); assert.ok(worker); remember(worker); assert.notEqual(worker.pid, core.pid); assert.equal(worker.deployment, 'LOCAL_PROCESS');
   assert.equal(probe('inspect', worker.pid, worker.processStartedAt).matchesOriginal, true);
   pass('Ordinary final Jar and original independent Worker exposed diff protocol 1 with unchanged API/schema/file-tool versions');

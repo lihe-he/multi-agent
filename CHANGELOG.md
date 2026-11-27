@@ -1,10 +1,16 @@
 # 版本记录
 
+## 0.2.0-alpha.31 — 本机持久每日调度候选
+
+增加本机 `/api/schedules` 每日计划与触发记录：计划配置按版本保存，使用严格 `HH:mm` 和 IANA 时区，按本地日期唯一化 occurrence，并在 SQLite 中持久化扫描游标。春季 DST 缺口记录 `SKIPPED_DST_GAP`，秋季重复时刻选择首个 offset；超过五分钟执行窗口记为 `MISSED` 且不补跑。停用或重启后仍会恢复已落库的 `PENDING`，每个日期创建独立 task/session，失败项进入 `NEEDS_ATTENTION`。任务模板的可选嵌套字段在保存时拒绝错误类型，避免触发时静默丢弃配置。
+
+本机定向调度测试 **14/14**（每日时间规则 2、持久调度 12）与 HTTP 控制器测试 **3/3** 通过。最终源码清洁 `npm run verify:core` **806 项（0 失败、0 错误、28 条件跳过）**通过；此前一次 805 项运行中团队容量测试超过 60 秒，单项复跑 1/1 通过但耗时 60.10 秒，原失败与最终清洁全量结果均保留。调度独立审查未发现已证实的阻断缺陷，同时确认 `NEEDS_ATTENTION` 当前缺少修复/重试接口。最终 JAR 的本机协议集成验收 **36/36**、生产 Web 构建及完整 Playwright UI **286/286** 通过。详见[alpha.31 调度 QA 回执](./docs/qa/alpha31-schedule.json)。该版本只覆盖 F21 本机调度子集，不包含调度管理 UI、occurrence 人工恢复、跨核心/远程协调、完整备份恢复、长期负载或 F01–F21 / M0–M3 完整退出验收；准确提交的三平台 CI 待推送后记录。
+
 ## 0.2.0-alpha.30 — 持久请求用量趋势
 
 增加项目级 UTC 用量趋势，按 7、30 或 90 天与项目会话、任务范围读取已经保存的 ModelRequest。不同请求单位分别汇总，明确零、未知覆盖、空范围和超出安全精度的累积数值各自保留；输入/输出已含的缓存/推理明细不会重复计算，费用与 CLI 内部请求数继续显示未知。新增数据库时间索引、受限访问接口、响应白名单、图表/日表和可访问的表格筛选。
 
-Windows 后端控制器/存储 **26/26**、实际 Jar 本机协议流程 **36/36**、生产 Web 构建及用量趋势 UI **11/11** 通过。Linux 当前源码 `clean verify` 为 **795 项通过、0 失败、0 错误、12 条件跳过**；两项 PTY 夹具先观察原交互 shell 提示符再发送首行，定向回归 **2/2**，原 200 行完整断言保持。后续修复 StrictMode 重复初始读取及其连接恢复、工作流和用量趋势测试夹具，本机完整 Web UI **284/284** 通过，最终相关 Workflow/用量趋势回归 **32/32**。准确推送 `ffa2d492` 的 CI Run `45781853930` 在 Ubuntu“Mandatory Linux native sandbox boundaries”以及 macOS/Windows“UI interaction tests”失败；详细失败记录待新提交 CI 获取。前一准确提交的 Windows CI 动态委派仍有 Worker UNKNOWN 500，Linux 隔离探针未复现，根因未知；原 fixture、缺失锁文件与 WAL 复制变化边界保留。详见[用量趋势 QA 回执](./docs/qa/alpha30-usage-trends.json)。本版只实现 F21 用量趋势子集；完整定时调度、IANA 时区、价格/CLI 内部计费及其余计划退出条件仍未完成。
+Windows 后端控制器/存储 **26/26**、实际 Jar 本机协议流程 **36/36**、生产 Web 构建及用量趋势 UI **11/11** 通过。Linux 当前源码 `clean verify` 为 **795 项通过、0 失败、0 错误、12 条件跳过**；两项 PTY 夹具先观察原交互 shell 提示符再发送首行，定向回归 **2/2**，原 200 行完整断言保持。后续修复 StrictMode 重复初始读取及其连接恢复、工作流和用量趋势测试夹具；另修复取消并重开流程检查时复用旧在途请求的问题。本机最终完整 Web UI **286/286** 通过，包含旧请求迟到回归并保留原连接切换回归；之前 Workflow/用量趋势定向回归 **32/32**，发生于该新增回归之前。准确推送 `ffa2d492` 的 CI Run `45781853930` 在 Ubuntu“Mandatory Linux native sandbox boundaries”以及 macOS/Windows“UI interaction tests”失败；详细失败记录待新提交 CI 获取。前一准确提交的 Windows CI 动态委派仍有 Worker UNKNOWN 500，Linux 隔离探针未复现，根因未知；原 fixture、缺失锁文件与 WAL 复制变化边界保留。详见[用量趋势 QA 回执](./docs/qa/alpha30-usage-trends.json)。本版只实现 F21 用量趋势子集；完整定时调度、IANA 时区、价格/CLI 内部计费及其余计划退出条件仍未完成。
 
 ## 0.2.0-alpha.29 — Linux 原生 CLI 文件与网络沙箱
 

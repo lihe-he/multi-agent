@@ -80,7 +80,7 @@ try {
   for (const stream of [core.child.stdout, core.child.stderr]) stream.on('data', bytes => { core.logs += bytes.toString('utf8').replaceAll(coreToken, '[LOCAL_CORE_TOKEN_REDACTED]'); });
   await until('original core startup', () => { if (core.child.exitCode !== null || core.child.signalCode !== null) throw new Error('Original core exited before startup'); const port = core.logs.match(/Tomcat started on port (\d+)/)?.[1]; if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; } });
   coreIdentity = probe('identity', { pid: core.child.pid }); remember(coreIdentity);
-  const health = await api('/health'); assert.equal(health.version, corePackage.version); assert.equal(health.schemaVersion, 11); assert.equal(health.terminalProtocolVersion, 1); assert.equal(health.corePid, core.child.pid);
+  const health = await api('/health'); assert.equal(health.version, corePackage.version); assert.equal(health.schemaVersion, 12); assert.equal(health.terminalProtocolVersion, 1); assert.equal(health.corePid, core.child.pid);
   (await api('/workers')).forEach(remember); const project = await api('/projects', { name: 'Original native UI project', path: source });
   const route = await api('/routes', { name: 'Only local native UI model', engine: 'API', model: 'native-ui-local-fixture', baseUrl: `http://127.0.0.1:${model.address().port}/v1`, enabled: true });
   await new Promise(done => web.listen(0, '127.0.0.1', done));
@@ -242,7 +242,7 @@ finally {
   const assetsUnchanged = webBuild.output.every(file => hash(readFileSync(join(directory, 'dist', file.file))) === file.sha256), originalIdentitiesStopped = stopped.length === identities.size && stopped.every(original => original.originalStopped);
   save('http-observations.json', requests); save('actual-browser-http-observations.json', uiRequests); save('static-web-observations.json', staticRequests);
   const report = { recordedAt: new Date().toISOString(), status: status === 'passed' && !error && jarUnchanged && sourcesUnchanged && assetsUnchanged && originalIdentitiesStopped ? 'passed' : 'failed', phase, packageDirectory, buildDirectory, jarSha256: corePackage.jarSha256, jarUnchanged, sourcesUnchanged, assetsUnchanged,
-    version: corePackage.version, schemaVersion: 11, terminalProtocolVersion: 1, browserChannel, browsersPath: process.env.PLAYWRIGHT_BROWSERS_PATH,
+    version: corePackage.version, schemaVersion: 12, terminalProtocolVersion: 1, browserChannel, browsersPath: process.env.PLAYWRIGHT_BROWSERS_PATH,
     serverOwnedByRunner: true, modelTransport: 'LOCAL_FIXTURE_CONNECTION_CLOSE_WITH_NO_APPLICATION_RETRY', runtimeConfiguration: { apiBaseUrl: '/service', sha256: hash(runtimeConfiguration), containsCredentials: false },
     checks, modelCalls, tasks, pageErrors, originalCore: coreIdentity, originalIdentities: [...identities.values()], originalIdentitiesStopped, error,
     packaged, runtimeJava: java, runtimeJavaSha256: corePackage.javaSha256, externalNodeAndJavaUnavailableOnPath: packaged,
