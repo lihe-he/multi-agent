@@ -158,10 +158,10 @@ try {
   for (const stream of [core.stdout, core.stderr]) stream.on('data', bytes => { logs += bytes.toString(); }); core.once('error', error => { processError = error; });
   coreIdentity = processProbe('identity', core.pid, '-'); remember(coreIdentity);
   await until('Final ordinary Jar startup', () => { if (processError) throw processError; if (ended()) throw new Error('Original core exited during startup'); const port = logs.match(/Tomcat started on port (\d+)/)?.[1]; if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; } });
-  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 12); assert.equal(health.apiVersion, 1); assert.equal(health.fileToolProtocolVersion, 2);
+  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 13); assert.equal(health.apiVersion, 1); assert.equal(health.fileToolProtocolVersion, 2);
   save('health.json', health);
   worker = (await api('/workers')).find(value => value.state === 'RUNNING'); assert.ok(worker); remember(worker); assert.notEqual(worker.pid, core.pid); assert.equal(worker.deployment, 'LOCAL_PROCESS');
-  pass('Final Jar and original independent Worker exposed file tool protocol 2 with API 1/schema 12');
+  pass('Final Jar and original independent Worker exposed file tool protocol 2 with API 1/schema 13');
   const project = await api('/projects', { path: source }), route = await api('/routes', { name: 'Original file version fixture', engine: 'API', model: 'file-version-fixture', baseUrl: `http://127.0.0.1:${model.address().port}/v1`, apiKey: credential });
   for (const strategy of ['CLONE', 'WORKTREE']) {
     phase = `${strategy} actual read/write/delete conflict`; const marker = `FILE_VERSION_${strategy}`;

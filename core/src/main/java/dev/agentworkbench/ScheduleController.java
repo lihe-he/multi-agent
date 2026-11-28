@@ -35,6 +35,11 @@ public final class ScheduleController {
     @GetMapping("/{id}/occurrences")
     public java.util.List<Map<String, Object>> occurrences(@PathVariable String id) { return schedules.occurrences(id); }
 
+    @PostMapping("/{id}/occurrences/{occurrenceId}/recover")
+    public Map<String, Object> recover(@PathVariable String id, @PathVariable String occurrenceId, @RequestBody Map<String, Object> body) {
+        return schedules.recover(id, occurrenceId, body);
+    }
+
     @DeleteMapping("/{id}")
     public Map<String, Object> disable(@PathVariable String id) {
         Map<String, Object> schedule = schedules.list().stream().filter(item -> id.equals(str(item, "id"))).findFirst().orElseThrow(() -> new ApiException(404, "定时计划不存在"));

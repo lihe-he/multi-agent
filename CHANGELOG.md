@@ -1,5 +1,13 @@
 # 版本记录
 
+## 0.2.0-alpha.32 — 每日计划运维闭环
+
+新增每日计划管理页，支持创建、编辑、启停、查看最近触发历史和关联任务。暂停只影响未来触发；编辑已有计划会保留 UI 未呈现的高级任务字段。
+
+为 `NEEDS_ATTENTION` 增加版本保护、幂等且可审计的单次恢复操作：可以按原 occurrence 快照重试、显式采用当前计划模板重试，或核对并关联已存在的非草稿任务。重试在物化前确认关联任务不存在；已存在的任务不会被再次创建，核对操作不会确认或再次派发任务。恢复审计与 occurrence 状态在同一 SQLite 事务保存，schema 升至 13。
+
+Temporal、Prefect、Airflow 和 db-scheduler 的固定来源与本地边界见[运维研究](./docs/research/schedule-operations-2026-11-27.md)。本机 Maven 全量 `verify` **813 项（0 失败、0 错误、28 项平台条件跳过）**通过；最终 alpha.32 JAR 本机协议验收 **36/36**、生产 Web 构建和完整 Playwright UI **294/294** 通过。独立复审发现并修复同一幂等键未校验原 `expectedVersion` 的问题；旧审计缺少原版本号时，升级后复用该键返回 409 且不重放副作用。详见[alpha.32 调度运维 QA 回执](./docs/qa/alpha32-schedule-operations-win32.json)。该增量仍不代表完整 F21、备份恢复或跨核心/远程调度验收；准确提交的三平台 CI 待推送后记录。
+
 ## 0.2.0-alpha.31 — 本机持久每日调度候选
 
 增加本机 `/api/schedules` 每日计划与触发记录：计划配置按版本保存，使用严格 `HH:mm` 和 IANA 时区，按本地日期唯一化 occurrence，并在 SQLite 中持久化扫描游标。春季 DST 缺口记录 `SKIPPED_DST_GAP`，秋季重复时刻选择首个 offset；超过五分钟执行窗口记为 `MISSED` 且不补跑。停用或重启后仍会恢复已落库的 `PENDING`，每个日期创建独立 task/session，失败项进入 `NEEDS_ATTENTION`。任务模板的可选嵌套字段在保存时拒绝错误类型，避免触发时静默丢弃配置。

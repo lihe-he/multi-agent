@@ -17,9 +17,10 @@ import { SidebarLayout, SidebarToggle } from './SidebarLayout';
 import { readBrowserValue, writeBrowserValue } from './browser-storage';
 import { startPagePolling } from './page-polling';
 import { UsageTrends } from './UsageTrends';
+import { ScheduleManager } from './ScheduleManager';
 import { version as clientVersion } from '../package.json';
 
-type Page = 'home' | 'sessions' | 'tasks' | 'usage' | 'inbox' | 'knowledge' | 'settings';
+type Page = 'home' | 'sessions' | 'tasks' | 'usage' | 'schedules' | 'inbox' | 'knowledge' | 'settings';
 type Dialog = { type: 'project' | 'connection' } | { type: 'task'; sessionId?: string } | { type: 'memory'; memory?: Memory } | { type: 'route'; route?: Route } | { type: 'profile'; profile?: Profile } | null;
 type Notice = { message: string; error?: boolean; id: number };
 const initialState: WorkbenchState = { projects: [], tasks: [], routes: [], memories: [], profiles: [], system: {} };
@@ -99,6 +100,7 @@ export default function App() {
   const navigation: { id: Page; title: string; icon: LucideIcon; count?: number }[] = [
     { id: 'home', title: '项目总览', icon: LayoutDashboard }, { id: 'sessions', title: '协作会话', icon: Network }, { id: 'tasks', title: '研发任务', icon: Layers3 },
     { id: 'usage', title: '用量趋势', icon: ChartNoAxesCombined },
+    { id: 'schedules', title: '每日计划', icon: Clock3 },
     { id: 'inbox', title: '需要我处理', icon: ListTodo, count: inbox.length }, { id: 'knowledge', title: '上下文与记忆', icon: BookOpen },
   ];
   const connectionLabel = connecting ? '正在连接核心…' : connected ? '本地核心已连接' : '本地核心未连接';
@@ -119,6 +121,7 @@ export default function App() {
       {page === 'knowledge' && <Knowledge project={selectedProject} memories={state.memories.filter(m => m.projectId === projectId)} onAdd={() => setDialog({ type: 'memory' })} onEdit={memory => setDialog({ type: 'memory', memory })} onRefresh={refresh} onNotice={notify} connected={connected} />}
       {page === 'settings' && <Settings state={state} connected={connected} onRoute={route => setDialog({ type: 'route', route })} onProfile={profile => setDialog({ type: 'profile', profile })} onNotice={notify} onRefresh={refresh} onConnection={() => setDialog({ type: 'connection' })} />}
       {page === 'usage' && (selectedProject ? <UsageTrends projectId={selectedProject.id} tasks={projectTasks} connected={connected} /> : <section className="card"><Empty icon={<ChartNoAxesCombined size={28} />} title="请先选择一个项目" description="用量趋势按项目统计，导入或选择项目后可查看。" /></section>)}
+      {page === 'schedules' && <ScheduleManager projects={state.projects} routes={state.routes} connected={connected} onNotice={notify} onTask={id => { setPage('tasks'); setTaskId(id); void refresh(); }} />}
       <div className="page-footer"><span>AGENT STUDIO</span><span>让协作有序，让结果可信。</span><span>本地研发预览版 · {state.system.version || clientVersion}</span></div>
     </main></div>
     {notice && <div className={`toast ${notice.error ? 'error' : ''}`} role={notice.error ? 'alert' : 'status'}>{notice.error ? <TriangleAlert size={18} /> : <Check size={18} />}<span>{notice.message}</span><button className="icon-button" aria-label="关闭提示" onClick={() => setNotice(null)}><X size={15} /></button></div>}

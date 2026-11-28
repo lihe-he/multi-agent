@@ -90,7 +90,7 @@ async function startCore() {
   for (const stream of [child.stdout, child.stderr]) stream.on('data', bytes => { core.logs += bytes.toString(); }); child.once('error', error => { core.error = error; });
   core.identity = processProbe(child.pid, '-', 'identity'); remember(core.identity);
   await until('原 Jar 核心启动', () => { if (core.error) throw core.error; if (ended(core)) throw new Error(`原核心 ${number} 提前退出`); const port = core.logs.match(/Tomcat started on port (\d+)/)?.[1]; if (port) { baseUrl = `http://127.0.0.1:${port}`; return true; } });
-  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 12); assert.equal(health.corePid, child.pid);
+  const health = await api('/health'); assert.equal(health.version, version); assert.equal(health.schemaVersion, 13); assert.equal(health.corePid, child.pid);
   core.worker = (await api('/workers')).find(worker => worker.state === 'RUNNING'); assert.ok(core.worker); assert.equal(core.worker.deployment, 'LOCAL_PROCESS'); assert.equal(core.worker.corePid, child.pid); assert.notEqual(core.worker.pid, child.pid);
   remember(core.worker); assert.equal(core.identity.processStartedAt, core.worker.coreStartedAt); save(`core-${number}-started.json`, { health, worker: core.worker, identity: core.identity }); return core;
 }

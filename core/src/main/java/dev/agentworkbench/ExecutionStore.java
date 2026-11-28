@@ -36,7 +36,7 @@ public class ExecutionStore implements AutoCloseable {
     /**
      * 结构化状态版本包含终端会话、原动作与字节游标索引。
      */
-    public static final int SCHEMA_VERSION = 12;
+    public static final int SCHEMA_VERSION = 13;
     private final Connection connection;
     private final ObjectMapper mapper;
     private final Path directory;
@@ -125,6 +125,7 @@ public class ExecutionStore implements AutoCloseable {
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_schedule_occurrence_history ON entities(json_extract(body,'$.scheduleId'),json_extract(body,'$.state')) WHERE kind='scheduleOccurrence'");
                 statement.execute("CREATE INDEX IF NOT EXISTS entities_schedule_revision_order ON entities(json_extract(body,'$.scheduleId'),json_extract(body,'$.version')) WHERE kind='scheduleRevision'");
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_schedule_revision_version ON entities(json_extract(body,'$.scheduleId'),json_extract(body,'$.version')) WHERE kind='scheduleRevision'");
+                statement.execute("CREATE INDEX IF NOT EXISTS entities_schedule_recovery_occurrence ON entities(json_extract(body,'$.occurrenceId'),json_extract(body,'$.createdAt')) WHERE kind='scheduleOccurrenceRecovery'");
                 statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS entities_task_schedule_occurrence ON entities(json_extract(body,'$.scheduleOccurrenceId')) WHERE kind='task' AND json_extract(body,'$.scheduleOccurrenceId') IS NOT NULL");
                 boolean rebuildSearch;
                 try (var tables = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_search'")) { rebuildSearch = schemaVersion < 3 || !tables.next(); }
@@ -205,6 +206,25 @@ public class ExecutionStore implements AutoCloseable {
             query.setString(1, occurrenceId);
             try (var rows = query.executeQuery()) { return rows.next() ? decode(rows.getString(1)) : null; }
         } catch (Exception exception) { throw failure(exception); }
+    }
+
+    synchronized Map<String, Object> scheduleOccurrenceRecovery(String occurrenceId, String requestId) {
+        return find("scheduleOccurrenceRecovery", occurrenceId + ":" + requestId);
+    }
+
+    synchronized List<Map<String, Object>> scheduleOccurrenceRecoveries(String occurrenceId) {
+        try (var query = connection.prepareStatement("SELECT body FROM entities WHERE kind='scheduleOccurrenceRecovery' AND json_extract(body,'$.occurrenceId')=? ORDER BY rowid")) {
+            query.setString(1, occurrenceId);
+            try (var rows = query.executeQuery()) {
+                List<Map<String, Object>> result = new ArrayList<>();
+                while (rows.next()) result.add(decode(rows.getString(1)));
+                return result;
+            }
+        } catch (Exception exception) { throw failure(exception); }
+    }
+
+    synchronized void updateScheduleOccurrenceRecovery(Map<String, Object> occurrence, Map<String, Object> recovery) {
+        transaction(() -> { write("scheduleOccurrence", occurrence); write("scheduleOccurrenceRecovery", recovery); });
     }
 
     synchronized List<Map<String, Object>> pendingScheduleOccurrences(int requestedLimit) {

@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -88,7 +89,87 @@ public final class PersistentScheduleService {
 
     public synchronized List<Map<String, Object>> occurrences(String scheduleId) {
         store.get("schedule", scheduleId);
-        return store.scheduleOccurrences(scheduleId, 100);
+        List<Map<String, Object>> result = new java.util.ArrayList<>();
+        for (Map<String, Object> occurrence : store.scheduleOccurrences(scheduleId, 100)) {
+            Map<String, Object> view = new LinkedHashMap<>(occurrence);
+            view.put("version", num(occurrence, "version", 1));
+            Map<String, Object> task = store.scheduledTask(str(occurrence, "id"));
+            if (task != null) {
+                view.put("taskId", task.get("id"));
+                view.put("taskState", task.get("state"));
+            }
+            view.put("recoveries", store.scheduleOccurrenceRecoveries(str(occurrence, "id")));
+            result.add(view);
+        }
+        return result;
+    }
+
+    public synchronized Map<String, Object> recover(String scheduleId, String occurrenceId, Map<String, Object> input) {
+        requireKeys(input, Set.of("expectedVersion", "action", "requestId", "reason"), "触发恢复");
+        Map<String, Object> occurrence = store.get("scheduleOccurrence", occurrenceId);
+        if (!scheduleId.equals(str(occurrence, "scheduleId"))) throw new ApiException(404, "定时触发记录不存在");
+
+        String action = required(input, "action", 40);
+        String requestId = required(input, "requestId", 36);
+        UUID parsedRequestId;
+        try { parsedRequestId = UUID.fromString(requestId); }
+        catch (IllegalArgumentException exception) { throw new ApiException(400, "requestId 必须为 UUID"); }
+        if (!parsedRequestId.toString().equalsIgnoreCase(requestId)) throw new ApiException(400, "requestId 必须为标准 UUID");
+        requestId = parsedRequestId.toString();
+        String reason = input.containsKey("reason") ? required(input, "reason", 500) : "";
+        if (!(input.get("expectedVersion") instanceof Number expected) || expected.doubleValue() != expected.intValue()) {
+            throw new ApiException(409, "触发记录已变化，请刷新后重试");
+        }
+        int expectedVersion = expected.intValue();
+        Map<String, Object> prior = store.scheduleOccurrenceRecovery(occurrenceId, requestId);
+        if (prior != null) {
+            if (!action.equals(str(prior, "action")) || !reason.equals(str(prior, "reason"))
+                    || expectedVersion != num(prior, "previousOccurrenceVersion", -1)) throw new ApiException(409, "requestId 已用于不同恢复操作");
+            return occurrence;
+        }
+        if (expectedVersion != num(occurrence, "version", 1)) throw new ApiException(409, "触发记录已变化，请刷新后重试");
+        if (!"NEEDS_ATTENTION".equals(str(occurrence, "state"))) throw new ApiException(409, "只有需要处理的触发记录可以恢复");
+
+        Map<String, Object> task = store.scheduledTask(occurrenceId);
+        Instant now = clock.instant();
+        Map<String, Object> recovery = obj("id", occurrenceId + ":" + requestId, "schemaVersion", 1, "scheduleId", scheduleId,
+            "occurrenceId", occurrenceId, "requestId", requestId, "action", action, "actor", "LOCAL_USER", "reason", reason, "createdAt", now.toString());
+        if ("RETRY_SNAPSHOT".equals(action) || "RETRY_CURRENT_VERSION".equals(action)) {
+            if (task != null) throw new ApiException(409, "该触发记录已有任务，不能重新创建；请打开任务后核对并关联");
+            if ("RETRY_CURRENT_VERSION".equals(action)) {
+                Map<String, Object> current = store.get("schedule", scheduleId);
+                recovery.put("previousTaskTemplate", new LinkedHashMap<>(map(occurrence, "taskTemplate")));
+                recovery.put("previousScheduleVersion", occurrence.get("scheduleVersion"));
+                occurrence.put("taskTemplate", new LinkedHashMap<>(map(current, "task")));
+                occurrence.put("scheduleVersion", current.get("version"));
+                recovery.put("sourceScheduleVersion", current.get("version"));
+            }
+            recovery.put("previousOccurrenceVersion", num(occurrence, "version", 1));
+            occurrence.put("state", "PENDING");
+            occurrence.put("message", "用户已请求单次恢复；将为本日期执行一次受控触发");
+            occurrence.put("updatedAt", now.toString());
+            occurrence.put("version", num(occurrence, "version", 1) + 1);
+            store.updateScheduleOccurrenceRecovery(occurrence, recovery);
+            process(occurrence);
+            return store.get("scheduleOccurrence", occurrenceId);
+        }
+        if ("RECONCILE_EXISTING_TASK".equals(action)) {
+            if (task == null) throw new ApiException(409, "尚未发现关联任务；如需重试，请选择单次触发重试");
+            if ("DRAFT".equals(str(task, "state"))) throw new ApiException(409, "关联任务仍待确认；请先在任务详情中处理，再回来核对");
+            recovery.put("taskId", task.get("id"));
+            recovery.put("taskState", task.get("state"));
+            recovery.put("previousOccurrenceVersion", num(occurrence, "version", 1));
+            occurrence.put("taskId", task.get("id"));
+            occurrence.put("taskState", task.get("state"));
+            occurrence.put("state", "TRIGGERED");
+            occurrence.put("triggeredAt", now.toString());
+            occurrence.put("message", "用户已核对并关联已存在任务；未重新派发");
+            occurrence.put("updatedAt", now.toString());
+            occurrence.put("version", num(occurrence, "version", 1) + 1);
+            store.updateScheduleOccurrenceRecovery(occurrence, recovery);
+            return occurrence;
+        }
+        throw new ApiException(400, "未知触发恢复操作");
     }
 
     private Map<String, Object> normalize(Map<String, Object> input, String scheduleId, int version) {
@@ -351,14 +432,15 @@ public final class PersistentScheduleService {
         Instant recordedAt = clock.instant();
         return obj("id", id(), "schemaVersion", 1, "scheduleId", revision.get("scheduleId"), "scheduleVersion", revision.get("version"),
             "occurrenceKey", date.toString(), "localDate", date.toString(), "timezone", revision.get("timezone"), "localTime", revision.get("localTime"),
-            "scheduledAt", scheduledAt.toString(), "taskTemplate", revision.get("task"), "state", state, "createdAt", recordedAt.toString(),
+            "scheduledAt", scheduledAt.toString(), "taskTemplate", revision.get("task"), "state", state, "version", 1, "createdAt", recordedAt.toString(),
             "updatedAt", recordedAt.toString(), "message", message);
     }
 
     private void process(Map<String, Object> occurrence) {
+        Map<String, Object> task = null;
         try {
             String occurrenceId = str(occurrence, "id");
-            Map<String, Object> task = store.scheduledTask(occurrenceId);
+            task = store.scheduledTask(occurrenceId);
             if (task == null) {
                 String label = str(occurrence, "localDate");
                 Map<String, Object> template = new LinkedHashMap<>(map(occurrence, "taskTemplate"));
@@ -369,13 +451,19 @@ public final class PersistentScheduleService {
             Map<String, Object> currentTask = store.get("task", taskId);
             occurrence.put("taskId", taskId); occurrence.put("state", "TRIGGERED"); occurrence.put("triggeredAt", clock.instant().toString());
             occurrence.put("updatedAt", clock.instant().toString()); occurrence.put("message", "为本次日期创建了独立任务与会话，并按已确认计划排队"); occurrence.put("taskState", currentTask.get("state"));
+            occurrence.put("version", num(occurrence, "version", 1) + 1);
             store.put("scheduleOccurrence", occurrence);
         } catch (RuntimeException exception) {
             String raw = exception.getMessage() == null ? exception.getClass().getSimpleName() : exception.getMessage();
             String message = catalog.redact(raw);
             if (message == null || message.isBlank()) message = exception.getClass().getSimpleName();
+            if (task != null) {
+                occurrence.put("taskId", task.get("id"));
+                occurrence.put("taskState", task.get("state"));
+            }
             occurrence.put("state", "NEEDS_ATTENTION"); occurrence.put("updatedAt", clock.instant().toString());
             occurrence.put("message", message.length() <= 1000 ? message : message.substring(0, 1000));
+            occurrence.put("version", num(occurrence, "version", 1) + 1);
             store.put("scheduleOccurrence", occurrence);
         }
     }

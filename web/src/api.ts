@@ -1,6 +1,10 @@
 import type { Connection } from './types';
 import { readBrowserValue, writeBrowserValue } from './browser-storage';
 
+export class ApiError extends Error {
+  constructor(message: string, readonly status: number) { super(message); }
+}
+
 let connection: Connection = {
   baseUrl: import.meta.env.VITE_API_BASE || '',
   token: readBrowserValue('sessionStorage', 'workbench-token') || '',
@@ -72,7 +76,7 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
       message = data.message || data.error || message;
       if (typeof message !== 'string') message = JSON.stringify(message);
     } catch { /* A failed proxy may return an empty response. */ }
-    throw new Error(message);
+    throw new ApiError(message, response.status);
   }
   if (response.status === 204) return undefined as T;
   const text = await response.text();

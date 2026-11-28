@@ -11,6 +11,7 @@ const labels: Record<string, string> = {
   APPROVED: '审查通过', REJECTED: '需要修复', BLOCKED: '受阻', VERIFIED: '已验证',
   WAITING_TOOL: '等待工具', BUDGET_EXHAUSTED: '预算不足', NOT_RUN: '尚未执行', CHANGES_REQUESTED: '需要修复', UNVERIFIED: '未验证',
   WAITING_CHILDREN: '等待副任务', WAITING_DEPENDENCY: '等待前置副任务',
+  NEEDS_ATTENTION: '需要处理', TRIGGERED: '已触发', MISSED: '已错过', SKIPPED_DST_GAP: '夏令时跳过',
 };
 export const modeLabel = (mode: string) => ({ AUTO: '自动选择', LEAD: '主副协作', ROUNDTABLE: '圆桌讨论', PIPELINE: '研发流水线' }[mode] || mode);
 export const statusLabel = (state?: string) => state ? labels[state] || state : '尚未执行';
@@ -26,7 +27,7 @@ export const lines = (text: string) => text.split('\n').map(s => s.trim()).filte
 export function Badge({ state, children }: { state?: string; children?: ReactNode }) {
   const tone = ['COMPLETED', 'SUCCEEDED', 'PASSED', 'APPROVED', 'ACTIVE', 'VERIFIED'].includes(state || '') ? 'success'
     : ['FAILED', 'REJECTED', 'UNKNOWN', 'CHANGES_REQUESTED'].includes(state || '') ? 'danger'
-    : ['WAITING_INPUT', 'WAITING_RESOURCE', 'WAITING_CHILDREN', 'WAITING_DEPENDENCY', 'AWAITING_ACCEPTANCE', 'NEEDS_REVIEW', 'BLOCKED', 'DRAFT'].includes(state || '') ? 'warning'
+    : ['WAITING_INPUT', 'WAITING_RESOURCE', 'WAITING_CHILDREN', 'WAITING_DEPENDENCY', 'AWAITING_ACCEPTANCE', 'NEEDS_REVIEW', 'NEEDS_ATTENTION', 'BLOCKED', 'DRAFT'].includes(state || '') ? 'warning'
     : ['RUNNING', 'DISPATCHING', 'QUEUED', 'PAUSING', 'CANCELLING'].includes(state || '') ? 'live' : 'muted';
   return <span className={`badge ${tone}`}><span className="badge-dot" />{children || statusLabel(state)}</span>;
 }

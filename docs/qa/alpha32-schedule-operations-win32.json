@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "release": "0.2.0-alpha.32",
+  "recordedAt": "2026-11-28",
+  "status": "LOCAL_CORE_JAR_AND_WEB_VALIDATION_PASSED; EXACT_COMMIT_CI_PENDING",
+  "scope": "F21 本机每日计划管理与 NEEDS_ATTENTION 单次恢复子集；不代表完整 F21 或 M0-M3",
+  "implementation": {
+    "ui": [
+      "创建、编辑、启用和暂停每日计划",
+      "最近 100 条 occurrence 历史、关联任务跳转和状态查看",
+      "NEEDS_ATTENTION 的快照重试、当前版本重试、已存在任务核对关联",
+      "编辑时保留基础表单未展示的高级任务模板字段"
+    ],
+    "recoveryProtocol": [
+      "occurrence expectedVersion 乐观保护",
+      "规范化 UUID requestId 与 SQLite 持久恢复审计",
+      "幂等重放校验原 expectedVersion、action 和 reason",
+      "任务存在性检查及禁止重复物化",
+      "schema 13 恢复审计索引"
+    ],
+    "compatibility": "旧 occurrence 缺 version 时只投影 version=1；读取历史不改写原实体。缺少 previousOccurrenceVersion 的 alpha.32 开发期审计重放返回 409，副作用不会重放。"
+  },
+  "localEvidence": {
+    "targetedScheduleTests": {
+      "dailyScheduleTime": { "tests": 2, "failures": 0, "errors": 0 },
+      "persistentScheduleService": { "tests": 19, "failures": 0, "errors": 0 },
+      "scheduleController": { "tests": 3, "failures": 0, "errors": 0 },
+      "total": { "tests": 24, "failures": 0, "errors": 0 }
+    },
+    "finalCoreVerify": {
+      "command": "mvn -B -ntp -f core/pom.xml verify",
+      "tests": 813,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 28,
+      "durationMinutes": 60,
+      "result": "BUILD SUCCESS"
+    },
+    "finalJarIntegration": {
+      "command": "WORKBENCH_PRESERVE_QA=1 npm run test:integration",
+      "checks": 36,
+      "failures": 0,
+      "scope": "local deterministic protocol fixture; does not validate an external provider",
+      "jar": "core/target/agent-workbench-core-0.2.0-alpha.32.jar",
+      "sha256": "8A0905C0197AB05EC6D18DEC1724FAE21B3EA92BE5ED3425DDA43956534CA5EF",
+      "report": ".runtime/ci-ZELVN3/report.json"
+    },
+    "webBuild": {
+      "result": "passed",
+      "command": "npm run build (cwd web)",
+      "warning": "510.94 kB main JavaScript chunk exceeds Vite's suggested 500 kB threshold."
+    },
+    "fullWebUi": {
+      "tests": 294,
+      "failures": 0,
+      "command": "npm run test:ui -- --workers=1 (cwd web)",
+      "durationMinutes": 9.6,
+      "scope": "final working-tree Playwright run; schedule manager and recovery flows included"
+    },
+    "independentReview": "Final diff review found no confirmed remaining blocker; identified idempotency replay mismatch on expectedVersion, fixed it and added a 409 regression assertion.",
+    "versionVerification": "passed; 0.2.0-alpha.32",
+    "diffCheck": "passed; Git reported only CRLF normalization warnings for existing LF working files",
+    "javaCommentAudit": "passed; no Java comments were modified or added",
+    "visualReview": [
+      "web/qa/schedule-operations-desktop.png",
+      "web/qa/schedule-operations-narrow.png"
+    ],
+    "environmentAttempts": [
+      "Maven clean could not remove core/target because it contains a pre-existing Git-object fixture; preserved .runtime/maven-clean-trash-alpha32 and completed the final Maven verify using project JDK 21.",
+      "A direct compile attempt using the system JDK 17 failed because the project requires JDK 21; it was not counted as a source failure and the final Maven verify used .runtime/jdk-21.0.13+9."
+    ],
+    "supersededCandidateEvidence": {
+      "jarIntegrationChecks": 36,
+      "sha256": "350D7EE35BA87095552D3F74AF2065E2DF61B662317DE3B5287B0A0A13CA9FF8",
+      "status": "superseded after the idempotency expectedVersion fix; not evidence for the final JAR"
+    }
+  },
+  "limitations": [
+    "accurate three-platform CI for the final pushed commit is pending",
+    "cross-core ownership and remote scheduling coordination are not implemented or verified",
+    "complete backup and restore, long-duration load, provider billing reconciliation, and full F21 exit criteria remain open",
+    "the change does not satisfy the complete F01-F21 or M0-M3 plan"
+  ]
+}

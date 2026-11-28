@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.sql.DriverManager;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -358,6 +359,154 @@ class PersistentScheduleServiceTest {
         assertEquals("NEEDS_ATTENTION", str(store.get("scheduleOccurrence", "pending-1"), "state"));
         assertEquals("TRIGGERED", str(store.get("scheduleOccurrence", "pending-2"), "state"));
         assertEquals(2, store.list("task").size());
+    }
+
+    @Test
+    void occurrenceRetryIsAuditedIdempotentAndCreatesOnlyOneTask() {
+        Map<String, Object> schedule = daily("09:00");
+        Map<String, Object> occurrence = occurrence("retry-empty", schedule, taskTemplate(), 1);
+        store.put("scheduleOccurrence", occurrence);
+
+        Map<String, Object> result = service.recover(str(schedule, "id"), "retry-empty", obj("expectedVersion", 1,
+            "action", "RETRY_SNAPSHOT", "requestId", "00000000-0000-0000-0000-000000000001", "reason", "依赖已恢复"));
+
+        assertEquals("TRIGGERED", str(result, "state"));
+        assertEquals("scheduled-task-1", str(result, "taskId"));
+        assertEquals(3, num(result, "version", 0));
+        assertEquals(1, store.list("task").size());
+        assertEquals(1, approvals.get());
+        assertEquals(1, store.list("scheduleOccurrenceRecovery").size());
+        assertEquals("LOCAL_USER", str(store.list("scheduleOccurrenceRecovery").getFirst(), "actor"));
+        assertEquals("依赖已恢复", str(store.list("scheduleOccurrenceRecovery").getFirst(), "reason"));
+
+        Map<String, Object> replay = service.recover(str(schedule, "id"), "retry-empty", obj("expectedVersion", 1,
+            "action", "RETRY_SNAPSHOT", "requestId", "00000000-0000-0000-0000-000000000001", "reason", "依赖已恢复"));
+        assertEquals("TRIGGERED", str(replay, "state"));
+        assertEquals(1, store.list("task").size());
+        assertEquals(1, approvals.get());
+        assertEquals(1, store.list("scheduleOccurrenceRecovery").size());
+    }
+
+    @Test
+    void legacyOccurrenceWithoutVersionCanBeRecoveredFromItsProjectedVersion() {
+        Map<String, Object> schedule = daily("09:00");
+        Map<String, Object> occurrence = occurrence("legacy-retry", schedule, taskTemplate(), 1);
+        occurrence.remove("version");
+        store.put("scheduleOccurrence", occurrence);
+
+        Map<String, Object> projected = service.occurrences(str(schedule, "id")).getFirst();
+        assertEquals(1, num(projected, "version", 0));
+        Map<String, Object> recovered = service.recover(str(schedule, "id"), "legacy-retry", obj("expectedVersion", projected.get("version"),
+            "action", "RETRY_SNAPSHOT", "requestId", "00000000-0000-0000-0000-000000000009"));
+
+        assertEquals("TRIGGERED", str(recovered, "state"));
+        assertEquals(1, store.list("task").size());
+    }
+
+    @Test
+    void existingDraftCannotBeRetriedButCanBeReconciledAfterExplicitTaskApproval() {
+        Map<String, Object> schedule = daily("09:00");
+        Map<String, Object> occurrence = occurrence("retry-existing", schedule, taskTemplate(), 1);
+        store.put("scheduleOccurrence", occurrence);
+        Map<String, Object> linkedTask = store.createTask(obj("id", "preexisting-task", "projectId", projectId, "title", "Existing", "goal", "Existing",
+            "state", "DRAFT", "scheduleOccurrenceId", "retry-existing"));
+
+        ApiException retry = assertThrows(ApiException.class, () -> service.recover(str(schedule, "id"), "retry-existing", obj("expectedVersion", 1,
+            "action", "RETRY_SNAPSHOT", "requestId", "00000000-0000-0000-0000-000000000002")));
+        assertEquals(409, retry.status());
+        assertEquals("NEEDS_ATTENTION", str(store.get("scheduleOccurrence", "retry-existing"), "state"));
+        assertEquals(1, store.list("task").size());
+
+        ApiException draft = assertThrows(ApiException.class, () -> service.recover(str(schedule, "id"), "retry-existing", obj("expectedVersion", 1,
+            "action", "RECONCILE_EXISTING_TASK", "requestId", "00000000-0000-0000-0000-000000000003")));
+        assertEquals(409, draft.status());
+        linkedTask.put("state", "QUEUED"); store.put("task", linkedTask);
+        Map<String, Object> reconciled = service.recover(str(schedule, "id"), "retry-existing", obj("expectedVersion", 1,
+            "action", "RECONCILE_EXISTING_TASK", "requestId", "00000000-0000-0000-0000-000000000004", "reason", "已在任务页确认"));
+        assertEquals("TRIGGERED", str(reconciled, "state"));
+        assertEquals("preexisting-task", str(reconciled, "taskId"));
+        assertEquals("QUEUED", str(reconciled, "taskState"));
+        verify(engine, never()).action(anyString(), eq("approve"), anyMap());
+    }
+
+    @Test
+    void retryWithCurrentScheduleVersionPreservesPreviousTemplateInAudit() {
+        Map<String, Object> schedule = daily("09:00");
+        Map<String, Object> previous = taskTemplate();
+        Map<String, Object> occurrence = occurrence("retry-current", schedule, previous, 1);
+        store.put("scheduleOccurrence", occurrence);
+        Map<String, Object> replacement = new java.util.LinkedHashMap<>(previous);
+        replacement.put("goal", "Updated goal");
+        service.update(str(schedule, "id"), obj("expectedVersion", 1, "task", replacement));
+
+        Map<String, Object> result = service.recover(str(schedule, "id"), "retry-current", obj("expectedVersion", 1,
+            "action", "RETRY_CURRENT_VERSION", "requestId", "00000000-0000-0000-0000-000000000005"));
+
+        assertEquals("TRIGGERED", str(result, "state"));
+        assertEquals(2, num(result, "scheduleVersion", 0));
+        assertEquals("Updated goal", str(map(result, "taskTemplate"), "goal"));
+        Map<String, Object> recovery = store.list("scheduleOccurrenceRecovery").getFirst();
+        assertEquals(2, num(recovery, "sourceScheduleVersion", 0));
+        assertEquals(1, num(recovery, "previousScheduleVersion", 0));
+        assertEquals("Review current changes", str(map(recovery, "previousTaskTemplate"), "goal"));
+    }
+
+    @Test
+    void occurrenceRecoveryRejectsStaleVersionsUnknownActionsAndChangedIdempotencyPayloads() {
+        Map<String, Object> schedule = daily("09:00");
+        store.put("scheduleOccurrence", occurrence("recovery-guards", schedule, taskTemplate(), 1));
+        assertEquals(409, assertThrows(ApiException.class, () -> service.recover(str(schedule, "id"), "recovery-guards", obj("expectedVersion", 2,
+            "action", "RETRY_SNAPSHOT", "requestId", "00000000-0000-0000-0000-000000000006"))).status());
+        assertEquals(400, assertThrows(ApiException.class, () -> service.recover(str(schedule, "id"), "recovery-guards", obj("expectedVersion", 1,
+            "action", "UNKNOWN", "requestId", "00000000-0000-0000-0000-000000000007"))).status());
+        service.recover(str(schedule, "id"), "recovery-guards", obj("expectedVersion", 1, "action", "RETRY_SNAPSHOT",
+            "requestId", "00000000-0000-0000-0000-000000000008", "reason", "first"));
+        assertEquals(409, assertThrows(ApiException.class, () -> service.recover(str(schedule, "id"), "recovery-guards", obj("expectedVersion", 1,
+            "action", "RETRY_SNAPSHOT", "requestId", "00000000-0000-0000-0000-000000000008", "reason", "changed"))).status());
+        assertEquals(409, assertThrows(ApiException.class, () -> service.recover(str(schedule, "id"), "recovery-guards", obj("expectedVersion", 2,
+            "action", "RETRY_SNAPSHOT", "requestId", "00000000-0000-0000-0000-000000000008", "reason", "first"))).status());
+    }
+
+    @Test
+    void idempotencyTreatsUuidLetterCaseAsTheSameRequest() {
+        Map<String, Object> schedule = daily("09:00");
+        store.put("scheduleOccurrence", occurrence("uuid-case", schedule, taskTemplate(), 1));
+        String lower = "abcdef00-0000-0000-0000-000000000001", upper = lower.toUpperCase(java.util.Locale.ROOT);
+        Map<String, Object> first = service.recover(str(schedule, "id"), "uuid-case", obj("expectedVersion", 1, "action", "RETRY_SNAPSHOT", "requestId", lower));
+        Map<String, Object> replay = service.recover(str(schedule, "id"), "uuid-case", obj("expectedVersion", 1, "action", "RETRY_SNAPSHOT", "requestId", upper));
+        assertEquals("TRIGGERED", str(first, "state"));
+        assertEquals("TRIGGERED", str(replay, "state"));
+        assertEquals(1, store.list("scheduleOccurrenceRecovery").size());
+        assertEquals(1, store.list("task").size());
+    }
+
+    @Test
+    void schemaTwelveUpgradesToThirteenAndAddsScheduleRecoveryIndex() throws Exception {
+        store.close();
+        try (var database = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("data/workbench.sqlite"));
+             var statement = database.createStatement()) {
+            statement.execute("DROP INDEX entities_schedule_recovery_occurrence");
+            statement.execute("PRAGMA user_version=12");
+        }
+        store = new ExecutionStore(new ObjectMapper(), directory.resolve("data").toString());
+        try (var database = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("data/workbench.sqlite"));
+             var statement = database.createStatement();
+             var version = statement.executeQuery("PRAGMA user_version")) {
+            assertTrue(version.next());
+            assertEquals(13, version.getInt(1));
+        }
+        try (var database = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("data/workbench.sqlite"));
+             var statement = database.createStatement();
+             var index = statement.executeQuery("SELECT 1 FROM sqlite_master WHERE type='index' AND name='entities_schedule_recovery_occurrence'")) {
+            assertTrue(index.next());
+        }
+    }
+
+    private Map<String, Object> occurrence(String id, Map<String, Object> schedule, Map<String, Object> template, int version) {
+        return obj("id", id, "schemaVersion", 1, "scheduleId", schedule.get("id"), "scheduleVersion", 1, "occurrenceKey", "2026-06-03",
+            "localDate", "2026-06-03", "timezone", "UTC", "localTime", "09:00", "scheduledAt", "2026-06-03T09:00:00Z",
+            "taskTemplate", new java.util.LinkedHashMap<>(template), "state", "NEEDS_ATTENTION", "version", version,
+            "createdAt", "2026-06-03T09:00:00Z", "updatedAt", "2026-06-03T09:00:00Z", "message", "controlled failure");
     }
 
     private static final class MutableClock extends Clock {
